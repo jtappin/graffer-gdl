@@ -1,0 +1,321 @@
+;+
+; GR_TLV_Z
+;	Construct a graffer data set from top-level variables
+;
+; Usage:
+;	ichange = gr_tlv_z(pdefs)
+;
+; Return value
+;	ichange	int	1 if changed, 0 if not
+;
+; Argument:
+;	pdefs	struct	in/out	The graffer control/data structure
+;
+; History:
+;	Original: 21/9/95; SJT
+;	Add x=findgen(ny) when no X variable given: 28/10/96; SJT
+;	MOve GRF_TLV_GET to a separate file: 6/12/96; SJT
+;	Made to function returning "cancel" state: 18/12/96; SJT
+;	Add CAPTURE key to entry boxes: 6/2/97; SJT
+;	Replace handles with pointers: 28/6/05; SJT
+;	Add a chooser: 6/2/12; SJT
+;-
+
+
+function Grf_tlz_event, event
+
+  base = widget_info(event.top, /child)
+  widget_control, base, get_uvalue = uvs, /no_copy
+
+  widget_control, event.id, get_uvalue = object
+
+  iexit = 0
+  case object of
+     'ACTION': if (event.value eq -1) then begin
+        iexit = -1 
+     endif else begin
+        iexit = 1
+        
+        widget_control, uvs.zid, get_value = zvar
+        if (zvar eq '.') then begin
+           z = *uvs.z
+           nz = n_elements(z)
+        end else z = grf_tlv_get(zvar, nz)
+        if (nz eq 0) then begin
+           graff_msg, uvs.mid, 'Z: '+zvar+ $
+                      ' Undefined or non-numeric'
+           iexit = 0
+           goto, donefor
+        endif
+        sz = size(z)
+        if (sz(0) ne 2) then begin
+           graff_msg, uvs.mid, 'Z: '+zvar+' not 2-dimensional'
+           iexit = 0
+           goto, donefor
+        endif else z = double(z)
+        
+        widget_control, uvs.xid, get_value = xvar
+        if (xvar eq '') then begin
+           x = dindgen(sz(1))
+           nx = sz(1)
+        endif else begin
+           if (xvar eq '.') then begin
+              x = *uvs.x
+              nx = n_elements(x)
+           endif else x = grf_tlv_get(xvar, nx)
+           if (nx eq 0) then begin
+              graff_msg, uvs.mid, 'X: '+xvar+' Undefined or ' + $
+                         'non-numeric'
+              iexit = 0
+              goto, donefor
+           endif else if (nx eq 1 and sz[1] gt 1) then $
+              x = dindgen(sz[1])*x[0] $
+           else x = double(x)
+        endelse
+        sx = size(x)
+        if (sx[0] eq 1 and sx[1] eq sz[1]) then iexit =  1 $ $
+        else if (sx[0] eq 2 and sx[1] eq sz[1] and sx[2] eq sz[2]) then $
+           iexit = 1 $
+        else begin
+           graff_msg, uvs.mid, 'X: '+xvar+' Must be 1-D and match X ' + $
+                      'dimension of Z, or have the same size as Z'
+           iexit = 0
+           goto, donefor
+        endelse
+        
+        widget_control, uvs.yid, get_value = yvar
+        if (yvar eq '') then begin
+           y = dindgen(sz(2))
+           ny = sz(2)
+        endif else begin
+           if (yvar eq '.') then begin
+              y = *uvs.y
+              ny = n_elements(y)
+           endif else y = grf_tlv_get(yvar, ny)
+           if (ny eq 0) then begin
+              graff_msg, uvs.mid, 'Y: '+yvar+' Undefined or ' + $
+                         'non-numeric'
+              iexit = 0
+              goto, donefor
+           endif else if (ny eq 1 and sz[2] gt 1) then $
+              y = dindgen*sz[2]*y[0] $
+           else y = double(y)
+        endelse
+        sy = size(y)
+        if (sy[0] eq 1 and sy[1] eq sz[2]) then iexit = 1 $
+        else if (sy[0] eq 2 and sy[1] eq sz[1] and sy[2] eq sz[2]) $
+        then iexit = 1 $
+        else begin
+           graff_msg, uvs.mid, 'Y: '+yvar+' Must be 1-D and match Y ' + $
+                      'dimension of Z, or have the same size as Z'
+           iexit = 0
+           goto, donefor
+        endelse
+        
+     endelse
+     
+     'Z': grf_focus_enter, uvs.xid
+     'X': grf_focus_enter, uvs.yid
+     'Y': grf_focus_enter, uvs.zid
+     'ZP': begin
+        name = gr_pick_tlv(event.top, level)
+        if name ne '' then begin
+           if level ne 1 then widget_control, uvs.zid, set_value = $
+                                              string(level, format = "(I0,'\')")+name $
+           else widget_control, uvs.zid, set_value = name
+        endif
+        grf_focus_enter, uvs.zid
+     end
+     'XP': begin
+        name = gr_pick_tlv(event.top, level)
+        if name ne '' then begin
+           if level ne 1 then widget_control, uvs.xid, set_value = $
+                                              string(level, format = "(I0,'\')")+name $
+           else widget_control, uvs.xid, set_value = name
+        endif
+        grf_focus_enter, uvs.xid
+     end
+     'YP': begin
+        name = gr_pick_tlv(event.top, level)
+        if name ne '' then begin
+           if level ne 1 then widget_control, uvs.yid, set_value = $
+                                              string(level, format = "(I0,'\')")+name $
+           else widget_control, uvs.yid, set_value = name
+        endif
+        grf_focus_enter, uvs.yid
+     end
+  endcase
+
+Donefor:
+
+  if (iexit eq 1) then begin
+     uvs.x = ptr_new(x)
+     uvs.y = ptr_new(y)
+     uvs.z = ptr_new(z)
+  endif
+
+  widget_control, base, set_uvalue = uvs, /no_copy
+
+  return, {id:event.handler, $
+           top:event.top, $
+           handler:0l, $
+           exited:iexit}
+
+end
+
+function Gr_tlv_z, pdefs
+
+xydata = *(*pdefs.data)(pdefs.cset).xydata
+
+uvs = { $
+      Xid:   0l, $
+      Yid:   0l, $
+      Zid:   0l, $
+      X:     xydata.x, $
+      Y:     xydata.y, $
+      Z:     xydata.z, $
+      mid:   0l $
+      }
+
+;	Check out the type of the current ds
+
+fflag = ((*pdefs.data)(pdefs.cset).type ne 9) and $
+        (*pdefs.data)(pdefs.cset).ndata gt 0
+if (fflag) then $
+  if dialog_message(['CURRENT DATA SET IS 1-D OR A FUNCTION,', $
+                     'ENTERING DATA WILL OVERWRITE IT', $
+                     'DO YOU REALLY WANT TO DO THIS?'], $
+                    /question, title = 'Overwriting ' + $
+                    'function', dialog_parent = $
+                    pdefs.ids.graffer, resource = 'Graffer') eq 'No' then $
+  return, 0
+
+; 	desensitize the main graffer panel and define the bases for
+; 	this one.
+
+widget_control, pdefs.ids.graffer, sensitive = 0
+
+tlb = widget_base(title = 'Graffer 2-D data from Variables',  $
+                  group_leader = pdefs.ids.graffer, resource = $
+                  'Graffer')
+base = widget_base(tlb, /column)
+
+                                ; The entry boxes for Z, X & Y
+
+jb = widget_base(base, $
+                 /row)
+uvs.zid = graff_enter(jb, $
+                      value = '', $
+                      /text, $
+                      uvalue = 'Z', $
+                      label = 'Z Variable:', $
+                      xsize = 12, $
+                      /capture)
+junk = widget_button(jb, $
+                     value = 'Pick...', $
+                     uvalue = 'ZP')
+
+jb = widget_base(base, $
+                 /row)
+uvs.xid = graff_enter(jb, $
+                      value = '', $
+                      /text, $
+                      uvalue = 'X', $
+                      label = 'X Variable:', $
+                      xsize = 12, $
+                      /capture)
+junk = widget_button(jb, $
+                     value = 'Pick...', $
+                     uvalue = 'XP')
+
+jb = widget_base(base, $
+                 /row)
+uvs.yid = graff_enter(jb, $
+                      value = '', $
+                      /text, $
+                      uvalue = 'Y', $
+                      label = 'Y Variable:', $
+                      xsize = 12, $
+                      /capture)
+junk = widget_button(jb, $
+                     value = 'Pick...', $
+                     uvalue = 'YP')
+
+
+uvs.mid = graff_enter(base, $
+                      value = '', $
+                      ysize = 2, $
+                      xsize = 30, $
+                      /column, $
+                      /display, $
+                      label = 'Messages')
+
+junk = cw_bgroup(base, $
+                 ['Do it', 'Cancel'], $
+                 button_uvalue = [1, -1], $
+                 uvalue = 'ACTION', $
+                 /row)
+
+
+
+                                ; Realise and do RYO event handling
+
+widget_control, tlb, /real
+
+grf_focus_enter, uvs.zid
+
+widget_control, base, event_func = 'grf_tlz_event', set_uvalue = $
+                uvs, /no_copy
+
+repeat begin
+    ev = widget_event(base)
+endrep until (ev.exited ne 0)
+
+widget_control, base, get_uvalue = uvs, /no_copy
+widget_control, tlb, /destroy
+widget_control, pdefs.ids.graffer, /sensitive 
+
+if (ev.exited eq -1) then return, 0
+
+
+xydata = {graff_zdata}
+
+xydata.x = ptr_new(*uvs.x)
+xydata.x_is_2d = size(*uvs.x, /n_dim) eq 2
+xydata.y = ptr_new(*uvs.y)
+xydata.y_is_2d = size(*uvs.y, /n_dim) eq 2
+xydata.z = ptr_new(*uvs.z)
+ptr_free, uvs.x
+ptr_free, uvs.y
+ptr_free, uvs.z
+
+sz = size(*xydata.z)
+(*pdefs.data)(pdefs.cset).ndata = sz[1]
+(*pdefs.data)(pdefs.cset).ndata2 = sz[2]
+
+if (*pdefs.data)(pdefs.cset).type eq 9 then ptr_free, $
+  (*(*pdefs.data)(pdefs.cset).xydata).x, $
+  (*(*pdefs.data)(pdefs.cset).xydata).y, $
+  (*(*pdefs.data)(pdefs.cset).xydata).z
+
+ptr_free, (*pdefs.data)(pdefs.cset).xydata
+(*pdefs.data)(pdefs.cset).xydata = ptr_new(xydata)
+(*pdefs.data)(pdefs.cset).type = 9
+
+if (*pdefs.data)(pdefs.cset).zopts.N_levels  eq 0 then begin ; No
+                                ; previously defined 2-D display mode
+    (*pdefs.data)(pdefs.cset).zopts.N_levels = 6
+    (*pdefs.data)(pdefs.cset).zopts.N_cols = 1
+    (*pdefs.data)(pdefs.cset).zopts.Colours = ptr_new(1)
+    (*pdefs.data)(pdefs.cset).zopts.N_sty =   1
+    (*pdefs.data)(pdefs.cset).zopts.style = ptr_new(0)
+    (*pdefs.data)(pdefs.cset).zopts.N_thick = 1
+    (*pdefs.data)(pdefs.cset).zopts.Thick = ptr_new(1.)
+    (*pdefs.data)(pdefs.cset).zopts.Pxsize = 0.5
+endif
+
+graff_set_vals, pdefs, /set_only
+
+return, 1
+
+end

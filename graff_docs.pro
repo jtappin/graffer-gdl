@@ -1,0 +1,64 @@
+;+
+; NAME:
+;	GRAFF_DOCS
+;
+;
+; PURPOSE:
+;	Find a suitable application and show the GRAFF PDF
+;	documentation.
+;
+;
+; CATEGORY:
+;	graffer
+;
+;
+; CALLING SEQUENCE:
+;	graff_docs
+;
+;
+;
+; ARGUMENT:
+; 	pdefs	struct	The GRAFFER master structure.
+;
+;
+;
+; KEYWORD PARAMETERS:
+;	/file_format	If set, then show the file format description
+;			rather than the users' guide.
+;
+;
+; MODIFICATION HISTORY:
+;	Original (after SMEI_DOC): 5/7/05; SJT
+;-
+ 
+pro graff_docs, pdefs, file_format = file_format
+
+common gr_docs_common, pdfutil, docpath
+
+if n_elements(pdfutil) eq 0 then begin
+    if pdefs.opts.pdfviewer ne '' then pdfutil = pdefs.opts.pdfviewer $
+    else begin
+        pdfutil = gr_find_viewer(/pdf)
+
+        if pdfutil eq '' then begin
+            graff_msg, pdefs.ids.msgid, $
+                       ['No PDF display application found. Please ' + $
+                        'contact', $
+                        'your system administrator or specify a viewer ' + $
+                        'manually.']
+            return
+        endif
+    endelse
+endif
+
+if n_elements(docpath) eq 0 then begin
+    rpath = routine_info('graffer', /source)
+    docpath = file_dirname(rpath.path, /mark) + 'Docs'+path_sep()
+endif
+
+if keyword_set(file_format) then file = 'Format.pdf' $
+else file = 'Graffer.pdf'
+
+spawn, pdfutil+' '+docpath+file+' &'
+
+end

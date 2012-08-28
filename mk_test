@@ -1,0 +1,11 @@
+#!/bin/csh
+
+rm test_compile.pro
+
+foreach f (`ls *.pro | grep -v graff_version`)
+    echo "print, '$f'" >> test_compile.pro
+    echo ".r ${f:r}" >> test_compile.pro
+end
+echo "exit" >> test_compile.pro
+
+idl ./test_compile.pro
