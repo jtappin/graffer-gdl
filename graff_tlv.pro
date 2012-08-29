@@ -42,8 +42,10 @@ case object of
         
         widget_control, uvs.yid, get_value = yvar
         if (yvar eq '.') then begin
-           y = *uvs.y
-           ny = n_elements(y)
+           if ptr_valid(uvs.y) then begin
+              y = *uvs.y
+              ny = n_elements(y)
+           endif else ny = 0
         endif else y = grf_tlv_get(yvar, ny)
         if (ny eq 0) then begin
             widget_control, uvs.mid, set_value = 'Y: '+yvar+ $
@@ -58,8 +60,10 @@ case object of
             nx = ny
         endif else begin
            if (xvar eq '.') then begin
-              x = *uvs.x
-              nx = n_elements(x)
+              if ptr_valid(uvs.x) then begin
+                 x = *uvs.x
+                 nx = n_elements(x)
+              endif else nx = 0
            endif else x = grf_tlv_get(xvar, nx)
            if (nx eq 0) then begin
                 widget_control, uvs.mid, set_value = 'X: '+xvar+ $
@@ -82,7 +86,10 @@ case object of
         if (uvs.type ne 0) then begin
             nce = ([0, 1, 2, 1, 2, 2, 3, 3, 4])[uvs.type]
             errs = dblarr(nce, nx)
-            irr = 0
+            irr = 0 
+            isdot = ptr_valid(uvs.err)
+            if (isdot) then nerd = (size(*uvs.err))[0] $
+            else nerd = 0
             if (exlm[uvs.type]) then begin
                 widget_control, uvs.eloxid, get_value = elvar
                 if (elvar eq '') then begin
@@ -92,8 +99,10 @@ case object of
                     goto, donefor
                  endif
                 if (elvar eq '.') then begin
-                   errtmp = *uvs.err[irr, *]
-                   nerl = n_elements(errtmp)
+                   if irr lt nerd then begin
+                      errtmp = *uvs.err[irr, *]
+                      nerl = n_elements(errtmp)
+                   endif else nerl = 0
                 endif else errtmp = grf_tlv_get(elvar, nerl)
                 if (nerl ne nx) then begin
                     widget_control, uvs.mid, set_value = $
@@ -112,8 +121,10 @@ case object of
                     goto, donefor
                 endif
                  if (elvar eq '.') then begin
-                   errtmp = *uvs.err[irr, *]
-                   nerl = n_elements(errtmp)
+                    if irr lt nerd then begin
+                       errtmp = *uvs.err[irr, *]
+                       nerl = n_elements(errtmp)
+                    endif else nerl = 0
                 endif else errtmp = grf_tlv_get(elvar, nerl)
                 if (nerl ne nx) then begin
                     widget_control, uvs.mid, set_value = $
@@ -133,8 +144,10 @@ case object of
                     goto, donefor
                 endif
                  if (elvar eq '.') then begin
-                   errtmp = *uvs.err[irr, *]
-                   nerl = n_elements(errtmp)
+                    if irr lt nerd then begin
+                       errtmp = *uvs.err[irr, *]
+                       nerl = n_elements(errtmp)
+                    endif else nerl = 0
                 endif else errtmp = grf_tlv_get(elvar, nerl)
                 if (nerl ne nx) then begin
                     widget_control, uvs.mid, set_value = $
@@ -153,8 +166,10 @@ case object of
                     goto, donefor
                 endif
                  if (elvar eq '.') then begin
-                   errtmp = *uvs.err[irr, *]
-                   nerl = n_elements(errtmp)
+                    if irr lt nerd then begin
+                       errtmp = *uvs.err[irr, *]
+                       nerl = n_elements(errtmp)
+                    endif else nerl = 0
                 endif else errtmp = grf_tlv_get(elvar, nerl)
                 if (nerl ne nx) then begin
                     widget_control, uvs.mid, set_value = $
@@ -265,10 +280,6 @@ function Graff_tlv, pdefs
 
   common Gr_tlvs_masks, exlm, exhm, eylm, eyhm
 
-  xydata = *(*pdefs.data)(pdefs.cset).xydata
-  xtmp = xydata[0, *]
-  ytmp = xydata[1, *]
-
   uvs = { $
         Xid:    0l, $
         Yid:    0l, $
@@ -285,14 +296,22 @@ function Graff_tlv, pdefs
         Errid:  0l, $
         Errids: 0l, $
         Mid:    0l, $
-        X:      ptr_new(xtmp), $
-        Y:      ptr_new(ytmp), $
+        X:      ptr_new(), $
+        Y:      ptr_new(), $
         Err:    ptr_new(), $
         Type:   (*pdefs.data)[pdefs.cset].type $
         }
-  if (*pdefs.data)[pdefs.cset].type gt 0 then begin
-     errtmp = xydata[2:*, *]
-     uvs.err = ptr_new(errtmp)
+
+  if ptr_valid((*pdefs.data)[pdefs.cset].xydata) then begin
+     xydata = *(*pdefs.data)[pdefs.cset].xydata
+     xtmp = xydata[0, *]
+     ytmp = xydata[1, *]
+     uvs.x = ptr_new(xtmp)
+     uvs.y = ptr_new(ytmp)
+     if (*pdefs.data)[pdefs.cset].type gt 0 then begin
+        errtmp = xydata[2:*, *]
+        uvs.err = ptr_new(errtmp)
+     endif
   endif
 
 ;	Check out the type of the current ds
@@ -455,6 +474,7 @@ function Graff_tlv, pdefs
                         /column, /display, label = 'Messages')
 
   junk = cw_bgroup(base, ['Do it', 'Cancel'], button_uvalue = [1, -1], $
+                   $
                    uvalue = 'ACTION', /row)
 
                                 ; Realise and do RYO event handling

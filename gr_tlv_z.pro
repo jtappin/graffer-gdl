@@ -38,9 +38,11 @@ function Grf_tlz_event, event
         
         widget_control, uvs.zid, get_value = zvar
         if (zvar eq '.') then begin
-           z = *uvs.z
-           nz = n_elements(z)
-        end else z = grf_tlv_get(zvar, nz)
+           if ptr_valid(uvs.z) then begin
+              z = *uvs.z
+              nz = n_elements(z)
+           endif else nz = 0
+        endif else z = grf_tlv_get(zvar, nz)
         if (nz eq 0) then begin
            graff_msg, uvs.mid, 'Z: '+zvar+ $
                       ' Undefined or non-numeric'
@@ -60,8 +62,10 @@ function Grf_tlz_event, event
            nx = sz(1)
         endif else begin
            if (xvar eq '.') then begin
-              x = *uvs.x
-              nx = n_elements(x)
+              if ptr_valid(uvs.x) then begin
+                 x = *uvs.x
+                 nx = n_elements(x)
+              endif else nx = 0
            endif else x = grf_tlv_get(xvar, nx)
            if (nx eq 0) then begin
               graff_msg, uvs.mid, 'X: '+xvar+' Undefined or ' + $
@@ -89,8 +93,10 @@ function Grf_tlz_event, event
            ny = sz(2)
         endif else begin
            if (yvar eq '.') then begin
-              y = *uvs.y
-              ny = n_elements(y)
+              if ptr_valid(uvs.y) then begin
+                 y = *uvs.y
+                 ny = n_elements(y)
+              endif else ny = 0
            endif else y = grf_tlv_get(yvar, ny)
            if (ny eq 0) then begin
               graff_msg, uvs.mid, 'Y: '+yvar+' Undefined or ' + $
@@ -120,8 +126,9 @@ function Grf_tlz_event, event
      'ZP': begin
         name = gr_pick_tlv(event.top, level)
         if name ne '' then begin
-           if level ne 1 then widget_control, uvs.zid, set_value = $
-                                              string(level, format = "(I0,'\')")+name $
+           if level ne 1 then $
+              widget_control, uvs.zid, set_value = $
+                              string(level, format = "(I0,'\')")+name $
            else widget_control, uvs.zid, set_value = name
         endif
         grf_focus_enter, uvs.zid
@@ -129,8 +136,9 @@ function Grf_tlz_event, event
      'XP': begin
         name = gr_pick_tlv(event.top, level)
         if name ne '' then begin
-           if level ne 1 then widget_control, uvs.xid, set_value = $
-                                              string(level, format = "(I0,'\')")+name $
+           if level ne 1 then $
+              widget_control, uvs.xid, set_value = $
+                              string(level, format = "(I0,'\')")+name $
            else widget_control, uvs.xid, set_value = name
         endif
         grf_focus_enter, uvs.xid
@@ -138,8 +146,9 @@ function Grf_tlz_event, event
      'YP': begin
         name = gr_pick_tlv(event.top, level)
         if name ne '' then begin
-           if level ne 1 then widget_control, uvs.yid, set_value = $
-                                              string(level, format = "(I0,'\')")+name $
+           if level ne 1 then $
+              widget_control, uvs.yid, set_value = $
+                              string(level, format = "(I0,'\')")+name $
            else widget_control, uvs.yid, set_value = name
         endif
         grf_focus_enter, uvs.yid
@@ -165,7 +174,9 @@ end
 
 function Gr_tlv_z, pdefs
 
-xydata = *(*pdefs.data)(pdefs.cset).xydata
+if ptr_valid((*pdefs.data)[pdefs.cset].xydata) then $
+   xydata = *(*pdefs.data)[pdefs.cset].xydata $
+else xydata = {graff_zdata}
 
 uvs = { $
       Xid:   0l, $
