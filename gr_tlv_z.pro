@@ -174,9 +174,23 @@ end
 
 function Gr_tlv_z, pdefs
 
-if ptr_valid((*pdefs.data)[pdefs.cset].xydata) then $
-   xydata = *(*pdefs.data)[pdefs.cset].xydata $
-else xydata = {graff_zdata}
+fflag = ((*pdefs.data)(pdefs.cset).type ne 9) and $
+        (*pdefs.data)(pdefs.cset).ndata gt 0
+if (fflag) then begin
+   if dialog_message(['CURRENT DATA SET IS 1-D OR A FUNCTION,', $
+                      'ENTERING DATA WILL OVERWRITE IT', $
+                      'DO YOU REALLY WANT TO DO THIS?'], $
+                     /question, title = 'Overwriting ' + $
+                     'function', dialog_parent = $
+                     pdefs.ids.graffer, resource = 'Graffer') eq 'No' then $
+                        return, 0 $
+   else xydata = {graff_zdata}
+endif else begin       
+
+   if ptr_valid((*pdefs.data)[pdefs.cset].xydata) then $
+      xydata = *(*pdefs.data)[pdefs.cset].xydata $
+   else xydata = {graff_zdata}
+endelse
 
 uvs = { $
       Xid:   0l, $
@@ -190,16 +204,6 @@ uvs = { $
 
 ;	Check out the type of the current ds
 
-fflag = ((*pdefs.data)(pdefs.cset).type ne 9) and $
-        (*pdefs.data)(pdefs.cset).ndata gt 0
-if (fflag) then $
-  if dialog_message(['CURRENT DATA SET IS 1-D OR A FUNCTION,', $
-                     'ENTERING DATA WILL OVERWRITE IT', $
-                     'DO YOU REALLY WANT TO DO THIS?'], $
-                    /question, title = 'Overwriting ' + $
-                    'function', dialog_parent = $
-                    pdefs.ids.graffer, resource = 'Graffer') eq 'No' then $
-  return, 0
 
 ; 	desensitize the main graffer panel and define the bases for
 ; 	this one.

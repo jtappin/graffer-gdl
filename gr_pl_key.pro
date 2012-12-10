@@ -99,12 +99,12 @@ for j = 0, nkey-1 do begin
           plots, /norm, x0(icol)+x(1), y(irow)+yoff, color = $
                  (*pdefs.data)[i].colour, psym = (*pdefs.data)[i].psym $
                  < 8, thick = (*pdefs.data)[i].thick, symsize = $
-                 abs((*pdefs.data)[i].symsize) $
+                 abs((*pdefs.data)[i].symsize)*csiz $
         else $  
           plots, /norm, x0(icol)+x, y(irow)+ys, color = $
                  (*pdefs.data)[i].colour, psym = (*pdefs.data)[i].psym $
                  < 8, thick = (*pdefs.data)[i].thick, symsize = $
-                 abs((*pdefs.data)[i].symsize)
+                 abs((*pdefs.data)[i].symsize)*csiz
     endif
 
     if (pdefs.y_right and pdefs.key.side) then begin

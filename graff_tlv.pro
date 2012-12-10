@@ -280,6 +280,33 @@ function Graff_tlv, pdefs
 
   common Gr_tlvs_masks, exlm, exhm, eylm, eyhm
 
+  fflag = ((*pdefs.data)[pdefs.cset].type lt 0)
+  flag2 = ((*pdefs.data)[pdefs.cset].type ge 9)
+  if (fflag) then begin
+     if dialog_message(['CURRENT DATA SET IS A FUNCTION', $
+                        'OR A 2-D DATASET ENTERING DATA', $
+                        'WILL OVERWRITE IT', $
+                        'DO YOU REALLY WANT TO DO THIS?'], $
+                       /question, title = 'Overwriting ' + $
+                       'function', dialog_parent = $
+                       pdefs.ids.graffer, resource = 'Graffer') eq 'No' then $
+                          return, 0 
+     if  ptr_valid((*pdefs.data)[pdefs.cset].xydata) then $
+        ptr_free, (*pdefs.data)[pdefs.cset].xydata
+  endif
+  if flag2 then begin
+     if dialog_message(['CURRENT DATA SET IS A 2-D DATASET', $
+                        'ENTERING 1-D DATA WILL OVERWRITE IT', $
+                        'DO YOU REALLY WANT TO DO THIS?'], $
+                       /question, title = 'Overwriting ' + $
+                       'function', dialog_parent = $
+                       pdefs.ids.graffer, resource = 'Graffer') eq 'No' then $
+                          return, 0
+     (*pdefs.data)[pdefs.cset].type = 0 ; Force to a simple DS
+     if  ptr_valid((*pdefs.data)[pdefs.cset].xydata) then $
+        ptr_free, (*pdefs.data)[pdefs.cset].xydata
+  endif
+
   uvs = { $
         Xid:    0l, $
         Yid:    0l, $
@@ -316,28 +343,6 @@ function Graff_tlv, pdefs
 
 ;	Check out the type of the current ds
 
-
-  fflag = ((*pdefs.data)[pdefs.cset].type lt 0)
-  flag2 = ((*pdefs.data)[pdefs.cset].type ge 9)
-  if (fflag) then $
-     if dialog_message(['CURRENT DATA SET IS A FUNCTION', $
-                        'OR A 2-D DATASET ENTERING DATA', $
-                        'WILL OVERWRITE IT', $
-                        'DO YOU REALLY WANT TO DO THIS?'], $
-                       /question, title = 'Overwriting ' + $
-                       'function', dialog_parent = $
-                       pdefs.ids.graffer, resource = 'Graffer') eq 'No' then $
-                          return, 0
-  if flag2 then begin
-     if dialog_message(['CURRENT DATA SET IS A 2-D DATASET', $
-                        'ENTERING 1-D DATA WILL OVERWRITE IT', $
-                        'DO YOU REALLY WANT TO DO THIS?'], $
-                       /question, title = 'Overwriting ' + $
-                       'function', dialog_parent = $
-                       pdefs.ids.graffer, resource = 'Graffer') eq 'No' then $
-                          return, 0
-     (*pdefs.data)[pdefs.cset].type = 0 ; Force to a simple DS
-  endif
   
   exlm = [0, 0, 0, 1, 1, 1, 1, 1, 1]
   exhm = [0, 0, 0, 0, 1, 0, 0, 1, 1]

@@ -109,7 +109,6 @@ return, 1
 Badfile:
 
 graff_msg, pdefs.ids.message, ["Graffer read failed", !err_string]
-
 return, 0
 
 end
