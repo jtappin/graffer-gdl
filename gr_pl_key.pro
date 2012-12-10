@@ -28,92 +28,92 @@ pro Gr_pl_key, pdefs, csiz
 ;		problems of logarithmic axes when calculating where to
 ;		put the traces
 
-if not ptr_valid(pdefs.key.list) then return ; This is really a
+  if not ptr_valid(pdefs.key.list) then return ; This is really a
                                 ; safety valve in case there's
                                 ; anywhere the key pointer gets freed
                                 ; but the use flag isn't cleared.
 
-if pdefs.key.csize eq 0 then csize = csiz $
-else csize = pdefs.key.csize*csiz
+  if pdefs.key.csize eq 0 then csize = csiz $
+  else csize = pdefs.key.csize*csiz
 
-list = *pdefs.key.list
+  list = *pdefs.key.list
 
-if (n_elements(list) eq 0) then return
+  if (n_elements(list) eq 0) then return
 
-gr_coord_convert, pdefs.key.x, pdefs.key.y, xn, yn, /to_norm, data = $
-  pdefs.key.norm eq 0, region = pdefs.key.norm eq 1, frame = $
-  pdefs.key.norm eq 2
+  gr_coord_convert, pdefs.key.x, pdefs.key.y, xn, yn, /to_norm, data = $
+                    pdefs.key.norm eq 0, region = pdefs.key.norm eq 1, frame = $
+                    pdefs.key.norm eq 2
 
-if (pdefs.key.frame) then plots, /norm, xn[[0, 1, 1, 0, 0]], $
-  yn[[0, 0, 1, 1, 0]]
+  if (pdefs.key.frame) then plots, /norm, xn[[0, 1, 1, 0, 0]], $
+                                   yn[[0, 0, 1, 1, 0]]
 
-locs = where((*pdefs.data)[list].colour ne -1, nkey)
-if (nkey eq 0) then begin
-    graff_msg, pdefs.ids.message, "No drawn traces in key list"
-    return
-endif else list = list[locs]
-    
-nrows = ceil(float(nkey)/pdefs.key.cols)
-if (pdefs.key.title ne '') then begin
-    lsp = (yn[1]-yn[0])/(nrows+1.2)
-    xyouts, total(xn)/2, yn[1]-lsp*.8, $
-      pdefs.key.title,  /norm, align = 0.5, charsize = 1.2*csize
-endif else lsp = (yn[1]-yn[0])/nrows
+  locs = where((*pdefs.data)[list].colour ne -1, nkey)
+  if (nkey eq 0) then begin
+     graff_msg, pdefs.ids.message, "No drawn traces in key list"
+     return
+  endif else list = list[locs]
+  
+  nrows = ceil(float(nkey)/pdefs.key.cols)
+  if (pdefs.key.title ne '') then begin
+     lsp = (yn[1]-yn[0])/(nrows+1.2)
+     xyouts, total(xn)/2, yn[1]-lsp*.8, $
+             pdefs.key.title,  /norm, align = 0.5, charsize = 1.2*csize
+  endif else lsp = (yn[1]-yn[0])/nrows
 
-y = (dindgen(nrows)+.2)*lsp + yn[0]
+  y = (dindgen(nrows)+.2)*lsp + yn[0]
 
-x0 = xn[0] + (xn[1]-xn[0])*dindgen(pdefs.key.cols)/pdefs.key.cols
+  x0 = xn[0] + (xn[1]-xn[0])*dindgen(pdefs.key.cols)/pdefs.key.cols
 
-if (pdefs.key.one_point) then begin
-    x = [.05, .125, .2] * (xn[1]-xn[0])/pdefs.key.cols
-    tx = .3 * (xn[1]-xn[0])/pdefs.key.cols
-    ys = replicate(.3*lsp, 3)
-endif else begin
-    x = [.05, .3] * (xn[1]-xn[0])/pdefs.key.cols
-    tx = .4 * (xn[1]-xn[0])/pdefs.key.cols
-    ys = [0, .5*lsp]
-endelse
-yoff = csize/2. * float(!d.y_ch_size)/float(!d.y_size)
+  if (pdefs.key.one_point) then begin
+     x = [.05, .125, .2] * (xn[1]-xn[0])/pdefs.key.cols
+     tx = .3 * (xn[1]-xn[0])/pdefs.key.cols
+     ys = replicate(.3*lsp, 3)
+  endif else begin
+     x = [.05, .3] * (xn[1]-xn[0])/pdefs.key.cols
+     tx = .4 * (xn[1]-xn[0])/pdefs.key.cols
+     ys = [0, .5*lsp]
+  endelse
+  yoff = csize/2. * float(!d.y_ch_size)/float(!d.y_size)
 
-for j = 0, nkey-1 do begin
-    
-    i = list[j]
+  for j = 0, nkey-1 do begin
+     
+     i = list[j]
 
-    irow = (nrows - (j mod nrows))-1
-    icol = j/nrows
-    
-    if ((*pdefs.data)[i].pline eq 2 and not pdefs.key.one_point) then begin
+     irow = (nrows - (j mod nrows))-1
+     icol = j/nrows
+     
+     if ((*pdefs.data)[i].pline eq 2 and not pdefs.key.one_point) then begin
         xx = [x(0), replicate(total(x)/2, 2), x(1)]
         plots, /norm, x0(icol)+xx, y(irow)+ys([0, 0, 1, 1]), color = $
-          (*pdefs.data)[i].colour, linesty = (*pdefs.data)[i].line, $
-          thick = (*pdefs.data)[i].thick
-    endif else if ((*pdefs.data)[i].pline ne 0) then begin
+               (*pdefs.data)[i].colour, linesty = (*pdefs.data)[i].line, $
+               thick = (*pdefs.data)[i].thick
+     endif else if ((*pdefs.data)[i].pline ne 0) then begin
         plots, /norm, x0(icol)+x, y(irow)+yoff, color = $
-          (*pdefs.data)[i].colour, linesty = (*pdefs.data)[i].line, $
-          thick = (*pdefs.data)[i].thick
-    endif
-    
-    if ((*pdefs.data)[i].psym ne 0) then begin
+               (*pdefs.data)[i].colour, linesty = (*pdefs.data)[i].line, $
+               thick = (*pdefs.data)[i].thick
+     endif
+     
+     if ((*pdefs.data)[i].psym ne 0) then begin
         if ((*pdefs.data)[i].psym ge 8) then gr_symdef, (*pdefs.data)[i].psym 
         if (pdefs.key.one_point) then $
-          plots, /norm, x0(icol)+x(1), y(irow)+yoff, color = $
-                 (*pdefs.data)[i].colour, psym = (*pdefs.data)[i].psym $
-                 < 8, thick = (*pdefs.data)[i].thick, symsize = $
-                 abs((*pdefs.data)[i].symsize)*csiz $
+           plots, /norm, x0(icol)+x(1), y(irow)+yoff, color = $
+                  (*pdefs.data)[i].colour, psym = (*pdefs.data)[i].psym $
+                  < 8, thick = (*pdefs.data)[i].thick, symsize = $
+                  abs((*pdefs.data)[i].symsize)*csiz $
         else $  
-          plots, /norm, x0(icol)+x, y(irow)+ys, color = $
-                 (*pdefs.data)[i].colour, psym = (*pdefs.data)[i].psym $
-                 < 8, thick = (*pdefs.data)[i].thick, symsize = $
-                 abs((*pdefs.data)[i].symsize)*csiz
-    endif
+           plots, /norm, x0(icol)+x, y(irow)+ys, color = $
+                  (*pdefs.data)[i].colour, psym = (*pdefs.data)[i].psym $
+                  < 8, thick = (*pdefs.data)[i].thick, symsize = $
+                  abs((*pdefs.data)[i].symsize)*csiz
+     endif
 
-    if (pdefs.y_right and pdefs.key.side) then begin
+     if (pdefs.y_right and pdefs.key.side) then begin
         if (*pdefs.data)[i].y_axis eq 0 then side = ' (l)' $
         else side = ' (r)'
         descr = (*pdefs.data)[i].descript+side
-    endif else descr = (*pdefs.data)[i].descript
-    xyouts, /norm, x0(icol)+tx, y(irow), descr, $
-            charsize = csize
-endfor
+     endif else descr = (*pdefs.data)[i].descript
+     xyouts, /norm, x0(icol)+tx, y(irow), descr, $
+             charsize = csize
+  endfor
 
 end

@@ -193,7 +193,7 @@ bub.yid1 = graff_enter(jjb, /float, xsize = 11, /all_event, label = $
 jjb = widget_base(jb, /row)
 bub.csid = graff_enter(jjb, $
                        /float, $
-                       xsize = 6, $
+                       xsize = 20, $
                        /all, $
                        label = 'Character Size:', $
                        value = pdefs.key.csize, $
