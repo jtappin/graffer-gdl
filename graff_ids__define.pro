@@ -20,6 +20,7 @@ pro graff_ids__define
 ;	Extracted: 30/6/05; SJT
 ;	Add support for a second Y-scale: 22/12/11; SJT
 ;	Add "current" ds only id: 26/1/12; SJT
+; 	Add min & max values: 4/3/15; SJT
 ;-
 
 Ids = { graff_ids, $
@@ -81,6 +82,9 @@ Ids = { graff_ids, $
         Thick:   0l, $
         Dsxtra:  lonarr(3), $
         Clip:    0l, $
+        minmaxbase: 0l, $
+        minval:  0l, $
+        maxval:  0l, $
         Zmode:   0l, $
         current: 0l, $
         Xcp:     0l, $

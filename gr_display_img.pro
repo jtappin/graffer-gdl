@@ -1,8 +1,10 @@
 pro Gr_display_img, zin, xin, yin, range = range, $
-                    colour_range = colour_range, $ $
-                    pixel_size = pixel_size, logarithmic = $
-                    logarithmic, inverted = inverted,  $
-                    missing = missing
+                    colour_range = colour_range, $ 
+                    pixel_size = pixel_size,  $
+                    scale_mode = scale_mode, $
+                    inverted = inverted,  $
+                    missing = missing, $
+                    logarithmic = logarithmic
 
 ;+
 ; GR_DISPLAY_IMG
@@ -22,7 +24,8 @@ pro Gr_display_img, zin, xin, yin, range = range, $
 ;	colour. int	input	The range of colour indices to use.
 ;	pixel.  float	input	For devices with scalable pixels, the
 ;				size of a displayed pixel.
-;	/logarithmic	input	If set, then use a log scaling.
+;	scale_mode int	input	Scaling mode, 0/absent = linear, 1 =
+;				log, 2 = square_root
 ;	/inverted	input	If set, then plot from "white" to "black".
 ;	missing	float	input	A value to use for output pixels that don't
 ;				map to input pixels.
@@ -36,7 +39,15 @@ pro Gr_display_img, zin, xin, yin, range = range, $
 ;	Add missing keyword to set a value if we are triangulating:
 ;	11/7/12; SJT
 ;	Fix failure to display when axis reversed: 24/8/12; SJT
+;	Replace logarithmic with scale_mode: 18/11/15; SJT
 ;-
+
+  if n_elements(logarithmic) ne 0 then graff_msg, 0l, $
+     "The LOGARTITHMIC key is obsolete, please use SCALE_MODE instead"
+
+  if n_elements(scale_mode) ne 0 then mode = scale_mode $
+  else if n_elements(logarithmic) ne 0 then mode = logarithmic $
+  else mode = 0
 
   if (!D.flags and 1) then begin ; PS or similar with scalable pixels
      if (not keyword_set(pixel_size)) then pixel_size = 0.5 ; default
@@ -112,15 +123,19 @@ pro Gr_display_img, zin, xin, yin, range = range, $
                               /error)
         return
      endif
-     triangulate, x, y, triangles, tol = 1e-12*(max(abs(x)) > max(abs(y)))
-     if keyword_set(logarithmic) then $
-        zz = trigrid(x, y, alog10(zin), triangles, $
-                     [(mxx-mnx)/dvxsize, (mxy-mny)/dvysize], $
-                     [mnx, mny, mxx, mxy],  missing = missing) $
-     else $
-        zz = trigrid(x, y, zin, triangles, $
-                     [(mxx-mnx)/dvxsize, (mxy-mny)/dvysize], $
-                     [mnx, mny, mxx, mxy],  missing = missing)
+     triangulate, x, y, triangles, tol = 1e-12*(max(abs(x)) > $
+                                                max(abs(y)))
+     case mode of
+        0: zz = trigrid(x, y, zin, triangles, $
+                        [(mxx-mnx)/dvxsize, (mxy-mny)/dvysize], $
+                        [mnx, mny, mxx, mxy],  missing = missing)
+        1: zz = trigrid(x, y, alog10(zin), triangles, $
+                        [(mxx-mnx)/dvxsize, (mxy-mny)/dvysize], $
+                        [mnx, mny, mxx, mxy],  missing = missing)
+        2: zz =  trigrid(x, y, sqrt(zin), triangles, $
+                         [(mxx-mnx)/dvxsize, (mxy-mny)/dvysize], $
+                         [mnx, mny, mxx, mxy],  missing = missing)
+     endcase
   endif else begin
      x = xin(locsx)
      y = yin(locsy)
@@ -136,9 +151,11 @@ pro Gr_display_img, zin, xin, yin, range = range, $
      sz = size(z)
      xx = interpol(findgen(sz(1)), x, xd)
      yy = interpol(findgen(sz(2)), y, yd)
-     if keyword_set(logarithmic) then $
-        zz = bilinear(alog10(z), xx, yy) $
-     else zz = bilinear(z, xx, yy)
+     case mode of
+        0: zz = bilinear(z, xx, yy)
+        1: zz = bilinear(alog10(z), xx, yy) 
+        2: zz = bilinear(sqrt(z), xx, yy) 
+     endcase
   endelse
 
   if (not keyword_set(colour_range)) then colours = [16, !D.n_colors-1] $
@@ -154,8 +171,11 @@ pro Gr_display_img, zin, xin, yin, range = range, $
      if keyword_set(inverted) then zrange = zrange[[1, 0]]
   endelse
 
-  if keyword_set(logarithmic) then zrange = alog10(zrange)
-
+  case mode of
+     0:
+     1: zrange = alog10(zrange)
+     2: zrange = sqrt(zrange)
+  endcase
   locs = where(finite(zz) eq 0, nnan)
 
   if zrange[0] gt zrange[1] then $

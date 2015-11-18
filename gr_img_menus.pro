@@ -55,7 +55,7 @@ case but of
 
     'LOG': if track_flag then $
       graff_msg, pdefs.ids.hlptxt, "Use logarithmic colour scaling?" $
-    else zopts.ilog = event.select
+    else zopts.ilog = event.index
 
     'INVERT': if track_flag then $
       graff_msg, pdefs.ids.hlptxt, "Invert the colour map?" $
@@ -202,16 +202,19 @@ endif else begin
                                            /capture, $
                                            /all)
 
+    
+    pdefs.ids.zopts.i_log = $
+       widget_droplist(jba, $
+                       title = 'Scaling:', $
+                       value = ['Linear', 'Logarithmic', 'Square Root'], $
+                       uvalue = 'LOG', $
+                       /track)
+    widget_control, pdefs.ids.zopts.i_log, $
+                    set_droplist_select = zopts.ilog
+    
     jbb = widget_base(jba, $
                       /nonexclusive, $
                       /column)
-    
-    pdefs.ids.zopts.i_log = widget_button(jbb, $
-                                          value = 'Log. mapping?', $
-                                          uvalue = 'LOG', $
-                                          /track)
-    widget_control, pdefs.ids.zopts.i_log, set_button = zopts.ilog
-    
     pdefs.ids.zopts.i_invert = widget_button(jbb, $
                                              value = 'Invert colours?', $
                                              uvalue = 'INVERT', $

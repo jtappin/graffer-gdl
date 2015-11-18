@@ -92,7 +92,7 @@ pro Gr_2dd_plot, pdefs, i, csiz, grey_ps = grey_ps
                                 pdefs.transient.colmin+127 < !D.n_colors-1]
      gr_display_img, z, x, y, range = $
                      data[i].zopts.range, colour_range = colour_range, $
-                     pixel_size = data[i].zopts.pxsize, logarithmic = $
+                     pixel_size = data[i].zopts.pxsize, scale_mode = $
                      data[i].zopts.ilog, inverted = $
                      data[i].zopts.invert, missing = data[i].zopts.missing
      if cflag then graff_colours, pdefs

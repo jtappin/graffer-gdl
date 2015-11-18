@@ -20,7 +20,7 @@ pro graff_update, file, idx, name = name, polar = polar, rescale = $
                   errtype, neval = neval, frange = frange, $
                   x_func = x_func, y_func = y_func, z_func = $
                   z_func, z_missing = z_missing, z_charsize = $
-                  z_charsize, status = status
+                  z_charsize, status = status, z_mode = z_mode
 
 ;+
 ; GRAFF_UPDATE
@@ -106,7 +106,7 @@ pro graff_update, file, idx, name = name, polar = polar, rescale = $
 ;				size to use in images for PS device.
 ;	/z_invert	input	For image display, invert the colour
 ;				table if set.
-;	/z_log		input	If set, then map the Z values logarithmically.
+;	z_mode	int	input	Z scaling mode, 0=linear, 1=log, 2=sqrt.
 ;	z_ctable int	input	Select a colour table for 2-D display
 ;				of images.
 ;	y_axis	int	input	Specify which Y axis to use. (0 or 1)
@@ -302,9 +302,12 @@ pro graff_update, file, idx, name = name, polar = polar, rescale = $
      (*pdefs.data)[index].zopts.invert = keyword_set(z_invert)
   if n_elements(z_fill) ne 0 then $
      (*pdefs.data)[index].zopts.fill = keyword_set(z_fill)
-  if n_elements(z_log) ne 0 then $
-     (*pdefs.data)[index].zopts.ilog = keyword_set(z_log)
-
+  if n_elements(z_mode) ne 0 then $
+     (*pdefs.data)[index].zopts.ilog = z_mode $
+  else if n_elements(z_log) ne 0 then begin
+     (*pdefs.data)[index].zopts.ilog = z_log
+     print, "Z_LOG is now deprecated, use Z_MODE"
+  endif
 ; Data updates.
 
   type = (*pdefs.data)[index].type

@@ -1,6 +1,7 @@
 ; $Id: errplot.pro,v 1.1 1993/04/02 19:43:31 idl Exp $
 
-Pro Gr_err_y, X, Y, Low, High, Width=width, _extra=extra
+Pro Gr_err_y, X, Y, Low, High, Width = width, min_value = min_value, $
+              max_value = max_value, _extra = extra
 
 ;+
 ; NAME:
@@ -70,87 +71,88 @@ Pro Gr_err_y, X, Y, Low, High, Width=width, _extra=extra
 ;	Shorten name: 25/11/96; SJT
 ;-
 
-on_error, 2                     ;Return to caller if an error occurs
+  on_error, 2                   ;Return to caller if an error occurs
 
-if (n_params() eq 4) then up = y+high $
-else up = y+low
-down = y-low
-xx = x
+  if (n_params() eq 4) then up = y+high $
+  else up = y+low
+  down = y-low
+  xx = x
 
 ;	Check if we have limits
 
-ul = finite(up) eq 0
-ll = finite(down) eq 0
-islim = ul or ll
+  ul = finite(up) eq 0
+  ll = finite(down) eq 0
+  islim = ul or ll
 
-locs = where(ul, nl)
-if (nl ne 0) then up(locs) = y(locs)
-locs = where(ll, nl)
-if (nl ne 0) then down(locs) = y(locs)
+  locs = where(ul, nl)
+  if (nl ne 0) then up(locs) = y(locs)
+  locs = where(ll, nl)
+  if (nl ne 0) then down(locs) = y(locs)
 
 
-if n_elements(width) eq 0 then width = .01 ;Default width
-width = width/2                 ;Centered
+  if n_elements(width) eq 0 then width = .01 ;Default width
+  width = width/2                            ;Centered
 
 ;
-n = n_elements(up) < n_elements(down) < n_elements(xx) ;# of pnts
+  n = n_elements(up) < n_elements(down) < n_elements(xx) ;# of pnts
 
-xxmin = min(!X.crange)          ;X range
-xxmax = max(!X.crange)
-yymax = max(!Y.crange)          ;Y range
-yymin = min(!Y.crange)
+  xxmin = min(!X.crange)        ;X range
+  xxmax = max(!X.crange)
+  yymax = max(!Y.crange)        ;Y range
+  yymin = min(!Y.crange)
 
 
-wid = (xxmax - xxmin) * width   ; bars = .01 of plot wide.
-ywid = (yymax -yymin) * (width > .01) ; Shift for limits
-xwid = (xxmax -xxmin) * (width > .01) ; Shift for limits
+  wid = (xxmax - xxmin) * width       ; bars = .01 of plot wide.
+  ywid = (yymax -yymin) * (width > .01) ; Shift for limits
+  xwid = (xxmax -xxmin) * (width > .01) ; Shift for limits
 
-for i = 0, n-1 do begin         ;do each point.
-    
-    if (!X.type) then begin
+  for i = 0, n-1 do begin       ;do each point.
+     
+     if keyword_set(min_value) && y[i] lt min_value then continue
+     if keyword_set(max_value) && y[i] gt max_value then continue
+
+     if (!X.type) then begin
         if (xx(i) gt 0) then begin
-            xxx = alog10(xx(i)) ;x value
-            xeb = 10^[xxx-wid, xxx, xxx+wid, xxx, xxx, xxx-wid, xxx, $
-                      xxx+wid]
-            if (islim(i)) then  $
+           xxx = alog10(xx(i))  ;x value
+           xeb = 10^[xxx-wid, xxx, xxx+wid, xxx, xxx, xxx-wid, xxx, $
+                     xxx+wid]
+           if (islim(i)) then  $
               xebl = 10^[xxx-xwid, xxx, xxx+xwid, xxx, xxx, xxx-xwid, $
                          xxx, xxx+xwid]
-        endif else goto, next
-    endif else begin
+        endif else continue
+     endif else begin
         xxx = xx(i)             ;x value
         xeb = [xxx-wid, xxx, xxx+wid, xxx, xxx, xxx-wid, xxx, xxx+wid]
         if (islim(i)) then  $
-          xebl = [xxx-xwid, xxx, xxx+xwid, xxx, xxx, xxx-xwid, xxx, $
-                  xxx+xwid]
-    endelse
-    
-    if (xxx ge xxmin) and (xxx le xxmax) then begin
+           xebl = [xxx-xwid, xxx, xxx+xwid, xxx, xxx, xxx-xwid, xxx, $
+                   xxx+xwid]
+     endelse
+     
+     if (xxx ge xxmin) and (xxx le xxmax) then begin
         if (ll(i)) then begin
-            ddown = [4, 5, 4, 5]*ywid
-            xeb(0:3) = xebl(0:3)
+           ddown = [4, 5, 4, 5]*ywid
+           xeb(0:3) = xebl(0:3)
         endif else ddown = [0, 0, 0, 0]
         if (ul(i)) then begin
-            dup = [5, 4, 5, 4]*ywid
-            xeb(4:7) = xebl(4:7)
+           dup = [5, 4, 5, 4]*ywid
+           xeb(4:7) = xebl(4:7)
         endif else dup = [0, 0, 0, 0]
         
         if (!Y.type) then begin
-            yyy0 = alog10(down(i))
-            yyy1 = alog10(up(i))
-            yeb = 10^[yyy0-ddown, yyy1+dup]
+           yyy0 = alog10(down(i))
+           yyy1 = alog10(up(i))
+           yeb = 10^[yyy0-ddown, yyy1+dup]
         endif else begin
-            yyy0 = down(i)
-            yyy1 = up(i)
-            yeb = [yyy0-ddown, yyy1+dup]
+           yyy0 = down(i)
+           yyy1 = up(i)
+           yeb = [yyy0-ddown, yyy1+dup]
         endelse
         
         
         plots, xeb, yeb, _extra = extra
-    endif
-    
-Next:
-    
-endfor
-return
+     endif
+     
+  endfor
+  return
 end
 

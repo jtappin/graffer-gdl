@@ -218,7 +218,7 @@ while (not eof(ilu)) do begin
                 
                 pdefs.nsets = gr_int_val(tag_val[itag+1], 1)
                 nds = pdefs.nsets > 1
-                data = replicate({graff_data}, nds)
+                data =  gr_new_ds(pdefs, nds) ;replicate({graff_data}, nds)
                 dflag = 1b
             end
             'DC': pdefs.cset = gr_int_val(tag_val[itag+1], 1)

@@ -241,6 +241,8 @@
 ;                       get from top-level variables tools (by
 ;                       specifying a dot (.) as the name of any
 ;                       unchanged component).
+;               Version 4.07:
+;                     - Support min and max for 1D datasets (not functions)
 ;-
 
 

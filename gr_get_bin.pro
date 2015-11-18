@@ -168,7 +168,7 @@ while (not eof(ilu)) do begin
         'DN ': begin
             pdefs.nsets = value
             nds = pdefs.nsets > 1
-            data = replicate({graff_data}, nds)
+            data = gr_new_ds(pdefs, nds) ;replicate({graff_data}, nds)
             dflag = 1b
         end
         'DC ': pdefs.cset = value

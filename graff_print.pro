@@ -20,6 +20,7 @@ pro graff_print, file, predraw = predraw, _extra = _extra
 ; History:
 ;	Original: 18/5/05; SJT
 ;	Add PREDRAW keyword: 20/5/09; SJT
+;	Fix pixmap size to get consistent charsizes: 3/11/15; SJT
 ;-
 
 on_error, 2                     ; Return to caller on error
@@ -43,7 +44,7 @@ endif
 
 if keyword_set(predraw) then begin
     set_plot, 'x'
-    window, /free, /pixmap
+    window, /free, /pixmap,  xsize = 600, ysize = 600
     graff_colours, pdefs
     gr_plot_object, pdefs
     wdelete

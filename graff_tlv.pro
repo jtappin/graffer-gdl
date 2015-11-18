@@ -331,13 +331,15 @@ function Graff_tlv, pdefs
 
   if ptr_valid((*pdefs.data)[pdefs.cset].xydata) then begin
      xydata = *(*pdefs.data)[pdefs.cset].xydata
-     xtmp = xydata[0, *]
-     ytmp = xydata[1, *]
-     uvs.x = ptr_new(xtmp)
-     uvs.y = ptr_new(ytmp)
-     if (*pdefs.data)[pdefs.cset].type gt 0 then begin
-        errtmp = xydata[2:*, *]
-        uvs.err = ptr_new(errtmp)
+     if n_elements(xydata) ne 0 then begin
+        xtmp = xydata[0, *]
+        ytmp = xydata[1, *]
+        uvs.x = ptr_new(xtmp)
+        uvs.y = ptr_new(ytmp)
+        if (*pdefs.data)[pdefs.cset].type gt 0 then begin
+           errtmp = xydata[2:*, *]
+           uvs.err = ptr_new(errtmp)
+        endif
      endif
   endif
 
@@ -479,6 +481,7 @@ function Graff_tlv, pdefs
                         /column, /display, label = 'Messages')
 
   junk = cw_bgroup(base, ['Do it', 'Cancel'], button_uvalue = [1, -1], $
+                   $
                    $
                    uvalue = 'ACTION', /row)
 

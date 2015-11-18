@@ -30,6 +30,7 @@ pro Gr_asc_save, pdefs
 ;	Add support for a second Y-scale: 22/12/11; SJT
 ;	New font handling and contour setting: 11/1/12; SJT
 ;	Advanced axis style settings: 21/8/12; SJT
+; 	Add min & max values: 4/3/15; SJT
 ;-
 
 file = pdefs.dir+pdefs.name
@@ -145,7 +146,11 @@ for j = 0, (pdefs.nsets-1) > 0 do begin
             (*pdefs.data)[j].sort, ':K:', $
             (*pdefs.data)[j].noclip, ':E:', (*pdefs.data)[j].medit,  $
             format = "(2(a,i3),a,f8.3,a,i2,a,i3,a,f8.4,3(a,i1))"
-    
+    if finite((*pdefs.data)[j].min_val) then $
+       printf, ilu, 'MN:', (*pdefs.data)[j].min_val, format="(A,g19.12)"
+    if finite((*pdefs.data)[j].max_val) then $
+       printf, ilu, 'MX:', (*pdefs.data)[j].max_val, format="(A,g19.12)"
+
     if not ptr_valid((*pdefs.data)[j].xydata) then begin
         printf, ilu, 'DE:', format = "(a)"
         continue

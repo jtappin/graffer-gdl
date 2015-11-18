@@ -19,6 +19,7 @@ pro graff_data__define
 ; MODIFICATION HISTORY:
 ;	Extracted: 30/6/05; SJT
 ;	Add support for a second Y-scale: 22/12/11; SJT
+; 	Add min & max values: 4/3/15; SJT
 ;-
 
 data =  {graff_data, $
@@ -34,6 +35,8 @@ data =  {graff_data, $
          Line:     0, $
          Colour:   0, $
          Thick:    0., $
+         min_val:  0.d0, $
+         max_val:  0.d0, $
          Zopts:    {graff_2d}, $
          y_axis:   0, $
          Sort:     0b, $

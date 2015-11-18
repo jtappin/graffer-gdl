@@ -7,7 +7,7 @@ pro Graff_add, file, a1, a2, a3, errors = errors, $
                thick, neval = neval, description = description, frange $
                = frange, sort = sort, graffer = graffer, errtype = $
                errtype, funcz = funcz, ascii = ascii, noclip = noclip, $
-               $
+               min_val=min_val, max_val=max_val, $
                mouse = mouse, z_format = z_format, z_nlevels = $
                z_nlevels, z_levels = z_levels, z_colours = z_colours, $
                z_style = z_style, z_thick = z_thick, z_range = $
@@ -15,7 +15,8 @@ pro Graff_add, file, a1, a2, a3, errors = errors, $
                z_invert = z_invert, z_fill = z_fill, z_log = z_log, $
                z_ctable = z_ctable, xy_file = xy_file, z_file = $
                z_file, func_file = func_file, y_axis = y_axis, $
-               z_missing = z_missing, z_charsize = z_charsize
+               z_missing = z_missing, z_charsize = z_charsize, z_mode $
+               = zmode
 
 ;+
 ; GRAFF_ADD
@@ -29,6 +30,7 @@ pro Graff_add, file, a1, a2, a3, errors = errors, $
 ;               style=style, psym=psym, symsize=symsize, colour=colour, $
 ;               thick=thick, neval=neval, description=description, $
 ;               frange=frange, /graffer, /ascii, /noclip, $
+;               min_val=min_val, max_val=max_val, $
 ;               mouse=mouse,z_format=z_format, z_nlevels = z_nlevels, $
 ;               z_levels = $ 
 ;               z_levels, z_colours = z_colours, z_style = z_style, $
@@ -90,7 +92,9 @@ pro Graff_add, file, a1, a2, a3, errors = errors, $
 ;				file (by default a binary graffer file
 ;				is generated).
 ;	noclip		input	If  set, then disable clipping to the
-;				axis box. 
+;				axis box.
+;	min_val		input	Set a minimum data value to display
+;	max_val		input	Set a maximum data value to display
 ;	mouse	int	input	If explicitly set to zero then
 ;				disable mouse-editing of the dataset.
 ;	z_format int	input	For 2-D datasets, select display
@@ -112,7 +116,7 @@ pro Graff_add, file, a1, a2, a3, errors = errors, $
 ;				size to use in images for PS device.
 ;	/z_invert	input	For image display, invert the colour
 ;				table if set.
-;	/z_log		input	If set, then map the Z values logarithmically.
+;	z_mode	int	input	0=linear, 1=log, 2=sqrt.
 ;	z_ctable int	input	Select a colour table for 2-D display
 ;				of images.
 ;	xy_file	string	input	A file with a graffer dataset (x-y plot).
@@ -148,6 +152,8 @@ pro Graff_add, file, a1, a2, a3, errors = errors, $
 ;	Add option to select secondary Y-axis: 23/12/11; SJT
 ;	Make errtype match documents, fix leak: 25/1/12; SJT
 ;	Deprecate func[xyz], replace with [xyz]_func: 3/2/12; SJT
+;	Add min_val, max_val: 2/6/15; SJT
+;	z_log -> z_mode: 18/11/15: SJT
 ;-
 
 ;	Check that the necessary inputs are present
@@ -157,17 +163,20 @@ pro Graff_add, file, a1, a2, a3, errors = errors, $
   gr_state, /save
 
   if keyword_set(funcx) then begin 
-     if keyword_set(x_func) then message, /continue, $
-                                          "Both X_FUNC and the obsolete FUNCX are set, ignoring FUNCX" $
+     if keyword_set(x_func) then $
+        message, /continue, $
+                 "Both X_FUNC and the obsolete FUNCX are set, ignoring FUNCX" $
      else begin
-        message, /continue, "FUNCX is obsolete, please use X_FUNC " + $
+        message, /continue, $
+                 "FUNCX is obsolete, please use X_FUNC " + $
                  "instead"
         x_func = funcx
      endelse
   endif
   if keyword_set(funcy) then begin 
-     if keyword_set(y_func) then message, /continue, $
-                                          "Both Y_FUNC and the obsolete FUNCY are set, ignoring FUNCY" $
+     if keyword_set(y_func) then $
+        message, /continue, $
+                 "Both Y_FUNC and the obsolete FUNCY are set, ignoring FUNCY" $
      else begin
         message, /continue, "FUNCY is obsolete, please use Y_FUNC " + $
                  "instead"
@@ -175,8 +184,9 @@ pro Graff_add, file, a1, a2, a3, errors = errors, $
      endelse
   endif
   if keyword_set(funcz) then begin 
-     if keyword_set(z_func) then message, /continue, $
-                                          "Both Z_FUNC and the obsolete FUNCZ are set, ignoring FUNCZ" $
+     if keyword_set(z_func) then $
+        message, /continue, $
+                 "Both Z_FUNC and the obsolete FUNCZ are set, ignoring FUNCZ" $
      else begin
         message, /continue, "FUNCZ is obsolete, please use Z_FUNC " + $
                  "instead"
@@ -211,7 +221,8 @@ pro Graff_add, file, a1, a2, a3, errors = errors, $
             ~keyword_set(xy_file) and $
             ~keyword_set(z_file) and $
             ~keyword_set(func_file)) then $
-               message, "Must give data arrays, data file or a function specification"
+               message, "Must give data arrays, data file or a " + $
+                        "function specification"
      2: begin
         y = double(a1)
         x = dindgen(n_elements(y))
@@ -432,6 +443,11 @@ pro Graff_add, file, a1, a2, a3, errors = errors, $
   if (n_elements(description) ne 0) then $
      (*pdefs.data)[pdefs.cset].descript = description 
   if (n_elements(noclip)  ne 0) then (*pdefs.data)[pdefs.cset].noclip = noclip
+  if n_elements(min_val) ne 0 then (*pdefs.data)[pdefs.cset].min_val = min_val $
+  else (*pdefs.data)[pdefs.cset].min_val = !values.d_nan
+  if n_elements(max_val) ne 0 then (*pdefs.data)[pdefs.cset].max_val = max_val $
+  else (*pdefs.data)[pdefs.cset].max_val = !values.d_nan
+
   if (n_elements(mouse) ne 0) then (*pdefs.data)[pdefs.cset].medit = mouse
   if (n_elements(y_axis) ne 0) then (*pdefs.data)[pdefs.cset].y_axis = $
      y_axis
@@ -495,7 +511,12 @@ pro Graff_add, file, a1, a2, a3, errors = errors, $
      if (n_elements(z_missing) ne 0) then $
         (*pdefs.data)[pdefs.cset].zopts.missing = z_missing
      (*pdefs.data)[pdefs.cset].zopts.fill = keyword_set(z_fill)
-     (*pdefs.data)[pdefs.cset].zopts.ilog = keyword_set(z_log)
+     if n_elements(z_mode) ne 0 then $
+        (*pdefs.data)[pdefs.cset].zopts.ilog = z_mode $
+     else if n_elements(z_log) ne 0 then begin
+        (*pdefs.data)[pdefs.cset].zopts.ilog = z_log
+        print, "Z_LOG is now deprecated, use Z_MODE"
+     endif else (*pdefs.data)[pdefs.cset].zopts.ilog = 0
   endif
 
   if (keyword_set(graffer)) then begin

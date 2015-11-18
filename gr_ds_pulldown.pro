@@ -90,7 +90,11 @@ case event.value of
     'Other/Export': if (track_flag) then $
       graff_msg, pdefs.ids.hlptxt, 'Send data from current DS to ' + $
       '$MAIN$ level' $
-    else graff_to_tlv, pdefs
+    else begin
+       graff_to_tlv, pdefs
+       ichange = 0b
+       idraw_flag = 0
+    endelse
     
     'Next':if (track_flag) then $
       graff_msg, pdefs.ids.hlptxt, 'Make next data set current' $

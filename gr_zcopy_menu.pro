@@ -67,7 +67,7 @@ if (data[pdefs.cset].type ne 9) then begin
 endif
 
 if data[pdefs.cset].type eq 9 then begin
-    ll = where(locs ne pdefs.cset, nnc)
+    ll = where(funlocs ne pdefs.cset, nnc)
     if nnc eq 0 then begin
         ans = dialog_message(['There are no other 2-D datasets', $
                               'aborting.'], $

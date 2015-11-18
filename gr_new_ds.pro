@@ -1,4 +1,4 @@
-function gr_new_ds, pdefs
+function gr_new_ds, pdefs, nds
 
 ;+
 ; GR_NEW_DS
@@ -15,25 +15,31 @@ function gr_new_ds, pdefs
 ;
 ; History:
 ; 	Original: 10/1/12; SJT
+; 	Add min & max values: 4/3/15; SJT
 ;-
 
-ds = {graff_data}
+  if n_params() eq 2 then $
+     ds = replicate({graff_data}, nds) $
+  else ds = {graff_data}
 
-ds.Pline = 1
-ds.Symsize =  1.
-ds.Colour =   1
-ds.Thick =    1.
-ds.Zopts.N_levels = 6
-ds.Zopts.N_cols =  1
-ds.Zopts.Colours = ptr_new(1)
-ds.Zopts.N_sty = 1
-ds.Zopts.style = ptr_new(0)
-ds.Zopts.N_thick =  1
-ds.Zopts.Thick = ptr_new(1.)
-ds.Zopts.Pxsize =  0.5
+  ds[*].Pline = 1
+  ds[*].Symsize =  1.
+  ds[*].Colour =   1
+  ds[*].Thick =    1.
+  ds[*].Zopts.N_levels = 6
+  ds[*].Zopts.N_cols =  1
+  ds[*].Zopts.Colours = ptr_new(1)
+  ds[*].Zopts.N_sty = 1
+  ds[*].Zopts.style = ptr_new(0)
+  ds[*].Zopts.N_thick =  1
+  ds[*].Zopts.Thick = ptr_new(1.)
+  ds[*].Zopts.Pxsize =  0.5
 
-ds.Medit = pdefs.opts.mouse
+  ds[*].Medit = pdefs.opts.mouse
 
-return, ds
+  ds[*].max_val = !values.d_nan
+  ds[*].min_val = !values.d_nan
+
+  return, ds
 
 end

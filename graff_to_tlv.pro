@@ -5,7 +5,7 @@ pro gr_tlv_event, event
 
   case mnu of
      "DONT": begin
-        widget_destroy, event.top
+        widget_control, /destroy, event.top
         return
      end
 

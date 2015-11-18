@@ -25,6 +25,7 @@ pro Gr_2df_plot, pdefs, i, csiz, grey_ps = grey_ps
 ;	Add support for a second Y-scale: 22/12/11; SJT
 ;	Contour levels etc. become pointers: 11/1/12; SJT
 ;	Handle hidden datasets: 26/1/12; SJT
+;	Add "r" as well as x & y: 7/1/15; SJT
 ;-
 
   data = *pdefs.data
@@ -81,13 +82,16 @@ pro Gr_2df_plot, pdefs, i, csiz, grey_ps = grey_ps
   x = x(*, intarr(data[i].ndata2))
   y = y(intarr(data[i].ndata), *)
 
+  r = sqrt(x^2+y^2)
+
   z = 0.                        ; Need to define z before we use it.
 
   iexe = execute('z = '+xydata.funct)
   s = size(z)
 
   if (s(0) ne 2) then graff_msg, pdefs.ids.message, $
-                                 "Function:"+xydata.funct+" does not return a 2-D array" $
+                                 "Function:"+xydata.funct+ $
+                                 " does not return a 2-D array" $
   else if (data[i].zopts.format eq 0) then begin
      if (data[i].zopts.set_levels) then begin
         levels = *(data[i].zopts.levels) 
@@ -139,7 +143,7 @@ pro Gr_2df_plot, pdefs, i, csiz, grey_ps = grey_ps
                                 pdefs.transient.colmin+127 < !D.n_colors-1]
      gr_display_img, z, xx, yy, range = data[i].zopts.range, $
                      colour_range = colour_range, pixel_size = $ $
-                     data[i].zopts.pxsize, logarithmic = $
+                     data[i].zopts.pxsize, scale_mode = $
                      data[i].zopts.ilog, inverted = $
                      data[i].zopts.invert, missing = data[i].zopts.missing
      if cflag then graff_colours, pdefs
