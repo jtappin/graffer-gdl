@@ -12,83 +12,123 @@ pro gr_tlv_event, event
      'DO': begin
 
         if state.type eq 9 then begin
-           (scope_varfetch(state.names.z, level = 1, /enter)) = $
+           if state.names.z ne '' then $
+              (scope_varfetch(state.names.z, level = 1, /enter)) = $
               *(state.xydata.z) 
-           (scope_varfetch(state.names.x, level = 1, /enter)) = $
+           if state.names.x ne '' then $
+              (scope_varfetch(state.names.x, level = 1, /enter)) = $
               *(state.xydata.x)
-           (scope_varfetch(state.names.y, level = 1, /enter)) = $
+           if state.names.y ne '' then $
+              (scope_varfetch(state.names.y, level = 1, /enter)) = $
               *(state.xydata.y) 
 
         endif else begin
 
-           (scope_varfetch(state.names.x, level = 1, /enter)) = $
+           if state.names.x ne '' then $
+              (scope_varfetch(state.names.x, level = 1, /enter)) = $
               reform(state.xydata[0, *])
-           (scope_varfetch(state.names.y, level = 1, /enter)) = $
+           if state.names.y ne '' then $
+              (scope_varfetch(state.names.y, level = 1, /enter)) = $
               reform(state.xydata[1, *])
 
            case state.type of
-              1: (scope_varfetch(state.names.y_err, level = 1, /enter)) = $
+              1: if state.names.y_err ne '' then $
+                 (scope_varfetch(state.names.y_err, level = 1, $
+                                 /enter)) = $
                  reform(state.xydata[2, *])
-              3: (scope_varfetch(state.names.x_err, level = 1, /enter)) = $
+              3: if state.names.x_err ne '' then $
+                 (scope_varfetch(state.names.x_err, level = 1, $
+                                 /enter)) = $
                  reform(state.xydata[2, *])
               2: begin
-                 (scope_varfetch(state.names.y_err_b[0], level = 1, $
-                                 /enter)) = $
+                 if state.names.y_err_b[0] ne '' then $
+                    (scope_varfetch(state.names.y_err_b[0], $
+                                    level = 1, /enter)) = $
                     reform(state.xydata[2, *])
-                 (scope_varfetch(state.names.y_err_b[1], level = 1, $
-                                 /enter)) = $
+                 if state.names.y_err_b[1] ne '' then $
+                    (scope_varfetch(state.names.y_err_b[1], $
+                                    level = 1, $
+                                    /enter)) = $
                     reform(state.xydata[3, *])
               end
               4: begin
-                 (scope_varfetch(state.names.x_err_b[0], level = 1, $
-                                 /enter)) = $
+                 if state.names.x_err_b[0] ne '' then $
+                    (scope_varfetch(state.names.x_err_b[0], $
+                                    level = 1, $
+                                    /enter)) = $
                     reform(state.xydata[2, *])
-                 (scope_varfetch(state.names.x_err_b[1], level = 1, $
-                                 /enter)) = $
+                 if state.names.x_err_b[1] ne '' then $
+                    (scope_varfetch(state.names.x_err_b[1], $
+                                    level = 1, $
+                                    /enter)) = $
                     reform(state.xydata[3, *])
               end
               5: begin
-                 (scope_varfetch(state.names.x_err, level = 1, /enter)) = $
+                 if state.names.x_err_ ne '' then $
+                    (scope_varfetch(state.names.x_err, $
+                                    level = 1, /enter)) = $
                     reform(state.xydata[2, *])
-                 (scope_varfetch(state.names.y_err, level = 1, /enter)) = $
+                 if state.names.y_err ne '' then $
+                    (scope_varfetch(state.names.y_err, $
+                                    level = 1, /enter)) = $
                     reform(state.xydata[3, *])
               end
 
               6: begin
-                 (scope_varfetch(state.names.x_err, level = 1, /enter)) = $
+                 if state.names.x_err ne '' then $
+                    (scope_varfetch(state.names.x_err, $
+                                    level = 1, /enter)) = $
                     reform(state.xydata[2, *])
-                 (scope_varfetch(state.names.y_err_b[0], level = 1, $
-                                 /enter)) = $
+                 if state.names.y_err_b[0] ne '' then $
+                    (scope_varfetch(state.names.y_err_b[0], $
+                                    level = 1, $
+                                    /enter)) = $
                     reform(state.xydata[3, *])
-                 (scope_varfetch(state.names.y_err_b[1], level = 1, $
-                                 /enter)) = $
+                 if state.names.y_err_b[1] ne '' then $
+                    (scope_varfetch(state.names.y_err_b[1], $
+                                    level = 1, $
+                                    /enter)) = $
                     reform(state.xydata[4, *])
               end
 
               7: begin
-                 (scope_varfetch(state.names.x_err_b[0], level = 1, $
-                                 /enter)) = $
+                 if state.names.x_err_b[0] ne '' then $
+                    (scope_varfetch(state.names.x_err_b[0], $
+                                    level = 1, $
+                                    /enter)) = $
                     reform(state.xydata[2, *])
-                 (scope_varfetch(state.names.x_err_b[1], level = 1, $
-                                 /enter)) = $
+                 if state.names.x_err_b[1] ne '' then $
+                    (scope_varfetch(state.names.x_err_b[1], $
+                                    level = 1, $
+                                    /enter)) = $
                     reform(state.xydata[3, *])
-                 (scope_varfetch(state.names.y_err, level = 1, /enter)) = $
+                 if state.names.y_err ne '' then $
+                    (scope_varfetch(state.names.y_err, $
+                                    level = 1, /enter)) = $
                     reform(state.xydata[4, *])
               end
 
               
               8: begin
-                 (scope_varfetch(state.names.x_err_b[0], level = 1, $
-                                 /enter)) = $
+                 if state.names.x_err_b[0] ne '' then $
+                    (scope_varfetch(state.names.x_err_b[0], $
+                                    level = 1, $
+                                    /enter)) = $
                     reform(state.xydata[2, *])
-                 (scope_varfetch(state.names.x_err_b[1], level = 1, $
-                                 /enter)) = $
+                 if state.names.x_err_b[1] ne '' then $
+                    (scope_varfetch(state.names.x_err_b[1], $
+                                    level = 1, $
+                                    /enter)) = $
                     reform(state.xydata[3, *])
-                 (scope_varfetch(state.names.y_err_b[0], level = 1, $
-                                 /enter)) = $
+                 if state.names.y_err_b[0] ne '' then $
+                    (scope_varfetch(state.names.y_err_b[0], $
+                                    level = 1, $
+                                    /enter)) = $
                     reform(state.xydata[4, *])
-                 (scope_varfetch(state.names.y_err_b[1], level = 1, $
-                                 /enter)) = $
+                 if state.names.y_err_b[1] ne '' then $
+                    (scope_varfetch(state.names.y_err_b[1], $
+                                    level = 1, $
+                                    /enter)) = $
                     reform(state.xydata[5, *])
               end
               else:
@@ -128,6 +168,8 @@ pro graff_to_tlv, pdefs
 ; History:
 ;	Original: 3/2/12; SJT
 ;	Make a gui to change names: 12/7/12; SJT
+;	Make defaults include DS number, and allow non-saving:
+;	2/12/15; SJT
 ;-
 
   data = (*pdefs.data)[pdefs.cset]
@@ -135,20 +177,20 @@ pro graff_to_tlv, pdefs
   if not ptr_valid(data.xydata) then return
   if data.type lt 0 then return ; Not applicable to functions.
 
+  sfx = string(pdefs.cset+1, format = "('_',i0)")
 
   base = widget_base(title = "Export dataset", $
                      /column, $
                      /modal, $
                      group = pdefs.ids.graffer)
-
   names = {gr_export_names, $
-           x: "GR_X", $
-           y: "GR_Y", $
-           z: "GR_Z", $
-           x_err: "GR_X_ERR", $
-           x_err_b: ["GR_X_ERR_L", "GR_X_ERR_U"], $
-           y_err: "GR_Y_ERR", $
-           y_err_b: ["GR_Y_ERR_L", "GR_Y_ERR_U"]}
+           x: "GR_X"+sfx, $
+           y: "GR_Y"+sfx, $
+           z: "GR_Z"+sfx, $
+           x_err: "GR_X_ERR"+sfx, $
+           x_err_b: ["GR_X_ERR_L"+sfx, "GR_X_ERR_U"+sfx], $
+           y_err: "GR_Y_ERR"+sfx, $
+           y_err_b: ["GR_Y_ERR_L"+sfx, "GR_Y_ERR_U"+sfx]}
   
   if data.type eq 9 then begin
      junk = graff_enter(base, $

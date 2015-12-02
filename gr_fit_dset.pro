@@ -54,7 +54,9 @@ case (but) of
     'FITN': begin
         uv.type(2) = event.index
         widget_control, uv.degid, sensitive = (event.index eq 0)
-    end
+     end
+    'NAN': uv.nan = event.select
+       
         
     'DONT': iexit = -1
     'DO': begin
@@ -197,6 +199,14 @@ npts = graff_enter(jb, /int, value = 25, /no_event, xsize = 3, $
 part = graff_enter(jb, /text, value = '', /no_event, xsize = 15, label $
                    = 'Slice:', /capture)
 
+jbb = widget_base(jb, $
+                  /nonexclusive)
+
+junk = widget_button(jbb, $
+                     value = "Ignore NaNs?", $
+                     uvalue = "NAN")
+widget_control, junk, /set_button
+
 jb = widget_base(base, /column, /align_center, /base_align_center)
 resid = graff_enter(jb, /text, value = '', /no_event, /display, $
                     xsize = 40, label = 'Fit', /column)
@@ -220,6 +230,7 @@ widget_control, base, set_uvalue = {chosen: 0, $
                                     Part:   part, $
                                     Ftype:  ftp, $
                                     Np:     25, $
+                                    nan:    1b, $
                                     Slice:  '', $
                                     Type:   [fittd, 0, 0, 1]}
 
@@ -239,7 +250,8 @@ repeat begin
     if (ev.exit gt 0) then begin
         widget_control, base, get_uvalue = uv
         fitstr = gr_fit_funct(pdefs, uv.type, uv.np, uv.slice, $
-                              arexyd(uv.chosen), pr, resid)
+                              arexyd(uv.chosen), pr, resid, $
+                              nan = uv.nan)
         if (fitstr eq '') then begin
             ev.exit = 0
         endif else begin
