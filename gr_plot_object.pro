@@ -42,6 +42,7 @@ pro Gr_plot_object, pdefs, no_null = no_null, charsize = charsize, $
 ;	Turn handles into pointers: 28/6/05; SJT
 ;	Add support for a second Y-scale: 22/12/11; SJT
 ;	Add "current only" options: 26/1/12; SJT
+;	Handle redrawn axes here: 20/1/16; SJT
 ;-
 
   if (pdefs.xtype and min(pdefs.xrange) le 0) then begin
@@ -114,6 +115,7 @@ pro Gr_plot_object, pdefs, no_null = no_null, charsize = charsize, $
 
   plot2 = keyword_set(plot_all) or (not pdefs.opts.s2d)
 
+  reaxis = 0b
   for i = 0, pdefs.nsets-1 do begin
      if pdefs.transient.current_only &&  (i ne pdefs.cset || $
                                           pdefs.transient.mode eq 1) $
@@ -127,16 +129,23 @@ pro Gr_plot_object, pdefs, no_null = no_null, charsize = charsize, $
         
         if (type(i) eq -4) then begin
            if (plot2) then $
-              gr_2df_plot, pdefs, i, csiz, grey_ps = grey_ps ; 2 D function
+              gr_2df_plot, pdefs, i, csiz, $
+                           grey_ps = grey_ps, shaded = reaxis ; 2 D function
         endif else if (type(i) lt 0) then begin
            gr_1df_plot, pdefs, i, csiz          ; Function, data is struct
         endif else if (type(i) eq 9) then begin ; 2 D data
            if (plot2) then $
-              gr_2dd_plot, pdefs, i, csiz, grey_ps = grey_ps
+              gr_2dd_plot, pdefs, i, csiz, grey_ps = grey_ps, $
+                           shaded = reaxis
         endif else $                   ; Observations, xydata is
            gr_1dd_plot, pdefs, i, csiz ; floating point
      endif
   endfor
+
+  if reaxis then begin
+     gr_pl_axes, pdefs, csiz, /overlay
+     if pdefs.y_right then gr_pl_axes, pdefs, csiz, /overlay, /secondary
+  endif
 
 ; Key or text strings (if plotted in data coordinates) always go by
 ; the primary Y-axis

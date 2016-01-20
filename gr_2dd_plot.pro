@@ -1,4 +1,4 @@
-pro Gr_2dd_plot, pdefs, i, csiz, grey_ps = grey_ps
+pro Gr_2dd_plot, pdefs, i, csiz, grey_ps = grey_ps, shaded = shaded
 
 ;+
 ; GR_2DD_PLOT
@@ -13,8 +13,10 @@ pro Gr_2dd_plot, pdefs, i, csiz, grey_ps = grey_ps
 ;	csiz	float	input	Charsize scaling (hardcopy only).
 ;
 ; Keyword:
-;	grey_ps		input	If set & non-zero, then the plot is to
+;	/grey_ps	input	If set & non-zero, then the plot is to
 ;				a PS device without the COLOUR option.
+;	shaded	byte	output	Returns 1 if filled contours or an
+;				image are drawn
 ;
 ; History:
 ;	Original: 10/12/96; SJT
@@ -25,6 +27,7 @@ pro Gr_2dd_plot, pdefs, i, csiz, grey_ps = grey_ps
 ;	Add support for a second Y-scale: 22/12/11; SJT
 ;	Contour levels etc. become pointers: 11/1/12; SJT
 ;	Handle hidden datasets: 26/1/12; SJT
+;	Send back flag if axes need redrawing: 20/1/16; SJT
 ;-
 
   data = *pdefs.data
@@ -78,7 +81,7 @@ pro Gr_2dd_plot, pdefs, i, csiz, grey_ps = grey_ps
               fill = data[i].zopts.fill eq 1b, downhill = $
               data[i].zopts.fill eq 2b, c_labels = labels, c_charsize $
               = ccsize
-     
+     if data[i].zopts.fill eq 1b then shaded = 1b ; Don't clear it.
   endif else if (data[i].zopts.format eq 1) then begin
      cflag = 0b
      if (keyword_set(grey_ps)) then colour_range = [0, 255] $
@@ -96,8 +99,7 @@ pro Gr_2dd_plot, pdefs, i, csiz, grey_ps = grey_ps
                      data[i].zopts.ilog, inverted = $
                      data[i].zopts.invert, missing = data[i].zopts.missing
      if cflag then graff_colours, pdefs
-     gr_pl_axes, pdefs, csiz, /overlay
-     if pdefs.y_right then gr_pl_axes, pdefs, csiz, /overlay, /secondary
+     shaded = 1b
   endif
 
 end
