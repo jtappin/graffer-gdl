@@ -1,26 +1,26 @@
-pro graff_update, file, idx, name = name, polar = polar, rescale = $
-                  rescale, style = style, psym = psym, join = $
-                  join, symsize = symsize, colour = colour, thick = $
-                  thick, description = description, sort = sort, ascii $
-                  = ascii, noclip = $
-                  noclip, $
-                  mouse = mouse, z_format = z_format, z_nlevels = $
-                  z_nlevels, z_levels = z_levels, z_colours = $
-                  z_colours, $
-                  z_style = z_style, z_thick = z_thick, z_range = $
-                  z_range, z_label = z_label, z_pxsize = z_pxsize, $
-                  z_invert = z_invert, z_fill = z_fill, z_log = z_log, $
-                  $
-                  z_ctable = z_ctable, y_axis = y_axis, $
-                  make_current = make_current, x_values = x_values, $
-                  y_values = y_values, z_values = z_values, funcx = $
-                  funcx, funcy = funcy, funcz = funcz, xy_file = $ 
-                  xy_file, z_file = z_file, errors = errors, errtype = $
-                  $
-                  errtype, neval = neval, frange = frange, $
-                  x_func = x_func, y_func = y_func, z_func = $
-                  z_func, z_missing = z_missing, z_charsize = $
-                  z_charsize, status = status, z_mode = z_mode
+pro graff_update, file, idx, name = name, polar = polar, $
+                  rescale = rescale, style = style, psym = psym, $
+                  join = join, symsize = symsize, colour = colour, $
+                  thick = thick, description = description, $
+                  sort = sort, ascii = ascii, noclip = noclip, $
+                  mouse = mouse, z_format = z_format, $
+                  z_nlevels = z_nlevels, z_levels = z_levels, $
+                  z_colours = z_colours, z_style = z_style, $
+                  z_thick = z_thick, z_range = z_range, $
+                  z_label = z_label, z_pxsize = z_pxsize, $
+                  z_invert = z_invert, z_fill = z_fill, $
+                  z_log = z_log, z_ctable = z_ctable, $
+                  y_axis = y_axis, make_current = make_current, $
+                  x_values = x_values, y_values = y_values, $
+                  z_values = z_values, funcx = funcx, funcy = funcy, $
+                  funcz = funcz, xy_file = xy_file, z_file = z_file, $
+                  errors = errors, errtype = errtype, neval = neval, $
+                  frange = frange, x_func = x_func, y_func = y_func, $
+                  z_func = z_func, z_missing = z_missing, $
+                  z_charsize = z_charsize, status = status, $
+                  z_mode = z_mode, x_scale = x_scale, $
+                  y_scale = y_scale, x_shift = x_shift, $
+                  y_shift = y_shift
 
 ;+
 ; GRAFF_UPDATE
@@ -28,25 +28,29 @@ pro graff_update, file, idx, name = name, polar = polar, rescale = $
 ;	dataset.
 ;
 ; Usage:
-;	graff_update, file, idx, name=name, polar = polar, rescale = rescale, $
-;                   style = style, psym = psym, join = $
-;                   join, symsize = symsize, colour = colour, thick = $
-;                   thick, description = description, sort = sort, $
-;                   ascii = ascii, noclip = $
-;                   noclip, $
-;                   mouse = mouse, z_format = z_format, z_nlevels = $
-;                   z_nlevels, z_levels = z_levels, z_colours = z_colours, $
-;                   z_style = z_style, z_thick = z_thick, z_range = $
-;                   z_range, z_label = z_label, z_pxsize = z_pxsize, $
-;                   z_invert = z_invert, z_fill = z_fill, z_log = z_log, $
-;                   z_ctable = z_ctable, y_axis=y_axis, $
-;                   make_current = make_current, x_values = x_values, $
-;                   y_values = y_values, z_values = z_values, x_func = $
-;                   x_func, y_func = y_func, z_func = z_func, xy_file = $
-;                   xy_file, z_file = z_file, errors = errors, $
-;                   errtype=errtype, neval = neval, frange = frange, $
-;                   z_missing=z_missing,  z_charsize = $
-;                   z_charsize, status = status
+;	graff_update, file, idx, name = name, polar = polar, $
+;                  rescale = rescale, style = style, psym = psym, $
+;                  join = join, symsize = symsize, colour = colour, $
+;                  thick = thick, description = description, $
+;                  sort = sort, ascii = ascii, noclip = noclip, $
+;                  mouse = mouse, z_format = z_format, $
+;                  z_nlevels = z_nlevels, z_levels = z_levels, $
+;                  z_colours = z_colours, z_style = z_style, $
+;                  z_thick = z_thick, z_range = z_range, $
+;                  z_label = z_label, z_pxsize = z_pxsize, $
+;                  z_invert = z_invert, z_fill = z_fill, $
+;                  z_log = z_log, z_ctable = z_ctable, $
+;                  y_axis = y_axis, make_current = make_current, $
+;                  x_values = x_values, y_values = y_values, $
+;                  z_values = z_values, xy_file = xy_file, $
+;                  z_file = z_file, $
+;                  errors = errors, errtype = errtype, neval = neval, $
+;                  frange = frange, x_func = x_func, y_func = y_func, $
+;                  z_func = z_func, z_missing = z_missing, $
+;                  z_charsize = z_charsize, status = status, $
+;                  z_mode = z_mode, x_scale = x_scale, $
+;                  y_scale = y_scale, x_shift = x_shift, $
+;                  y_shift = y_shift
 ;
 ; Arguments:
 ;	file	string	input	The graffer file to modify.
@@ -128,6 +132,10 @@ pro graff_update, file, idx, name = name, polar = polar, rescale = $
 ;	frange  float	input	The range of x, y or t over which to
 ;				plot a function
 ;	z_missing float	input	A missing value to use for warped images.
+;	x_scale	float	input	Scale X values by this factor
+;	x_shift	float	input	Shift X values by this factor
+;	y_scale	float	input	Scale Y values by this factor
+;	y_shift	float	input	Shift Y values by this factor
 ;	status	int	output	A named variable to be set to 0 on
 ;				failure or 1 on success
 ;
@@ -139,6 +147,8 @@ pro graff_update, file, idx, name = name, polar = polar, rescale = $
 ;	If name is given then (1) If there are 2 datasets of the same
 ;	name, the first will be modified, (2) if the name is not found,
 ;	then the program exits without updating.
+;	If shift & scale are given for the same axis, scale is applied
+;	first.
 ;
 ; History:
 ;	Original (after graff_add): 20/12/11; SJT
@@ -148,6 +158,7 @@ pro graff_update, file, idx, name = name, polar = polar, rescale = $
 ;	Correct interpretation of FUNCX & FUNCY: 2/2/12; SJT
 ;	Deprecate func[xyz], replace with [xyz]_func: 3/2/12; SJT
 ;	Add STATUS keyword: 24/2/12; SJT
+;	Add X & Y shifts and scale: 26/1/16; SJT
 ;-
 
   on_error, 2                   ; Return to caller on error
@@ -157,8 +168,9 @@ pro graff_update, file, idx, name = name, polar = polar, rescale = $
   gr_state, /save
 
   if keyword_set(funcx) then begin 
-     if keyword_set(x_func) then message, /continue, $
-                                          "Both X_FUNC and the obsolete FUNCX are set, ignoring FUNCX" $
+     if keyword_set(x_func) then $
+        message, /continue, $
+                 "Both X_FUNC and the obsolete FUNCX are set, ignoring FUNCX" $
      else begin
         message, /continue, "FUNCX is obsolete, please use X_FUNC " + $
                  "instead"
@@ -166,8 +178,9 @@ pro graff_update, file, idx, name = name, polar = polar, rescale = $
      endelse
   endif
   if keyword_set(funcy) then begin 
-     if keyword_set(y_func) then message, /continue, $
-                                          "Both Y_FUNC and the obsolete FUNCY are set, ignoring FUNCY" $
+     if keyword_set(y_func) then $
+        message, /continue, $
+                 "Both Y_FUNC and the obsolete FUNCY are set, ignoring FUNCY" $
      else begin
         message, /continue, "FUNCY is obsolete, please use Y_FUNC " + $
                  "instead"
@@ -175,8 +188,9 @@ pro graff_update, file, idx, name = name, polar = polar, rescale = $
      endelse
   endif
   if keyword_set(funcz) then begin 
-     if keyword_set(z_func) then message, /continue, $
-                                          "Both Z_FUNC and the obsolete FUNCZ are set, ignoring FUNCZ" $
+     if keyword_set(z_func) then $
+        message, /continue, $
+                 "Both Z_FUNC and the obsolete FUNCZ are set, ignoring FUNCZ" $
      else begin
         message, /continue, "FUNCZ is obsolete, please use Z_FUNC " + $
                  "instead"
@@ -238,6 +252,8 @@ pro graff_update, file, idx, name = name, polar = polar, rescale = $
   if (n_elements(noclip)  ne 0) then (*pdefs.data)[index].noclip = noclip
   if (n_elements(mouse) ne 0) then (*pdefs.data)[index].medit = mouse
   if (n_elements(y_axis) ne 0) then (*pdefs.data)[pdefs.cset].y_axis = $
+     $
+     $
      y_axis
 
   if (keyword_set(rescale)) then begin
@@ -308,7 +324,18 @@ pro graff_update, file, idx, name = name, polar = polar, rescale = $
      (*pdefs.data)[index].zopts.ilog = z_log
      print, "Z_LOG is now deprecated, use Z_MODE"
   endif
+
 ; Data updates.
+
+  if n_elements(x_shift) ne 0 || n_elements(y_shift) ne 0 || $
+     n_elements(x_scale) ne 0 || n_elements(y_scale) ne 0 then begin
+     mscale = [1.d0, 0.d0, 1.d0, 0.d0]
+     
+     if n_elements(x_scale) ne 0 then mscale[0] = x_scale
+     if n_elements(x_shift) ne 0 then mscale[1] = x_shift
+     if n_elements(y_scale) ne 0 then mscale[2] = y_scale
+     if n_elements(y_shift) ne 0 then mscale[3] = y_shift
+  endif
 
   type = (*pdefs.data)[index].type
   case 1 of
@@ -372,9 +399,43 @@ pro graff_update, file, idx, name = name, polar = polar, rescale = $
            (*pdefs.data)[index].xydata = ptr_new(xydata)
            (*pdefs.data)[index].type = ntype
            (*pdefs.data)[index].ndata = ny
+        endif else if n_elements(mscale) eq 4 then begin
+
+           xydata = *(*pdefs.data)[index].xydata
+
+           xydata[0, *] = xydata[0, *] * mscale[0] + mscale[1]
+           xydata[1, *] = xydata[1, *] * mscale[2] + mscale[3]
+           case type of
+              0:
+              1: xydata[2, *] = xydata[2, *]*mscale[2]     ; Y
+              2: xydata[2:3, *] = xydata[2:3, *]*mscale[2] ; YY
+              
+              3: xydata[2, *] = xydata[2, *]*mscale[0]     ; X
+              4: xydata[2:3, *] = xydata[2:3, *]*mscale[0] ; XX
+              
+              5: begin          ; XY
+                 xydata[2, *] = xydata[2, *]*mscale[0]
+                 xydata[3, *] = xydata[3, *]*mscale[2]
+              end
+              
+              6: begin          ; XYY
+                 xydata[2, *] = xydata[2, *]*mscale[0]
+                 xydata[3:4, *] = xydata[3:4, *]*mscale[2]
+              end
+              7: begin          ; XXY
+                 xydata[2:3, *] = xydata[2:3, *]*mscale[0]
+                 xydata[4, *] = xydata[4, *]*mscale[2]
+              end
+              
+              8: begin          ; XXYY
+                 xydata[2:3, *] = xydata[2:3, *]*mscale[0]
+                 xydata[4:5, *] = xydata[4:5, *]*mscale[2]
+              end
+           endcase
+           *(*pdefs.data)[index].xydata = xydata
+
         endif
      end
-
      type eq 9: begin           ; 2-D dataset
         if keyword_set(x_func) or keyword_set(y_func) or $
            keyword_set(z_func) then $
@@ -432,10 +493,15 @@ pro graff_update, file, idx, name = name, polar = polar, rescale = $
                      (*pdefs.data)[index].xydata
 
            (*pdefs.data)[index].xydata = ptr_new(xydata)
-        endif else begin
-           if keyword_set(x_values) or keyword_set(y_values) then $
-              message, "Cannot convert s 2-D dataset to 1-D"
-        endelse
+        endif else if keyword_set(x_values) || keyword_set(y_values) then $
+           message, "Cannot convert s 2-D dataset to 1-D" $
+        else if n_elements(mscale) eq 4 then begin
+           xydata = *(*pdefs.data)[index].xydata
+           *xydata.x = *xydata.x*mscale[0] + mscale[1]
+           *xydata.y = *xydata.y*mscale[2] + mscale[3]
+
+           *(*pdefs.data)[index].xydata = xydata
+        endif
      end
 
      type eq -4: begin          ; 2-D function

@@ -112,7 +112,7 @@ pro Gr_bin_save, pdefs, auto = auto
   graff_put_rec, ilu, 'RFM', pdefs.ysty_r.format
   graff_put_rec, ilu, 'RMN', pdefs.ysty_r.minor
   if ptr_valid(pdefs.ysty_r.values) then $
-     graff_put_rec.ilu, 'RVL', *pdefs.ysty_r.values
+     graff_put_rec, ilu, 'RVL', *pdefs.ysty_r.values
   graff_put_rec, ilu, 'RT ', pdefs.ytitle_r
 
 ; Colour table for displayed Z data

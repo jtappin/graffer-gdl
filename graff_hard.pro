@@ -134,8 +134,11 @@ if h.eps then begin
       spawn, h.viewer[0]+' '+h.name+' '+h.viewer[1]
    graff_msg, pdefs.ids.message, 'Output file is: '+h.name
 endif else begin
-   spawn, h.action[0]+' '+h.name+' '+h.action[1], cmdout
-   graff_msg, pdefs.ids.message, cmdout
+   if h.action[0] ne '' then begin
+      spawn, h.action[0]+' '+h.name+' '+h.action[1], cmdout
+      graff_msg, pdefs.ids.message, cmdout
+   endif else $
+      graff_msg, pdefs.ids.message, 'Output file is: '+h.name
 endelse
 
 !P.font = -1
