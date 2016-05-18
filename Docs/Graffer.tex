@@ -26,7 +26,7 @@
  \setlength{\evensidemargin}{0mm}
 
 \pagestyle{myheadings}
-\markboth{GRAFFER}{Version 4.01}
+\markboth{GRAFFER}{Version 4.08}
 
 %\usepackage{babel}
 \makeatother
@@ -35,13 +35,13 @@
 
 \title{\includegraphics[width=0.80\textwidth]{logo} \\
   A Flexible Electronic Graph Paper\\
-  Version 4.05\\
+  Version 4.08\\
   User's Guide}
 
 \author{\textsf{\textbf{\Large James Tappin}}\\
-  \texttt{\textbf{\Large jtappin@nso.edu}}}
+  \texttt{\textbf{\Large james.tappin@stfc.ac.uk}}}
 
-\date{\textsf{\textbf{\large August 2012}}}
+\date{\textsf{\textbf{\large May 2016}}}
 
 \maketitle
 
@@ -313,6 +313,14 @@ Version 3.09 adds support for a secondary Y-axis.
 \item Allow updating of only some variables in the get from top-level
   variables tools (by specifying a dot (.) as the name of any unchanged
   component).
+\end{itemize}
+
+\subsection{Version 4.08}
+\label{sec:v408}
+
+\begin{itemize}
+\item Major reorganization of colour handling. GRAFFER now uses
+  decomposed colours. 
 \end{itemize}
 
 \section{Getting Started}
@@ -1139,7 +1147,9 @@ observational data.
   as an RGB triple. There is a difference between \texttt{omit} and
   \texttt{white}: in the first case, the trace is simple not drawn at
   all; in the second, it is drawn in the background colour which will
-  overwrite earlier traces and also take time.
+  overwrite earlier traces and also take time. If ``Custom'' is
+  selected, then a pop-up menu allows you to define a colour using
+  sliders or entry boxes.
 \item [Coordinates:]The pull down allows you to select one of three
   coordinate systems:
 
@@ -1669,7 +1679,8 @@ accomplished via the same text input pop-up (\textsc{\autoref{text
 \item [Colour:]The colour of the text, the pulldown has the same
   colours as for plot traces, except that there is no option to omit
   the text entirely. In the figure the ``alternate'' colour pixmap
-  selector is enabled.
+  selector is enabled. Custom colours can be defined in the same way
+  as for plots.
 \item [Thickness:]Enter a real value to specify the line thickness
   to be used for the character drawing. This should be used with
   caution, but the results in hard copy are usually better than the
@@ -1908,9 +1919,6 @@ of options, via a pop-up dialogue (\textsc{\autoref{fig:options}}).
   display of contour and image data to be suppressed on slow machines).
 \item[Default mouse editing] Controls whether mouse editing is allow on
   new datasets.
-\item[Colour selector] Whether the colour selector should be text-based
-  or show samples. N.B. This is only useful with the ``Save'' option as
-  it cannot be changed once GRAFFER has been started.
 \item[Autosave interval] Set the number of seconds between automatic
   saves of the GRAFFER structure.
 \item[PDF Viewer] Select the program to use to view the PDF help files.

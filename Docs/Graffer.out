@@ -1,99 +1,100 @@
-\BOOKMARK [1][-]{section.1}{Introduction}{}
-\BOOKMARK [2][-]{subsection.1.1}{What is it?}{section.1}
-\BOOKMARK [2][-]{subsection.1.2}{Why is it?}{section.1}
-\BOOKMARK [2][-]{subsection.1.3}{Requirements}{section.1}
-\BOOKMARK [2][-]{subsection.1.4}{Copyright etc.}{section.1}
-\BOOKMARK [1][-]{section.2}{Main features}{}
-\BOOKMARK [2][-]{subsection.2.1}{Version 2.1}{section.2}
-\BOOKMARK [2][-]{subsection.2.2}{Version 3.0}{section.2}
-\BOOKMARK [2][-]{subsection.2.3}{Version 3.04}{section.2}
-\BOOKMARK [2][-]{subsection.2.4}{Version 3.08}{section.2}
-\BOOKMARK [2][-]{subsection.2.5}{Version 3.09}{section.2}
-\BOOKMARK [2][-]{subsection.2.6}{Version 4.00}{section.2}
-\BOOKMARK [2][-]{subsection.2.7}{Version 4.01}{section.2}
-\BOOKMARK [2][-]{subsection.2.8}{Version 4.02}{section.2}
-\BOOKMARK [2][-]{subsection.2.9}{Version 4.02a}{section.2}
-\BOOKMARK [2][-]{subsection.2.10}{ Version 4.03}{section.2}
-\BOOKMARK [2][-]{subsection.2.11}{Version 4.04}{section.2}
-\BOOKMARK [2][-]{subsection.2.12}{Version 4.05}{section.2}
-\BOOKMARK [1][-]{section.3}{Getting Started}{}
-\BOOKMARK [2][-]{subsection.3.1}{Making sure it's there}{section.3}
-\BOOKMARK [2][-]{subsection.3.2}{Invoking it}{section.3}
-\BOOKMARK [3][-]{subsubsection.3.2.1}{Keywords}{subsection.3.2}
-\BOOKMARK [2][-]{subsection.3.3}{A quick tour of the main window}{section.3}
-\BOOKMARK [1][-]{section.4}{Datasets}{}
-\BOOKMARK [2][-]{subsection.4.1}{General comments}{section.4}
-\BOOKMARK [3][-]{subsubsection.4.1.1}{Observational data }{subsection.4.1}
-\BOOKMARK [3][-]{subsubsection.4.1.2}{Functions }{subsection.4.1}
-\BOOKMARK [2][-]{subsection.4.2}{Entering 1-D observational data}{section.4}
-\BOOKMARK [3][-]{subsubsection.4.2.1}{From a File}{subsection.4.2}
-\BOOKMARK [3][-]{subsubsection.4.2.2}{From IDL top-level variables }{subsection.4.2}
-\BOOKMARK [3][-]{subsubsection.4.2.3}{Via the data editor }{subsection.4.2}
-\BOOKMARK [3][-]{subsubsection.4.2.4}{With the mouse}{subsection.4.2}
-\BOOKMARK [3][-]{subsubsection.4.2.5}{A note on limits}{subsection.4.2}
-\BOOKMARK [3][-]{subsubsection.4.2.6}{Copying another dataset}{subsection.4.2}
-\BOOKMARK [2][-]{subsection.4.3}{Entering 2-D observational data}{section.4}
-\BOOKMARK [3][-]{subsubsection.4.3.1}{From top-level variables }{subsection.4.3}
-\BOOKMARK [3][-]{subsubsection.4.3.2}{From a file}{subsection.4.3}
-\BOOKMARK [3][-]{subsubsection.4.3.3}{Copying another dataset.}{subsection.4.3}
-\BOOKMARK [2][-]{subsection.4.4}{Entering functions}{section.4}
-\BOOKMARK [3][-]{subsubsection.4.4.1}{The Editors }{subsection.4.4}
-\BOOKMARK [3][-]{subsubsection.4.4.2}{Copying another function}{subsection.4.4}
-\BOOKMARK [3][-]{subsubsection.4.4.3}{Fit dataset }{subsection.4.4}
-\BOOKMARK [3][-]{subsubsection.4.4.4}{Read function from file}{subsection.4.4}
-\BOOKMARK [2][-]{subsection.4.5}{Dataset selection and manipulation}{section.4}
-\BOOKMARK [3][-]{subsubsection.4.5.1}{Selection}{subsection.4.5}
-\BOOKMARK [3][-]{subsubsection.4.5.2}{Manipulation}{subsection.4.5}
-\BOOKMARK [2][-]{subsection.4.6}{Display style}{section.4}
-\BOOKMARK [3][-]{subsubsection.4.6.1}{1-Dimensional data}{subsection.4.6}
-\BOOKMARK [3][-]{subsubsection.4.6.2}{2-Dimensional data}{subsection.4.6}
-\BOOKMARK [1][-]{section.5}{File-wide settings}{}
-\BOOKMARK [2][-]{subsection.5.1}{General settings}{section.5}
-\BOOKMARK [3][-]{subsubsection.5.1.1}{Plot annotation}{subsection.5.1}
-\BOOKMARK [3][-]{subsubsection.5.1.2}{General style}{subsection.5.1}
-\BOOKMARK [3][-]{subsubsection.5.1.3}{Geometry}{subsection.5.1}
-\BOOKMARK [3][-]{subsubsection.5.1.4}{Key or legend}{subsection.5.1}
-\BOOKMARK [2][-]{subsection.5.2}{Axis settings}{section.5}
-\BOOKMARK [1][-]{section.6}{Text}{}
-\BOOKMARK [1][-]{section.7}{Control}{}
-\BOOKMARK [2][-]{subsection.7.1}{Hard Copy}{section.7}
-\BOOKMARK [2][-]{subsection.7.2}{Saving and dumping}{section.7}
-\BOOKMARK [2][-]{subsection.7.3}{Opening a new file}{section.7}
-\BOOKMARK [2][-]{subsection.7.4}{Options...}{section.7}
-\BOOKMARK [2][-]{subsection.7.5}{Exit and Help}{section.7}
-\BOOKMARK [1][-]{section.8}{Accelerator Keys}{}
-\BOOKMARK [1][-]{section.9}{GRAFF\137ADD \(interface user programs to GRAFFER\)}{}
-\BOOKMARK [2][-]{subsection.9.1}{Interface}{section.9}
-\BOOKMARK [2][-]{subsection.9.2}{Arguments}{section.9}
-\BOOKMARK [2][-]{subsection.9.3}{Keywords}{section.9}
-\BOOKMARK [2][-]{subsection.9.4}{Restrictions}{section.9}
-\BOOKMARK [1][-]{section.10}{GRAFF\137PROPS \(set GRAFFER file properties programmatically\)}{}
-\BOOKMARK [2][-]{subsection.10.1}{Interface}{section.10}
-\BOOKMARK [2][-]{subsection.10.2}{Arguments}{section.10}
-\BOOKMARK [2][-]{subsection.10.3}{Keywords}{section.10}
-\BOOKMARK [2][-]{subsection.10.4}{Restrictions}{section.10}
-\BOOKMARK [1][-]{section.11}{GRAFF\137PRINT \(Make a hard copy of a GRAFFER file\)}{}
-\BOOKMARK [2][-]{subsection.11.1}{Interface}{section.11}
-\BOOKMARK [2][-]{subsection.11.2}{Argument}{section.11}
-\BOOKMARK [2][-]{subsection.11.3}{Keywords}{section.11}
-\BOOKMARK [1][-]{section.12}{GRAFF\137UPDATE}{}
-\BOOKMARK [2][-]{subsection.12.1}{Interface}{section.12}
-\BOOKMARK [2][-]{subsection.12.2}{Arguments:}{section.12}
-\BOOKMARK [2][-]{subsection.12.3}{Keywords:}{section.12}
-\BOOKMARK [2][-]{subsection.12.4}{Restrictions:}{section.12}
-\BOOKMARK [1][-]{section.13}{GRAFF\137EXPORT}{}
-\BOOKMARK [2][-]{subsection.13.1}{Arguments}{section.13}
-\BOOKMARK [2][-]{subsection.13.2}{Keywords}{section.13}
-\BOOKMARK [2][-]{subsection.13.3}{Notes}{section.13}
-\BOOKMARK [1][-]{section.14}{GRAFF\137ANNOTATE}{}
-\BOOKMARK [2][-]{subsection.14.1}{Interface}{section.14}
-\BOOKMARK [2][-]{subsection.14.2}{ Arguments}{section.14}
-\BOOKMARK [2][-]{subsection.14.3}{Keywords}{section.14}
-\BOOKMARK [2][-]{subsection.14.4}{ Notes}{section.14}
-\BOOKMARK [1][-]{section.15}{GRAFF\137GET\137DATA}{}
-\BOOKMARK [2][-]{subsection.15.1}{Usage:}{section.15}
-\BOOKMARK [2][-]{subsection.15.2}{ Argument:}{section.15}
-\BOOKMARK [2][-]{subsection.15.3}{ Keywords:}{section.15}
-\BOOKMARK [1][-]{appendix.A}{Useful procedures}{}
-\BOOKMARK [1][-]{appendix.B}{.grafferrc}{}
-\BOOKMARK [1][-]{appendix.C}{X Resources \(X windows systems only\)}{}
+\BOOKMARK [1][-]{section.1}{Introduction}{}% 1
+\BOOKMARK [2][-]{subsection.1.1}{What is it?}{section.1}% 2
+\BOOKMARK [2][-]{subsection.1.2}{Why is it?}{section.1}% 3
+\BOOKMARK [2][-]{subsection.1.3}{Requirements}{section.1}% 4
+\BOOKMARK [2][-]{subsection.1.4}{Copyright etc.}{section.1}% 5
+\BOOKMARK [1][-]{section.2}{Main features}{}% 6
+\BOOKMARK [2][-]{subsection.2.1}{Version 2.1}{section.2}% 7
+\BOOKMARK [2][-]{subsection.2.2}{Version 3.0}{section.2}% 8
+\BOOKMARK [2][-]{subsection.2.3}{Version 3.04}{section.2}% 9
+\BOOKMARK [2][-]{subsection.2.4}{Version 3.08}{section.2}% 10
+\BOOKMARK [2][-]{subsection.2.5}{Version 3.09}{section.2}% 11
+\BOOKMARK [2][-]{subsection.2.6}{Version 4.00}{section.2}% 12
+\BOOKMARK [2][-]{subsection.2.7}{Version 4.01}{section.2}% 13
+\BOOKMARK [2][-]{subsection.2.8}{Version 4.02}{section.2}% 14
+\BOOKMARK [2][-]{subsection.2.9}{Version 4.02a}{section.2}% 15
+\BOOKMARK [2][-]{subsection.2.10}{ Version 4.03}{section.2}% 16
+\BOOKMARK [2][-]{subsection.2.11}{Version 4.04}{section.2}% 17
+\BOOKMARK [2][-]{subsection.2.12}{Version 4.05}{section.2}% 18
+\BOOKMARK [2][-]{subsection.2.13}{Version 4.08}{section.2}% 19
+\BOOKMARK [1][-]{section.3}{Getting Started}{}% 20
+\BOOKMARK [2][-]{subsection.3.1}{Making sure it's there}{section.3}% 21
+\BOOKMARK [2][-]{subsection.3.2}{Invoking it}{section.3}% 22
+\BOOKMARK [3][-]{subsubsection.3.2.1}{Keywords}{subsection.3.2}% 23
+\BOOKMARK [2][-]{subsection.3.3}{A quick tour of the main window}{section.3}% 24
+\BOOKMARK [1][-]{section.4}{Datasets}{}% 25
+\BOOKMARK [2][-]{subsection.4.1}{General comments}{section.4}% 26
+\BOOKMARK [3][-]{subsubsection.4.1.1}{Observational data }{subsection.4.1}% 27
+\BOOKMARK [3][-]{subsubsection.4.1.2}{Functions }{subsection.4.1}% 28
+\BOOKMARK [2][-]{subsection.4.2}{Entering 1-D observational data}{section.4}% 29
+\BOOKMARK [3][-]{subsubsection.4.2.1}{From a File}{subsection.4.2}% 30
+\BOOKMARK [3][-]{subsubsection.4.2.2}{From IDL top-level variables }{subsection.4.2}% 31
+\BOOKMARK [3][-]{subsubsection.4.2.3}{Via the data editor }{subsection.4.2}% 32
+\BOOKMARK [3][-]{subsubsection.4.2.4}{With the mouse}{subsection.4.2}% 33
+\BOOKMARK [3][-]{subsubsection.4.2.5}{A note on limits}{subsection.4.2}% 34
+\BOOKMARK [3][-]{subsubsection.4.2.6}{Copying another dataset}{subsection.4.2}% 35
+\BOOKMARK [2][-]{subsection.4.3}{Entering 2-D observational data}{section.4}% 36
+\BOOKMARK [3][-]{subsubsection.4.3.1}{From top-level variables }{subsection.4.3}% 37
+\BOOKMARK [3][-]{subsubsection.4.3.2}{From a file}{subsection.4.3}% 38
+\BOOKMARK [3][-]{subsubsection.4.3.3}{Copying another dataset.}{subsection.4.3}% 39
+\BOOKMARK [2][-]{subsection.4.4}{Entering functions}{section.4}% 40
+\BOOKMARK [3][-]{subsubsection.4.4.1}{The Editors }{subsection.4.4}% 41
+\BOOKMARK [3][-]{subsubsection.4.4.2}{Copying another function}{subsection.4.4}% 42
+\BOOKMARK [3][-]{subsubsection.4.4.3}{Fit dataset }{subsection.4.4}% 43
+\BOOKMARK [3][-]{subsubsection.4.4.4}{Read function from file}{subsection.4.4}% 44
+\BOOKMARK [2][-]{subsection.4.5}{Dataset selection and manipulation}{section.4}% 45
+\BOOKMARK [3][-]{subsubsection.4.5.1}{Selection}{subsection.4.5}% 46
+\BOOKMARK [3][-]{subsubsection.4.5.2}{Manipulation}{subsection.4.5}% 47
+\BOOKMARK [2][-]{subsection.4.6}{Display style}{section.4}% 48
+\BOOKMARK [3][-]{subsubsection.4.6.1}{1-Dimensional data}{subsection.4.6}% 49
+\BOOKMARK [3][-]{subsubsection.4.6.2}{2-Dimensional data}{subsection.4.6}% 50
+\BOOKMARK [1][-]{section.5}{File-wide settings}{}% 51
+\BOOKMARK [2][-]{subsection.5.1}{General settings}{section.5}% 52
+\BOOKMARK [3][-]{subsubsection.5.1.1}{Plot annotation}{subsection.5.1}% 53
+\BOOKMARK [3][-]{subsubsection.5.1.2}{General style}{subsection.5.1}% 54
+\BOOKMARK [3][-]{subsubsection.5.1.3}{Geometry}{subsection.5.1}% 55
+\BOOKMARK [3][-]{subsubsection.5.1.4}{Key or legend}{subsection.5.1}% 56
+\BOOKMARK [2][-]{subsection.5.2}{Axis settings}{section.5}% 57
+\BOOKMARK [1][-]{section.6}{Text}{}% 58
+\BOOKMARK [1][-]{section.7}{Control}{}% 59
+\BOOKMARK [2][-]{subsection.7.1}{Hard Copy}{section.7}% 60
+\BOOKMARK [2][-]{subsection.7.2}{Saving and dumping}{section.7}% 61
+\BOOKMARK [2][-]{subsection.7.3}{Opening a new file}{section.7}% 62
+\BOOKMARK [2][-]{subsection.7.4}{Options...}{section.7}% 63
+\BOOKMARK [2][-]{subsection.7.5}{Exit and Help}{section.7}% 64
+\BOOKMARK [1][-]{section.8}{Accelerator Keys}{}% 65
+\BOOKMARK [1][-]{section.9}{GRAFF\137ADD \(interface user programs to GRAFFER\)}{}% 66
+\BOOKMARK [2][-]{subsection.9.1}{Interface}{section.9}% 67
+\BOOKMARK [2][-]{subsection.9.2}{Arguments}{section.9}% 68
+\BOOKMARK [2][-]{subsection.9.3}{Keywords}{section.9}% 69
+\BOOKMARK [2][-]{subsection.9.4}{Restrictions}{section.9}% 70
+\BOOKMARK [1][-]{section.10}{GRAFF\137PROPS \(set GRAFFER file properties programmatically\)}{}% 71
+\BOOKMARK [2][-]{subsection.10.1}{Interface}{section.10}% 72
+\BOOKMARK [2][-]{subsection.10.2}{Arguments}{section.10}% 73
+\BOOKMARK [2][-]{subsection.10.3}{Keywords}{section.10}% 74
+\BOOKMARK [2][-]{subsection.10.4}{Restrictions}{section.10}% 75
+\BOOKMARK [1][-]{section.11}{GRAFF\137PRINT \(Make a hard copy of a GRAFFER file\)}{}% 76
+\BOOKMARK [2][-]{subsection.11.1}{Interface}{section.11}% 77
+\BOOKMARK [2][-]{subsection.11.2}{Argument}{section.11}% 78
+\BOOKMARK [2][-]{subsection.11.3}{Keywords}{section.11}% 79
+\BOOKMARK [1][-]{section.12}{GRAFF\137UPDATE}{}% 80
+\BOOKMARK [2][-]{subsection.12.1}{Interface}{section.12}% 81
+\BOOKMARK [2][-]{subsection.12.2}{Arguments:}{section.12}% 82
+\BOOKMARK [2][-]{subsection.12.3}{Keywords:}{section.12}% 83
+\BOOKMARK [2][-]{subsection.12.4}{Restrictions:}{section.12}% 84
+\BOOKMARK [1][-]{section.13}{GRAFF\137EXPORT}{}% 85
+\BOOKMARK [2][-]{subsection.13.1}{Arguments}{section.13}% 86
+\BOOKMARK [2][-]{subsection.13.2}{Keywords}{section.13}% 87
+\BOOKMARK [2][-]{subsection.13.3}{Notes}{section.13}% 88
+\BOOKMARK [1][-]{section.14}{GRAFF\137ANNOTATE}{}% 89
+\BOOKMARK [2][-]{subsection.14.1}{Interface}{section.14}% 90
+\BOOKMARK [2][-]{subsection.14.2}{ Arguments}{section.14}% 91
+\BOOKMARK [2][-]{subsection.14.3}{Keywords}{section.14}% 92
+\BOOKMARK [2][-]{subsection.14.4}{ Notes}{section.14}% 93
+\BOOKMARK [1][-]{section.15}{GRAFF\137GET\137DATA}{}% 94
+\BOOKMARK [2][-]{subsection.15.1}{Usage:}{section.15}% 95
+\BOOKMARK [2][-]{subsection.15.2}{ Argument:}{section.15}% 96
+\BOOKMARK [2][-]{subsection.15.3}{ Keywords:}{section.15}% 97
+\BOOKMARK [1][-]{appendix.A}{Useful procedures}{}% 98
+\BOOKMARK [1][-]{appendix.B}{.grafferrc}{}% 99
+\BOOKMARK [1][-]{appendix.C}{X Resources \(X windows systems only\)}{}% 100

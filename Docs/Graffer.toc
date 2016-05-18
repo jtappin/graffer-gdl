@@ -16,29 +16,30 @@
 \contentsline {subsection}{\numberline {2.10} Version 4.03}{8}{subsection.2.10}
 \contentsline {subsection}{\numberline {2.11}Version 4.04}{8}{subsection.2.11}
 \contentsline {subsection}{\numberline {2.12}Version 4.05}{8}{subsection.2.12}
+\contentsline {subsection}{\numberline {2.13}Version 4.08}{9}{subsection.2.13}
 \contentsline {section}{\numberline {3}Getting Started}{9}{section.3}
 \contentsline {subsection}{\numberline {3.1}Making sure it's there}{9}{subsection.3.1}
 \contentsline {subsection}{\numberline {3.2}Invoking it}{10}{subsection.3.2}
 \contentsline {subsubsection}{\numberline {3.2.1}Keywords}{10}{subsubsection.3.2.1}
-\contentsline {subsection}{\numberline {3.3}A quick tour of the main window}{10}{subsection.3.3}
+\contentsline {subsection}{\numberline {3.3}A quick tour of the main window}{11}{subsection.3.3}
 \contentsline {section}{\numberline {4}Datasets}{12}{section.4}
 \contentsline {subsection}{\numberline {4.1}General comments}{12}{subsection.4.1}
 \contentsline {subsubsection}{\numberline {4.1.1}Observational data }{12}{subsubsection.4.1.1}
 \contentsline {subsubsection}{\numberline {4.1.2}Functions }{12}{subsubsection.4.1.2}
 \contentsline {subsection}{\numberline {4.2}Entering 1-D observational data}{13}{subsection.4.2}
 \contentsline {subsubsection}{\numberline {4.2.1}From a File}{13}{subsubsection.4.2.1}
-\contentsline {subsubsection}{\numberline {4.2.2}From IDL top-level variables }{13}{subsubsection.4.2.2}
+\contentsline {subsubsection}{\numberline {4.2.2}From IDL top-level variables }{14}{subsubsection.4.2.2}
 \contentsline {subsubsection}{\numberline {4.2.3}Via the data editor }{15}{subsubsection.4.2.3}
 \contentsline {subsubsection}{\numberline {4.2.4}With the mouse}{15}{subsubsection.4.2.4}
 \contentsline {subsubsection}{\numberline {4.2.5}A note on limits}{16}{subsubsection.4.2.5}
-\contentsline {subsubsection}{\numberline {4.2.6}Copying another dataset}{16}{subsubsection.4.2.6}
+\contentsline {subsubsection}{\numberline {4.2.6}Copying another dataset}{17}{subsubsection.4.2.6}
 \contentsline {subsection}{\numberline {4.3}Entering 2-D observational data}{17}{subsection.4.3}
 \contentsline {subsubsection}{\numberline {4.3.1}From top-level variables }{17}{subsubsection.4.3.1}
 \contentsline {subsubsection}{\numberline {4.3.2}From a file}{17}{subsubsection.4.3.2}
 \contentsline {subsubsection}{\numberline {4.3.3}Copying another dataset.}{18}{subsubsection.4.3.3}
 \contentsline {subsection}{\numberline {4.4}Entering functions}{18}{subsection.4.4}
 \contentsline {subsubsection}{\numberline {4.4.1}The Editors }{18}{subsubsection.4.4.1}
-\contentsline {subsubsection}{\numberline {4.4.2}Copying another function}{19}{subsubsection.4.4.2}
+\contentsline {subsubsection}{\numberline {4.4.2}Copying another function}{20}{subsubsection.4.4.2}
 \contentsline {subsubsection}{\numberline {4.4.3}Fit dataset }{20}{subsubsection.4.4.3}
 \contentsline {subsubsection}{\numberline {4.4.4}Read function from file}{21}{subsubsection.4.4.4}
 \contentsline {subsection}{\numberline {4.5}Dataset selection and manipulation}{21}{subsection.4.5}
