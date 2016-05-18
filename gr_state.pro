@@ -25,47 +25,49 @@ pro Gr_state, id, save = save
 ;	Add a save key, to allow gr_entry state to be hidden.
 ;-
 
-common Gr_entry_state, pstate, xstate, ystate, zstate, qstate, rstate, $
-  gstate, bstate, gdstate, dstate
+  common Gr_entry_state, pstate, xstate, ystate, zstate, qstate, $
+     rstate, $
+     gstate, bstate, gdstate, dstate
 
-if keyword_set(save) then begin
-    gdstate =  !D.name
-    pstate = !P
-    xstate = !X
-    ystate = !Y
-    zstate = !Z                 ; Not touched at present in graffer
+  if keyword_set(save) then begin
+     gdstate =  !D.name
+     pstate = !P
+     xstate = !X
+     ystate = !Y
+     zstate = !Z                ; Not touched at present in graffer
                                 ; but if & when GRAFFER for surfaces is
                                 ; done then it may be
-    tvlct, rstate, gstate, bstate, /get
-    qstate = !Quiet
+     qstate = !Quiet
 
-    if ((!D.flags and 65536) eq 0) then begin
+     if ((!D.flags and 65536) eq 0) then begin
         if strupcase(!version.os_family) eq 'UNIX' then dev = 'X' $
         else dev = 'WIN'        ; Probably won't work
         print, "GRAFFER needs widgets; current device (", !D.name, $
-          ") does not support them, switching to ", dev, "."
+               ") does not support them, switching to ", dev, "."
         set_plot, dev
-    endif
-    device, get_decomposed = dstate, get_visual_depth = vdep
-    if (dstate and vdep gt 8) then begin
-        print, "GRAFFER needs undecomposed colours, setting"
-        device, decomposed = 0
-    endif
+     endif
+     device, get_decomposed = dstate, get_visual_depth = vdep
+     if (~dstate && vdep gt 8) then begin
+        print, "GRAFFER now needs decomposed colours, setting"
+        device, decomposed = 1
+     endif
+     !p.color = graff_colours(1)
+     !p.background = graff_colours(0)
 
-endif else begin
+  endif else begin
                                 ; Restore system variables and colour
                                 ; tables 
 
-    device, decomposed = dstate
-    set_plot, gdstate
-    if (keyword_set(debug)) then !Quiet = qstate ; Restore message state
-    !P = pstate
-    !X = xstate
-    !Y = ystate
-    !Z = zstate
-    tvlct, rstate, gstate, bstate
-endelse
+     device, decomposed = dstate
+     set_plot, gdstate
+     if (keyword_set(debug)) then !Quiet = qstate ; Restore message state
+     !P = pstate
+     !X = xstate
+     !Y = ystate
+     !Z = zstate
 
-heap_gc
+  endelse
+
+  heap_gc
 
 end

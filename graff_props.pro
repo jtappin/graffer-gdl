@@ -503,7 +503,6 @@ pro Graff_props, file, title = title, subtitle = subtitle, $
      graffer, file
      return
   endif else if (keyword_set(display)) then begin
-     graff_colours, pdefs
      gr_plot_object, pdefs
   endif
 

@@ -52,7 +52,6 @@ endif else if keyword_set(window) then begin
     else window, window
 endif
 
-graff_colours, pdefs
 gr_plot_object, pdefs
 
 if wo ge 0 then wset, wo

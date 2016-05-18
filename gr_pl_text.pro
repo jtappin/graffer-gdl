@@ -34,7 +34,12 @@ else tf = ''
 gr_coord_convert, text.x, text.y, tx, ty, /to_norm, data = text.norm $
   eq 0, region = text.norm eq 1, frame = text.norm eq 2
 
-xyouts, tx, ty, tf, color = text.colour, $
+if text.colour eq -1 then return
+if text.colour eq -2 then $
+   lcolour = graff_colours(text.c_vals) $
+else lcolour = graff_colours(text.colour)
+
+xyouts, tx, ty, tf, color = lcolour, $
   charsize = text.size*csiz, orient = text.orient, align $
   = text.align, charthick = text.thick, /norm
 

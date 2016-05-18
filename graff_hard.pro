@@ -81,7 +81,6 @@ else bits = 8*h.colour > 1
 device, file = h.name,  encapsu = h.eps, bits = bits, color = $
   h.colour
 if (h.colour) then begin
-    graff_colours, pdefs
     device, cmyk = h.cmyk
 endif
 
@@ -143,7 +142,6 @@ endelse
 
 !P.font = -1
 
-graff_colours, pdefs
 pdefs.transient.current_only = tt
 
 return, keyword_set(no_set) eq 0

@@ -30,20 +30,24 @@
 
 pro Gr_text_disp, text
 
-erase
+  erase
 
-opf = !P.font
-!P.font = text.ffamily
-tf = '!'+string(text.font, format = "(I0)")+ $
-  text.text+'!3'
+  opf = !P.font
+  !P.font = text.ffamily
+  tf = '!'+string(text.font, format = "(I0)")+ $
+       text.text+'!3'
 
-xyouts, /norm, .05+.9*text.align, .1, tf, color = text.colour, $
-  charsize = text.size, charthick = text.thick, align = text.align
+  if text.colour eq -2 then $
+     lcolour = graff_colours(text.c_vals) $
+  else lcolour = graff_colours(text.colour)
 
-!P.font = opf
+  xyouts, /norm, .05+.9*text.align, .1, tf, color = lcolour, $
+          charsize = text.size, charthick = text.thick, align = text.align
 
-usersym, [-.5, 0., 0., 0., .5], [-.866, 0., -1.77, 0., -.866]
-plots, /norm, psym = 8, .05+.9*text.align, .1
+  !P.font = opf
+
+  usersym, [-.5, 0., 0., 0., .5], [-.866, 0., -1.77, 0., -.866]
+  plots, /norm, psym = 8, .05+.9*text.align, .1
 
 end
 
@@ -103,12 +107,28 @@ case but of
     'CHS': if (track_flag) then  $
       graff_msg, pdefs.ids.popmsg, 'Set the character size' $
     else (*pdefs.text)[itxt].size = event.value
+
     'COL': if (track_flag) then  $
       graff_msg, pdefs.ids.popmsg, 'Select the text colour' $
-    else if pdefs.opts.colour_menu then $
-      (*pdefs.text)[itxt].colour = event.value $
-    else (*pdefs.text)[itxt].colour = event.index
-    
+    else begin
+       ncmax = widget_info(event.id, /droplist_number)
+       if event.index eq ncmax-1 then begin
+          ci = (*pdefs.text)[itxt].colour
+          if ci eq -2 then $
+             cc = gr_custom_colour((*pdefs.text)[itxt].c_vals, $
+                                   pdefs.ids.windex) $
+          else cc = gr_custom_colour(ci > 0, $
+                                   pdefs.ids.windex))
+          if n_elements(cc) eq 1 then begin
+             if ci ne -2 then $
+                widget_control, event.id, set_droplist_select = ci
+          endif else begin
+             (*pdefs.text)[itxt].colour = -2
+             (*pdefs.text)[itxt].c_vals = cc
+          endelse
+       endif else (*pdefs.text)[itxt].colour = event.index
+    endelse
+
     'JUST': if (track_flag) then  $
       graff_msg, pdefs.ids.popmsg, 'Select text justification' $
     else if (event.index le 2) then $
@@ -282,15 +302,15 @@ junk = graff_enter(jb, $
 
 jb = widget_base(base, /row)
 
-if pdefs.opts.colour_menu then begin
-    junk = cw_bbselector(jb, $
-                         col_bm[*, *, *, 1:*], $
-                         uvalue = 'COL', $
-                         label_left = 'Colour:', $
-                         set_value = $
-                         (*pdefs.text)[itxt].colour, $
-                         /track)
-endif else begin
+;; if pdefs.opts.colour_menu then begin
+;;     junk = cw_bbselector(jb, $
+;;                          col_bm[*, *, *, 1:*], $
+;;                          uvalue = 'COL', $
+;;                          label_left = 'Colour:', $
+;;                          set_value = $
+;;                          (*pdefs.text)[itxt].colour, $
+;;                          /track)
+;; endif else begin
     col_list = ['White (bg)', $
                 'Black', $
                 'Red', $
@@ -318,14 +338,18 @@ endif else begin
                 'Dark Magenta', $
                 'Light Magenta', $
                 'Dark Yellow', $
-                'Light Yellow']
+                'Light Yellow', $
+                'Custom']
     junk = widget_droplist(jb, $
                            value = col_list, $
                            uvalue = 'COL', $
                            title = 'Colour:', $
                            /track)
-    widget_control, junk, set_droplist_select = (*pdefs.text)[itxt].colour
-endelse
+    if (*pdefs.text)[itxt].colour eq -2 then ci = $
+       n_elements(col_list)-1 $
+    else ci = (*pdefs.text)[itxt].colour
+    widget_control, junk, set_droplist_select = ci
+;; endelse
 
 junk = graff_enter(jb, $
                    /float, $

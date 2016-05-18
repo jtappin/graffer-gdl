@@ -300,8 +300,6 @@ if (keyword_set(resave)) then begin
     gr_bin_save, pdefs
     graff_msg, pdefs.ids.message, "Resaving"
 endif
-if ctflag then graff_colours, pdefs
-
 
 end
 

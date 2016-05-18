@@ -1,4 +1,4 @@
-pro Gr_pl_axes, pdefs, csiz, overlay = overlay, secondary = secondary
+pro gr_pl_axes, pdefs, csiz, overlay = overlay, secondary = secondary
 
 ;+
 ; GR_PL_AXES
@@ -26,6 +26,8 @@ pro Gr_pl_axes, pdefs, csiz, overlay = overlay, secondary = secondary
 ;	Y-time labelling: 12/1/12; SJT
 ;	Advanced axis style settings: 21/8/12; SJT
 ;-
+
+  lcolor = 0l
 
   if ((pdefs.xsty.time) and 1) then begin
      xtf = 'gr_time_fmt'
@@ -173,11 +175,11 @@ pro Gr_pl_axes, pdefs, csiz, overlay = overlay, secondary = secondary
         ytickst, noerase = noerase, isotropic = isotropic, xmargin = $
         xmargin, xtickname = xnames, ytickname = ynames, ytickformat = $
         ytf, xticks = xmajor, yticks = ymajor, xtickv = xtvals, ytickv $
-        = ytvals
+        = ytvals, color = lcolour
 
         if ~keyword_set(secondary) and mflag then $
            plots, /norm, !p.region[[0, 0, 2, 2, 0]], $
-        !p.region[[1, 3, 3, 1, 1]]
+                  !p.region[[1, 3, 3, 1, 1]], color = lcolour
 
   if pdefs.y_right then begin
      if keyword_set(secondary) then begin
@@ -186,7 +188,9 @@ pro Gr_pl_axes, pdefs, csiz, overlay = overlay, secondary = secondary
                  ytype, ysty = pdefs.ysty_r.idl, ythick = pdefs.axthick, $
                  yticklen = ytickl, ygridsty = ytickst, yrange = yrange, $
                  ycharsize = pdefs.charsize*csiz, ytickname = ynames, $
-                 yticks = ymajor, ytickv = ytvals, ytickformat = ytf
+                 yticks = ymajor, ytickv = ytvals, ytickformat = ytf, $
+                 color = lcolour
+                 
      endif else begin
         if (pdefs.xsty.idl and 4) eq 0 then $
            axis, xaxis = 0, xminor = pdefs.xsty.minor, $
@@ -195,7 +199,8 @@ pro Gr_pl_axes, pdefs, csiz, overlay = overlay, secondary = secondary
                  pdefs.axthick, xtitle = pdefs.xtitle, xticklen = $
                  xtickl, xgridsty = xtickst, xlog = pdefs.xtype, $
                  xcharsize = pdefs.charsize*csiz, xtickname = xnames, $
-                 xticks = xmajor, xtickv = xtvals
+                 xticks = xmajor, xtickv = xtvals, $
+                 color = lcolour
         if (pdefs.xsty.idl and (4 or 8)) eq 0 then $
            axis, xaxis = 1, xminor = pdefs.xsty.minor, $
                  xtickformat = xtf, xrange = pdefs.xrange, xsty = $
@@ -203,13 +208,15 @@ pro Gr_pl_axes, pdefs, csiz, overlay = overlay, secondary = secondary
                  pdefs.axthick, xticklen = xtickl, xgridsty = xtickst, $
                  xlog = pdefs.xtype, xtickname = replicate(' ', 30), $
                  xcharsize = pdefs.charsize*csiz, xticks = xmajor, $
-                 xtickv = xtvals
+                 xtickv = xtvals, $
+                 color = lcolour
         if (pdefs.ysty.idl and 4) eq 0 then $
            axis, yaxis = 0, yminor = yminor, ytitle = ytitle, ylog = $
                  ytype, ysty = pdefs.ysty.idl, ythick = pdefs.axthick, $
                  yticklen = ytickl, ygridsty = ytickst, yrange = yrange, $
                  ycharsize = pdefs.charsize*csiz, ytickname = ynames, $
-                 ytickformat = ytf, yticks = ymajor, ytickv = ytvals
+                 ytickformat = ytf, yticks = ymajor, ytickv = ytvals, $
+                 color = lcolour
      endelse
   endif
 
@@ -221,7 +228,8 @@ pro Gr_pl_axes, pdefs, csiz, overlay = overlay, secondary = secondary
         ysty = pdefs.ysty_r.idl and (not 12), $
         ythick = pdefs.axthick, yminor = yminor, ytitle = $
         yzat, ytickname = ynames, ycharsize = pdefs.charsize*csiz, $
-        yticks = ymajor, ytickv = ytvals
+        yticks = ymajor, ytickv = ytvals, $
+        color = lcolour
   endif else begin
      if pdefs.y_right and (pdefs.ysty_r.extra and 2) ne 0 or $
         (pdefs.ysty.extra and 8) eq 0 then ynames = $
@@ -234,13 +242,15 @@ pro Gr_pl_axes, pdefs, csiz, overlay = overlay, secondary = secondary
               pdefs.xrange, xsty = pdefs.xsty.idl and (not 12), $
               xthick = pdefs.axthick, xtitle = xzat, xtickname = xnames, $
               xcharsize = pdefs.charsize*csiz, xticks = xmajor, xtickv $
-              = xtvals
+              = xtvals, $
+              color = lcolour
      if (pdefs.ysty.extra and 2) ne 0 then axis, yaxis = 0, 0., $
         pdefs.yrange(0), yrange = yrange, $
         ysty = pdefs.ysty.idl and (not 12), $
         ythick = pdefs.axthick, yminor = yminor, ytitle = $
         yzat, ytickname = ynames, ytickformat = ytf, ycharsize = $
-        pdefs.charsize*csiz, yticks = ymajor, ytickv = ytvals
+        pdefs.charsize*csiz, yticks = ymajor, ytickv = ytvals, $
+        color = lcolour
   endelse
 
 end

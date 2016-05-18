@@ -146,6 +146,8 @@ for j = 0, (pdefs.nsets-1) > 0 do begin
             (*pdefs.data)[j].sort, ':K:', $
             (*pdefs.data)[j].noclip, ':E:', (*pdefs.data)[j].medit,  $
             format = "(2(a,i3),a,f8.3,a,i2,a,i3,a,f8.4,3(a,i1))"
+    if (*pdefs.data)[j].colour eq -2 then $
+       printf, ilu, 'CV:',  (*pdefs.data)[j].c_vals, format = "(a,3i4)"
     if finite((*pdefs.data)[j].min_val) then $
        printf, ilu, 'MN:', (*pdefs.data)[j].min_val, format="(A,g19.12)"
     if finite((*pdefs.data)[j].max_val) then $
@@ -275,6 +277,9 @@ for j = 0, pdefs.ntext-1 do begin
             ':F:', (*pdefs.text)[j].font, $
             ':W:', (*pdefs.text)[j].thick, format = $
             "(a,i3,a,f8.3,a,f9.4,a,f8.5,2(a,i3),a,f7.2)"
+    if (*pdefs.text)[j].colour eq -2 then $
+       printf, ilu, 'CV:', (*pdefs.text)[j].c_vals, format = "(a,3I4)"
+
     printf, ilu, 'TE:', format = "(a)"
 endfor
 
@@ -288,6 +293,9 @@ printf, ilu, 'C:', pdefs.text_options.colour, ':S:', $
         pdefs.text_options.align, ':F:', pdefs.text_options.font, ':W:', $
         pdefs.text_options.thick, ':N:', pdefs.text_options.norm, format = $
         "(a,i3,a,f8.3,a,f9.4,a,f8.5,a,i3,a,f7.3,a,i2)"
+if pdefs.text_options.colour eq -2 then $
+   printf, ilu, 'CV:', pdefs.text_options.c_vals, format = "(A,3I4)"
+
 printf, ilu, 'TTE:', format = "(a)"
 
 

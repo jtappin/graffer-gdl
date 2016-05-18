@@ -33,6 +33,7 @@ while (not eof(ilu)) do begin
             
                                 ; Recognized tags for Text items
                                 ; C - colour
+                                ; CV - Custom colour.
                                 ; S - character size
                                 ; O - orientation (degrees
                                 ;     anticlockwise from the normal
@@ -54,6 +55,7 @@ while (not eof(ilu)) do begin
                                 ; TE, TTE - End
             
             'C': text(nset).colour = gr_int_val(tag_val(itag+1), 1)
+            'CV': text[nset].c_vals = gr_byt_val(tag_val(itag+1), 3)
             'S': text(nset).size = gr_flt_val(tag_val(itag+1), 1)
             'O': text(nset).orient = gr_flt_val(tag_val(itag+1), 1)
             'A': text(nset).align = gr_flt_val(tag_val(itag+1), 1)

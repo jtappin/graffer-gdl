@@ -4,15 +4,16 @@ pro Gr_display_img, zin, xin, yin, range = range, $
                     scale_mode = scale_mode, $
                     inverted = inverted,  $
                     missing = missing, $
-                    logarithmic = logarithmic
+                    logarithmic = logarithmic, $
+                    table = table, gamma = gamma, $
+                    ps_grey = ps_grey
 
 ;+
 ; GR_DISPLAY_IMG
 ;	Colour/greyscale image display for GRAFFER
 ;
 ; Usage:
-;	gr_display_img, zi, xin, yin, range=range, $
-;	colour_range=colour_range pixel_size=pixel_size
+;	gr_display_img, zi, xin, yin
 ;
 ; Arguments:
 ;	zin	float	input	The data to be displayed
@@ -21,7 +22,6 @@ pro Gr_display_img, zin, xin, yin, range = range, $
 ;
 ; Keywords:
 ;	range	float	input	The range from "black" to "white"
-;	colour. int	input	The range of colour indices to use.
 ;	pixel.  float	input	For devices with scalable pixels, the
 ;				size of a displayed pixel.
 ;	scale_mode int	input	Scaling mode, 0/absent = linear, 1 =
@@ -29,6 +29,12 @@ pro Gr_display_img, zin, xin, yin, range = range, $
 ;	/inverted	input	If set, then plot from "white" to "black".
 ;	missing	float	input	A value to use for output pixels that don't
 ;				map to input pixels.
+;	table	int	input	The colour table to use.
+;	gamma	float	input	The Gamma value to apply to the colour
+;				table.
+;	/ps_grey	input	If set, then the output is to a
+;				greyscale postscript file and no
+;				colour table will be used.
 ;
 ; History:
 ;	Original: 10/12/96; SJT
@@ -40,10 +46,13 @@ pro Gr_display_img, zin, xin, yin, range = range, $
 ;	11/7/12; SJT
 ;	Fix failure to display when axis reversed: 24/8/12; SJT
 ;	Replace logarithmic with scale_mode: 18/11/15; SJT
+;	Redesign colour handling for true-colour displays: 16/5/16; SJT
 ;-
 
   if n_elements(logarithmic) ne 0 then graff_msg, 0l, $
-     "The LOGARTITHMIC key is obsolete, please use SCALE_MODE instead"
+     "The LOGARITHMIC key is obsolete, please use SCALE_MODE instead"
+  if n_elements(colour_range) ne 0 then gragg_msg, 0l, $
+     "The COLOUR_RANGE key is obsolete and is ignored."
 
   if n_elements(scale_mode) ne 0 then mode = scale_mode $
   else if n_elements(logarithmic) ne 0 then mode = logarithmic $
@@ -158,17 +167,13 @@ pro Gr_display_img, zin, xin, yin, range = range, $
      endcase
   endelse
 
-  if (not keyword_set(colour_range)) then colours = [16, !D.n_colors-1] $
-  else colours = colour_range
-
-
   if n_elements(range) eq 0 || (range(0) eq range(1)) then begin
      if keyword_set(inverted) then zrange = [max(zin, min = mnz, $
                                                  /nan), mnz] $
      else zrange = [min(zin, max = mxz, /nan), mxz] 
   endif else begin
      zrange = range
-     if keyword_set(inverted) then zrange = zrange[[1, 0]]
+     ;; if keyword_set(inverted) then zrange = zrange[[1, 0]]
   endelse
 
   case mode of
@@ -178,18 +183,24 @@ pro Gr_display_img, zin, xin, yin, range = range, $
   endcase
   locs = where(finite(zz) eq 0, nnan)
 
-  if zrange[0] gt zrange[1] then $
-     img = colours[1]-bytscl(zz, min = zrange(1), max = zrange(0), top = $
-                             colours(1)-colours(0)) $
-  else $
-     img = bytscl(zz, min = zrange(0), max = zrange(1), top = $
-                  colours(1)-colours(0)) + colours(0)
+
+  img = bytscl(zz, min = zrange(0), max = zrange(1))
+  if keyword_set(inverted) then img =  255b-img
+
 ;if (nnan gt 0) then img[locs] = 0b
 
-  if (!d.flags and 1) then $
-     tv, img, cmxll, cmyll, xsize = cmxsize, ysize = cmysize, /centi $ 
-  else $
-     tv, img, xcorn[0], ycorn[0] ;corners(0, 0), corners(1, 0)
-
+  if keyword_set(ps_grey) then $
+     tv, img, cmxll, cmyll, xsize = cmxsize, ysize = cmysize, /centi $
+  else begin
+     graff_ctable, table, cmap, gamma = gamma
+     sz = size(img, /dim)
+     img3 = bytarr([sz, 3])
+     for j = 0, 2 do img3[*, *, j] = (cmap[*, j])[img]
+     if (!d.flags and 1) then $
+        tv, img3, cmxll, cmyll, xsize = cmxsize, ysize = cmysize, $
+            true = 3, /centi $ 
+     else $
+        tv, img3, xcorn[0], ycorn[0], true = 3
+  endelse
 end
 

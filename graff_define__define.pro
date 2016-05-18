@@ -63,7 +63,6 @@ pdefs = {graff_define, $
          Opts: {graff_opts}, $
          Ds_dir:       '', $
          Chflag:       0b, $
-         Short_colour: 0b, $
          is_ascii:     0b $
         }
 

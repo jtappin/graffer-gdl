@@ -48,6 +48,7 @@ pro Gr_get_ds, data, nset, ilu, msgid
                                 ; S - symbol size
                                 ; L - line style
                                 ; C - colour
+                                ; CV - Custom colour (C==-2)
                                 ; W - thickness (width)
                                 ; O - sorted? (Order)
                                 ; D - description
@@ -78,6 +79,7 @@ pro Gr_get_ds, data, nset, ilu, msgid
            'S': data[nset].symsize = gr_flt_val(tag_val(itag+1), 1)
            'L': data[nset].line = gr_int_val(tag_val(itag+1), 1)
            'C': data[nset].colour = gr_int_val(tag_val(itag+1), 1)
+           'CV': data[nset].c_vals = gr_byt_val(tag_val(itag+1), 3)
            'W': data[nset].thick = gr_int_val(tag_val(itag+1), 1)
            'O': data[nset].sort = gr_byt_val(tag_val(itag+1), 1)
            'K': data[nset].noclip = gr_byt_val(tag_val(itag+1), 1)

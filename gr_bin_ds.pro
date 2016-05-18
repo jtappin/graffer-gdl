@@ -54,6 +54,7 @@ pro Gr_bin_ds, data, nset, ilu, msgid
                                 ; S - symbol size
                                 ; L - line style
                                 ; C - colour
+                                ; CV - custom colour
                                 ; W - thickness (width)
                                 ; O - sorted? (Order)
                                 ; D - description
@@ -81,6 +82,7 @@ pro Gr_bin_ds, data, nset, ilu, msgid
         'S': data[nset].symsize = value
         'L': data[nset].line = value
         'C': data[nset].colour = value
+        'CV': data[nset].c_vals = value
         'W': data[nset].thick = value
         'O': data[nset].sort = value
         'K': data[nset].noclip = value

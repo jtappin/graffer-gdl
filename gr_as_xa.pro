@@ -2,7 +2,7 @@ pro Gr_as_xa, data, xrange, yrange, range
 
 ;+
 ; GR_AS_XA
-;	Autoscale graffer data (X-Axis, rectangular plot)
+;	Autoscale graffer data (X-Axis, Polar plot)
 ;
 ; Usage:
 ;	gr_as_xa, data, range

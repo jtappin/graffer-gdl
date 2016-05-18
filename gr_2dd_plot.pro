@@ -33,10 +33,6 @@ pro Gr_2dd_plot, pdefs, i, csiz, grey_ps = grey_ps, shaded = shaded
   data = *pdefs.data
   if not ptr_valid(data[i].xydata) then return
 
-  if (data[i].zopts.format eq 1 and $
-      pdefs.short_colour and $
-      not keyword_set(grey_ps)) then  return
-
   xydata = *data[i].xydata
   z = *xydata.z
   x = *xydata.x
@@ -66,8 +62,12 @@ pro Gr_2dd_plot, pdefs, i, csiz, grey_ps = grey_ps, shaded = shaded
                   data[i].zopts.label/2) mod data[i].zopts.label eq 0
      endif else labels = 0
 
-     if ptr_valid(data[i].zopts.colours) then colours = $
-        *(data[i].zopts.colours)
+     if ptr_valid(data[i].zopts.colours) then begin
+        colours = *(data[i].zopts.colours)
+        ncol = n_elements(colours)
+        lcolours = lonarr(ncol)
+        for j = 0, ncol-1 do lcolours[j] = graff_colours(colours[j])
+     endif
      if ptr_valid(data[i].zopts.style) then linestyle = $
         *(data[i].zopts.style) 
      if ptr_valid(data[i].zopts.thick) then thick = $
@@ -77,28 +77,31 @@ pro Gr_2dd_plot, pdefs, i, csiz, grey_ps = grey_ps, shaded = shaded
 
      contour, z, x, y, /overplot, /follow, $
               levels = levels, c_linestyle = linestyle, $
-              c_colors = colours, c_thick = thick,  $
+              c_colors = lcolours, c_thick = thick,  $
               fill = data[i].zopts.fill eq 1b, downhill = $
               data[i].zopts.fill eq 2b, c_labels = labels, c_charsize $
               = ccsize
      if data[i].zopts.fill eq 1b then shaded = 1b ; Don't clear it.
   endif else if (data[i].zopts.format eq 1) then begin
-     cflag = 0b
-     if (keyword_set(grey_ps)) then colour_range = [0, 255] $
-     else if (!d.n_colors gt 256 or !d.name eq 'PS') then begin
-        colour_range = [0, 255]
-        if (data[i].zopts.ctable gt 0) then $
-           graff_ctable, data[i].zopts.ctable-1, data[i].zopts.gamma $
-        else graff_ctable, pdefs.ctable, pdefs.gamma
-        cflag = 1b
-     endif else colour_range = [pdefs.transient.colmin, $
-                                pdefs.transient.colmin+127 < !D.n_colors-1]
-     gr_display_img, z, x, y, range = $
-                     data[i].zopts.range, colour_range = colour_range, $
-                     pixel_size = data[i].zopts.pxsize, scale_mode = $
-                     data[i].zopts.ilog, inverted = $
-                     data[i].zopts.invert, missing = data[i].zopts.missing
-     if cflag then graff_colours, pdefs
+     if (~keyword_set(grey_ps)) then begin
+        if (data[i].zopts.ctable gt 0) then begin
+           table = data[i].zopts.ctable-1
+           gamma = data[i].zopts.gamma 
+        endif else begin
+           table = pdefs.ctable
+           gamma = pdefs.gamma
+        endelse
+     endif
+     gr_display_img, z, x, y, $
+                     range = data[i].zopts.range, $
+                     pixel_size = data[i].zopts.pxsize, $
+                     scale_mode = data[i].zopts.ilog, $
+                     inverted = data[i].zopts.invert, $
+                     missing = data[i].zopts.missing, $
+                     ps_grey = grey_ps, $
+                     table = table, $
+                     gamma = gamma
+
      shaded = 1b
   endif
 

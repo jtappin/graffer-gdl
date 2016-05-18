@@ -62,10 +62,24 @@ pro Gr_dsp_event, event
      
      'COLOUR': if (track_flag) then $
         graff_msg, pdefs.ids.hlptxt, 'Select colour for current data set' $
-     else if pdefs.opts.colour_menu then $
-        (*pdefs.data)[pdefs.cset].colour = event.value-1 $
-     else  (*pdefs.data)[pdefs.cset].colour = event.index-1
-     
+     else begin
+        ncmax = widget_info(event.id, /droplist_number)
+        if event.index eq ncmax-1 then begin
+           ci = (*pdefs.data)[pdefs.cset].colour
+           if ci eq -2 then $
+              cc = gr_custom_colour((*pdefs.data)[pdefs.cset].c_vals, $
+                                    pdefs.ids.windex) $
+           else cc = gr_custom_colour(ci > 0, pdefs.ids.windex)
+           if n_elements(cc) eq 1 then begin
+              if ci ne -2 then $
+                 widget_control, event.id, set_droplist_select = ci+1
+           endif else begin
+              (*pdefs.data)[pdefs.cset].colour = -2
+              (*pdefs.data)[pdefs.cset].c_vals = cc
+           endelse
+        endif else (*pdefs.data)[pdefs.cset].colour = event.index-1
+     endelse
+
      'STYLE': if (track_flag) then $
         graff_msg, pdefs.ids.hlptxt, 'Select line style for current data set' $
      else (*pdefs.data)[pdefs.cset].line = event.index
@@ -145,9 +159,10 @@ end
 
 pro Gr_ds_menus, optbb, pdefs
 
-  common Gr_psym_maps, psym_bm, col_bm
+  common Gr_psym_maps, psym_bm  ;, col_bm
 
-  if (n_elements(psym_bm) eq 0) then gr_psym_bitm, pdefs.transient.colmin
+  if (n_elements(psym_bm) eq 0) then gr_psym_bitm
+                                ;, pdefs.transient.colmin
 
   pdefs.ids.plopts[0] = widget_base(optbb, $
                                     /column, $
@@ -155,23 +170,23 @@ pro Gr_ds_menus, optbb, pdefs
 
   jjb = widget_base(pdefs.ids.plopts[0], /row)
 
-  if pdefs.opts.colour_menu then begin
-                                ; We fix the background here rather
-                                ; than at the read stage because:
-                                ; 1) We may not be able to determine
-                                ; the bg at the read stage.
-                                ; 2) It could have changed.
-     wc = widget_info(jjb, /system_colors)
-     col_swatch = col_bm
-     for j = 0, 2 do col_swatch[*, *, j, 0] and= wc.window_bk[j]
+  ;; if pdefs.opts.colour_menu then begin
+  ;;                               ; We fix the background here rather
+  ;;                               ; than at the read stage because:
+  ;;                               ; 1) We may not be able to determine
+  ;;                               ; the bg at the read stage.
+  ;;                               ; 2) It could have changed.
+  ;;    wc = widget_info(jjb, /system_colors)
+  ;;    col_swatch = col_bm
+  ;;    for j = 0, 2 do col_swatch[*, *, j, 0] and= wc.window_bk[j]
 
-     pdefs.ids.colour = cw_bbselector(jjb, $
-                                      col_swatch, $
-                                      uvalue = 'COLOUR', $
-                                      label_left = 'Colour:', $
-                                      set_value = 2, $
-                                      /track)
-  endif else begin
+  ;;    pdefs.ids.colour = cw_bbselector(jjb, $
+  ;;                                     col_swatch, $
+  ;;                                     uvalue = 'COLOUR', $
+  ;;                                     label_left = 'Colour:', $
+  ;;                                     set_value = 2, $
+  ;;                                     /track)
+  ;; endif else begin
      col_list = ['Omit', $
                  'White (bg)', $
                  'Black', $
@@ -200,14 +215,15 @@ pro Gr_ds_menus, optbb, pdefs
                  'Dark Magenta', $
                  'Light Magenta', $
                  'Dark Yellow', $
-                 'Light Yellow']
+                 'Light Yellow', $
+                 'Custom']
      pdefs.ids.colour = widget_droplist(jjb, $
                                         value = col_list, $
                                         uvalue = 'COLOUR', $
                                         title = 'Colour:', $
                                         /track)
      widget_control, pdefs.ids.colour, set_droplist_select = 1
-  endelse
+  ;; endelse
 
 ; This stays as a bbselector as droplists don't do bitmaps
   pdefs.ids.psym = cw_bbselector(jjb, $

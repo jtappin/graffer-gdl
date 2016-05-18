@@ -85,7 +85,7 @@ pro Gr_plot_object, pdefs, no_null = no_null, charsize = charsize, $
 
   if pdefs.y_right then begin
      yrange1 = pdefs.yrange_r
-     if (yrange1[0] eq yrange[1]) then begin
+     if (yrange1[0] eq yrange1[1]) then begin
         graff_msg, pdefs.ids.message, ['WARNING: degenerate secondary ' + $
                                        'y-axis range', $ 
                                        '         not plotting']

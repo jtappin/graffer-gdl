@@ -428,7 +428,6 @@ pdefs.chflag = 0                ; Clear changes flag
 if (not keyword_set(no_set)) then begin
     graff_set_vals, pdefs
 endif
-if ctflag then graff_colours, pdefs
 
 end
 

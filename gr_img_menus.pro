@@ -104,156 +104,147 @@ end
 
 pro Gr_img_menus, sb, pdefs
 
-i = pdefs.cset
-zopts = (*pdefs.data)[i].zopts
+  i = pdefs.cset
+  zopts = (*pdefs.data)[i].zopts
 
-local_ct = !d.n_colors gt 256
-if (local_ct and zopts.ctable gt 0) then begin
-    ctable = zopts.ctable-1
-    gamma = zopts.gamma
-endif else begin
-    ctable = pdefs.ctable
-    gamma = pdefs.gamma
-endelse
+  local_ct = !d.n_colors gt 256
+  if (local_ct and zopts.ctable gt 0) then begin
+     ctable = zopts.ctable-1
+     gamma = zopts.gamma
+  endif else begin
+     ctable = pdefs.ctable
+     gamma = pdefs.gamma
+  endelse
 
-base = widget_base(sb, $
-                   /column, $
-                   event_pro = 'img_event', $
-                   map = zopts.format, $
+  base = widget_base(sb, $
+                     /column, $
+                     event_pro = 'img_event', $
+                     map = zopts.format, $
+                     xpad = 0, $
+                     ypad = 0, $
+                     space = 0)
+  pdefs.ids.zopts.bases[1] = base
+
+
+  itl = ''
+  loadct, get_names = itl
+
+  junk = widget_label(base, $
+                      value = 'Colour Table')
+  pdefs.ids.zopts.i_ctable = widget_list(base, $
+                                         value = itl, $
+                                         uvalue = 'TAB', $
+                                         ysize = 5)
+  widget_control, pdefs.ids.zopts.i_ctable, set_list_select = ctable
+
+  obase = widget_base(base, $
+                      /column, $
+                      xpad = 0, $
+                      ypad = 0, $
+                      space = 0)
+
+  junk = widget_label(obase, value = 'Range')
+  jb = widget_base(obase, $
+                   /row, $
                    xpad = 0, $
                    ypad = 0, $
                    space = 0)
-pdefs.ids.zopts.bases[1] = base
 
-if (pdefs.short_colour) then  begin
-    msg = ["      * * * W A R N I N G * * * ",  $
-           "Extended colour table cannot be loaded", $
-           "Image format displays will be skipped"]
-    junk = widget_text(base, $
-                       value = msg, $
-                       xsize = max(strlen(msg)), $
-                       ysize = n_elements(msg), $
-                       /align_center)
-endif else begin
-
-    itl = ''
-    loadct, get_names = itl
-
-    junk = widget_label(base, $
-                        value = 'Colour Table')
-    pdefs.ids.zopts.i_ctable = widget_list(base, $
-                                           value = itl, $
-                                           uvalue = 'TAB', $
-                                           ysize = 5)
-    widget_control, pdefs.ids.zopts.i_ctable, set_list_select = ctable
-
-    obase = widget_base(base, $
-                        /column, $
-                        xpad = 0, $
-                        ypad = 0, $
-                        space = 0)
-
-    junk = widget_label(obase, value = 'Range')
-    jb = widget_base(obase, $
-                     /row, $
-                     xpad = 0, $
-                     ypad = 0, $
-                     space = 0)
-
-    pdefs.ids.zopts.i_range[0] = graff_enter(jb, $
-                                             /float, $
-                                             value = zopts.range[0], $
-                                             format = "(g12.4)", $
-                                             xsize = 12, $
-                                             uvalue = 'R1', $
-                                             label = 'Min:', $
-                                             /capture, $
-                                             /track, $
-                                             /all_events)
-    pdefs.ids.zopts.i_range[1] = graff_enter(jb, $
-                                             /float, $
-                                             value = zopts.range[1], $
-                                             format = "(g12.4)", $
-                                             xsize = 12, $
-                                             uvalue = 'R2', $
-                                             label = 'Max:', $
-                                             /capture, $
-                                             /track, $
-                                             /all_events)
-    
+  pdefs.ids.zopts.i_range[0] = graff_enter(jb, $
+                                           /float, $
+                                           value = zopts.range[0], $
+                                           format = "(g12.4)", $
+                                           xsize = 12, $
+                                           uvalue = 'R1', $
+                                           label = 'Min:', $
+                                           /capture, $
+                                           /track, $
+                                           /all_events)
+  pdefs.ids.zopts.i_range[1] = graff_enter(jb, $
+                                           /float, $
+                                           value = zopts.range[1], $
+                                           format = "(g12.4)", $
+                                           xsize = 12, $
+                                           uvalue = 'R2', $
+                                           label = 'Max:', $
+                                           /capture, $
+                                           /track, $
+                                           /all_events)
+  
 ;junk = widget_label(jb, value = ' ')
 
-    jb = widget_base(obase, $
-                     /row, $
-                     xpad = 0, $
-                     ypad = 0, $
-                     space = 0)
+  jb = widget_base(obase, $
+                   /row, $
+                   xpad = 0, $
+                   ypad = 0, $
+                   space = 0)
 
-    jba = widget_base(jb, $
-                      /column)
+  jba = widget_base(jb, $
+                    /column)
 
-    pdefs.ids.zopts.i_missid = graff_enter(jba, $
-                                           /double, $
-                                           value = zopts.missing, $
-                                           xsize = 8, $
-                                           uvalue = 'MISS', $
-                                           label = "Missing:", $ $
-                                           /track, $
-                                           /capture, $
-                                           /all)
-
-    
-    pdefs.ids.zopts.i_log = $
-       widget_droplist(jba, $
-                       title = 'Scaling:', $
-                       value = ['Linear', 'Logarithmic', 'Square Root'], $
-                       uvalue = 'LOG', $
-                       /track)
-    widget_control, pdefs.ids.zopts.i_log, $
-                    set_droplist_select = zopts.ilog
-    
-    jbb = widget_base(jba, $
-                      /nonexclusive, $
-                      /column)
-    pdefs.ids.zopts.i_invert = widget_button(jbb, $
-                                             value = 'Invert colours?', $
-                                             uvalue = 'INVERT', $
-                                             /track)
-    widget_control, pdefs.ids.zopts.i_invert, set_button = zopts.invert
-    
-    jbb = widget_base(jb, $
-                      space = 0, $
-                      xpad = 0, $
-                      ypad = 0, $
-                      /column)
-    pdefs.ids.zopts.i_pxsz = graff_enter(jbb, $
-                                         /float, $
-                                         value = zopts.pxsize, $
-                                         format = "(f5.2)", $
-                                         xsize = 5, $
-                                         uvalue = 'PX', $
-                                         label = 'Pixel Size:', $
+  pdefs.ids.zopts.i_missid = graff_enter(jba, $
+                                         /double, $
+                                         value = zopts.missing, $
+                                         xsize = 8, $
+                                         uvalue = 'MISS', $
+                                         label = "Missing:", $ $
                                          /track, $
                                          /capture, $
                                          /all)
-    
- ;    jb = widget_base(obase, $
+
+  
+  pdefs.ids.zopts.i_log = $
+     widget_droplist(jba, $
+                     title = 'Scaling:', $
+                     value = ['Linear', 'Logarithmic', 'Square Root'], $
+                     $
+                     uvalue = 'LOG', $
+                     /track)
+  widget_control, pdefs.ids.zopts.i_log, $
+                  set_droplist_select = zopts.ilog
+  
+  jbb = widget_base(jba, $
+                    /nonexclusive, $
+                    /column)
+  pdefs.ids.zopts.i_invert = widget_button(jbb, $ $
+                                           value = 'Invert colours?', $
+                                           uvalue = 'INVERT', $
+                                           /track)
+  widget_control, pdefs.ids.zopts.i_invert, set_button = zopts.invert
+  
+  jbb = widget_base(jb, $
+                    space = 0, $
+                    xpad = 0, $
+                    ypad = 0, $
+                    /column)
+  pdefs.ids.zopts.i_pxsz = graff_enter(jbb, $
+                                       /float, $
+                                       value = zopts.pxsize, $
+                                       format = "(f5.2)", $
+                                       xsize = 5, $
+                                       uvalue = 'PX', $
+                                       label = 'Pixel Size:', $
+                                       /track, $
+                                       /capture, $
+                                       /all)
+  
+                                ;    jb = widget_base(obase, $
 ;                      /column, $
 ;                      space = 0)
 
-    
-    pdefs.ids.zopts.i_gamma = graff_enter(jbb, $
-                                          /float, $
-                                          value = gamma, $
-                                          format = "(f7.3)", $
-                                          xsize = 9, $
-                                          uvalue = 'GAM', $
-                                          label = 'Gamma:', $
-                                          /track, $
-                                          /capture, $
-                                          /all_events)
-    
-endelse
+  
+  pdefs.ids.zopts.i_gamma = graff_enter(jbb, $
+                                        /float, $
+                                        value = gamma, $
+                                        format = "(f7.3)", $
+                                        xsize = 9, $
+                                        uvalue = 'GAM', $
+                                        label = 'Gamma:', $
+                                        /track, $
+                                        /capture, $
+                                        /all_events)
+  
+
 
 end
 

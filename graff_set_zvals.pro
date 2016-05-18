@@ -72,26 +72,24 @@ pro graff_set_zvals, pdefs
 
 ; And the image menu
 
-  if ~pdefs.short_colour then begin
-     if localct then begin
-        ctable = zopts.ctable-1
-        gamma = zopts.gamma
-     endif else begin
-        ctable = pdefs.ctable
-        gamma = pdefs.gamma
-     endelse
+  if localct then begin
+     ctable = zopts.ctable-1
+     gamma = zopts.gamma
+  endif else begin
+     ctable = pdefs.ctable
+     gamma = pdefs.gamma
+  endelse
 
-     for j = 0, 1 do $
-        widget_control, zids.i_range[j], set_value = zopts.range[j]
+  for j = 0, 1 do $
+     widget_control, zids.i_range[j], set_value = zopts.range[j]
 
-     widget_control, zids.i_log, set_droplist_select = zopts.ilog
-     widget_control, zids.i_invert, set_button = zopts.invert
+  widget_control, zids.i_log, set_droplist_select = zopts.ilog
+  widget_control, zids.i_invert, set_button = zopts.invert
 
-     widget_control, zids.i_pxsz, set_value = zopts.pxsize
-     widget_control, zids.i_ctable, set_list_select = ctable
-     widget_control, zids.i_gamma, set_value = gamma
-     widget_control, zids.i_missid, set_value = zopts.missing
-  endif
+  widget_control, zids.i_pxsz, set_value = zopts.pxsize
+  widget_control, zids.i_ctable, set_list_select = ctable
+  widget_control, zids.i_gamma, set_value = gamma
+  widget_control, zids.i_missid, set_value = zopts.missing
 
 
 end

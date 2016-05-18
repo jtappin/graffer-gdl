@@ -45,7 +45,6 @@ endif
 if keyword_set(predraw) then begin
     set_plot, 'x'
     window, /free, /pixmap,  xsize = 600, ysize = 600
-    graff_colours, pdefs
     gr_plot_object, pdefs
     wdelete
 endif

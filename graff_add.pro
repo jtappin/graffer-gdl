@@ -526,7 +526,6 @@ pro Graff_add, file, a1, a2, a3, errors = errors, $
      graffer, file
      return
   endif else if (keyword_set(display)) then begin
-     graff_colours, pdefs
      gr_plot_object, pdefs
   endif
 

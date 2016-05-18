@@ -81,15 +81,18 @@ pro Gr_pl_key, pdefs, csiz
 
      irow = (nrows - (j mod nrows))-1
      icol = j/nrows
-     
+     if (*pdefs.data)[i].colour eq -2 then $
+        lcolour = graff_colours((*pdefs.data)[i].c_vals) $
+     else lcolour = graff_colours((*pdefs.data)[i].colour)
+
      if ((*pdefs.data)[i].pline eq 2 and not pdefs.key.one_point) then begin
         xx = [x(0), replicate(total(x)/2, 2), x(1)]
         plots, /norm, x0(icol)+xx, y(irow)+ys([0, 0, 1, 1]), color = $
-               (*pdefs.data)[i].colour, linesty = (*pdefs.data)[i].line, $
+               lcolour, linesty = (*pdefs.data)[i].line, $
                thick = (*pdefs.data)[i].thick
      endif else if ((*pdefs.data)[i].pline ne 0) then begin
         plots, /norm, x0(icol)+x, y(irow)+yoff, color = $
-               (*pdefs.data)[i].colour, linesty = (*pdefs.data)[i].line, $
+               lcolour, linesty = (*pdefs.data)[i].line, $
                thick = (*pdefs.data)[i].thick
      endif
      

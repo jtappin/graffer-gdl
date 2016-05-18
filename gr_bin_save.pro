@@ -142,6 +142,8 @@ pro Gr_bin_save, pdefs, auto = auto
      graff_put_rec, ilu, 'S  ', (*pdefs.data)[j].symsize
      graff_put_rec, ilu, 'L  ', (*pdefs.data)[j].line
      graff_put_rec, ilu, 'C  ', (*pdefs.data)[j].colour
+     if (*pdefs.data)[j].colour eq -2 then $
+        graff_put_rec, ilu, 'CV ', (*pdefs.data)[j].c_vals
      graff_put_rec, ilu, 'W  ', (*pdefs.data)[j].thick
      graff_put_rec, ilu, 'O  ', (*pdefs.data)[j].sort
      graff_put_rec, ilu, 'K  ', (*pdefs.data)[j].noclip
@@ -228,6 +230,8 @@ pro Gr_bin_save, pdefs, auto = auto
      graff_put_rec, ilu, 'N  ', (*pdefs.text)[j].norm
      graff_put_rec, ilu, 'AX ', (*pdefs.text)[j].axis
      graff_put_rec, ilu, 'C  ', (*pdefs.text)[j].colour
+     if (*pdefs.text)[j].colour eq -2 then $
+        graff_put_rec, ilu, 'CV ', (*pdefs.text)[j].c_vals
      graff_put_rec, ilu, 'S  ', (*pdefs.text)[j].size
      graff_put_rec, ilu, 'O  ', (*pdefs.text)[j].orient
      graff_put_rec, ilu, 'A  ', (*pdefs.text)[j].align
@@ -243,6 +247,8 @@ pro Gr_bin_save, pdefs, auto = auto
 
   graff_put_rec, ilu, 'TTS'
   graff_put_rec, ilu, 'C  ', pdefs.text_options.colour
+  if pdefs.text_options.colour eq -2 then $
+     graff_put_rec, ilu, 'CV ', pdefs.text_options.c_vals
   graff_put_rec, ilu, 'S  ', pdefs.text_options.size
   graff_put_rec, ilu, 'O  ', pdefs.text_options.orient
   graff_put_rec, ilu, 'A  ', pdefs.text_options.align

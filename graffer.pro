@@ -14,8 +14,6 @@
 ;	xsize	int	input	The x dimension of the draw widget
 ;	ysize	int	input	The y dimension of the draw widget
 ;	debug		input	If set, then run in debugging mode.
-;	colour_menu	input	Override the default choice of colour
-;				menu format.
 ;
 ; History:
 ;	Original: 27/7/95; SJT
@@ -243,6 +241,8 @@
 ;                       unchanged component).
 ;               Version 4.07:
 ;                     - Support min and max for 1D datasets (not functions)
+;               Version 4.08:
+;                     - Major changes to colour handling.
 ;-
 
 
@@ -375,270 +375,273 @@ widget_control, base, set_uvalue = pdefs
 end
 
 
-pro Graffer, file, group=group, xsize=xsize, ysize=ysize, debug=debug, $
-             recover=recover, block = block, colour_menu = colour_menu
+pro Graffer, file, group = group, xsize = xsize, ysize = ysize, debug $
+             = debug, $
+             recover = recover, block = block, colour_menu = colour_menu
 
-common Gr_psym_maps, psym_bm, col_bm
+  common Gr_psym_maps, psym_bm  ;, col_bm
 
-gwid = gr_present()
-if (gwid gt 0) then begin
-   junk = dialog_message(['There is already a GRAFFER window', $
-                          'present in this IDL session', $
-                          'please close it or open your file', $
-                          'in that window'], $
-                         title = 'GRAFFER already running', $
-                         /error)
-   return
-endif
+  gwid = gr_present()
+  if (gwid gt 0) then begin
+     junk = dialog_message(['There is already a GRAFFER window', $
+                            'present in this IDL session', $
+                            'please close it or open your file', $
+                            'in that window'], $
+                           title = 'GRAFFER already running', $
+                           /error)
+     return
+  endif
 
-gr_state, /save                 ; Save the plot state to restore on exit
- 
+  gr_state, /save               ; Save the plot state to restore on exit
+  
 ; Get the version number.
 @graff_version
 
-if (keyword_set(debug)) then begin
-    !Quiet = 0 
-    on_error, 0                 ; stop at error
-endif else on_error, 2          ; Return to caller on error
-    
-!P.multi = 0                    ; Clear plot positioning settings.
-!P.region = 0
-!P.position = 0
-!P.font = -1
+  if (keyword_set(debug)) then begin
+     !Quiet = 0 
+     on_error, 0                ; stop at error
+  endif else on_error, 2        ; Return to caller on error
+  
+  !P.multi = 0                  ; Clear plot positioning settings.
+  !P.region = 0
+  !P.position = 0
+  !P.font = -1
 
-if (n_elements(file) eq 0) then $
-  file = dialog_pickfile(/read, $
-                         filter = '*.grf', $
-                         title = 'Graffer '+vstring+' Select', $
-                         resource = 'Graffer') $
-else if (file_test(file, /dir)) then begin
-    file = gr_get_full_dir(file)
-    file = dialog_pickfile(/read, $
-                           filter = '*.grf', $
-                           title = 'Graffer '+vstring+' Select', $
-                           path = file, $
-                           resource = 'Graffer')
-endif else if ((strpos(file, '*') > strpos(file, '?')) ne -1) then begin
-    f = file
-    gr_split_dir, f, dir
-    dir = gr_get_full_dir(dir)
-    file = dialog_pickfile(/read, $
-                           filter = f, $
-                           title = 'Graffer '+vstring+' Select', $
-                           path = dir, $
-                           resource = 'Graffer')
-endif
+  if (n_elements(file) eq 0) then $
+     file = dialog_pickfile(/read, $
+                            filter = '*.grf', $
+                            title = 'Graffer '+vstring+' Select', $
+                            resource = 'Graffer') $
+  else if (file_test(file, /dir)) then begin
+     file = gr_get_full_dir(file)
+     file = dialog_pickfile(/read, $
+                            filter = '*.grf', $
+                            title = 'Graffer '+vstring+' Select', $
+                            path = file, $
+                            resource = 'Graffer')
+  endif else if ((strpos(file, '*') > strpos(file, '?')) ne -1) then begin
+     f = file
+     gr_split_dir, f, dir
+     dir = gr_get_full_dir(dir)
+     file = dialog_pickfile(/read, $
+                            filter = f, $
+                            title = 'Graffer '+vstring+' Select', $
+                            path = dir, $
+                            resource = 'Graffer')
+  endif
 
-if (file eq '') then return
+  if (file eq '') then return
 
 ;	Define the data control structure
 
-graff_init, pdefs, file, version = version
-if n_elements(colour_menu) ne 0 then pdefs.opts.colour_menu = $
-  keyword_set(colour_menu)
+  graff_init, pdefs, file, version = version
+  if n_elements(colour_menu) ne 0 then $
+     print, "The colour_menu keyword is no longer supported"
+  ;;  pdefs.opts.colour_menu = $
+  ;; keyword_set(colour_menu)
 
-igot = graff_get(pdefs, file, /no_set, recover = recover, /no_warn)
-if igot eq 0 then return        ; Note that here it is meaningful to
+  igot = graff_get(pdefs, file, /no_set, recover = recover, /no_warn)
+  if igot eq 0 then return      ; Note that here it is meaningful to
                                 ; continue if the file doesn't exist.
 
-pdefs.ids.graffer = widget_base(title = 'Graffer ' + $
-                                'V'+string(pdefs.version, $
-                                           format = "(I0,'.',I2.2)"), $
-                                /row, $
-                                xpad = 0, $
-                                ypad = 0, $
-                                space = 0, $
-                                resource = 'Graffer', $
-                                kill_notify = 'gr_state', $
-                                uname = 'GRAFFER')
+  pdefs.ids.graffer = widget_base(title = 'Graffer ' + $
+                                  'V'+string(pdefs.version, $
+                                             format = "(I0,'.',I2.2)"), $
+                                  /row, $
+                                  xpad = 0, $
+                                  ypad = 0, $
+                                  space = 0, $
+                                  resource = 'Graffer', $
+                                  kill_notify = 'gr_state', $
+                                  uname = 'GRAFFER')
 
 
-base = widget_base(pdefs.ids.graffer, $
-                   /column, $
-                   xpad = 0, $
-                   ypad = 0, $
-                   space = 0)
-
-cdbase = widget_base(base, $
-                     /row, $
-                     xpad = 0, $
-                     ypad = 0, $
-                     space = 0)
-cbase = widget_base(cdbase, $
-                    /column, $
-                    xpad = 0, $
-                    ypad = 0, $
-                    space = 0)
-
-                                ; Exit etc.
-gr_control_menu, cbase
-
-
-if strpos(pdefs.dir, path_sep(), /reverse_search) ne $
-  strlen(pdefs.dir)-1 then fullname = pdefs.dir+path_sep()+pdefs.name $
-else fullname = pdefs.dir+pdefs.name
-    
-pdefs.ids.name = graff_enter(cbase, /display, /text, value = $
-                             fullname, xsize = 30, label = "Name:")
-
-tbase = widget_tab(cbase, $
-                   uvalue = 'TABS', $
-                   /track)
-
-cbase1 = widget_base(tbase, $
-                     title = 'Global', $
-                     /column)
-
-                                ; Plot Title/Subtitle
-
-gr_mk_plmenus, cbase1, pdefs
-
-                                ; X Axis controls
-
-gr_axis_menu, 'X', cbase1, pdefs
-
-                                ; Y Axis controls
-yybase = widget_base(cbase1, $
+  base = widget_base(pdefs.ids.graffer, $
                      /column, $
                      xpad = 0, $
                      ypad = 0, $
-                     space = 0, $
-                     /frame)
-jb = widget_base(yybase, $
-                 /row, $
-                 /nonexclusive)
-pdefs.ids.y_right = widget_button(jb, $
-                                  value = "Enable secondary Y-axis?", $
-                                  uvalue = 'YRIGHT', $
-                                  /track)
-widget_control, pdefs.ids.y_right, set_button = pdefs.y_right
+                     space = 0)
 
-ytabs = widget_tab(yybase, $
-                   uvalue = 'YTABS', $
-                   /track)
-jb = widget_base(ytabs, $
-                 title = 'Main')
-gr_axis_menu, 'Y', jb, pdefs
+  cdbase = widget_base(base, $
+                       /row, $
+                       xpad = 0, $
+                       ypad = 0, $
+                       space = 0)
+  cbase = widget_base(cdbase, $
+                      /column, $
+                      xpad = 0, $
+                      ypad = 0, $
+                      space = 0)
 
-pdefs.ids.ybase_r = widget_base(ytabs, $
-                                title = 'Secondary', $
-                                sensitive = pdefs.y_right)
-gr_axis_menu, 'Yr', pdefs.ids.ybase_r, pdefs
+                                ; Exit etc.
+  gr_control_menu, cbase
+
+
+  if strpos(pdefs.dir, path_sep(), /reverse_search) ne $
+     strlen(pdefs.dir)-1 then fullname = pdefs.dir+path_sep()+pdefs.name $
+  else fullname = pdefs.dir+pdefs.name
+  
+  pdefs.ids.name = graff_enter(cbase, /display, /text, value = $
+                               fullname, xsize = 30, label = "Name:")
+
+  tbase = widget_tab(cbase, $
+                     uvalue = 'TABS', $
+                     /track)
+
+  cbase1 = widget_base(tbase, $
+                       title = 'Global', $
+                       /column)
+
+                                ; Plot Title/Subtitle
+
+  gr_mk_plmenus, cbase1, pdefs
+
+                                ; X Axis controls
+
+  gr_axis_menu, 'X', cbase1, pdefs
+
+                                ; Y Axis controls
+  yybase = widget_base(cbase1, $
+                       /column, $
+                       xpad = 0, $
+                       ypad = 0, $
+                       space = 0, $
+                       /frame)
+  jb = widget_base(yybase, $
+                   /row, $
+                   /nonexclusive)
+  pdefs.ids.y_right = widget_button(jb, $
+                                    value = "Enable secondary Y-axis?", $
+                                    uvalue = 'YRIGHT', $
+                                    /track)
+  widget_control, pdefs.ids.y_right, set_button = pdefs.y_right
+
+  ytabs = widget_tab(yybase, $
+                     uvalue = 'YTABS', $
+                     /track)
+  jb = widget_base(ytabs, $
+                   title = 'Main')
+  gr_axis_menu, 'Y', jb, pdefs
+
+  pdefs.ids.ybase_r = widget_base(ytabs, $
+                                  title = 'Secondary', $
+                                  sensitive = pdefs.y_right)
+  gr_axis_menu, 'Yr', pdefs.ids.ybase_r, pdefs
 
                                 ; Setting the properties for the
                                 ; current data set
 
-dsbase = widget_base(tbase, $
-                     /column, $
-                     title = 'Datasets')
+  dsbase = widget_base(tbase, $
+                       /column, $
+                       title = 'Datasets')
 
-gr_ds_menu, dsbase, pdefs       ; Change Data Set
+  gr_ds_menu, dsbase, pdefs     ; Change Data Set
 
-gr_curr_menu, dsbase, pdefs     ; Options for the current DS
+  gr_curr_menu, dsbase, pdefs   ; Options for the current DS
 
                                 ; Add a text string
 
-jb =  widget_base(cbase, $
-                  /row)
-pdefs.ids.textmode = widget_droplist(jb, $
-                                     value = ['Draw', 'Text'], $
-                                     uvalue = 'TEXT', $
-                                     title = 'Draw/Text Mode:', $
-                                     /track)
-jbb = widget_base(jb, $
-                  /nonexclusive)
-junk = widget_button(jbb, $
-                     value = 'Cross Hairs', $
-                     uvalue = 'CROSS', $
-                     /track)
-widget_control, junk, set_button = 1
+  jb =  widget_base(cbase, $
+                    /row)
+  pdefs.ids.textmode = widget_droplist(jb, $
+                                       value = ['Draw', 'Text'], $
+                                       uvalue = 'TEXT', $
+                                       title = 'Draw/Text Mode:', $
+                                       /track)
+  jbb = widget_base(jb, $
+                    /nonexclusive)
+  junk = widget_button(jbb, $
+                       value = 'Cross Hairs', $
+                       uvalue = 'CROSS', $
+                       /track)
+  widget_control, junk, set_button = 1
 
 
                                 ; Current cursor position
 
 
-jb = widget_base(cbase, /row, xpad = 0, ypad = 0, space = 0)
-pdefs.ids.xcp = graff_enter(jb, /float, /display, xsize = 14, value = $
-                            0., label = 'X:', format = "(g14.7)") 
-pdefs.ids.ycp = graff_enter(jb, /float, /display, xsize = 14, value = $
-                            0., label = 'Y:', format = "(g14.7)") 
+  jb = widget_base(cbase, /row, xpad = 0, ypad = 0, space = 0)
+  pdefs.ids.xcp = graff_enter(jb, /float, /display, xsize = 14, value = $
+                              0., label = 'X:', format = "(g14.7)") 
+  pdefs.ids.ycp = graff_enter(jb, /float, /display, xsize = 14, value = $
+                              0., label = 'Y:', format = "(g14.7)") 
 
 
 
                                 ; The draw screen and the plot type
                                 ; selections.
 
-cbase = widget_base(cdbase, $
-                    /column)
+  cbase = widget_base(cdbase, $
+                      /column)
 
-if (not keyword_set(xsize)) then xwsize = 600 $
-else xwsize = xsize > 600
+  if (not keyword_set(xsize)) then xwsize = 600 $
+  else xwsize = xsize > 600
 
-if (not keyword_set(ysize)) then ywsize = 600 $
-else ywsize = ysize > 600
+  if (not keyword_set(ysize)) then ywsize = 600 $
+  else ywsize = ysize > 600
 
-if ((xwsize >  ywsize) gt 600) then $
-  pdefs.ids.draw = widget_draw(cbase, xsize = xwsize, x_scroll_size = $
-                               600, ysize = ywsize, y_scroll_size = 600, $
-                               uvalue = 'DRAW', /button_event, $
-                               /motion_event, /track, /frame) $
-else $
-  pdefs.ids.draw = widget_draw(cbase, xsize = xwsize, ysize = ywsize, $
-                               uvalue = 'DRAW', /button_event, $
-                               /motion_event, /track, /frame)
+  if ((xwsize >  ywsize) gt 600) then $
+     pdefs.ids.draw = widget_draw(cbase, xsize = xwsize, x_scroll_size = $
+                                  600, ysize = ywsize, y_scroll_size = $
+                                  600, $
+                                  uvalue = 'DRAW', /button_event, $
+                                  /motion_event, /track, /frame) $
+  else $
+     pdefs.ids.draw = widget_draw(cbase, xsize = xwsize, ysize = ywsize, $
+                                  uvalue = 'DRAW', /button_event, $
+                                  /motion_event, /track, /frame)
 
 
-tjb = widget_base(cbase, $
-                  /row)
+  tjb = widget_base(cbase, $
+                    /row)
 
                                 ; Message box, only put it here
                                 ; because there's some space, give it
                                 ; a UVALUE so that we can use it with
                                 ; a timer event to control the autosave
-pdefs.ids.message = graff_enter(tjb, /display, xsize = 78, ysize = 2, $
-                                value = '', label = 'Messages:', $
-                                uvalue = 'AUTOSAVE', /track, /array)
+  pdefs.ids.message = graff_enter(tjb, /display, xsize = 78, ysize = 2, $
+                                  value = '', label = 'Messages:', $
+                                  uvalue = 'AUTOSAVE', /track, /array)
 
-pdefs.ids.hlptxt = pdefs.ids.message
+  pdefs.ids.hlptxt = pdefs.ids.message
 
                                 ; A box to show if the plot is changed
                                 ; since the last save.
 
-pdefs.ids.chtick = widget_base(tjb, $
-                               /column, $
-                               xpad = 0, $
-                               ypad = 0, $
-                               space = 0, $
-                               /align_center, $
-                               map = 0)
-cbm = gr_check_box(nx, ny)
-junk = widget_button(pdefs.ids.chtick, $
-                     value = cbm, $
-                     uvalue = 'QSAVE', $
-                     /track)
-widget_control, pdefs.ids.graffer, /real
-if (keyword_set(group)) then $
-    widget_control, pdefs.ids.graffer, group = group
+  pdefs.ids.chtick = widget_base(tjb, $
+                                 /column, $
+                                 xpad = 0, $
+                                 ypad = 0, $
+                                 space = 0, $
+                                 /align_center, $
+                                 map = 0)
+  cbm = gr_check_box(nx, ny)
+  junk = widget_button(pdefs.ids.chtick, $
+                       value = cbm, $
+                       uvalue = 'QSAVE', $
+                       /track)
+  widget_control, pdefs.ids.graffer, /real
+  if (keyword_set(group)) then $
+     widget_control, pdefs.ids.graffer, group = group
 
-widget_control, pdefs.ids.draw, get_value = windex
-wset, windex
-pdefs.ids.windex = windex
-device, set_graphics_function = 3 ; Make sure we're in normal plot
+  widget_control, pdefs.ids.draw, get_value = windex
+  wset, windex
+  pdefs.ids.windex = windex
+  device, set_graphics_function = 3 ; Make sure we're in normal plot
                                 ; mode
-
-graff_colours, pdefs
-
-graff_set_vals, pdefs           ; Set up the values of the text
+  !p.color = graff_colours(1)   ; Gets reset when the first window is
+                                ; created. 
+  graff_set_vals, pdefs         ; Set up the values of the text
                                 ; widgets etc.
 
-tmid = pdefs.ids.message
+  tmid = pdefs.ids.message
 
-auto_delay = pdefs.opts.auto_delay
+  auto_delay = pdefs.opts.auto_delay
 
-widget_control, base, set_uvalue = pdefs, /no_copy
+  widget_control, base, set_uvalue = pdefs, /no_copy
 
-widget_control, tmid, timer = auto_delay
+  widget_control, tmid, timer = auto_delay
 
-xmanager, 'graff', base, no_block = ~keyword_set(block)
+  xmanager, 'graff', base, no_block = ~keyword_set(block)
 
 end

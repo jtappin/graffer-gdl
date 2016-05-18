@@ -41,7 +41,8 @@ pro Gr_rc_get, optblock
         'Supp2D': optblock.s2d = fix(kv(1))
         'MouseEdit': optblock.mouse = fix(kv(1))
         'PDFView': optblock.pdfviewer = kv[1]
-        'ColourMenu': optblock.colour_menu = fix(kv[1])
+        'ColourMenu': 
+                                ; optblock.colour_menu = fix(kv[1])
         Else: print, "Warning: Unknown item in resource file"
      endcase
   endwhile

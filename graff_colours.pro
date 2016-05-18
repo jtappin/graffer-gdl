@@ -1,11 +1,14 @@
-pro Graff_colours, pdefs
+function graff_colours, index
 
 ;+
 ; GRAFF_COLOURS
-;	Sets up the colour table for graffer.
+;	Compute a colour value for graffer.
 ;
 ; Usage:
-;	graff_colours, pdefs	; Not indended for use by the user.
+;	col = graff_colours(index)	; Not indended for use by the user.
+;
+; Returns:
+;	A 32-bit integer decomposed colour for plotting.
 ;
 ; Argument:
 ;	pdefs	struct	input	GRAFFER control structure (only colour
@@ -21,50 +24,26 @@ pro Graff_colours, pdefs
 ;	Rename as GRAFF_COLOURS (was s_colours): 18/9/96; SJT
 ;	Don't do extended colour table if not enough colours: 8/5/97; SJT
 ;	Extend discrete colours: 8/2/12; SJT
+;	Essentially new routine for decom colours: 17/5/16; SJT
 ;-
 
-red = [255b, 0b, 255b, 0b, 0b, 0b, 255b, 255b, 255b, 127b, 0b, 0b, $
-       127b, 255b, 85b, 170b, 170b, 255b, 0b, 85b, 0b, 85b, 0b, 85b, $
-       170b, 255b, 170b, 255b] 
-gre = [255b, 0b, 0b, 255b, 0b, 255b, 0b, 255b, 127b, 255b, 255b, 127b, $
-       0b, 0b, 85b, 170b, 0b, 85b, 170b, 255b, 0b, 85b, 170b, 255b, $
-       0b, 85b, 170b, 255b]
-blu = [255b, 0b, 0b, 0b, 255b, 255b, 255b, 0b, 0b, 0b, 127b, 255b, $
-       255b, 127b, 85b, 170b, 0b, 85b, 0b, 85b, 170b, 255b, 170b, $
-       255b, 170b, 255b, 0b, 85b]
+  if n_elements(index) eq 1 then begin
+     cmap =  [255l, 0l, 255l, 0l, 0l, 0l, 255l, 255l, 255l, 127l, 0l, $
+              0l, 127l, 255l, 85l, 170l, 170l, 255l, 0l, 85l, 0l, 85l, $
+              0l, 85l, 170l, 255l, 170l, 255l] + $ ; Red 
+             [255l, 0l, 0l, 255l, 0l, 255l, 0l, 255l, 127l, 255l, 255l, $
+              127l, 0l, 0l, 85l, 170l, 0l, 85l, 170l, 255l, 0l, 85l, $
+              170l, 255l, 0l, 85l, 170l, 255l] * 256l + $ ; Green
+             [255l, 0l, 0l, 0l, 255l, 255l, 255l, 0l, 0l, 0l, 127l, $
+              255l, 255l, 127l, 85l, 170l, 0l, 85l, 0l, 85l, 170l, 255l, $
+              170l, 255l, 170l, 255l, 0l, 85l] * 256l^2 ; Blue
 
-tvlct, red, gre, blu
-
-!P.color = 1
-
-if (!D.n_colors lt 20) then begin
-    graff_msg, pdefs.ids.message,  $
-      ["Insufficient colours for loading extended colour table",  $
-       '2-D datasets with "Image" display will be skipped']
-    pdefs.short_colour = 1b
-    return
-endif
-
-;	Here we get the colour table (do it explicitly because we
-;	don't want all the side effects of LOADCT
-
-pdefs.transient.colmin = n_elements(red)
-
-filename = filepath('colors1.tbl', subdir = ['resource', 'colors'])
-openr, ilu, /get, filename
-aa = assoc(ilu, bytarr(256, 3), 1)
-    
-col = aa(pdefs.ctable)
-if (pdefs.gamma ne 1.0) then begin
-    s = long(256*((findgen(256)/256.)^pdefs.gamma))
-    col = col(s, *)
-endif
-
-
-nc = (!D.n_colors-pdefs.transient.colmin) < 128
-col = congrid(col, nc, 3)
-
-tvlct, col(*, 0), col(*, 1), col(*, 2), pdefs.transient.colmin
-free_lun, ilu
-
+     imax = n_elements(cmap)
+     if index lt 0 || index ge imax then return, 0l
+     
+     return, cmap[index]
+  endif else if n_elements(index) eq 3 then begin
+     sindex = long(byte(index))
+     return, sindex[0] + sindex[1]*256l + sindex[2]*256l^2
+  endif else return, 0l
 end

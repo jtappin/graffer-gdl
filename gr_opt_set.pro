@@ -26,7 +26,7 @@ case but of
     'TIME': opts.auto_delay = event.value > 10 ; Safety valve of 10
                                 ; seconds.
     'MOUSE': opts.mouse = event.index
-    'COLOUR': opts.colour_menu = event.index
+    ;; 'COLOUR': opts.colour_menu = event.index
 
     'PDF':   begin
         opts.pdfviewer = event.str
@@ -60,7 +60,7 @@ if sflag then begin
     printf, ilu, 'Autosave: ', opts.auto_delay
     printf, ilu, 'Supp2D: ', opts.s2d
     printf, ilu, 'MouseEdit:', opts.mouse
-    printf, ilu, 'ColourMenu:', opts.colour_menu
+    ;; printf, ilu, 'ColourMenu:', opts.colour_menu
 
     if opts.pdfviewer ne '' then printf, ilu, 'PDFView:', $
       opts.pdfviewer
@@ -100,11 +100,11 @@ junk = widget_droplist(base, $
                        uvalue = 'MOUSE')
 widget_control, junk, set_droplist_select = pdefs.opts.mouse
 
-junk = widget_droplist(base, $
-                       value = ['Text', 'Colours'], $
-                       title = 'Colour selector:', $
-                       uvalue = 'COLOUR')
-widget_control, junk, set_droplist_select = pdefs.opts.colour_menu
+;; junk = widget_droplist(base, $
+;;                        value = ['Text', 'Colours'], $
+;;                        title = 'Colour selector:', $
+;;                        uvalue = 'COLOUR')
+;; widget_control, junk, set_droplist_select = pdefs.opts.colour_menu
 
 junk = graff_enter(base, label = 'Autosave interval:', value = $
                    pdefs.opts.auto_delay, /float, /all_events, $
@@ -171,8 +171,8 @@ end until (ev.exited ne 0)
 
 if (ev.exited eq 1) then begin
     widget_control, base, get_uvalue = opts, /no_copy
-    opts.colour_menu = pdefs.opts.colour_menu ; Can't change this on
-                                ; the fly
+    ;; opts.colour_menu = pdefs.opts.colour_menu ; Can't change this on
+    ;;                             ; the fly
     pdefs.opts = opts
     if opts.pdfviewer ne '' then pdfutil = opts.pdfviewer
 endif

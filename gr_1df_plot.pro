@@ -28,13 +28,17 @@ pro Gr_1df_plot, pdefs, i, csiz
 
   data = *pdefs.data
   if not ptr_valid(data[i].xydata) then return
+
   if (data[i].colour eq -1) then return
+  if data[i].colour eq -2 then $
+     lcolour = graff_colours(data[i].c_vals) $
+  else lcolour = graff_colours(data[i].colour)
 
   xydata = *data[i].xydata
 
-  case (data(i).type) of
+  case (data[i].type) of
      -1: begin                  ; Y=f(x) | theta=f(r)
-        case (data(i).mode) of
+        case (data[i].mode) of
            0: begin
               arange = xrange
               atype = pdefs.xtype
@@ -47,7 +51,7 @@ pro Gr_1df_plot, pdefs, i, csiz
         exceed = 0
      end
      -2: begin                  ; x=f(y) | r = f(theta)
-        case (data(i).mode) of
+        case (data[i].mode) of
            0: begin
               arange = yrange
               atype = pdefs.ytype
@@ -88,12 +92,12 @@ pro Gr_1df_plot, pdefs, i, csiz
   if (atype) then begin
      amin = alog10(amin)
      amax = alog10(amax)
-     t = 10^(dindgen(data(i).ndata) * (amax-amin) $
-             /  float(data(i).ndata-1) + amin)
-  endif else t = dindgen(data(i).ndata) * (amax-amin) $
-                 /  float(data(i).ndata-1) + amin
+     t = 10^(dindgen(data[i].ndata) * (amax-amin) $
+             /  float(data[i].ndata-1) + amin)
+  endif else t = dindgen(data[i].ndata) * (amax-amin) $
+                 /  float(data[i].ndata-1) + amin
 
-  case (data(i).type) of
+  case (data[i].type) of
      -1: begin                  ;  y = f(x)
         x = t
         y = 0.                  ; Must make y defined before using it
@@ -124,22 +128,22 @@ pro Gr_1df_plot, pdefs, i, csiz
   if (s eq 0) then graff_msg, pdefs.ids.message, $
                               "Function:"+xydata.funct+" does not return an array" $
   else begin
-     if (data(i).mode eq 2) then pcf = !Dtor $
+     if (data[i].mode eq 2) then pcf = !Dtor $
      else pcf = 1.0
-     if (data(i).pline ne 0) then begin
-        lps = ([0, 0, 10])(data(i).pline)
-        oplot, x, y*pcf, color = data(i).colour, psym = $
-               lps, linesty = data(i).line, thick = $
-               data(i).thick, polar = (data(i).mode ne 0), noclip = $
-               data(i).noclip
+     if (data[i].pline ne 0) then begin
+        lps = ([0, 0, 10])(data[i].pline)
+        oplot, x, y*pcf, color = lcolour, psym = $
+               lps, linesty = data[i].line, thick = $
+               data[i].thick, polar = (data[i].mode ne 0), noclip = $
+               data[i].noclip
      endif
      
-     if (data(i).psym ne 0) then begin
-        if (data(i).psym ge 8) then gr_symdef, data(i).psym 
-        oplot, x, y*pcf, color = data(i).colour, psym = $
-               data(i).psym < 8, thick = data(i).thick, symsize = $
-               abs(data(i).symsize)*csiz, polar = (data(i).mode ne 0), $
-               noclip = data(i).noclip  
+     if (data[i].psym ne 0) then begin
+        if (data[i].psym ge 8) then gr_symdef, data[i].psym 
+        oplot, x, y*pcf, color = lcolour, psym = $
+               data[i].psym < 8, thick = data[i].thick, symsize = $
+               abs(data[i].symsize)*csiz, polar = (data[i].mode ne 0), $
+               noclip = data[i].noclip  
      endif
   endelse
 

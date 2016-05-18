@@ -34,6 +34,7 @@ data =  {graff_data, $
          Symsize:  0., $
          Line:     0, $
          Colour:   0, $
+         c_vals:   bytarr(3), $
          Thick:    0., $
          min_val:  0.d0, $
          max_val:  0.d0, $
