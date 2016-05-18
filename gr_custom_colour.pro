@@ -15,10 +15,10 @@ function gr_cc_event, event
         display = 1b
      end
      'RED_S': begin
-        (*uvs).colour[0] = event.value
+        if ~event.drag then (*uvs).colour[0] = event.value
         (*uvs).img[*, *, 0] = event.value
-        widget_control, (*uvs).re_id, set_value = event.value
         display = 1b
+        widget_control, (*uvs).re_id, set_value = event.value
      end
      'GRN_E': begin
         (*uvs).colour[1] = event.value
@@ -27,10 +27,10 @@ function gr_cc_event, event
         display = 1b
      end
      'GRN_S': begin
-        (*uvs).colour[1] = event.value
+        if ~event.drag then (*uvs).colour[1] = event.value
         (*uvs).img[*, *, 1] = event.value
-        widget_control, (*uvs).ge_id, set_value = event.value
         display = 1b
+        widget_control, (*uvs).ge_id, set_value = event.value
      end
      'BLU_E': begin
         (*uvs).colour[2] = event.value
@@ -39,10 +39,10 @@ function gr_cc_event, event
         display = 1b
      end
      'BLU_S': begin
-        (*uvs).colour[2] = event.value
+        if ~event.drag then (*uvs).colour[2] = event.value
         (*uvs).img[*, *, 2] = event.value
-        widget_control, (*uvs).be_id, set_value = event.value
         display = 1b
+        widget_control, (*uvs).be_id, set_value = event.value
      end
   endcase
 
@@ -103,7 +103,7 @@ function gr_custom_colour, index, w0, group = group
 
   jbb = widget_base(jb, $
                     /column, $
-                    /base_align_right)
+                    /base_align_center)
 
   re_id = cw_ffield(jbb, $
                     label = 'Red', $
@@ -120,11 +120,13 @@ function gr_custom_colour, index, w0, group = group
                         max = 255, $
                         ysize = 300, $
                         value = bcolour[0], $
+                        /suppress, $
+                        /drag, $
                         uvalue = 'RED_S')
 
   jbb = widget_base(jb, $
                     /column, $
-                    /base_align_right)
+                    /base_align_center)
 
   ge_id = cw_ffield(jbb, $
                     label = 'Green', $
@@ -141,12 +143,14 @@ function gr_custom_colour, index, w0, group = group
                         max = 255, $
                         ysize = 300, $
                         value = bcolour[1], $
+                        /suppress, $
+                        /drag, $
                         uvalue = 'GRN_S')
 
 
   jbb = widget_base(jb, $
                     /column, $
-                    /base_align_right)
+                    /base_align_center)
 
   be_id = cw_ffield(jbb, $
                     label = 'Blue', $
@@ -163,6 +167,8 @@ function gr_custom_colour, index, w0, group = group
                         max = 255, $
                         ysize = 300, $
                         value = bcolour[2], $
+                        /suppress, $
+                        /drag, $
                         uvalue = 'BLU_S')
 
 
