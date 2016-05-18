@@ -123,6 +123,18 @@ pro Gr_display_img, zin, xin, yin, range = range, $
   cmxll = xcorn[0]/(!d.x_px_cm*scfac[0])
   cmyll = ycorn[0]/(!d.y_px_cm*scfac[1])
 
+; Rescale the input data for log / sqrt display.
+
+  case mode of
+     0: ztmp = zin
+     1: ztmp = alog10(zin)
+     2: begin
+        ztmp = sqrt(abs(zin))
+        locs = where(zin lt 0, nn)
+        if nn ne 0 then ztmp[locs] = -ztmp[locs]
+     end
+  endcase
+
   if tflag then begin
      if (total(~finite(x))+total(~finite(y)) ne 0) then begin
         junk = dialog_message(["Coordinates contain non-finite", $
@@ -134,21 +146,14 @@ pro Gr_display_img, zin, xin, yin, range = range, $
      endif
      triangulate, x, y, triangles, tol = 1e-12*(max(abs(x)) > $
                                                 max(abs(y)))
-     case mode of
-        0: zz = trigrid(x, y, zin, triangles, $
-                        [(mxx-mnx)/dvxsize, (mxy-mny)/dvysize], $
-                        [mnx, mny, mxx, mxy],  missing = missing)
-        1: zz = trigrid(x, y, alog10(zin), triangles, $
-                        [(mxx-mnx)/dvxsize, (mxy-mny)/dvysize], $
-                        [mnx, mny, mxx, mxy],  missing = missing)
-        2: zz =  trigrid(x, y, sqrt(zin), triangles, $
-                         [(mxx-mnx)/dvxsize, (mxy-mny)/dvysize], $
-                         [mnx, mny, mxx, mxy],  missing = missing)
-     endcase
+     zz = trigrid(x, y, ztmp, triangles, $
+                  [(mxx-mnx)/dvxsize, (mxy-mny)/dvysize], $
+                  [mnx, mny, mxx, mxy],  missing = missing)
+
   endif else begin
      x = xin(locsx)
      y = yin(locsy)
-     z = zin(locsx, *)
+     z = ztmp(locsx, *)
      z = z(*, locsy)
      gr_coord_convert, (findgen(dvxsize)+xcorn[0]) / scfac[0], $
                        fltarr(dvxsize), xd, junk, /device, /to_data
@@ -160,29 +165,24 @@ pro Gr_display_img, zin, xin, yin, range = range, $
      sz = size(z)
      xx = interpol(findgen(sz(1)), x, xd)
      yy = interpol(findgen(sz(2)), y, yd)
-     case mode of
-        0: zz = bilinear(z, xx, yy)
-        1: zz = bilinear(alog10(z), xx, yy) 
-        2: zz = bilinear(sqrt(z), xx, yy) 
-     endcase
+     zz = bilinear(z, xx, yy)
   endelse
 
   if n_elements(range) eq 0 || (range(0) eq range(1)) then begin
-     if keyword_set(inverted) then zrange = [max(zin, min = mnz, $
-                                                 /nan), mnz] $
-     else zrange = [min(zin, max = mxz, /nan), mxz] 
+     zrange = [min(zz, max = mxz, /nan), mxz] 
   endif else begin
-     zrange = range
-     ;; if keyword_set(inverted) then zrange = zrange[[1, 0]]
+     case mode of
+        0: zrange = range
+        1: zrange = alog10(range)
+        2: begin
+           zrange = sqrt(abs(range))
+           locs = where(zrange lt 0, nn)
+           if nn ne 0 then zrange[locs] = -zrange[locs]
+        end
+     endcase
   endelse
 
-  case mode of
-     0:
-     1: zrange = alog10(zrange)
-     2: zrange = sqrt(zrange)
-  endcase
   locs = where(finite(zz) eq 0, nnan)
-
 
   img = bytscl(zz, min = zrange(0), max = zrange(1))
   if keyword_set(inverted) then img =  255b-img
