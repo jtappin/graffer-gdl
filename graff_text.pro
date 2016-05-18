@@ -118,7 +118,7 @@ case but of
              cc = gr_custom_colour((*pdefs.text)[itxt].c_vals, $
                                    pdefs.ids.windex) $
           else cc = gr_custom_colour(ci > 0, $
-                                   pdefs.ids.windex))
+                                   pdefs.ids.windex)
           if n_elements(cc) eq 1 then begin
              if ci ne -2 then $
                 widget_control, event.id, set_droplist_select = ci
@@ -232,75 +232,76 @@ return, {id:event.id, $
 
 end
 
-function Graff_text, pdefs, edit=edit, position=position
+function Graff_text, pdefs, edit = edit, position = position
 
-common Gr_psym_maps, psym_bm, col_bm
+  common Gr_psym_maps, psym_bm  ;, col_bm
 
-opy = !y
-if (pdefs.y_right) then $
-  yaxis = (*pdefs.data)[pdefs.cset].y_axis $
-else yaxis = 0
-!y = pdefs.ytransform[yaxis]
+  opy = !y
+  if (pdefs.y_right) then $
+     yaxis = (*pdefs.data)[pdefs.cset].y_axis $
+  else yaxis = 0
+  !y = pdefs.ytransform[yaxis]
 
-old_text = (*pdefs.text)        ; Save current settings
-old_ntext = pdefs.ntext         ; in case of a cancel
+  old_text = (*pdefs.text)      ; Save current settings
+  old_ntext = pdefs.ntext       ; in case of a cancel
 
-if (n_elements(edit) ne 0) then itxt = edit $
-else begin
-    if (pdefs.ntext ne 0) then (*pdefs.text) = [(*pdefs.text), $
-                                                pdefs.text_options] $
-    else (*pdefs.text) = pdefs.text_options
-    itxt = pdefs.ntext
-    (*pdefs.text)[itxt].x = position(0)
-    (*pdefs.text)[itxt].y = position(1)
-    (*pdefs.text)[itxt].axis = yaxis
-    pdefs.ntext = pdefs.ntext+1
-    if (*pdefs.text)[itxt].font eq 0 then (*pdefs.text)[itxt].font = 3
-endelse
-pdefs.transient.imove = itxt
+  if (n_elements(edit) ne 0) then itxt = edit $
+  else begin
+     if (pdefs.ntext ne 0) then (*pdefs.text) = [(*pdefs.text), $
+                                                 pdefs.text_options] $
+     else (*pdefs.text) = pdefs.text_options
+     itxt = pdefs.ntext
+     (*pdefs.text)[itxt].x = position(0)
+     (*pdefs.text)[itxt].y = position(1)
+     (*pdefs.text)[itxt].axis = yaxis
+     pdefs.ntext = pdefs.ntext+1
+     if (*pdefs.text)[itxt].font eq 0 then (*pdefs.text)[itxt].font = 3
+  endelse
+  pdefs.transient.imove = itxt
 
-widget_control, pdefs.ids.graffer, sensitive = 0
+  widget_control, pdefs.ids.graffer, sensitive = 0
 
-tlb = widget_base(title = 'Graffer text', group_leader = $
-                  pdefs.ids.graffer, resource = 'Graffer')
-base = widget_base(tlb, /column)
+  tlb = widget_base(title = 'Graffer text', group_leader = $
+                    pdefs.ids.graffer, resource = 'Graffer')
+  base = widget_base(tlb, /column)
 
                                 ; The actual text
 
-showit = widget_draw(base, ysize = 25, xsize = 320, /frame)
+  showit = widget_draw(base, ysize = 25, xsize = 320, /frame)
 
-junk = graff_enter(base, /all_ev, xsize = 40, value = $
-                   (*pdefs.text)[itxt].text, $ 
-                   uvalue = 'TEXT', label = 'Text:', /track, /capture, $
-                   /graphics)
+  junk = graff_enter(base, /all_ev, xsize = 40, value = $
+                     (*pdefs.text)[itxt].text, $ 
+                     uvalue = 'TEXT', label = 'Text:', /track, $
+                     /capture, $
+                     /graphics)
 
                                 ; ID tag, Size & colour
 
-jb = widget_base(base, /row)
+  jb = widget_base(base, /row)
 
-junk = graff_enter(jb, $
-                   /text, $
-                   /all_events, $
-                   xsize = 15, $
-                   value = (*pdefs.text)[itxt].id, $
-                   uvalue = 'ID', $
-                   label = 'ID:', $
-                   /track, $
-                   /capture)
+  junk = graff_enter(jb, $
+                     /text, $
+                     /all_events, $
+                     xsize = 15, $
+                     value = (*pdefs.text)[itxt].id, $
+                     uvalue = 'ID', $
+                     label = 'ID:', $
+                     /track, $
+                     /capture)
 
-junk = graff_enter(jb, $
-                   /float, $
-                   /all_ev, $
-                   xsize = 6, $
-                   value = (*pdefs.text)[itxt].size, $
-                   format = "(f6.1)", $
-                   uvalue = 'CHS', $
-                   label = 'Charsize:', $
-                   /track, $
-                   /capture)
+  junk = graff_enter(jb, $
+                     /float, $
+                     /all_ev, $
+                     xsize = 6, $
+                     value = (*pdefs.text)[itxt].size, $
+                     format = "(f6.1)", $
+                     uvalue = 'CHS', $
+                     label = 'Charsize:', $
+                     /track, $
+                     /capture)
 
 
-jb = widget_base(base, /row)
+  jb = widget_base(base, /row)
 
 ;; if pdefs.opts.colour_menu then begin
 ;;     junk = cw_bbselector(jb, $
@@ -311,194 +312,198 @@ jb = widget_base(base, /row)
 ;;                          (*pdefs.text)[itxt].colour, $
 ;;                          /track)
 ;; endif else begin
-    col_list = ['White (bg)', $
-                'Black', $
-                'Red', $
-                'Green', $
-                'Blue', $
-                'Cyan', $
-                'Magenta', $
-                'Yellow', $
-                'Orange', $
-                '#7f ff 00', $
-                '#00 ff 7f', $
-                '#00 7f ff', $
-                '#7f 00 ff', $
-                'Mauve', $
-                'Dark Grey', $
-                'Light Grey', $
-                'Dark Red', $
-                'Light Red', $
-                'Dark Green', $
-                'Light Green', $
-                'Dark Blue', $
-                'Light Blue', $
-                'Dark Cyan', $
-                'Light Cyan', $
-                'Dark Magenta', $
-                'Light Magenta', $
-                'Dark Yellow', $
-                'Light Yellow', $
-                'Custom']
-    junk = widget_droplist(jb, $
-                           value = col_list, $
-                           uvalue = 'COL', $
-                           title = 'Colour:', $
-                           /track)
-    if (*pdefs.text)[itxt].colour eq -2 then ci = $
-       n_elements(col_list)-1 $
-    else ci = (*pdefs.text)[itxt].colour
-    widget_control, junk, set_droplist_select = ci
+  col_list = ['White (bg)', $
+              'Black', $
+              'Red', $
+              'Green', $
+              'Blue', $
+              'Cyan', $
+              'Magenta', $
+              'Yellow', $
+              'Orange', $
+              '#7f ff 00', $
+              '#00 ff 7f', $
+              '#00 7f ff', $
+              '#7f 00 ff', $
+              'Mauve', $
+              'Dark Grey', $
+              'Light Grey', $
+              'Dark Red', $
+              'Light Red', $
+              'Dark Green', $
+              'Light Green', $
+              'Dark Blue', $
+              'Light Blue', $
+              'Dark Cyan', $
+              'Light Cyan', $
+              'Dark Magenta', $
+              'Light Magenta', $
+              'Dark Yellow', $
+              'Light Yellow', $
+              'Custom']
+  junk = widget_droplist(jb, $
+                         value = col_list, $
+                         uvalue = 'COL', $
+                         title = 'Colour:', $
+                         /track)
+  if (*pdefs.text)[itxt].colour eq -2 then ci = $
+     n_elements(col_list)-1 $
+  else ci = (*pdefs.text)[itxt].colour
+  widget_control, junk, set_droplist_select = ci
 ;; endelse
 
-junk = graff_enter(jb, $
-                   /float, $
-                   format = "(f6.1)", $
-                   /all_ev, $
-                   xsize = 6, $
-                   value = (*pdefs.text)[itxt].thick, $
-                   uvalue = 'THI', $
-                   label = 'Thickness:', $
-                   /track, $
-                   /capture)
+  junk = graff_enter(jb, $
+                     /float, $
+                     format = "(f6.1)", $
+                     /all_ev, $
+                     xsize = 6, $
+                     value = (*pdefs.text)[itxt].thick, $
+                     uvalue = 'THI', $
+                     label = 'Thickness:', $
+                     /track, $
+                     /capture)
 
                                 ; Alignment and orientation
 
-case ((*pdefs.text)[itxt].align) of
-    0.: ial = 0
-    0.5: ial = 1
-    1.0: ial = 2
-    Else: ial = 3
-end
+  case ((*pdefs.text)[itxt].align) of
+     0.: ial = 0
+     0.5: ial = 1
+     1.0: ial = 2
+     Else: ial = 3
+  end
 
-jb = widget_base(base, /row)
-junk = widget_droplist(jb, $
-                       value = ['Left', 'Centre', 'Right', 'Other ...'], $
-                       uvalue = 'JUST', $
-                       title = 'Justification:', $
-                       /track)
-widget_control, junk, set_droplist_select = ial
+  jb = widget_base(base, /row)
+  junk = widget_droplist(jb, $
+                         value = ['Left', 'Centre', 'Right', 'Other ' + $
+                                  '...'], $
+                         uvalue = 'JUST', $
+                         title = 'Justification:', $
+                         /track)
+  widget_control, junk, set_droplist_select = ial
 
-junk = graff_enter(jb, /float, /all_event, xsize = 6, uvalue = 'ORI', $
-                   value = (*pdefs.text)[itxt].orient, format = "(f6.1)",  $
-                   label = 'Orientation (°):', /track, /capture)
+  junk = graff_enter(jb, /float, /all_event, xsize = 6, uvalue = 'ORI', $
+                     value = (*pdefs.text)[itxt].orient, format = $
+                     "(f6.1)",  $
+                     label = 'Orientation (°):', /track, /capture)
 
                                 ; Position
 
 
-cdbase = widget_base(base, $
-                 /row)
+  cdbase = widget_base(base, $
+                       /row)
 
-junk = widget_droplist(cdbase, $
-                       value = ['Data', 'Normal', '"Frame"'], $
-                       uvalue = 'TNORM', $
-                       title = 'Coordinates:', $
-                       /track)
-widget_control, junk, set_droplist_select = (*pdefs.text)[itxt].norm
+  junk = widget_droplist(cdbase, $
+                         value = ['Data', 'Normal', '"Frame"'], $
+                         uvalue = 'TNORM', $
+                         title = 'Coordinates:', $
+                         /track)
+  widget_control, junk, set_droplist_select = (*pdefs.text)[itxt].norm
 
-if (pdefs.y_right ne 0) then begin
-    junk = widget_droplist(cdbase, $
-                           value = ["Main", "Secondary"], $
-                           uvalue = "AXIS", $
-                           title = "Y-axis:", $
-                           /track, $
-                           sensitive = (*pdefs.text)[itxt].norm eq 0)
-    
-    widget_control, junk, set_droplist_select = (*pdefs.text)[itxt].axis
-endif
+  if (pdefs.y_right ne 0) then begin
+     junk = widget_droplist(cdbase, $
+                            value = ["Main", "Secondary"], $
+                            uvalue = "AXIS", $
+                            title = "Y-axis:", $
+                            /track, $
+                            sensitive = (*pdefs.text)[itxt].norm eq 0)
+     
+     widget_control, junk, set_droplist_select = (*pdefs.text)[itxt].axis
+  endif
 
-pb = widget_base(base, /row)
+  pb = widget_base(base, /row)
 
-xpos = graff_enter(pb, /float, /all_event, xsize = 15, uvalue = 'TX', $
-                   value = (*pdefs.text)[itxt].x, format = "(g15.8)", label = $
-                   'Position:  X:', /track, /capture) 
-ypos = graff_enter(pb, /float, /all_event, xsize = 15, uvalue = 'TY', $
-                   value = (*pdefs.text)[itxt].y, format = "(g15.8)", label = $
-                   'Y:', /track, /capture)
+  xpos = graff_enter(pb, /float, /all_event, xsize = 15, uvalue = 'TX', $
+                     value = (*pdefs.text)[itxt].x, format = $
+                     "(g15.8)", label = $
+                     'Position:  X:', /track, /capture) 
+  ypos = graff_enter(pb, /float, /all_event, xsize = 15, uvalue = 'TY', $
+                     value = (*pdefs.text)[itxt].y, format = $
+                     "(g15.8)", label = $
+                     'Y:', /track, /capture)
 
-widget_control, cdbase, set_uvalue = [xpos, ypos]
+  widget_control, cdbase, set_uvalue = [xpos, ypos]
 
                                 ; Fonts
 
-gr_font_list, (*pdefs.text)[itxt].ffamily, font_list, fnos
-locs = where((*pdefs.text)[itxt].font eq fnos, count)
-if count eq 0 then begin
-    idx = 0
-    (*pdefs.text)[itxt].font = fnos[0]
-endif else idx = locs[0]
+  gr_font_list, (*pdefs.text)[itxt].ffamily, font_list, fnos
+  locs = where((*pdefs.text)[itxt].font eq fnos, count)
+  if count eq 0 then begin
+     idx = 0
+     (*pdefs.text)[itxt].font = fnos[0]
+  endif else idx = locs[0]
 
-jb = widget_base(base, $
-                 /row)
-junk = widget_droplist(jb, $
-                       value = ['Hershey', $
-                                'Device', $
-                                'TrueType'], $
-                       uvalue = 'FAMILY', $
-                       title = 'Font:', $
-                       /track)  
-widget_control, junk, set_droplist_select = $
-  (*pdefs.text)[itxt].ffamily+1
+  jb = widget_base(base, $
+                   /row)
+  junk = widget_droplist(jb, $
+                         value = ['Hershey', $
+                                  'Device', $
+                                  'TrueType'], $
+                         uvalue = 'FAMILY', $
+                         title = 'Font:', $
+                         /track)  
+  widget_control, junk, set_droplist_select = $
+                  (*pdefs.text)[itxt].ffamily+1
 
-pdefs.ids.fontmenu = widget_droplist(jb, $
-                                     value = font_list, $
-                                     uvalue = 'FONT', $
-                                     title = ':', $
-                                     /track)  
-widget_control, pdefs.ids.fontmenu, set_droplist_select = idx
+  pdefs.ids.fontmenu = widget_droplist(jb, $
+                                       value = font_list, $
+                                       uvalue = 'FONT', $
+                                       title = ':', $
+                                       /track)  
+  widget_control, pdefs.ids.fontmenu, set_droplist_select = idx
 
                                 ; Messages (what does what)
 
-pdefs.ids.popmsg = widget_text(base, value = '', xsize = 45)
+  pdefs.ids.popmsg = widget_text(base, value = '', xsize = 45)
 
                                 ; Done
 
-jb = widget_base(base, /row)
-junk = widget_button(jb, value = '  Done  ', uvalue = 'DONE', /track)
-junk = widget_button(jb, value = ' Cancel ', uvalue = 'CANCEL', /track)
-junk = widget_button(jb, value = ' Update ', uvalue = 'UPDATE', /track)
+  jb = widget_base(base, /row)
+  junk = widget_button(jb, value = '  Done  ', uvalue = 'DONE', /track)
+  junk = widget_button(jb, value = ' Cancel ', uvalue = 'CANCEL', /track)
+  junk = widget_button(jb, value = ' Update ', uvalue = 'UPDATE', /track)
 
-txtemp = (*pdefs.text)[itxt]
+  txtemp = (*pdefs.text)[itxt]
 
-widget_control, base, set_uvalue = pdefs, /no_copy
+  widget_control, base, set_uvalue = pdefs, /no_copy
 
-widget_control, tlb, /real
+  widget_control, tlb, /real
 
-widget_control, showit, get_value = shno
-wset, shno
-gr_text_disp, txtemp
+  widget_control, showit, get_value = shno
+  wset, shno
+  gr_text_disp, txtemp
 
 ;	RYO widget management to allow us to get the values back from
 ;	the event handler without using a common block, even after the
 ;	hierarchy has been destroyed.
 
-widget_control, base, event_func = 'grt_event'
+  widget_control, base, event_func = 'grt_event'
 
-repeat begin
-    ev = widget_event(base)
-endrep until (ev.exited ne 0)
+  repeat begin
+     ev = widget_event(base)
+  endrep until (ev.exited ne 0)
 
-widget_control, base, get_uvalue = pdefs, /no_copy
+  widget_control, base, get_uvalue = pdefs, /no_copy
 
-wset, pdefs.ids.windex
+  wset, pdefs.ids.windex
 
-widget_control, tlb, /destroy
-if (ev.exited eq -1) then begin
-    *pdefs.text = old_text
-    pdefs.ntext = old_ntext
-    ichange = 0
-endif else begin
-    pdefs.text_options = (*pdefs.text)[itxt]
-    pdefs.text_options.text = ''
-    pdefs.text_options.id = ''
-    ichange = 1
-endelse
+  widget_control, tlb, /destroy
+  if (ev.exited eq -1) then begin
+     *pdefs.text = old_text
+     pdefs.ntext = old_ntext
+     ichange = 0
+  endif else begin
+     pdefs.text_options = (*pdefs.text)[itxt]
+     pdefs.text_options.text = ''
+     pdefs.text_options.id = ''
+     ichange = 1
+  endelse
 
-!y = opy
+  !y = opy
 
-gr_plot_object, pdefs
+  gr_plot_object, pdefs
 
-widget_control, pdefs.ids.graffer, sensitive = 1
+  widget_control, pdefs.ids.graffer, sensitive = 1
 
-return, ichange
+  return, ichange
 
 end
