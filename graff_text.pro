@@ -89,10 +89,9 @@ case but of
     'UPDATE': if (track_flag) then  $
       graff_msg, pdefs.ids.popmsg, 'Update screen' $
     else begin
-        wc = !D.window
         wset, pdefs.ids.windex
         gr_plot_object, pdefs
-        wset, wc
+        wset, pdefs.ids.txwindex
     endelse
     
     'TEXT': if (track_flag) then  $
@@ -464,12 +463,14 @@ function Graff_text, pdefs, edit = edit, position = position
 
   txtemp = (*pdefs.text)[itxt]
 
-  widget_control, base, set_uvalue = pdefs, /no_copy
 
   widget_control, tlb, /real
 
   widget_control, showit, get_value = shno
   wset, shno
+  pdefs.ids.txwindex = shno
+
+  widget_control, base, set_uvalue = pdefs, /no_copy
   gr_text_disp, txtemp
 
 ;	RYO widget management to allow us to get the values back from

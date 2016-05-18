@@ -91,6 +91,7 @@ Ids = { graff_ids, $
         Ycp:     0l, $
         Draw:    0l, $
         Windex:  0l, $
+        txwindex:0l, $
         Message: 0l, $
         Hlptxt:  0l, $
         Popmsg:  0l, $
