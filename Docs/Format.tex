@@ -377,7 +377,10 @@ These tags define a specific dataset within the plot.
   L& Int& 1&
   Line style (IDL linestyle values)\\
   C& Int& 1&
-  Colour (Table as in PGPLOT).\\
+  Colour (Table as in PGPLOT). -1 denotes omit this dataset, -2
+  denotes a custom colour.\\
+  CV & Byte & 3 & A colour triple (R,G,B), only present is the colour
+  index is -2.\\
   W& Float& 1&
   Line thickness\\
   O& Byte& 1&
@@ -505,8 +508,11 @@ TS& Int& 1&
 Start text string, value is string index.\\
 TTS& Null& 0&
 Start text template (not all the following keys are used in a template).\\
-\hline C& Int& 1&
-Colour of text string.\\
+\hline 
+C& Int& 1&
+Colour of text string. -2 denotes a custom colour.\\
+CV & Byte & 3 &
+Colour triple for custom colours.
 S& Float& 1&
 Size of characters (relative to default)\\
 O& Float& 1&
