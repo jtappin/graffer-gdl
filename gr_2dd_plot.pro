@@ -30,21 +30,22 @@ pro Gr_2dd_plot, pdefs, i, csiz, grey_ps = grey_ps, shaded = shaded
 ;	Send back flag if axes need redrawing: 20/1/16; SJT
 ;-
 
-  data = *pdefs.data
-  if not ptr_valid(data[i].xydata) then return
+  data = (*pdefs.data)[i]
+  if ~ptr_valid(data.xydata) || $
+     data.ndata eq 0 || data.ndata2 eq 0 then return
 
-  xydata = *data[i].xydata
+  xydata = *data.xydata
   z = *xydata.z
   x = *xydata.x
   y = *xydata.y
 
-  if (data[i].zopts.format eq 0) then begin
-     if (data[i].zopts.set_levels) then begin
-        levels = *(data[i].zopts.levels) 
+  if (data.zopts.format eq 0) then begin
+     if (data.zopts.set_levels) then begin
+        levels = *(data.zopts.levels) 
         nl = n_elements(levels)
      endif else begin
-        if (data[i].zopts.n_levels eq 0) then nl = 6 $
-        else nl = data[i].zopts.n_levels
+        if (data.zopts.n_levels eq 0) then nl = 6 $
+        else nl = data.zopts.n_levels
         locs = where(finite(z), nfin)
         if (nfin ne 0) then rg = (max(z(locs), min = mn)-mn) $
         else rg = 0.
@@ -57,47 +58,47 @@ pro Gr_2dd_plot, pdefs, i, csiz, grey_ps = grey_ps, shaded = shaded
         levels = rg * (dindgen(nl)+.5)/nl + mn
      endelse
      
-     if (data[i].zopts.label ne 0 and n_elements(nl) eq 1) then begin
+     if (data.zopts.label ne 0 and n_elements(nl) eq 1) then begin
         labels = (indgen(nl) - $
-                  data[i].zopts.label/2) mod data[i].zopts.label eq 0
+                  data.zopts.label/2) mod data.zopts.label eq 0
      endif else labels = 0
 
-     if ptr_valid(data[i].zopts.colours) then begin
-        colours = *(data[i].zopts.colours)
+     if ptr_valid(data.zopts.colours) then begin
+        colours = *(data.zopts.colours)
         ncol = n_elements(colours)
         lcolours = lonarr(ncol)
         for j = 0, ncol-1 do lcolours[j] = graff_colours(colours[j])
      endif
-     if ptr_valid(data[i].zopts.style) then linestyle = $
-        *(data[i].zopts.style) 
-     if ptr_valid(data[i].zopts.thick) then thick = $
-        *(data[i].zopts.thick) 
+     if ptr_valid(data.zopts.style) then linestyle = $
+        *(data.zopts.style) 
+     if ptr_valid(data.zopts.thick) then thick = $
+        *(data.zopts.thick) 
 
-     ccsize = pdefs.charsize*data[i].zopts.charsize*0.75*csiz
+     ccsize = pdefs.charsize*data.zopts.charsize*0.75*csiz
 
      contour, z, x, y, /overplot, /follow, $
               levels = levels, c_linestyle = linestyle, $
               c_colors = lcolours, c_thick = thick,  $
-              fill = data[i].zopts.fill eq 1b, downhill = $
-              data[i].zopts.fill eq 2b, c_labels = labels, c_charsize $
+              fill = data.zopts.fill eq 1b, downhill = $
+              data.zopts.fill eq 2b, c_labels = labels, c_charsize $
               = ccsize
-     if data[i].zopts.fill eq 1b then shaded = 1b ; Don't clear it.
-  endif else if (data[i].zopts.format eq 1) then begin
+     if data.zopts.fill eq 1b then shaded = 1b ; Don't clear it.
+  endif else if (data.zopts.format eq 1) then begin
      if (~keyword_set(grey_ps)) then begin
-        if (data[i].zopts.ctable gt 0) then begin
-           table = data[i].zopts.ctable-1
-           gamma = data[i].zopts.gamma 
+        if (data.zopts.ctable gt 0) then begin
+           table = data.zopts.ctable-1
+           gamma = data.zopts.gamma 
         endif else begin
            table = pdefs.ctable
            gamma = pdefs.gamma
         endelse
      endif
      gr_display_img, z, x, y, $
-                     range = data[i].zopts.range, $
-                     pixel_size = data[i].zopts.pxsize, $
-                     scale_mode = data[i].zopts.ilog, $
-                     inverted = data[i].zopts.invert, $
-                     missing = data[i].zopts.missing, $
+                     range = data.zopts.range, $
+                     pixel_size = data.zopts.pxsize, $
+                     scale_mode = data.zopts.ilog, $
+                     inverted = data.zopts.invert, $
+                     missing = data.zopts.missing, $
                      ps_grey = grey_ps, $
                      table = table, $
                      gamma = gamma

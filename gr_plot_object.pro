@@ -109,7 +109,8 @@ pro Gr_plot_object, pdefs, no_null = no_null, charsize = charsize, $
      pdefs.ytransform[1] = !y
   endif
 
-  cts = (*pdefs.data).psym eq 0
+  ;; cts = (*pdefs.data).psym eq 0 and ((*pdefs.data).type le 0 or $
+  ;;                                    (*pdefs.data).type eq 9)
   ndata = (*pdefs.data).ndata
   type = (*pdefs.data).type
 
@@ -125,7 +126,7 @@ pro Gr_plot_object, pdefs, no_null = no_null, charsize = charsize, $
 
      if (pdefs.y_right) then $
         !y = pdefs.ytransform[(*pdefs.data)[i].y_axis]
-     if (ndata(i) ge 2 or (not cts(i) and ndata(i) eq 1)) then begin
+     ;; if (ndata(i) ge 2 or (not cts(i) and ndata(i) eq 1)) then begin
         
         if (type(i) eq -4) then begin
            if (plot2) then $
@@ -139,7 +140,7 @@ pro Gr_plot_object, pdefs, no_null = no_null, charsize = charsize, $
                            shaded = reaxis
         endif else $                   ; Observations, xydata is
            gr_1dd_plot, pdefs, i, csiz ; floating point
-     endif
+     ;; endif
   endfor
 
   if reaxis then begin

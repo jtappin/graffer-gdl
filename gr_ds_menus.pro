@@ -139,7 +139,10 @@ pro Gr_dsp_event, event
      end
      
   endcase
-
+  if (*pdefs.data)[pdefs.cset].type ge 0 then $
+     widget_control, pdefs.ids.minmaxbase, sensitive $
+                     = (*pdefs.data)[pdefs.cset].mode eq 0
+ 
   if (idraw_flag) then gr_plot_object, pdefs
   if (ichange) then begin
      pdefs.chflag = 1b
@@ -170,60 +173,42 @@ pro Gr_ds_menus, optbb, pdefs
 
   jjb = widget_base(pdefs.ids.plopts[0], /row)
 
-  ;; if pdefs.opts.colour_menu then begin
-  ;;                               ; We fix the background here rather
-  ;;                               ; than at the read stage because:
-  ;;                               ; 1) We may not be able to determine
-  ;;                               ; the bg at the read stage.
-  ;;                               ; 2) It could have changed.
-  ;;    wc = widget_info(jjb, /system_colors)
-  ;;    col_swatch = col_bm
-  ;;    for j = 0, 2 do col_swatch[*, *, j, 0] and= wc.window_bk[j]
-
-  ;;    pdefs.ids.colour = cw_bbselector(jjb, $
-  ;;                                     col_swatch, $
-  ;;                                     uvalue = 'COLOUR', $
-  ;;                                     label_left = 'Colour:', $
-  ;;                                     set_value = 2, $
-  ;;                                     /track)
-  ;; endif else begin
-     col_list = ['Omit', $
-                 'White (bg)', $
-                 'Black', $
-                 'Red', $
-                 'Green', $
-                 'Blue', $
-                 'Cyan', $
-                 'Magenta', $
-                 'Yellow', $
-                 'Orange', $
-                 '#7f ff 00', $
-                 '#00 ff 7f', $
-                 '#00 7f ff', $
-                 '#7f 00 ff', $
-                 'Mauve', $
-                 'Dark Grey', $
-                 'Light Grey', $
-                 'Dark Red', $
-                 'Light Red', $
-                 'Dark Green', $
-                 'Light Green', $
-                 'Dark Blue', $
-                 'Light Blue', $
-                 'Dark Cyan', $
-                 'Light Cyan', $
-                 'Dark Magenta', $
-                 'Light Magenta', $
-                 'Dark Yellow', $
-                 'Light Yellow', $
-                 'Custom']
-     pdefs.ids.colour = widget_droplist(jjb, $
-                                        value = col_list, $
-                                        uvalue = 'COLOUR', $
-                                        title = 'Colour:', $
-                                        /track)
-     widget_control, pdefs.ids.colour, set_droplist_select = 1
-  ;; endelse
+  col_list = ['Omit', $
+              'White (bg)', $
+              'Black', $
+              'Red', $
+              'Green', $
+              'Blue', $
+              'Cyan', $
+              'Magenta', $
+              'Yellow', $
+              'Orange', $
+              '#7f ff 00', $
+              '#00 ff 7f', $
+              '#00 7f ff', $
+              '#7f 00 ff', $
+              'Mauve', $
+              'Dark Grey', $
+              'Light Grey', $
+              'Dark Red', $
+              'Light Red', $
+              'Dark Green', $
+              'Light Green', $
+              'Dark Blue', $
+              'Light Blue', $
+              'Dark Cyan', $
+              'Light Cyan', $
+              'Dark Magenta', $
+              'Light Magenta', $
+              'Dark Yellow', $
+              'Light Yellow', $
+              'Custom']
+  pdefs.ids.colour = widget_droplist(jjb, $
+                                     value = col_list, $
+                                     uvalue = 'COLOUR', $
+                                     title = 'Colour:', $
+                                     /track)
+  widget_control, pdefs.ids.colour, set_droplist_select = 1
 
 ; This stays as a bbselector as droplists don't do bitmaps
   pdefs.ids.psym = cw_bbselector(jjb, $
@@ -251,6 +236,7 @@ pro Gr_ds_menus, optbb, pdefs
 
   pdefs.ids.pline = widget_droplist(jjb, $
                                     value = ['None', 'Line', 'Histo'], $
+                                    $
                                     uvalue = 'PLINE', $
                                     title = 'Join:', $
                                     /track)
@@ -271,7 +257,9 @@ pro Gr_ds_menus, optbb, pdefs
                                 ; Change symbol size
 
   pdefs.ids.symsize = graff_enter(jjb, /float, /all_ev, value = '1.0', $
+                                  $
                                   uvalue = 'SSIZE', xsize = 5, label = $
+                                  $
                                   'Size:', format = "(f5.1)", $
                                   /track, /capture)
 
@@ -306,21 +294,21 @@ pro Gr_ds_menus, optbb, pdefs
                                      /column)
   pdefs.ids.minval = graff_enter(pdefs.ids.minmaxbase, $
                                  /double, $
-                                 format="(g12.4)", $
+                                 format = "(g12.4)", $
                                  /all_event, $
-                                 xsize=13, $
-                                 uvalue='MINVAL', $
-                                 label='Min Value:', $
+                                 xsize = 13, $
+                                 uvalue = 'MINVAL', $
+                                 label = 'Min Value:', $
                                  /track, $
                                  /capture, $
                                  /empty_nan)
   pdefs.ids.maxval = graff_enter(pdefs.ids.minmaxbase, $
                                  /double, $
-                                 format="(g12.4)", $
+                                 format = "(g12.4)", $
                                  /all_event, $
-                                 xsize=13, $
-                                 uvalue='MAXVAL', $
-                                 label='Max Value:', $
+                                 xsize = 13, $
+                                 uvalue = 'MAXVAL', $
+                                 label = 'Max Value:', $
                                  /track, $
                                  /capture, $
                                  /empty_nan)

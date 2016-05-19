@@ -127,10 +127,12 @@ case (data.type) of
                (*data.xydata)(4, 0:data.ndata-1))
         endelse
         
+        if finite(data.max_val) then yp <= data.max_val
+        if finite(data.min_val) then ym >= data.min_val
         locs = where(finite(ym), nf)
-        if (nf gt 0) then range(0) = range(0) < min(ym(locs))
+        if (nf gt 0) then range(0) = range(0) < min(ym[locs])
         locs = where(finite(yp), nf)
-        if (nf gt 0) then range(1) = range(1) > max(yp(locs))
+        if (nf gt 0) then range(1) = range(1) > max(yp[locs])
     end
     
 endcase

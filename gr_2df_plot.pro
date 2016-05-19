@@ -31,11 +31,12 @@ pro Gr_2df_plot, pdefs, i, csiz, grey_ps = grey_ps, shaded = shaded
 ;	Return a flag if axes need redrawing: 20/1/16; SJT
 ;-
 
-  data = *pdefs.data
-  if not ptr_valid(data[i].xydata) then return
-  if (data[i].zopts.format eq 2) then return
+  data = (*pdefs.data)[i]
+  if ~ptr_valid(data.xydata) || $
+     data.ndata eq 0 || data.ndata2 eq 0 then return
+  if (data.zopts.format eq 2) then return
 
-  yaxis = pdefs.y_right and data[i].y_axis eq 1
+  yaxis = pdefs.y_right and data.y_axis eq 1
 
   xrange = !X.crange
   if (pdefs.xtype) then xrange = 10^xrange
@@ -43,7 +44,7 @@ pro Gr_2df_plot, pdefs, i, csiz, grey_ps = grey_ps, shaded = shaded
   if (pdefs.ytype and yaxis eq 0) or (pdefs.ytype_r and yaxis eq 1) then $
      yrange = 10^yrange
 
-  xydata = *data[i].xydata
+  xydata = *data.xydata
 
   xmin = xrange(0)
   xmax = xrange(1)
@@ -62,24 +63,24 @@ pro Gr_2df_plot, pdefs, i, csiz, grey_ps = grey_ps, shaded = shaded
   if (pdefs.xtype) then begin
      xmin = alog10(xmin)
      xmax = alog10(xmax)
-     x = 10^(dindgen(data[i].ndata) * (xmax-xmin) $
-             /  float(data[i].ndata-1) + xmin)
-  endif else x = dindgen(data[i].ndata) * (xmax-xmin) $
-                 /  float(data[i].ndata-1) + xmin
+     x = 10^(dindgen(data.ndata) * (xmax-xmin) $
+             /  float(data.ndata-1) + xmin)
+  endif else x = dindgen(data.ndata) * (xmax-xmin) $
+                 /  float(data.ndata-1) + xmin
 
   if (pdefs.ytype) then begin
      ymin = alog10(ymin)
      ymax = alog10(ymax)
-     y = 10^(dindgen(data[i].ndata2) * (ymax-ymin) $
-             /  float(data[i].ndata2-1) + ymin)
-  endif else y = dindgen(1, data[i].ndata2) * (ymax-ymin) $
-                 /  float(data[i].ndata2-1) + ymin
+     y = 10^(dindgen(data.ndata2) * (ymax-ymin) $
+             /  float(data.ndata2-1) + ymin)
+  endif else y = dindgen(1, data.ndata2) * (ymax-ymin) $
+                 /  float(data.ndata2-1) + ymin
 
   xx = x
   yy = y(*)
 
-  x = x(*, intarr(data[i].ndata2))
-  y = y(intarr(data[i].ndata), *)
+  x = x(*, intarr(data.ndata2))
+  y = y(intarr(data.ndata), *)
 
   r = sqrt(x^2+y^2)
 
@@ -91,13 +92,13 @@ pro Gr_2df_plot, pdefs, i, csiz, grey_ps = grey_ps, shaded = shaded
   if (s(0) ne 2) then graff_msg, pdefs.ids.message, $
                                  "Function:"+xydata.funct+ $
                                  " does not return a 2-D array" $
-  else if (data[i].zopts.format eq 0) then begin
-     if (data[i].zopts.set_levels) then begin
-        levels = *(data[i].zopts.levels) 
+  else if (data.zopts.format eq 0) then begin
+     if (data.zopts.set_levels) then begin
+        levels = *(data.zopts.levels) 
         nl = n_elements(levels)
      endif else begin
-        if (data[i].zopts.n_levels eq 0) then nl = 6 $
-        else nl = data[i].zopts.n_levels
+        if (data.zopts.n_levels eq 0) then nl = 6 $
+        else nl = data.zopts.n_levels
         rg = (max(z, min = mn, /nan)-mn)
         if (rg eq 0.) then begin
            graff_msg, pdefs.ids.message, 'Flat dataset - not able to ' + $
@@ -108,47 +109,47 @@ pro Gr_2df_plot, pdefs, i, csiz, grey_ps = grey_ps, shaded = shaded
      endelse
 
      
-     if (data[i].zopts.label ne 0 and n_elements(nl) eq 1) then begin
+     if (data.zopts.label ne 0 and n_elements(nl) eq 1) then begin
         labels = (indgen(nl) - $
-                  data[i].zopts.label/2) mod data[i].zopts.label eq 0
+                  data.zopts.label/2) mod data.zopts.label eq 0
      endif else labels = 0
      
-     if ptr_valid(data[i].zopts.colours) then begin
-        colours = *(data[i].zopts.colours)
+     if ptr_valid(data.zopts.colours) then begin
+        colours = *(data.zopts.colours)
         ncol = n_elements(colours)
         lcolours = lonarr(ncol)
         for j = 0, ncol-1 do lcolours[j] = graff_colours(colours[j])
      endif
-     if ptr_valid(data[i].zopts.style) then linestyle = $
-        *(data[i].zopts.style) 
-     if ptr_valid(data[i].zopts.thick) then thick = $
-        *(data[i].zopts.thick) 
+     if ptr_valid(data.zopts.style) then linestyle = $
+        *(data.zopts.style) 
+     if ptr_valid(data.zopts.thick) then thick = $
+        *(data.zopts.thick) 
 
-     ccsize = pdefs.charsize*data[i].zopts.charsize*0.75*csiz
+     ccsize = pdefs.charsize*data.zopts.charsize*0.75*csiz
 
      contour, z, xx, yy, /overplot, /follow, $
               levels = levels, c_linestyle = linestyle, $
               c_colors = lcolours, c_thick = thick, $
-              fill = data[i].zopts.fill eq 1b, downhill = $
-              data[i].zopts.fill eq 2b, c_labels = labels, c_charsize $
+              fill = data.zopts.fill eq 1b, downhill = $
+              data.zopts.fill eq 2b, c_labels = labels, c_charsize $
               = ccsize
-     if data[i].zopts.fill eq 1b then shaded = 1b
+     if data.zopts.fill eq 1b then shaded = 1b
   endif else begin
      if (~keyword_set(grey_ps)) then begin
-        if (data[i].zopts.ctable gt 0) then begin
-           table = data[i].zopts.ctable-1
-           gamma = data[i].zopts.gamma 
+        if (data.zopts.ctable gt 0) then begin
+           table = data.zopts.ctable-1
+           gamma = data.zopts.gamma 
         endif else begin
            table = pdefs.ctable
            gamma = pdefs.gamma
         endelse
      endif
      gr_display_img, z, xx, yy, $
-                     range = data[i].zopts.range, $
-                     pixel_size = data[i].zopts.pxsize, $
-                     scale_mode = data[i].zopts.ilog, $
-                     inverted = data[i].zopts.invert, $
-                     missing = data[i].zopts.missing, $
+                     range = data.zopts.range, $
+                     pixel_size = data.zopts.pxsize, $
+                     scale_mode = data.zopts.ilog, $
+                     inverted = data.zopts.invert, $
+                     missing = data.zopts.missing, $
                      ps_grey = grey_ps, $
                      table = table, $
                      gamma = gamma

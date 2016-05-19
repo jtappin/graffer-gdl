@@ -26,19 +26,20 @@ pro Gr_1df_plot, pdefs, i, csiz
 
   maxrange = sqrt(max(xrange^2)+max(yrange^2))
 
-  data = *pdefs.data
-  if not ptr_valid(data[i].xydata) then return
+  data = (*pdefs.data)[i]
 
-  if (data[i].colour eq -1) then return
-  if data[i].colour eq -2 then $
-     lcolour = graff_colours(data[i].c_vals) $
-  else lcolour = graff_colours(data[i].colour)
+  if ~ptr_valid(data.xydata) || data.ndata eq 0 then return
 
-  xydata = *data[i].xydata
+  if (data.colour eq -1) then return
+  if data.colour eq -2 then $
+     lcolour = graff_colours(data.c_vals) $
+  else lcolour = graff_colours(data.colour)
 
-  case (data[i].type) of
+  xydata = *data.xydata
+
+  case (data.type) of
      -1: begin                  ; Y=f(x) | theta=f(r)
-        case (data[i].mode) of
+        case (data.mode) of
            0: begin
               arange = xrange
               atype = pdefs.xtype
@@ -51,7 +52,7 @@ pro Gr_1df_plot, pdefs, i, csiz
         exceed = 0
      end
      -2: begin                  ; x=f(y) | r = f(theta)
-        case (data[i].mode) of
+        case (data.mode) of
            0: begin
               arange = yrange
               atype = pdefs.ytype
@@ -92,12 +93,12 @@ pro Gr_1df_plot, pdefs, i, csiz
   if (atype) then begin
      amin = alog10(amin)
      amax = alog10(amax)
-     t = 10^(dindgen(data[i].ndata) * (amax-amin) $
-             /  float(data[i].ndata-1) + amin)
-  endif else t = dindgen(data[i].ndata) * (amax-amin) $
-                 /  float(data[i].ndata-1) + amin
+     t = 10^(dindgen(data.ndata) * (amax-amin) $
+             /  float(data.ndata-1) + amin)
+  endif else t = dindgen(data.ndata) * (amax-amin) $
+                 /  float(data.ndata-1) + amin
 
-  case (data[i].type) of
+  case (data.type) of
      -1: begin                  ;  y = f(x)
         x = t
         y = 0.                  ; Must make y defined before using it
@@ -126,24 +127,25 @@ pro Gr_1df_plot, pdefs, i, csiz
   endcase
 
   if (s eq 0) then graff_msg, pdefs.ids.message, $
-                              "Function:"+xydata.funct+" does not return an array" $
+                              "Function:"+xydata.funct+ $
+                              " does not return an array" $
   else begin
-     if (data[i].mode eq 2) then pcf = !Dtor $
+     if (data.mode eq 2) then pcf = !Dtor $
      else pcf = 1.0
-     if (data[i].pline ne 0) then begin
-        lps = ([0, 0, 10])(data[i].pline)
+     if data.pline ne 0 && data.ndata ge 2 then begin
+        lps = ([0, 0, 10])(data.pline)
         oplot, x, y*pcf, color = lcolour, psym = $
-               lps, linesty = data[i].line, thick = $
-               data[i].thick, polar = (data[i].mode ne 0), noclip = $
-               data[i].noclip
+               lps, linesty = data.line, thick = $
+               data.thick, polar = (data.mode ne 0), noclip = $
+               data.noclip
      endif
      
-     if (data[i].psym ne 0) then begin
-        if (data[i].psym ge 8) then gr_symdef, data[i].psym 
+     if (data.psym ne 0) then begin
+        if (data.psym ge 8) then gr_symdef, data.psym 
         oplot, x, y*pcf, color = lcolour, psym = $
-               data[i].psym < 8, thick = data[i].thick, symsize = $
-               abs(data[i].symsize)*csiz, polar = (data[i].mode ne 0), $
-               noclip = data[i].noclip  
+               data.psym < 8, thick = data.thick, symsize = $
+               abs(data.symsize)*csiz, polar = (data.mode ne 0), $
+               noclip = data.noclip  
      endif
   endelse
 

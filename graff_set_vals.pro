@@ -150,7 +150,7 @@ pro Graff_set_vals, pdefs, set_only = set_only
   if data.type ge 0 then begin
      widget_control, pdefs.ids.minval, set_value = data.min_val
      widget_control, pdefs.ids.maxval, set_value = data.max_val
-     widget_control, pdefs.ids.minmaxbase, sensitive = 1
+     widget_control, pdefs.ids.minmaxbase, sensitive = data.mode eq 0
   endif else begin
      widget_control, pdefs.ids.minval, set_value = !values.d_nan
      widget_control, pdefs.ids.maxval, set_value = !values.d_nan
