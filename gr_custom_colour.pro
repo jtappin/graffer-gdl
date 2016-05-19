@@ -91,14 +91,17 @@ function gr_custom_colour, index, w0, group = group
                     modal = keyword_set(group))
 
   base = widget_base(tlb, $
-                     /column, $
-                    /base_align_center)
+                     /column)
 
 
   junk = widget_label(base, $
                       value = "Graffer define custom colour")
 
-  jb = widget_base(base, $
+  base1 = widget_base(base, $
+                      /column, $
+                      /base_align_center)
+
+  jb = widget_base(base1, $
                    /row)
 
   jbb = widget_base(jb, $
@@ -172,9 +175,9 @@ function gr_custom_colour, index, w0, group = group
                         uvalue = 'BLU_S')
 
 
-  dr_id = widget_draw(base, $
+  dr_id = widget_draw(base1, $
                       xsize = 120, $
-                      ysize = 30)
+                      ysize = 20)
 
   junk = cw_bgroup(base, $
                    ['Do it', 'Cancel'], $
@@ -182,7 +185,7 @@ function gr_custom_colour, index, w0, group = group
                    uvalue = 'ACTION', $
                    button_uvalue = [1, -1])
 
-  img = bytarr(120, 30, 3)
+  img = bytarr(120, 20, 3)
   for j = 0, 2 do img[*, *, j] = bcolour[j]
 
   uvs = ptr_new({re_id: re_id, $
