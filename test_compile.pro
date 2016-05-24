@@ -8,6 +8,8 @@ print, 'cw_pdtmenu.pro'
 .r cw_pdtmenu
 print, 'cw_pdtsmenu.pro'
 .r cw_pdtsmenu
+print, 'do_evolve_plots.pro'
+.r do_evolve_plots
 print, 'fractile.pro'
 .r fractile
 print, 'gr_1dd_plot.pro'
@@ -72,6 +74,8 @@ print, 'gr_cross_hair.pro'
 .r gr_cross_hair
 print, 'gr_curr_menu.pro'
 .r gr_curr_menu
+print, 'gr_custom_colour.pro'
+.r gr_custom_colour
 print, 'gr_dbl_rd.pro'
 .r gr_dbl_rd
 print, 'gr_dbl_val.pro'
