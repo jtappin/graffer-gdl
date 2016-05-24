@@ -100,12 +100,12 @@ pro Gr_pl_key, pdefs, csiz
         if ((*pdefs.data)[i].psym ge 8) then gr_symdef, (*pdefs.data)[i].psym 
         if (pdefs.key.one_point) then $
            plots, /norm, x0(icol)+x(1), y(irow)+yoff, color = $
-                  (*pdefs.data)[i].colour, psym = (*pdefs.data)[i].psym $
+                  lcolour, psym = (*pdefs.data)[i].psym $
                   < 8, thick = (*pdefs.data)[i].thick, symsize = $
                   abs((*pdefs.data)[i].symsize)*csiz $
         else $  
            plots, /norm, x0(icol)+x, y(irow)+ys, color = $
-                  (*pdefs.data)[i].colour, psym = (*pdefs.data)[i].psym $
+                  lcolour, psym = (*pdefs.data)[i].psym $
                   < 8, thick = (*pdefs.data)[i].thick, symsize = $
                   abs((*pdefs.data)[i].symsize)*csiz
      endif
