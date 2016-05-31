@@ -189,9 +189,13 @@ pro Gr_axis_event, event
               if (track_flag) then $
                  graff_msg, pdefs.ids.hlptxt, 'Adjust the X-axis ' + $
                             'scaling to accomodate current data' $
-              else if (val(2) eq 'Extend') then  $
-                 gr_autoscale, pdefs, /xaxis $
-              else gr_autoscale, pdefs, /xaxis, /ignore
+              else case val[2] of
+                 'Extend': gr_autoscale, pdefs, /xaxis 
+                 'Extend or Shrink': gr_autoscale, pdefs, /xaxis, $
+                                                   /ignore
+                 'Visible Only': gr_autoscale, pdefs, /xaxis, $
+                                              /visible 
+              endcase
            end
            'Advanced ...': begin
               if (track_flag) then $
@@ -350,9 +354,13 @@ pro Gr_axis_event, event
               if (track_flag) then $
                  graff_msg, pdefs.ids.hlptxt, 'Adjust the Y-axis ' + $
                             'scaling to accomodate current data' $
-              else if (val(2) eq 'Extend') then  $
-                 gr_autoscale, pdefs, /yaxis $
-              else gr_autoscale, pdefs, /yaxis, /ignore
+              else case val[2] of
+                 'Extend': gr_autoscale, pdefs, /yaxis
+                 'Extend or Shrink': gr_autoscale, pdefs, /yaxis, $
+                                                   /ignore
+                 'Visible Only': gr_autoscale, pdefs, /yaxis, $
+                                              /visible 
+              endcase
            end
            'Advanced ...': begin
               if (track_flag) then $
@@ -505,9 +513,13 @@ pro Gr_axis_event, event
               if (track_flag) then $
                  graff_msg, pdefs.ids.hlptxt, 'Adjust the Y(r)-axis ' + $
                             'scaling to accomodate current data' $
-              else if (val(2) eq 'Extend') then  $
-                 gr_autoscale, pdefs, yaxis = 2 $
-              else gr_autoscale, pdefs, yaxis = 2, /ignore
+              else case val[2] of
+                 'Extend': gr_autoscale, pdefs, yaxis = 2  
+                 'Extend or Shrink': gr_autoscale, pdefs, yaxis = $
+                                                   2, /ignore
+                 'Visible Only': gr_autoscale, pdefs, yaxis = 2, $
+                                               /visible 
+              endcase
            end
            'Advanced ...': begin
               if (track_flag) then $
@@ -601,7 +613,8 @@ stydesc = [{CW_PDSMENU_S, flags:3, name:axis+' style', state:0b},  $
            {cw_pdsmenu_s, 2, '__  __', 0b}, $
            {cw_pdsmenu_s, 1, 'Autoscale', 0b}, $
            {cw_pdsmenu_s, 0, 'Extend', 255b}, $
-           {cw_pdsmenu_s, 2, 'Extend or Shrink', 255b}, $
+           {cw_pdsmenu_s, 0, 'Extend or Shrink', 255b}, $
+           {cw_pdsmenu_s, 2, 'Visible Only', 255b}, $
            {cw_pdsmenu_s, 2, 'Advanced ...', 255b}]
 
 junk = widget_label(jb, value = 'Style:')

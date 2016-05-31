@@ -1,4 +1,4 @@
-pro Gr_as_xa, data, xrange, yrange, range
+pro Gr_as_xa, data, xrange, yrange, range, visible = visible
 
 ;+
 ; GR_AS_XA
@@ -17,22 +17,23 @@ pro Gr_as_xa, data, xrange, yrange, range
 ; History:
 ;	Extracted from GR_AUTOSCALE: 16/12/96; SJT
 ;	Convert handles to pointers: 27/6/05; SJT
+;	Add visible key: 31/5/16; SJT
 ;-
 
-maxrange = sqrt(max(xrange^2)+max(yrange^2))
+  maxrange = sqrt(max(xrange^2)+max(yrange^2))
 
-case (data.type) of
-    -1: begin                   ; th = f(r)
+  case (data.type) of
+     -1: begin                  ; th = f(r)
         if ((*data.xydata).range(0) ne (*data.xydata).range(1)) then begin
-            amin = (*data.xydata).range(0)
-            amax = (*data.xydata).range(1) < maxrange
+           amin = (*data.xydata).range(0)
+           amax = (*data.xydata).range(1) < maxrange
         endif else begin
-            amin = 0.
-            amax = maxrange
+           amin = 0.
+           amax = maxrange
         endelse
         
         x = dindgen(data.ndata) * (amax-amin) $
-          /  float(data.ndata-1) + amin
+            /  float(data.ndata-1) + amin
         
         fv = 0.
         iexe = execute('fv = '+(*data.xydata).funct)
@@ -40,22 +41,20 @@ case (data.type) of
         if (data.mode eq 2) then fv = fv*!Dtor
         gr_pol_rect, x, fv, xx, yy
         
-        range(0) = range(0) < min(xx, max = mx)
-        range(1) = range(1) > mx
-    end
-    
-    -2: begin                   ; X = f(y)
+     end
+     
+     -2: begin                  ; X = f(y)
         if ((*data.xydata).range(0) ne (*data.xydata).range(1)) then begin
-            amin =  (*data.xydata).range(0)
-            amax =  (*data.xydata).range(1)
+           amin =  (*data.xydata).range(0)
+           amax =  (*data.xydata).range(1)
         endif else begin
-            amin = 0.
-            if (data.mode eq 2) then amax = 360. $
-            else amax = 2.*!pi
-         endelse
+           amin = 0.
+           if (data.mode eq 2) then amax = 360. $
+           else amax = 2.*!pi
+        endelse
         
         y = dindgen(data.ndata) * (amax-amin) $
-          /  float(data.ndata-1) + amin
+            /  float(data.ndata-1) + amin
         
         fv = 0.
         iexe = execute('fv = '+(*data.xydata).funct)
@@ -63,14 +62,12 @@ case (data.type) of
         if (data.mode eq 2) then y = y*!Dtor
         gr_pol_rect, fv, y, xx, yy
         
-        range(0) = range(0) < min(xx, max = mx)
-        range(1) = range(1) > mx
-    end
-    
-    -3: begin                   ; x = f(t), y = f(t)
+     end
+     
+     -3: begin                  ; x = f(t), y = f(t)
         t = dindgen(data.ndata) *  $
-          ((*data.xydata).range(1)-(*data.xydata).range(0)) $
-          /  float(data.ndata-1) + (*data.xydata).range(0)
+            ((*data.xydata).range(1)-(*data.xydata).range(0)) $
+            /  float(data.ndata-1) + (*data.xydata).range(0)
         
         fr = 0.
         ft = 0.
@@ -78,25 +75,30 @@ case (data.type) of
         iexe = execute('ft = '+(*data.xydata).funct(1))
         
         if (data.mode eq 2) then ft = ft*!Dtor
-        gr_pol_rect, fr, ft, x, y
-        range(0) = range(0) < min(x, max = fvmx)
-        range(1) = range(1) > fvmx
-    end
-    
-    -4:
-    9:
-    
-    Else: begin                 ; XY data, much easier (or it was)
+        gr_pol_rect, fr, ft, xx, yy
+     end
+     
+     -4: return                 ; 2-D does not support polar
+     9: return
+     
+     Else: begin                ; XY data, much easier (or it was)
         
         gr_ang_pts, (*data.xydata), data.ndata, data.type, r, t
         
         if (data.mode eq 2) then t = t*!Dtor
         
-        gr_pol_rect, r, t, x, y
-        
-        range(0) = range(0) < min(x, max = mx)
-        range(1) = range(1) > mx
-    end
-endcase
+        gr_pol_rect, r, t, xx, yy
+     end
+  endcase
 
+  if keyword_set(visible) then begin
+     locs = where(yy ge yrange[0] and yy le yrange[1], nfe)
+     if nfe ne 0 then begin
+        range[0] = range[0] < min(xx[locs], max = mx, /nan)
+        range[1] = range[1] > mx
+     endif
+  endif else begin
+     range[0] = range[0] < min(xx, max = mx, /nan)
+     range[1] = range[1] > mx
+  endelse
 end

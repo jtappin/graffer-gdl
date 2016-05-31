@@ -8,8 +8,6 @@ print, 'cw_pdtmenu.pro'
 .r cw_pdtmenu
 print, 'cw_pdtsmenu.pro'
 .r cw_pdtsmenu
-print, 'do_evolve_plots.pro'
-.r do_evolve_plots
 print, 'fractile.pro'
 .r fractile
 print, 'gr_1dd_plot.pro'
