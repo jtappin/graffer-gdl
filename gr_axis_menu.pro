@@ -627,7 +627,7 @@ if (axis eq 'Yr') then widget_control, buts[19], sensitive = 0
 if axis eq 'Y' then pdefs.ids.y_box = buts[10]
 if axis eq 'X' then begin
     pdefs.ids.x_origin = buts[22]
-    widget_control, buts[2], sensitive = ~pdefs.y_right
+    widget_control, buts[22], sensitive = ~pdefs.y_right
 endif
 
 asty_pos = [1, 4, 7, 10, 13, 16, 19, 22, 26]
