@@ -22,24 +22,25 @@ pro Gr_state, id, save = save
 ; History:
 ;	Original: 23/1/97; SJT
 ;	Call garbage collector: 30/6/05; SJT
-;	Add a save key, to allow gr_entry state to be hidden.
+;	Add a save key, to allow gr_entry state to be hidden. ??; SJT
+;	Change to use decomposed colours: May 16; SJT
 ;-
 
   common Gr_entry_state, pstate, xstate, ystate, zstate, qstate, $
-     rstate, $
-     gstate, bstate, gdstate, dstate
+     rstate, gstate, bstate, gdstate, dstate
 
   if keyword_set(save) then begin
-     gdstate =  !D.name
-     pstate = !P
-     xstate = !X
-     ystate = !Y
-     zstate = !Z                ; Not touched at present in graffer
+     gdstate = !d.name
+     pstate = !p
+     xstate = !x
+     ystate = !y
+     zstate = !z                ; Not touched at present in graffer
                                 ; but if & when GRAFFER for surfaces is
                                 ; done then it may be
-     qstate = !Quiet
+     qstate = !quiet
+     tvlct, rstate, gstate, bstate, /get
 
-     if ((!D.flags and 65536) eq 0) then begin
+     if ((!d.flags and 65536) eq 0) then begin
         if strupcase(!version.os_family) eq 'UNIX' then dev = 'X' $
         else dev = 'WIN'        ; Probably won't work
         print, "GRAFFER needs widgets; current device (", !D.name, $
@@ -60,12 +61,14 @@ pro Gr_state, id, save = save
 
      device, decomposed = dstate
      set_plot, gdstate
-     if (keyword_set(debug)) then !Quiet = qstate ; Restore message state
-     !P = pstate
-     !X = xstate
-     !Y = ystate
-     !Z = zstate
-
+     !quiet = qstate            ; Restore message state
+     !p = pstate
+     !x = xstate
+     !y = ystate
+     !z = zstate
+     tvlct, rstate, gstate, bstate
+     if dstate then !p.color = graff_colours([255, 255, 255]) $
+     else !p.color = 255b
   endelse
 
   heap_gc
