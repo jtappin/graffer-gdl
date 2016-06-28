@@ -71,16 +71,16 @@ pro Gr_2df_plot, pdefs, i, csiz, grey_ps = grey_ps, shaded = shaded
   if (pdefs.ytype) then begin
      ymin = alog10(ymin)
      ymax = alog10(ymax)
-     y = 10^(dindgen(data.ndata2) * (ymax-ymin) $
+     y = 10^(dindgen(1, data.ndata2) * (ymax-ymin) $
              /  float(data.ndata2-1) + ymin)
   endif else y = dindgen(1, data.ndata2) * (ymax-ymin) $
                  /  float(data.ndata2-1) + ymin
 
   xx = x
-  yy = y(*)
+  yy = y[*]
 
-  x = x(*, intarr(data.ndata2))
-  y = y(intarr(data.ndata), *)
+  x = x[*, intarr(data.ndata2)]
+  y = y[intarr(data.ndata), *]
 
   r = sqrt(x^2+y^2)
 
