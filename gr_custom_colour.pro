@@ -4,6 +4,8 @@ function gr_cc_event, event
   widget_control, event.handler, get_uvalue = uvs
 
   display = 0b
+  reset_s = 0b
+
   exit = 0
   case mnu of
      'ACTION': exit = event.value
@@ -13,9 +15,13 @@ function gr_cc_event, event
         (*uvs).img[*, *, 0] = event.value
         widget_control, (*uvs).rs_id, set_value = event.value
         display = 1b
+        reset_s = 1b
      end
      'RED_S': begin
-        if ~event.drag then (*uvs).colour[0] = event.value
+        if ~event.drag then begin
+           (*uvs).colour[0] = event.value
+           reset_s = 1b
+        endif
         (*uvs).img[*, *, 0] = event.value
         display = 1b
         widget_control, (*uvs).re_id, set_value = event.value
@@ -25,9 +31,13 @@ function gr_cc_event, event
         (*uvs).img[*, *, 1] = event.value
         widget_control, (*uvs).gs_id, set_value = event.value
         display = 1b
+        reset_s = 1b
      end
      'GRN_S': begin
-        if ~event.drag then (*uvs).colour[1] = event.value
+        if ~event.drag then begin
+           (*uvs).colour[1] = event.value
+           reset_s = 1b
+        endif
         (*uvs).img[*, *, 1] = event.value
         display = 1b
         widget_control, (*uvs).ge_id, set_value = event.value
@@ -37,16 +47,63 @@ function gr_cc_event, event
         (*uvs).img[*, *, 2] = event.value
         widget_control, (*uvs).bs_id, set_value = event.value
         display = 1b
+        reset_s = 1b
      end
      'BLU_S': begin
-        if ~event.drag then (*uvs).colour[2] = event.value
+        if ~event.drag then begin
+           (*uvs).colour[2] = event.value
+           reset_s = 1b
+        endif
         (*uvs).img[*, *, 2] = event.value
         display = 1b
         widget_control, (*uvs).be_id, set_value = event.value
      end
+     'SCALE_E': begin
+        sfact =  double(event.value)/100.
+        widget_control, (*uvs).scs_id, set_value = event.value
+        for j =  0, 2 do begin
+           (*uvs).colour[j] = byte(((*uvs).colour[j] * sfact) < 255)
+           (*uvs).img[*, *, j] = (*uvs).colour[j]
+        endfor
+        widget_control, (*uvs).rs_id, set_value = (*uvs).colour[0]
+        widget_control, (*uvs).gs_id, set_value = (*uvs).colour[1]
+        widget_control, (*uvs).bs_id, set_value = (*uvs).colour[2]
+        widget_control, (*uvs).re_id, set_value = (*uvs).colour[0]
+        widget_control, (*uvs).ge_id, set_value = (*uvs).colour[1]
+        widget_control, (*uvs).be_id, set_value = (*uvs).colour[2]
+        reset_s = 1b
+        display = 1b
+     end
+    'SCALE_S': begin
+        sfact =  double(event.value)/100.
+        widget_control, (*uvs).sce_id, set_value = event.value
+        ncv = bytarr(3)
+        for j =  0, 2 do begin
+           ncv[j] = byte(((*uvs).colour[j] * sfact) < 255)
+           (*uvs).img[*, *, j] = ncv[j]
+        endfor
+        widget_control, (*uvs).rs_id, set_value = ncv[0]
+        widget_control, (*uvs).gs_id, set_value = ncv[1]
+        widget_control, (*uvs).bs_id, set_value = ncv[2]
+        widget_control, (*uvs).re_id, set_value = ncv[0]
+        widget_control, (*uvs).ge_id, set_value = ncv[1]
+        widget_control, (*uvs).be_id, set_value = ncv[2]
+        display = 1b
+        if ~event.drag then begin
+           (*uvs).colour = ncv
+           reset_s = 1b
+        endif
+     end
+
   endcase
 
   if display then tv, (*uvs).img, true = 3
+
+  if reset_s then begin
+     widget_control, (*uvs).scs_id, set_value = 100
+     widget_control, (*uvs).sce_id, set_value = 100
+     widget_control, (*uvs).sc_b, sensitive = max((*uvs).colour) gt 0
+  endif
 
   return, {id: event.id, $
            top: event.top, $
@@ -75,6 +132,7 @@ function gr_custom_colour, index, w0, group = group
 ;
 ; History:
 ;	Original: 17/5/16; SJT
+;	Add scaler: 23/8/16; SJT
 ;-
 
   if n_elements(index) eq 1 then begin
@@ -174,9 +232,34 @@ function gr_custom_colour, index, w0, group = group
                         /drag, $
                         uvalue = 'BLU_S')
 
+  sc_b = widget_base(jb, $
+                     /column, $
+                     /base_align_center, $
+                     /frame)
+  widget_control, sc_b, sensitive = max(bcolour) gt 0
+
+  sce_id = cw_ffield(sc_b, $
+                     label = 'Scale (%)', $
+                     /column, $
+                     format = "(I3)", $
+                     /capture, $
+                     xsize = 3, $
+                     /int, $
+                     value = 100, $
+                     uvalue = 'SCALE_E')
+  scs_id = widget_slider(sc_b, $
+                         /vertical, $
+                         min = 0, $
+                         max = 200, $
+                         ysize = 300, $
+                         value = 100, $
+                         /suppress, $
+                         /drag, $
+                         uvalue = 'SCALE_S')
+
 
   dr_id = widget_draw(base1, $
-                      xsize = 120, $
+                      xsize = 150, $
                       ysize = 20)
 
   junk = cw_bgroup(base, $
@@ -185,7 +268,7 @@ function gr_custom_colour, index, w0, group = group
                    uvalue = 'ACTION', $
                    button_uvalue = [1, -1])
 
-  img = bytarr(120, 20, 3)
+  img = bytarr(150, 20, 3)
   for j = 0, 2 do img[*, *, j] = bcolour[j]
 
   uvs = ptr_new({re_id: re_id, $
@@ -194,6 +277,9 @@ function gr_custom_colour, index, w0, group = group
                  gs_id: gs_id, $
                  be_id: be_id, $
                  bs_id: bs_id, $
+                 sc_b: sc_b, $
+                 sce_id: sce_id, $
+                 scs_id: scs_id, $
                  colour: bcolour, $
                  img: img})
 

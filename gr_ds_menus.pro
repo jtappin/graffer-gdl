@@ -20,6 +20,7 @@
 ;	Replace most cw_bbselectors with widget_droplist: 13/12/11; SJT
 ;	Add extra colours: 8/2/12; SJT
 ; 	Add min & max values: 4/3/15; SJT
+; 	Add display of current DS colour: 23/8/16; SJT
 ;-
 
 pro Gr_dsp_event, event
@@ -78,6 +79,7 @@ pro Gr_dsp_event, event
               (*pdefs.data)[pdefs.cset].c_vals = cc
            endelse
         endif else (*pdefs.data)[pdefs.cset].colour = event.index-1
+        gr_show_colour, pdefs
      endelse
 
      'STYLE': if (track_flag) then $
@@ -171,7 +173,9 @@ pro Gr_ds_menus, optbb, pdefs
                                     /column, $
                                     event_pro = 'gr_dsp_event')
 
-  jjb = widget_base(pdefs.ids.plopts[0], /row)
+  jjb = widget_base(pdefs.ids.plopts[0], $
+                    /row, $
+                    /base_align_center)
 
   col_list = ['Omit', $
               'White (bg)', $
@@ -210,17 +214,23 @@ pro Gr_ds_menus, optbb, pdefs
                                      /track)
   widget_control, pdefs.ids.colour, set_droplist_select = 1
 
-; This stays as a bbselector as droplists don't do bitmaps
-  pdefs.ids.psym = cw_bbselector(jjb, $
-                                 psym_bm, $
-                                 uvalue = 'PSYM', $
-                                 label_left = 'Symbol:', $
-                                 /track) 
+  pdefs.ids.dscolour_base = widget_base(jjb)
+  pdefs.ids.dscolour_show = widget_draw(pdefs.ids.dscolour_base, $
+                                      xsize = 64, $
+                                      ysize = 24)
 
                                 ; Colour, linestyle, thickness etc.
 
   jjb = widget_base(pdefs.ids.plopts[0], /row)
 
+
+                                ; This stays as a bbselector as
+                                ; droplists don't do bitmaps 
+  pdefs.ids.psym = cw_bbselector(jjb, $
+                                 psym_bm, $
+                                 uvalue = 'PSYM', $
+                                 label_left = 'Symbol:', $
+                                 /track) 
 
   pdefs.ids.line = widget_droplist(jjb, $
                                    value = ['____',  $
@@ -233,10 +243,12 @@ pro Gr_ds_menus, optbb, pdefs
                                    title = 'Style:', $
                                    /track)
 
+  jjb = widget_base(pdefs.ids.plopts[0], /row)
 
   pdefs.ids.pline = widget_droplist(jjb, $
-                                    value = ['None', 'Line', 'Histo'], $
-                                    $
+                                    value = ['None', $
+                                             'Line', $
+                                             'Histo'], $
                                     uvalue = 'PLINE', $
                                     title = 'Join:', $
                                     /track)
@@ -256,10 +268,13 @@ pro Gr_ds_menus, optbb, pdefs
 
                                 ; Change symbol size
 
-  pdefs.ids.symsize = graff_enter(jjb, /float, /all_ev, value = '1.0', $
-                                  $
-                                  uvalue = 'SSIZE', xsize = 5, label = $
-                                  $
+  pdefs.ids.symsize = graff_enter(jjb, $
+                                  /float, $
+                                  /all_ev, $
+                                  value = '1.0', $
+                                  uvalue = 'SSIZE', $
+                                  xsize = 5, $
+                                  label = $
                                   'Size:', format = "(f5.1)", $
                                   /track, /capture)
 

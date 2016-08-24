@@ -78,6 +78,9 @@ Ids = { graff_ids, $
         Psym:    0l, $
         Symsize: 0l, $
         Colour:  0l, $
+        dscolour_base: 0l, $
+        dscolour_show: 0l, $
+        dscolour_win:  0l, $
         Line:    0l, $
         Thick:   0l, $
         Dsxtra:  lonarr(3), $

@@ -332,9 +332,13 @@ case object of
     end
     
     'TABS': if (track_flag) then $
-      graff_msg, pdefs.ids.hlptxt, "Select global settings menus or " + $
-                 "dataset menus" $
-            else ichange = 0b   ; ignore
+       graff_msg, pdefs.ids.hlptxt, "Select global settings menus or " + $
+                  "dataset menus" $
+    else begin
+       ichange = 0b 
+       if event.tab eq 1 then gr_show_colour, pdefs
+    endelse
+
     'YTABS': if (track_flag) then $
       graff_msg, pdefs.ids.hlptxt, "Select primary or secondary Y axis " + $
       "settings" $
@@ -627,6 +631,10 @@ pro Graffer, file, group = group, xsize = xsize, ysize = ysize, debug $
   widget_control, pdefs.ids.draw, get_value = windex
   wset, windex
   pdefs.ids.windex = windex
+
+  widget_control, pdefs.ids.dscolour_show, get_value = cwin
+  pdefs.ids.dscolour_win = cwin
+
   device, set_graphics_function = 3 ; Make sure we're in normal plot
                                 ; mode
   !p.color = graff_colours(1)   ; Gets reset when the first window is

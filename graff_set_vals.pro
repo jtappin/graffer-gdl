@@ -121,14 +121,12 @@ pro Graff_set_vals, pdefs, set_only = set_only
   widget_control, pdefs.ids.symsize, set_value = $
                   data.symsize
   widget_control, pdefs.ids.line, set_droplist_select = data.line
-  ;; if pdefs.opts.colour_menu then $
-  ;;    widget_control, pdefs.ids.colour, set_value = data.colour+1 $
-  ;; else
   if data.colour eq -2 then begin
      ncmax = widget_info(pdefs.ids.colour, /droplist_number)
      ci = ncmax-1
   endif else ci = data.colour+1
   widget_control, pdefs.ids.colour, set_droplist_select = ci
+  gr_show_colour, pdefs
 
   widget_control, pdefs.ids.thick, set_value = data.thick
   cw_pdtsmenu_set, pdefs.ids.dsxtra(0), data.sort
