@@ -216,21 +216,14 @@ pro Gr_ds_menus, optbb, pdefs
 
   pdefs.ids.dscolour_base = widget_base(jjb)
   pdefs.ids.dscolour_show = widget_draw(pdefs.ids.dscolour_base, $
-                                      xsize = 64, $
-                                      ysize = 24)
+                                        xsize = 64, $
+                                        ysize = 24)
 
                                 ; Colour, linestyle, thickness etc.
 
   jjb = widget_base(pdefs.ids.plopts[0], /row)
 
 
-                                ; This stays as a bbselector as
-                                ; droplists don't do bitmaps 
-  pdefs.ids.psym = cw_bbselector(jjb, $
-                                 psym_bm, $
-                                 uvalue = 'PSYM', $
-                                 label_left = 'Symbol:', $
-                                 /track) 
 
   pdefs.ids.line = widget_droplist(jjb, $
                                    value = ['____',  $
@@ -243,8 +236,6 @@ pro Gr_ds_menus, optbb, pdefs
                                    title = 'Style:', $
                                    /track)
 
-  jjb = widget_base(pdefs.ids.plopts[0], /row)
-
   pdefs.ids.pline = widget_droplist(jjb, $
                                     value = ['None', $
                                              'Line', $
@@ -253,6 +244,15 @@ pro Gr_ds_menus, optbb, pdefs
                                     title = 'Join:', $
                                     /track)
 
+  jjb = widget_base(pdefs.ids.plopts[0], /row)
+
+                                ; This stays as a bbselector as
+                                ; droplists don't do bitmaps 
+  pdefs.ids.psym = cw_bbselector(jjb, $
+                                 psym_bm, $
+                                 uvalue = 'PSYM', $
+                                 label_left = 'Symbol:', $
+                                 /track) 
 
   jjb = widget_base(pdefs.ids.plopts[0], /row)
   pdefs.ids.thick = graff_enter(jjb, $
