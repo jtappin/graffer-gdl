@@ -53,7 +53,10 @@ pro Gr_dsp_event, event
      'PLINE': if (track_flag) then $
         graff_msg, pdefs.ids.hlptxt, 'Select joining style for current ' + $
                    'data set' $
-     else (*pdefs.data)[pdefs.cset].pline = event.index
+     else begin
+        (*pdefs.data)[pdefs.cset].pline = event.index
+        widget_control, pdefs.ids.line, sensitive = event.index ne 0
+     endelse
      
      'SSIZE': if (track_flag) then $
         graff_msg, pdefs.ids.hlptxt, 'Set size for plot symbol ' + $
@@ -214,7 +217,8 @@ pro Gr_ds_menus, optbb, pdefs
                                      /track)
   widget_control, pdefs.ids.colour, set_droplist_select = 1
 
-  pdefs.ids.dscolour_base = widget_base(jjb)
+  pdefs.ids.dscolour_base = widget_base(jjb, $
+                                        /frame)
   pdefs.ids.dscolour_show = widget_draw(pdefs.ids.dscolour_base, $
                                         xsize = 64, $
                                         ysize = 24)
@@ -224,6 +228,14 @@ pro Gr_ds_menus, optbb, pdefs
   jjb = widget_base(pdefs.ids.plopts[0], /row)
 
 
+
+  pdefs.ids.pline = widget_droplist(jjb, $
+                                    value = ['None', $
+                                             'Line', $
+                                             'Histo'], $
+                                    uvalue = 'PLINE', $
+                                    title = 'Join:', $
+                                    /track)
 
   pdefs.ids.line = widget_droplist(jjb, $
                                    value = ['____',  $
@@ -236,14 +248,6 @@ pro Gr_ds_menus, optbb, pdefs
                                    title = 'Style:', $
                                    /track)
 
-  pdefs.ids.pline = widget_droplist(jjb, $
-                                    value = ['None', $
-                                             'Line', $
-                                             'Histo'], $
-                                    uvalue = 'PLINE', $
-                                    title = 'Join:', $
-                                    /track)
-
   jjb = widget_base(pdefs.ids.plopts[0], /row)
 
                                 ; This stays as a bbselector as
@@ -253,6 +257,18 @@ pro Gr_ds_menus, optbb, pdefs
                                  uvalue = 'PSYM', $
                                  label_left = 'Symbol:', $
                                  /track) 
+
+                                ; Change symbol size
+
+  pdefs.ids.symsize = graff_enter(jjb, $
+                                  /float, $
+                                  /all_ev, $
+                                  value = '1.0', $
+                                  uvalue = 'SSIZE', $
+                                  xsize = 5, $
+                                  label = $
+                                  'Size:', format = "(f5.1)", $
+                                  /track, /capture)
 
   jjb = widget_base(pdefs.ids.plopts[0], /row)
   pdefs.ids.thick = graff_enter(jjb, $
@@ -266,17 +282,6 @@ pro Gr_ds_menus, optbb, pdefs
                                 /track, $
                                 /capture)
 
-                                ; Change symbol size
-
-  pdefs.ids.symsize = graff_enter(jjb, $
-                                  /float, $
-                                  /all_ev, $
-                                  value = '1.0', $
-                                  uvalue = 'SSIZE', $
-                                  xsize = 5, $
-                                  label = $
-                                  'Size:', format = "(f5.1)", $
-                                  /track, /capture)
 
   jjb = widget_base(pdefs.ids.plopts[0], $
                     /row)
