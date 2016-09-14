@@ -36,90 +36,90 @@ function Grf_tlv_get, vn, n_var
 ;-
 
 ; Check if there is a level specifier. If there is interpret it.
-pc = strpos(vn, '\')
-if pc eq -1 then begin
-    vname = vn
-    level = 1
-endif else begin
-    level = long(strmid(vn, 0, pc))
-    vname = strmid(vn, pc+1)
-endelse
+  pc = strpos(vn, '\')
+  if pc eq -1 then begin
+     vname = vn
+     level = 1
+  endif else begin
+     level = long(strmid(vn, 0, pc))
+     vname = strmid(vn, pc+1)
+  endelse
 
 ; Check for slide specifiers and separate them from the name.
 
-separators = ['.', '[', '(']
+  separators = ['.', '[', '(']
 
-sflag = 0b
-bp = -1
-for j = 0, n_elements(separators)-1 do begin
-    bps = strpos(vname, separators[j])
-    if (bps ge 0) then begin
+  sflag = 0b
+  bp = -1
+  for j = 0, n_elements(separators)-1 do begin
+     bps = strpos(vname, separators[j])
+     if (bps ge 0) then begin
         if bp eq -1 then bp = bps $
         else bp = bp < bps
-    endif
-endfor
-if bp eq -1 then begin
-    var = strupcase(vname)
-endif else begin
-    var = strupcase(strmid(vname, 0, bp))
-    slice = strmid(vname, bp)
-endelse
+     endif
+  endfor
+  if bp eq -1 then begin
+     var = strupcase(vname)
+  endif else begin
+     var = strupcase(strmid(vname, 0, bp))
+     slice = strmid(vname, bp)
+  endelse
 
-vbls = scope_varname(level = level) ; Get all top-level variables.
+  vbls = scope_varname(level = level) ; Get all top-level variables.
 
-locs = where(vbls eq var, nv)   ; Check that requested variable exists
-if (nv eq 0) then begin
-    n_var = 0
-    return, -1l
-endif
+  locs = where(vbls eq var, nv) ; Check that requested variable exists
+  if nv eq 0 || n_elements(scope_varfetch(var, level = level)) eq 0 then begin
+     n_var = 0
+     return, -1l
+  endif
 
-v = scope_varfetch(var, level = level) ; Retrieve the variable
+  v = scope_varfetch(var, level = level) ; Retrieve the variable
 
-sv = size(v)
-svtype = sv[sv[0]+1]
-while svtype eq 10 do begin      ; Pointer (de-reference it)
-    v1 = *v
-    v = temporary(v1)
-    sv = size(v)
-    svtype = sv[sv[0]+1]
-endwhile
+  sv = size(v)
+  svtype = sv[sv[0]+1]
+  while svtype eq 10 do begin   ; Pointer (de-reference it)
+     v1 = *v
+     v = temporary(v1)
+     sv = size(v)
+     svtype = sv[sv[0]+1]
+  endwhile
 
-if (svtype eq 0 || svtype eq 7 || svtype eq 11 || $
-    (svtype eq 8 && n_elements(slice) eq 0)) then begin ; Non-numeric
-    n_var = 0
-    return, -1l
-endif
+  if (svtype eq 0 || svtype eq 7 || svtype eq 11 || $
+      (svtype eq 8 && n_elements(slice) eq 0)) then begin ; Non-numeric
+     n_var = 0
+     return, -1l
+  endif
 
 ; If there is a slice, extract it and perform sanity checks on the
 ; result.
 
-if (n_elements(slice) gt 0) then begin
-    v1 = 0                      ; EXECUTE can't create a variable.
-    r = execute('v1 = v'+slice)
-    if (r ne 1) then begin
+  if (n_elements(slice) gt 0) then begin
+     v1 = 0                     ; EXECUTE can't create a variable.
+     r = execute('v1 = v'+slice)
+     if (r ne 1) then begin
         n_var = 0
         return, -1l
-    endif
+     endif
 
-    sv = size(v1)
-    svtype = sv[sv[0]+1]
-    while svtype eq 10 do begin  ; Pointer (de-reference it)
+     sv = size(v1)
+     svtype = sv[sv[0]+1]
+     while svtype eq 10 do begin ; Pointer (de-reference it)
         v2 = *v1
         v1 = temporary(v2)
         sv = size(v1)
         svtype = sv[sv[0]+1]
-    endwhile
+     endwhile
 
-    if (svtype eq 0 or svtype eq 7 or svtype eq 11 or svtype eq 8) $
-      then begin                ; Non-numeric 
+     if (svtype eq 0 or svtype eq 7 or svtype eq 11 or svtype eq 8) $
+     then begin                 ; Non-numeric 
         n_var = 0
         return, -1l
-    endif
+     endif
 
-endif else v1 = v
+  endif else v1 = v
 
-n_var = n_elements(v1)
-return, reform(v1)
+  n_var = n_elements(v1)
+  return, reform(v1)
 
 end
 
