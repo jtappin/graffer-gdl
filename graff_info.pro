@@ -1,69 +1,67 @@
-pro Graff_info, file, nsets = nsets,  title = title, subtitle = subtitle, $
-                charsize = charsize, thick = thick, corners = $
-                corners, $
+pro Graff_info, file, nsets = nsets,  title = title, $
+                subtitle = subtitle, charsize = charsize, $
+                thick = thick, corners = corners, $
                 aspect = aspect, comment = comment, xtitle = xtitle, $
                 xrange = xrange, xlog = xlog, xexact = xexact, $
                 xextend = xextend, xaxes = xaxes, xbox = xbox, $
                 xminor = xminor, xtime = xtime, xorigin = xorigin, $
                 xgrid = xgrid, xannotate = xannotate, $
                 xmajor = xmajor, xtickv = xtickv, xstyle = xstyle, $
-                ytitle = ytitle, $
-                yrange = yrange, ylog = ylog, yexact = yexact, $
-                yextend = yextend, yaxes = yaxes, ybox = ybox, $
-                yminor = yminor, ytime = ytime, yorigin = yorigin, $
-                ygrid = ygrid, yannotate = yannotate, $
-                ymajor = ymajor, ytickv = ytickv, ystyle = ystyle,$
-                yr_enable = yr_enable, $
-                yrtitle = yrtitle, $
-                yrmajor = yrmajor, yrtickv = yrtickv, yrstyle = yrstyle, $
-                yrrange = yrrange, yrlog = yrlog, yrexact = yrexact, $
-                yrextend = yrextend, yraxes = yraxes, $ $
-                yrminor = yrminor, yrtime = yrtime, yrorigin = $
-                yrorigin, $
-                yrgrid = yrgrid, yrannotate = $
-                yrannotate, $ 
-                h_orient = h_orient, $
-                h_colour = h_colour, h_eps = h_eps, $
-                h_xsize = h_xsize, $
+                ytitle = ytitle, yrange = yrange, ylog = ylog, $
+                yexact = yexact, yextend = yextend, yaxes = yaxes, $
+                ybox = ybox, yminor = yminor, ytime = ytime, $
+                yorigin = yorigin, ygrid = ygrid, $
+                yannotate = yannotate, ymajor = ymajor, $
+                ytickv = ytickv, ystyle = ystyle, $
+                yr_enable = yr_enable, yrtitle = yrtitle, $
+                yrmajor = yrmajor, yrtickv = yrtickv, $
+                yrstyle = yrstyle, yrrange = yrrange, yrlog = yrlog, $
+                yrexact = yrexact, yrextend = yrextend, $
+                yraxes = yraxes, yrminor = yrminor, yrtime = yrtime, $
+                yrorigin = yrorigin, yrgrid = yrgrid, $
+                yrannotate = yrannotate, $
+                h_orient = h_orient, h_colour = h_colour, $
+                h_eps = h_eps, h_xsize = h_xsize, $
                 h_ysize = h_ysize, h_xmargin = h_xmargin, $
                 h_ymargin = h_ymargin, isotropic = isotropic, $
                 h_cmyk =  h_cmyk, ctable = ctable, $
-                h_print = h_print, h_viewer $
-                = h_viewer, h_file = h_file
+                h_print = h_print, h_viewer = h_viewer, $
+                h_file = h_file
 ;+
 ; GRAFF_INFO
 ;	User-callable interface to retrieve global properties of a graffer
 ;	file.
 ;
 ; Usage:
-; Graff_info, file, nsets = nsets, title = title, subtitle = subtitle, $
-;                 charsize = charsize, thick = thick, corners = $
-;                 corners, $
-;                 aspect = aspect, comment = comment, xtitle = xtitle, $
-;                 xrange = xrange, xlog = xlog, xexact = xexact, $
-;                 xextend = xextend, xaxes = xaxes, xbox = xbox, $
-;                 xminor = xminor, xtime = xtime, xorigin = xorigin, $
-;                 xgrid = xgrid, xannotate = xannotate, $
-;                 xmajor = xmajor, xtickv = xtickv, $
-;                 ytitle = ytitle, $
-;                 yrange = yrange, ylog = ylog, yexact = yexact, $
-;                 yextend = yextend, yaxes = yaxes, ybox = ybox, $
-;                 yminor = yminor, ytime = ytime, yorigin = yorigin, $
-;                 ygrid = ygrid, yannotate = yannotate, $
-;                 ymajor = ymajor, ytickv = ytickv, $
-;                 yr_enable = yr_enable, $
-;                 yrtitle = yrtitle, $
-;                 yrmajor = xmajor, yrtickv = xtickv, $
-;                 yrrange = yrrange, yrlog = yrlog, yrexact = yrexact, $
-;                 yrextend = yrextend, yraxes = yraxes, $ $
-;                 yrminor = yrminor, yrtime = yrtime, yrorigin = yrorigin, $
-;                 yrgrid = yrgrid, yrannotate = $
-;                 yrannotate, h_orient = h_orient, $ $
-;                 h_colour = h_colour, h_eps = h_eps, h_xsize = h_xsize, $
-;                 h_ysize = h_ysize, h_xmargin = h_xmargin, $ $
-;                 h_ymargin = h_ymargin, isotropic = isotropic, h_cmyk = $
-;                 h_cmyk, ctable = ctable, h_print = h_print, h_viewer $
-;                 = h_viewer, h_file = h_file
+;	Graff_info, file, nsets = nsets,  title = title, $
+;                subtitle = subtitle, charsize = charsize, $
+;                thick = thick, corners = corners, $
+;                aspect = aspect, comment = comment, xtitle = xtitle, $
+;                xrange = xrange, xlog = xlog, xexact = xexact, $
+;                xextend = xextend, xaxes = xaxes, xbox = xbox, $
+;                xminor = xminor, xtime = xtime, xorigin = xorigin, $
+;                xgrid = xgrid, xannotate = xannotate, $
+;                xmajor = xmajor, xtickv = xtickv, xstyle = xstyle, $
+;                ytitle = ytitle, yrange = yrange, ylog = ylog, $
+;                yexact = yexact, yextend = yextend, yaxes = yaxes, $
+;                ybox = ybox, yminor = yminor, ytime = ytime, $
+;                yorigin = yorigin, ygrid = ygrid, $
+;                yannotate = yannotate, ymajor = ymajor, $
+;                ytickv = ytickv, ystyle = ystyle, $
+;                yr_enable = yr_enable, yrtitle = yrtitle, $
+;                yrmajor = yrmajor, yrtickv = yrtickv, $
+;                yrstyle = yrstyle, yrrange = yrrange, yrlog = yrlog, $
+;                yrexact = yrexact, yrextend = yrextend, $
+;                yraxes = yraxes, yrminor = yrminor, yrtime = yrtime, $
+;                yrorigin = yrorigin, yrgrid = yrgrid, $
+;                yrannotate = yrannotate, $
+;                h_orient = h_orient, h_colour = h_colour, $
+;                h_eps = h_eps, h_xsize = h_xsize, $
+;                h_ysize = h_ysize, h_xmargin = h_xmargin, $
+;                h_ymargin = h_ymargin, isotropic = isotropic, $
+;                h_cmyk =  h_cmyk, ctable = ctable, $
+;                h_print = h_print, h_viewer = h_viewer, $
+;                h_file = h_file
 ;
 ; Argument:
 ;	file	string	input	The graffer file to query.
@@ -114,9 +112,9 @@ pro Graff_info, file, nsets = nsets,  title = title, subtitle = subtitle, $
 ;	[xyyr]tickv	output	Get explicit tick locations. Set to a
 ;				scalar value, or set [xyyr]major without
 ;				setting this key to revert to automatic.
-;	[xyyr]time	output	If set to zero, then turn off time
-;				labelling, otherwise this must be a
+;	[xyyr]time	output	Will return a 
 ;				structure with the following members:
+;				set: Whether time labeling is set.
 ;				unit: - 0 == seconds
 ;				     - 1 == minutes
 ;				     - 2 == hours
@@ -161,16 +159,16 @@ pro Graff_info, file, nsets = nsets,  title = title, subtitle = subtitle, $
 ;
 ;
 ; History:
-;	Original, using graff_props as a template.
+;	Original, using graff_props as a template.: Sep 2016; SJT
 ;-
 
 ;	Check that the necessary inputs are present
 
-  on_error, 2                   ; Return to caller on error
+;  on_error, 2                   ; Return to caller on error
 
   if (n_params() ne 1) then message, "Must specify a GRAFFER file"
 
-  gr_state, /save
+;  gr_state, /save
 
 ;	Open the file
 
@@ -186,7 +184,7 @@ pro Graff_info, file, nsets = nsets,  title = title, subtitle = subtitle, $
 
 ; Number of datasets
 
-  if arg_present(nsets) nsets = pdefs.nsets
+  if arg_present(nsets) then nsets = pdefs.nsets
 
 ;	Titles & other global options
 
@@ -202,7 +200,7 @@ pro Graff_info, file, nsets = nsets,  title = title, subtitle = subtitle, $
   if arg_present(isotropic) then isotropic = pdefs.isotropic
 
   if arg_present(comment) then comment = *(pdefs.remarks)
- 
+  
   if arg_present(ctable) then ctable = pdefs.ctable
 
 ;	X axis settings
@@ -214,10 +212,10 @@ pro Graff_info, file, nsets = nsets,  title = title, subtitle = subtitle, $
 ;	Standard IDL style settings
 
   if arg_present(xstyle) then xstyle = pdefs.xsty.idl
-  if arg_present(xexact) then xexact = (pdefs.xsty and 1) ne 0
-  if arg_present(xextend) then xextend =  (pdefs.xsty and 2) ne 0
-  if arg_present(xaxes) then xaxes = (pdefs.xsty and 4) ne 0
-  if arg_present(xbox) then xbox = (pdefs.xsty and 8) ne 0
+  if arg_present(xexact) then xexact = (pdefs.xsty.idl and 1) ne 0
+  if arg_present(xextend) then xextend =  (pdefs.xsty.idl and 2) ne 0
+  if arg_present(xaxes) then xaxes = (pdefs.xsty.idl and 4) ne 0
+  if arg_present(xbox) then xbox = (pdefs.xsty.idl and 8) ne 0
 
 ;	Extra settings
 
@@ -228,234 +226,146 @@ pro Graff_info, file, nsets = nsets,  title = title, subtitle = subtitle, $
         else: xminor = pdefs.xsty.minor
      endcase
   endif
-  if arg_present(xmajor) then xxmajor = pdefs.xsty.major
+  if arg_present(xmajor) then xmajor = pdefs.xsty.major
 
-  if n_elements(xtickv) ne 0 then begin
-     if ptr_valid(pdefs.xsty.values) then ptr_free, pdefs.xsty.values
-     if n_elements(xtickv) gt 1 then pdefs.xsty.values = $
-        ptr_new(xtickv)
+  if arg_present(xtickv)  then begin
+     if ptr_valid(pdefs.xsty.values) then xtickv = $
+        *(pdefs.xsty.values) $
+     else xtickv = !values.d_nan
   endif
 
-  if (n_elements(xorigin) ne 0) then begin
-     if (keyword_set(xorigin)) then pdefs.xsty.extra = pdefs.xsty.extra $
-        or 2 $
-     else  pdefs.xsty.extra = pdefs.xsty.extra and (not 2)
-  endif
-  if n_elements(xannotate) ne 0 then begin
-     if keyword_set(xannotate) then pdefs.xsty.extra = pdefs.xsty.extra $
-        and (not 4) $
-     else pdefs.xsty.extra = pdefs.xsty.extra or 4
-  endif
+  if arg_present(xorigin) then xorigin = (pdefs.xsty.extra and 2) ne 0
+  if arg_present(xannotate) then $
+     xannotate = (pdefs.xsty.extra and 4) ne 0
 
 ;	time labelling
 
-  if (n_elements(xtime) ne 0) then begin
-     if (not keyword_set(xtime)) then pdefs.xsty.time = pdefs.xsty.time $
-        and (not 1) $
-     else begin
-        pdefs.xsty.time = 1 + 2*xtime.unit + 8*xtime.max_unit
-        pdefs.xsty.tzero = xtime.zero
-     endelse
-  endif
-
+  if arg_present(xtime) then $
+     xtime = {set: pdefs.xsty.time and 1, $
+              unit: (pdefs.xsty.time and 6)/2, $
+              max_unit: (pdefs.xsty.time and 24)/8, $
+              zero: pdefs.xsty.tzero}
+  
 ;	Grid
 
-  if (n_elements(xgrid) ne 0) then pdefs.xsty.grid = xgrid
+  if arg_present(xgrid) then xgrid = pdefs.xsty.grid 
 
 ;	Y axis settings
 
-  if (n_elements(yrange) eq 2) then pdefs.yrange = yrange $
-  else if keyword_set(yauto) then  gr_autoscale, pdefs, /yaxis, /ignore
+  if arg_present(yrange) then yrange = pdefs.yrange
 
-  if (n_elements(ytitle) ne 0) then pdefs.ytitle = ytitle
-  if (n_elements(ylog) ne 0) then pdefs.ytype = keyword_set(ylog)
+  if arg_present(ytitle) then ytitle = pdefs.ytitle
+  if arg_present(ylog) then ylog = pdefs.ytype
 
 ;	Standard IDL style settings
 
-  if (n_elements(yexact) ne 0) then begin
-     if keyword_set(yexact) then pdefs.ysty.idl = pdefs.ysty.idl or 1 $
-     else  pdefs.ysty.idl = pdefs.ysty.idl and (not 1)
-  endif
-  if (n_elements(yextend) ne 0) then begin
-     if keyword_set(yextend) then pdefs.ysty.idl = pdefs.ysty.idl or 2 $
-     else  pdefs.ysty.idl = pdefs.ysty.idl and (not 2)
-  endif
-  if (n_elements(yaxes) ne 0) then begin
-     if keyword_set(yaxes) then pdefs.ysty.idl = pdefs.ysty.idl or 4 $
-     else  pdefs.ysty.idl = pdefs.ysty.idl and (not 4)
-  endif
-  if (n_elements(ybox) ne 0) then begin
-     if keyword_set(ybox) then pdefs.ysty.idl = pdefs.ysty.idl or 8 $
-     else  pdefs.ysty.idl = pdefs.ysty.idl and (not 8)
-  endif
+  if arg_present(ystyle) then ystyle = pdefs.ysty.idl
+  if arg_present(yexact) then yexact = (pdefs.ysty.idl and 1) ne 0
+  if arg_present(yextend) then yextend =  (pdefs.ysty.idl and 2) ne 0
+  if arg_present(yaxes) then yaxes = (pdefs.ysty.idl and 4) ne 0
+  if arg_present(ybox) then ybox = (pdefs.ysty.idl and 8) ne 0
 
+  
 ;	Extra settings
 
-  if (n_elements(yminor) ne 0) then begin
-     case yminor of
-        1: pdefs.ysty.minor = 0
-        0: pdefs.ysty.minor = 1
-        else: pdefs.ysty.minor = yminor
+  if arg_present(yminor) then begin
+     case pdefs.ysty.minor of
+        1: yminor = 0
+        0: yminor = 1
+        else: yminor = pdefs.ysty.minor
      endcase
   endif
-  if n_elements(ymajor) ne 0 then begin
-     pdefs.ysty.major = ymajor
-     if  ptr_valid(pdefs.ysty.values) and n_elements(ytickv) eq 0 then $
-        ptr_free, pdefs.ysty.values
-  endif
-  if n_elements(ytickv) ne 0 then begin
-     if ptr_valid(pdefs.ysty.values) then ptr_free, pdefs.ysty.values
-     if n_elements(ytickv) gt 1 then pdefs.ysty.values = $
-        ptr_new(ytickv)
+  if arg_present(ymajor) then ymajor = pdefs.ysty.major
+  
+  if arg_present(ytickv)  then begin
+     if ptr_valid(pdefs.ysty.values) then ytickv = $
+        *(pdefs.ysty.values) $
+     else ytickv = !values.d_nan
   endif
 
-  if (n_elements(yorigin) ne 0) then begin
-     if (keyword_set(yorigin)) then pdefs.ysty.extra = pdefs.ysty.extra $
-        or 2 $
-     else  pdefs.ysty.extra = pdefs.ysty.extra and (not 2)
-  endif
-  if n_elements(yannotate) ne 0 then begin
-     if keyword_set(yannotate) then pdefs.ysty.extra = pdefs.ysty.extra $
-        and (not 4) $
-     else pdefs.ysty.extra = pdefs.ysty.extra or 4
-  endif
+  if arg_present(yorigin) then yorigin = (pdefs.ysty.extra and 2) ne 0
+  if arg_present(yannotate) then $
+     yannotate = (pdefs.ysty.extra and 4) ne 0
 
 ;	time labelling
 
-  if (n_elements(ytime) ne 0) then begin
-     if (not keyword_set(ytime)) then pdefs.ysty.time = pdefs.ysty.time $
-        and (not 1) $
-     else begin
-        pdefs.ysty.time = 1 + 2*ytime.unit + 8*ytime.max_unit
-        pdefs.ysty.tzero = ytime.zero
-     endelse
-  endif
-
+  if arg_present(ytime) then $
+     ytime = {set: pdefs.ysty.time and 1, $
+              unit: (pdefs.ysty.time and 6)/2, $
+              max_unit: (pdefs.ysty.time and 24)/8, $
+              zero: pdefs.ysty.tzero}
+ 
 ;	Grid
 
-  if (n_elements(ygrid) ne 0) then pdefs.ysty.grid = ygrid
+  if arg_present(ygrid) then ygrid = pdefs.ysty.grid 
 
 ; Secondary (Yr) Y axis settings.
 
-  if (n_elements(yr_enable) ne 0) then pdefs.y_right = $
-     keyword_set(yr_enable)
+  if arg_present(yr_enable) then yr_enable = pdefs.y_right
 
-  if (n_elements(yrrange) eq 2) then pdefs.yrange_r = yrrange $
-  else if keyword_set(yrauto) then  gr_autoscale, pdefs, yaxis = 2, /ignore
-
-  if (n_elements(yrtitle) ne 0) then pdefs.ytitle_r = yrtitle
-  if (n_elements(yrlog) ne 0) then pdefs.ytype_r = keyword_set(yrlog)
+  if arg_present(yrrange) then yrrange = pdefs.yrange_r
+  if arg_present(yrtitle) then yrtitle = pdefs.ytitle_r
+  if arg_present(yrlog) then yrlog = pdefs.ytype_r
 
 ;	Standard IDL style settings
 
-  if (n_elements(yrexact) ne 0) then begin
-     if keyword_set(yrexact) then pdefs.ysty_r.idl = pdefs.ysty_r.idl or 1 $
-     else  pdefs.ysty_r.idl = pdefs.ysty_r.idl and (not 1)
-  endif
-  if (n_elements(yrextend) ne 0) then begin
-     if keyword_set(yrextend) then pdefs.ysty_r.idl = pdefs.ysty_r.idl or 2 $
-     else  pdefs.ysty_r.idl = pdefs.ysty_r.idl and (not 2)
-  endif
-  if (n_elements(yraxes) ne 0) then begin
-     if keyword_set(yraxes) then pdefs.ysty_r.idl = pdefs.ysty_r.idl or 4 $
-     else  pdefs.ysty_r.idl = pdefs.ysty_r.idl and (not 4)
-  endif
+  if arg_present(yrstyle) then xstyle = pdefs.ysty_r.idl
+  if arg_present(yrexact) then xexact = (pdefs.ysty_r.idl and 1) ne 0
+  if arg_present(yrextend) then xextend =  (pdefs.ysty_r.idl and 2) ne 0
+  if arg_present(yraxes) then xaxes = (pdefs.ysty_r.idl and 4) ne 0
+
 
 ;	Extra settings
 
-  if (n_elements(yrminor) ne 0) then begin
-     case yrminor of
-        1: pdefs.ysty_r.minor = 0
-        0: pdefs.ysty_r.minor = 1
-        else: pdefs.ysty_r.minor = yrminor
+  if arg_present(yrminor) then begin
+     case pdefs.ysty_r.minor of
+        1: yrminor = 0
+        0: yrminor = 1
+        else: yrminor = pdefs.ysty_r.minor
      endcase
   endif
-  if n_elements(yrmajor) ne 0 then begin
-     pdefs.ysty_r.major = yrmajor
-     if  ptr_valid(pdefs.ysty_r.values) and n_elements(yrtickv) eq 0 then $
-        ptr_free, pdefs.ysty_r.values
-  endif
-  if n_elements(yrtickv) ne 0 then begin
-     if ptr_valid(pdefs.ysty_r.values) then ptr_free, pdefs.ysty_r.values
-     if n_elements(yrtickv) gt 1 then pdefs.ysty_r.values = $
-        ptr_new(yrtickv)
+  if arg_present(yrmajor) then yrmajor = pdefs.ysty_r.major
+ 
+  if arg_present(yrtickv)  then begin
+     if ptr_valid(pdefs.ysty_r.values) then yrtickv = $
+        *(pdefs.ysty_r.values) $
+     else yrtickv = !values.d_nan
   endif
 
-  if (n_elements(yrorigin) ne 0) then begin
-     if (keyword_set(yrorigin)) then pdefs.ysty_r.extra = $
-        pdefs.ysty_r.extra or 2 $
-     else  pdefs.ysty_r.extra = pdefs.ysty_r.extra and (not 2)
-  endif
-  if n_elements(yrannotate) ne 0 then begin
-     if keyword_set(yrannotate) then pdefs.ysty_r.extra = pdefs.ysty_r.extra $
-        and (not 4) $
-     else pdefs.ysty_r.extra = pdefs.ysty_r.extra or 4
-  endif
+  if arg_present(yrorigin) then yrorigin = (pdefs.ysty_r.extra and 2) ne 0
+  if arg_present(yrannotate) then $
+     yrannotate = (pdefs.ysty_r.extra and 4) ne 0
 
 ;	time labelling
 
-  if (n_elements(yrtime) ne 0) then begin
-     if (not keyword_set(yrtime)) then pdefs.ysty_r.time = $
-        pdefs.ysty_r.time and (not 1) $
-     else begin
-        pdefs.ysty_r.time = 1 + 2*yrtime.unit + 8*yrtime.max_unit
-        pdefs.ysty_r.tzero = yrtime.zero
-     endelse
-  endif
+  if arg_present(yrtime) then $
+     yrtime = {set: pdefs.ysty_r.time and 1, $
+               unit: (pdefs.ysty_r.time and 6)/2, $
+               max_unit: (pdefs.ysty_r.time and 24)/8, $
+               zero: pdefs.ysty_r.tzero}
 
 ;	Grid
 
-  if (n_elements(yrgrid) ne 0) then pdefs.ysty_r.grid = yrgrid
+  if arg_present(yrgrid) then yrgrid = pdefs.ysty_r.grid 
 
 ;	Hardcopy options.
 
-  if (n_elements(h_orient) ne 0) then pdefs.hardset.orient = $
-     keyword_set(h_orient)
-  if (n_elements(h_colour) ne 0) then pdefs.hardset.colour = $
-     keyword_set(h_colour)
-  if (n_elements(h_eps) ne 0) then begin
-     pdefs.hardset.eps = keyword_set(h_eps)
-     if (keyword_set(h_eps) and n_elements(h_orient) eq 0) then $
-        pdefs.hardset.orient = 1b
-  endif
+  if arg_present(h_orient) then h_orient = pdefs.hardset.orient
+  if arg_present(h_colour) then h_colour = pdefs.hardset.colour
+  if arg_present(h_eps) then h_eps = pdefs.hardset.eps
 
-  if (n_elements(h_xsize) ne 0) then pdefs.hardset.size(0) = h_xsize
-  if (n_elements(h_ysize) ne 0) then pdefs.hardset.size(1) = h_ysize
+  if arg_present(h_xsize) then h_xsize = pdefs.hardset.size[0]
+  if arg_present(h_ysize) then h_ysize = pdefs.hardset.size[1]
 
-  if (n_elements(h_xmargin) ne 0) then pdefs.hardset.off(0) = h_xmargin
-  if (n_elements(h_ymargin) ne 0) then pdefs.hardset.off(1) = h_ymargin
-  if (n_elements(h_cmyk) ne 0) then begin
-     pdefs.hardset.cmyk = h_cmyk
-     pdefs.hardset.colour = 1b
-  endif
+  if arg_present(h_xmargin) then h_xmargin = pdefs.hardset.off[0]
+  if arg_present(h_ymargin) then h_ymargin = pdefs.hardset.off[1]
+  if arg_present(h_cmyk) then h_cmyk = pdefs.hardset.cmyk
 
-  case n_elements(h_print) of
-     0:                         ; Not given do nothing
-     1: pdefs.hardset.action = [h_print, '']
-     else: pdefs.hardset.action = h_print[0:1]
-  endcase
-  case  n_elements(h_viewer) of
-     0:                         ; Not given do nothing
-     1: pdefs.hardset.viewer = [h_viewer, ' &']
-     2: pdefs.hardset.viewer = h_viewer[0:1]
-  endcase
-  if n_elements(h_file) ne 0 then pdefs.hardset.name = h_file
-
-;	Display or enter Graffer?
-
-  if (keyword_set(graffer)) then begin
-     gr_bin_save, pdefs
-     graffer, file
-     return
-  endif else if (keyword_set(display)) then begin
-     gr_plot_object, pdefs
-  endif
-
-  if (keyword_set(ascii)) then gr_asc_save, pdefs $
-  else gr_bin_save, pdefs
+  if arg_present(h_print) then h_print = pdefs.hardset.action
+  if arg_present(h_viewer) then h_viewer = pdefs.hardset.viewer
+  if arg_present(h_file)  then h_file = pdefs.hardset.name
 
   graff_clear, pdefs
-  gr_state
 
 end
 

@@ -249,132 +249,132 @@
 pro Graff_event, event
 
 
-base = widget_info(/child, event.top)
-widget_control, base, get_uvalue = pdefs
+  base = widget_info(/child, event.top)
+  widget_control, base, get_uvalue = pdefs
 
-sp = size(pdefs, /type)
-if (sp eq 3) then begin
-    base = widget_info(/child, pdefs)
-    widget_control, base, get_uvalue = pdefs
-end else if (sp ne 8) then begin
-    message, /continue, "** O U C H ** Corrupted internal data - " + $
-      "bailing out"
-    widget_control, event.top, /destroy
-    return
-endif
+  sp = size(pdefs, /type)
+  if (sp eq 3) then begin
+     base = widget_info(/child, pdefs)
+     widget_control, base, get_uvalue = pdefs
+  end else if (sp ne 8) then begin
+     message, /continue, "** O U C H ** Corrupted internal data - " + $
+              "bailing out"
+     widget_control, event.top, /destroy
+     return
+  endif
 
-if (base ne event.id) then widget_control, event.id, get_uvalue = object
+  if (base ne event.id) then widget_control, event.id, get_uvalue = object
 
-idraw_flag = 1
-ichange = 1b
-track_flag = strpos(tag_names(event, /struct), 'TRACK') ne -1
-nch = 1
+  idraw_flag = 1
+  ichange = 1b
+  track_flag = strpos(tag_names(event, /struct), 'TRACK') ne -1
+  nch = 1
 
-if (track_flag) then begin
-    idraw_flag = 0
-    ichange = 0b
-    
-    if (event.enter eq 0) then begin
+  if (track_flag) then begin
+     idraw_flag = 0
+     ichange = 0b
+     
+     if (event.enter eq 0) then begin
         graff_msg, pdefs.ids.hlptxt, ''
         case object of          ; Special actions for exit events
-            'AUTOSAVE': graff_msg, pdefs.ids.message, ''
-            Else:
+           'AUTOSAVE': graff_msg, pdefs.ids.message, ''
+           Else:
         endcase
         goto, miss_case
-    endif
-endif
+     endif
+  endif
 
-case object of
-    'TEXT': if (track_flag) then begin
+  case object of
+     'TEXT': if (track_flag) then begin
         graff_msg, pdefs.ids.hlptxt, 'Toggle between drawing and text ' + $
-          'modes'
-    endif else begin
+                   'modes'
+     endif else begin
         gr_td_mode, event.index, pdefs
         ichange = 0b
         idraw_flag = 0b
-    end    
-    
-    'CROSS': if (track_flag) then begin
+     end    
+     
+     'CROSS': if (track_flag) then begin
         graff_msg, pdefs.ids.hlptxt, "Toggle display of crosshairs"
-    endif else begin
+     endif else begin
         gr_cross_hair, pdefs
         pdefs.transient.hairs = event.select
         idraw_flag = 0b
-    endelse
+     endelse
 
-    'QSAVE': if (track_flag) then $
-      graff_msg, pdefs.ids.hlptxt, 'Save plot to currently selected ' + $
-                 'filename' $
-             else begin
+     'QSAVE': if (track_flag) then $
+        graff_msg, pdefs.ids.hlptxt, 'Save plot to currently selected ' + $
+                   'filename' $
+     else begin
         graff_save, pdefs
         ichange = 0b
         idraw_flag = 0
-    end
-    
-    'DRAW': begin               ; Draw widget in graph mode
+     end
+     
+     'DRAW': begin              ; Draw widget in graph mode
         ichange = graff_draw(pdefs, event, track_flag)
         idraw_flag = ichange
         if (ichange) then nch = 21
-    end
-    
-    'WRITE': begin              ; Draw widget in text mode
+     end
+     
+     'WRITE': begin             ; Draw widget in text mode
         ichange = graff_write(pdefs, event, track_flag)
         idraw_flag = ichange
         if (ichange) then nch = 21
-    end
-    
-    
-    'AUTOSAVE': if (not track_flag) then begin
+     end
+     
+     
+     'AUTOSAVE': if (not track_flag) then begin
         gr_bin_save, pdefs, /auto
         ichange = 0b
         idraw_flag = 0
         widget_control, event.id, timer = pdefs.opts.auto_delay
-    end
-    
-    'TABS': if (track_flag) then $
-       graff_msg, pdefs.ids.hlptxt, "Select global settings menus or " + $
-                  "dataset menus" $
-    else begin
-       ichange = 0b 
-       if event.tab eq 1 then gr_show_colour, pdefs
-    endelse
+     end
+     
+     'TABS': if (track_flag) then $
+        graff_msg, pdefs.ids.hlptxt, "Select global settings menus or " + $
+                   "dataset menus" $
+     else begin
+        ichange = 0b 
+        if event.tab eq 1 then gr_show_colour, pdefs
+     endelse
 
-    'YTABS': if (track_flag) then $
-      graff_msg, pdefs.ids.hlptxt, "Select primary or secondary Y axis " + $
-      "settings" $
-            else ichange = 0b   ; ignore
-    
-    'YRIGHT': if (track_flag) then $
-      graff_msg, pdefs.ids.hlptxt, "Enable/disable secondary Y-axis" $
-    else begin
+     'YTABS': if (track_flag) then $
+        graff_msg, pdefs.ids.hlptxt, "Select primary or secondary Y axis " + $
+                   "settings" $
+     else ichange = 0b          ; ignore
+     
+     'YRIGHT': if (track_flag) then $
+        graff_msg, pdefs.ids.hlptxt, "Enable/disable secondary Y-axis" $
+     else begin
         pdefs.y_right = event.select
         widget_control, pdefs.ids.ybase_r, sensitive = pdefs.y_right
         widget_control, pdefs.ids.y_box, sensitive = ~pdefs.y_right
         widget_control, pdefs.ids.y_axis, sensitive = pdefs.y_right
         widget_control, pdefs.ids.x_origin, sensitive = ~pdefs.y_right
-    endelse
- 
-    Else: begin
+     endelse
+     
+     Else: begin
         graff_msg, pdefs.ids.message, 'Unknown UVALUE: '+object
         help, /structure, event
         ichange = 0b
         idraw_flag = 0
-    end
-endcase
+     end
+  endcase
 
-if (idraw_flag) then gr_plot_object, pdefs
-if (ichange) then begin
-    pdefs.chflag = 1b
-    pdefs.transient.changes = pdefs.transient.changes+nch
-    if (pdefs.transient.changes gt 20) then begin
+  if (idraw_flag) then gr_plot_object, pdefs
+  if (ichange) then begin
+     pdefs.chflag = 1b
+     pdefs.transient.changes = pdefs.transient.changes+nch
+     if (pdefs.transient.changes gt 20) then begin
         gr_bin_save, pdefs, /auto
-    endif
-endif
-widget_control, pdefs.ids.chtick, map = pdefs.chflag
+     endif
+  endif
+  widget_control, pdefs.ids.chtick, map = pdefs.chflag
 
 Miss_case:
 
-widget_control, base, set_uvalue = pdefs
+  widget_control, base, set_uvalue = pdefs
 
 end
 
