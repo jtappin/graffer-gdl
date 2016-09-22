@@ -92,12 +92,12 @@ function Graff_hard, pdefs, no_set = no_set
         ieps = 1
      end
      2: begin
-        psname = string(randomu(seed, /ulong), $
+        psname = string(randomu(seed, /long), $
                         format = "('tmp_',z8.8,'.ps')")
         ieps = 0
      end
      3: begin
-        psname = string(randomu(seed, /ulong), $
+        psname = string(randomu(seed, /long), $
                         format = "('tmp_',z8.8,'.eps')")
         ieps = 1
      end
