@@ -302,6 +302,7 @@ function Hopts_event, event
   widget_control, settings.xleftid, sensitive = ~(settings.opts.eps and 1)
   widget_control, settings.yleftid, sensitive = ~(settings.opts.eps and 1)
   widget_control, settings.ctrid, sensitive = ~(settings.opts.eps and 1)
+  widget_control, settings.paperid, sensitive = ~(settings.opts.eps and 1)
 
 Miss_case:
 
@@ -338,8 +339,9 @@ function Gr_hardopts, pdefs
         Yleftid:0l, $
         fileid: 0l, $
         modid: 0l, $
-        Action:0l, $
-        Psize:fltarr(2), $
+        paperid: 0l, $
+        Action: 0l, $
+        Psize: fltarr(2), $
         tname: tname $
         }
   uvs.psize = gr_get_page(h.psize, h.orient)
@@ -390,12 +392,12 @@ function Gr_hardopts, pdefs
                    space = 0)
 
   jb = widget_base(cl, /column)
-  junk = widget_droplist(jb, $
-                         value = ['A4', 'Letter'], $
-                         title = 'Paper size:', $
-                         uvalue = 'PSIZE', $
-                         /track)
-  widget_control, junk, set_droplist_select = h.psize
+  uvs.paperid = widget_droplist(jb, $
+                                value = ['A4', 'Letter'], $
+                                title = 'Paper size:', $
+                                uvalue = 'PSIZE', $
+                                /track)
+  widget_control, uvs.paperid, set_droplist_select = h.psize
 
   uvs.ctrid = widget_button(jb, $
                             value = 'Centre on page', $
@@ -574,6 +576,8 @@ function Gr_hardopts, pdefs
   widget_control, uvs.yoffid, sensitive = ~(h.eps and 1)
   widget_control, uvs.xleftid, sensitive = ~(h.eps and 1)
   widget_control, uvs.yleftid, sensitive = ~(h.eps and 1)
+  widget_control, uvs.paperid, sensitive = ~(h.eps and 1)
+  widget_control, uvs.ctrid, sensitive = ~(h.eps and 1)
 
   uvs.action = graff_enter(base, $
                            /text, $

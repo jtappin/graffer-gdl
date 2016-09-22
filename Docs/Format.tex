@@ -24,7 +24,7 @@
 \setlength{\oddsidemargin}{5mm}
 \setlength{\evensidemargin}{5mm}
 \pagestyle{myheadings}
-\markboth{GRAFFER}{Version 4.08}
+\markboth{GRAFFER}{Version 4.09}
 
 \begin{document}
 
@@ -36,7 +36,7 @@ File Format Description}
 \author{\textsf{\textbf{\Large James Tappin}}\\
 \texttt{\textbf{\Large james.tappin@stfc.ac.uk}}}
 
-\date{\textsf{\textbf{\large May 2016}}}
+\date{\textsf{\textbf{\large Sep.\ 2016}}}
 
 \maketitle
 
@@ -171,7 +171,8 @@ ordering).
 For versions~2 and~3, the format was much less robust.
 The size of the data field that follows is determined by the
 type and number of data required by the particular tag. For string quantities,
-the string is preceded by its length (a long).
+the string is preceded by its length (a long). This became an issue if
+the type of a field was changed (e.g.\ from float to double or int to long).
 
 \subsubsection{Version 1}
 \label{sec:vers1}
@@ -289,11 +290,14 @@ to the whole file.
   & Long+Strings& 1+n&
   For V3 and ASCII files.\\
   \hline
-  \multicolumn{4}{|c|}{The following tags define how hardcopy will be generated.}\\
+  \multicolumn{4}{|c|}{The following tags define how hardcopy will be
+    generated.}\\ 
   \hline HC& Byte& 1&
   Whether to use colour PostScript\\
   HE& Byte& 1&
-  Whether to generate Encapsulated PostScript\\
+  Whether to generate Encapsulated PostScript or PDF. 0=Normal
+  PostScript, 1=Encapsulated PS, 2=PDF with page positioning, 3=PDF
+  suitable for inclusion in \LaTeX.\\
   HO& Byte& 1&
   Whether to plot in landscape (0) or portrait (1) mode\\
   HY& Byte & 1 & Whether to use RGB (0) or CMYK (1) colour representation.\\
@@ -312,6 +316,10 @@ to the whole file.
   The part of the spooling command after the filename.\\
   HVB& String& 1&
   The part of the view command before the filename\\
+  HPA& String& 1&
+  The part of the PDF view command after the filename.\\
+  HPB& String& 1&
+  The part of the PDF view command before the filename\\
   HVA& String& 1&
   The part of the view command after the filename.\\
   HFN& String & 1 & The filename for the hardcopy output.\\
@@ -379,7 +387,7 @@ These tags define a specific dataset within the plot.
   C& Int& 1&
   Colour (Table as in PGPLOT). -1 denotes omit this dataset, -2
   denotes a custom colour.\\
-  CV & Byte & 3 & A colour triple (R,G,B), only present is the colour
+  CV & Byte & 3 & A colour triple (R,G,B), only present if the colour
   index is -2.\\
   W& Float& 1&
   Line thickness\\

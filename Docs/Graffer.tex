@@ -26,7 +26,7 @@
  \setlength{\evensidemargin}{0mm}
 
 \pagestyle{myheadings}
-\markboth{GRAFFER}{Version 4.08}
+\markboth{GRAFFER}{Version 4.09}
 
 %\usepackage{babel}
 \makeatother
@@ -41,7 +41,7 @@
 \author{\textsf{\textbf{\Large James Tappin}}\\
   \texttt{\textbf{\Large james.tappin@stfc.ac.uk}}}
 
-\date{\textsf{\textbf{\large May 2016}}}
+\date{\textsf{\textbf{\large Sep.\ 2016}}}
 
 \maketitle
 
@@ -323,6 +323,12 @@ Version 3.09 adds support for a secondary Y-axis.
   decomposed colours. 
 \end{itemize}
 
+\subsection{Version 4.09}
+\label{sec:v409}
+
+\begin{itemize}
+\item Add support for generating PDF output semi-directly.
+\end{itemize}
 \section{Getting Started}
 
 
@@ -1759,8 +1765,13 @@ the \texttt{Quick} option of the pulldown. If you select the
    appear as a greyscale.
  \item [Normal/Encapsulated:]Normal is just a regular printable
    PostScript file. Encapsulated is not printable, but can be included
-   into other files e.g. xfig\texttt{,} \LaTeX etc. The filename ends
-   \texttt{.ps} or \texttt{.eps} according to the selected option.
+   into other files e.g. \texttt{xfig}, \LaTeX\ etc. The filename ends
+   \texttt{.ps} or \texttt{.eps} according to the selected option. PDF
+   (Print) generates a PDF file with the selected page size, suitable
+   for printing, PDF (LaTeX) generates a PDF file suitable for
+   including into \LaTeX\ documents. Since IDL does not generate PDF
+   directly from direct graphics, a PS or EPS file is generated, and
+   then converted to PDF using \texttt{gs}.
  \item [Landscape/Portrait:]Describes the orientation of the plot on
    the page. If encapsulated PostScript is selected then this is
    ignored apart from changing the default dimensions.
