@@ -18,6 +18,7 @@ pro graff_hard__define
 ;
 ; MODIFICATION HISTORY:
 ;	Extracted: 30/6/05; SJT
+;	Add PDF viewer: 21/9/16; SJT
 ;-
 
 Hardset = { graff_hard, $
@@ -34,6 +35,7 @@ Hardset = { graff_hard, $
             Off:    fltarr(2), $
             Action: strarr(2), $
             viewer: strarr(2), $
+            pdfviewer: strarr(2), $
             name: '' $
           }
 

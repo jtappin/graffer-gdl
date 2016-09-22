@@ -26,6 +26,7 @@ pro gr_get_bin, pdefs, ilu, no_set=no_set
 ;	Add support for a second Y-scale: 22/12/11; SJT
 ;	V4 version: 6/1/12; SJT
 ;	Advanced axis style settings: 21/8/12; SJT
+;	PDF view command: 21/9/16; SJT
 ;-
 
 
@@ -233,6 +234,11 @@ while (not eof(ilu)) do begin
                                 ; HVA - Any part of the view
                                 ;       command which follows the
                                 ;       filename. 
+                                ; HPB - The PDF view command (up to
+                                ;       the filename)
+                                ; HPA - Any part of the PDF view
+                                ;       command which follows the
+                                ;       filename. 
                                 ; HF - Font family.
                                 ; HWS - Font weight and slant (bit 0 is
                                 ;       on for bold, bit 1 for
@@ -252,6 +258,8 @@ while (not eof(ilu)) do begin
         'HAA': pdefs.hardset.action[1] = value
         'HVB': pdefs.hardset.viewer[0] = value
         'HVA': pdefs.hardset.viewer[1] = value
+        'HPB': pdefs.hardset.pdfviewer[0] = value
+        'HPA': pdefs.hardset.pdfviewer[1] = value
  
         'HF ': pdefs.hardset.font.family = value
         'HWS': pdefs.hardset.font.wg_sl = value

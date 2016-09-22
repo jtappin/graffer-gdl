@@ -68,6 +68,8 @@ print, 'graff_hard.pro'
 .r graff_hard
 print, 'graff_ids__define.pro'
 .r graff_ids__define
+print, 'graff_info.pro'
+.r graff_info
 print, 'graff_init.pro'
 .r graff_init
 print, 'graff_just.pro'
@@ -290,6 +292,8 @@ print, 'gr_rc_get.pro'
 .r gr_rc_get
 print, 'gr_reg2norm.pro'
 .r gr_reg2norm
+print, 'gr_show_colour.pro'
+.r gr_show_colour
 print, 'gr_split_dir.pro'
 .r gr_split_dir
 print, 'gr_state.pro'

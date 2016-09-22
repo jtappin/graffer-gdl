@@ -31,6 +31,7 @@ pro Gr_asc_save, pdefs
 ;	New font handling and contour setting: 11/1/12; SJT
 ;	Advanced axis style settings: 21/8/12; SJT
 ; 	Add min & max values: 4/3/15; SJT
+; 	Add PDF viewer: 21/9/16; SJT
 ;-
 
 file = pdefs.dir+pdefs.name
@@ -334,6 +335,8 @@ printf, ilu, 'HAB:', pdefs.hardset.action[0], 'HAA:', $
         pdefs.hardset.action(1), format = "(2a/2a)"
 printf, ilu, 'HVB:', pdefs.hardset.viewer[0], 'HVA:', $
         pdefs.hardset.viewer[1], format = "(2a/2a)"
+printf, ilu, 'HPB:', pdefs.hardset.pdfviewer[0], 'HPA:', $
+        pdefs.hardset.pdfviewer[1], format = "(2a/2a)"
 
 printf, ilu, 'HF:', pdefs.hardset.font.family, ':HWS:', $
         pdefs.hardset.font.wg_sl, format = "(a,i3,a,i2)"

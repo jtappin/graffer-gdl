@@ -243,6 +243,8 @@
 ;                     - Support min and max for 1D datasets (not functions)
 ;               Version 4.08:
 ;                     - Major changes to colour handling.
+;               Version 4.09:
+;                     - Add support for PDF output generation.
 ;-
 
 

@@ -32,6 +32,7 @@ pro Gr_get_asc, pdefs, ilu, no_set = no_set
 ;	Add support for a second Y-scale: 22/12/11; SJT
 ;	Convert to procedure for Graffer V4: 6/1/12; SJT
 ;	Advanced axis style settings: 21/8/12; SJT
+;	PDF viewer: 21/9/16; SJT
 ;-
 
 
@@ -314,6 +315,11 @@ while (not eof(ilu)) do begin
                                 ; HVA - Any part of the view
                                 ;       command which follows the
                                 ;       filename. 
+                                ; HPB - The PDF view command (up to
+                                ;       the filename)
+                                ; HPA - Any part of the PDF view
+                                ;       command which follows the
+                                ;       filename. 
                                 ; HF - Font family.
                                 ; HWS - Font weight and slant (bit 0 is
                                 ;       on for bold, bit 1 for
@@ -339,11 +345,19 @@ while (not eof(ilu)) do begin
                 goto, new_line
             end
             'HVB': begin
-                pdefs.hardset.viewer[0] = gr_str_val(inline, 'HAB')
+                pdefs.hardset.viewer[0] = gr_str_val(inline, 'HVB')
                 goto, new_line
             end
             'HVA': begin
-                pdefs.hardset.viewer[1] = gr_str_val(inline, 'HAA')
+                pdefs.hardset.viewer[1] = gr_str_val(inline, 'HVA')
+                goto, new_line
+            end
+            'HPB': begin
+                pdefs.hardset.pdfviewer[0] = gr_str_val(inline, 'HPB')
+                goto, new_line
+            end
+            'HPA': begin
+                pdefs.hardset.pdfviewer[1] = gr_str_val(inline, 'HPA')
                 goto, new_line
             end
 

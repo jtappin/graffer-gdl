@@ -26,6 +26,7 @@ pro Graff_info, file, nsets = nsets,  title = title, $
                 h_ymargin = h_ymargin, isotropic = isotropic, $
                 h_cmyk =  h_cmyk, ctable = ctable, $
                 h_print = h_print, h_viewer = h_viewer, $
+                h_pdfviewer = h_pdfviewer, $
                 h_file = h_file
 ;+
 ; GRAFF_INFO
@@ -61,6 +62,7 @@ pro Graff_info, file, nsets = nsets,  title = title, $
 ;                h_ymargin = h_ymargin, isotropic = isotropic, $
 ;                h_cmyk =  h_cmyk, ctable = ctable, $
 ;                h_print = h_print, h_viewer = h_viewer, $
+;                h_pdfviewer = h_pdfviewer, $
 ;                h_file = h_file
 ;
 ; Argument:
@@ -151,6 +153,8 @@ pro Graff_info, file, nsets = nsets,  title = title, $
 ;	h_print		output	Specify the command to print PS output
 ;				files (can be a scalar or 2-element aray).
 ;	h_viewer	output	Specify the command to view EPS output
+;				files (can be a scalar or 2-element aray).
+;	h_pdfviewer	output	Specify the command to view PDF output
 ;				files (can be a scalar or 2-element aray).
 ;	h_file		output	Specify the output file for hardcopies.
 ;				
@@ -363,6 +367,7 @@ pro Graff_info, file, nsets = nsets,  title = title, $
 
   if arg_present(h_print) then h_print = pdefs.hardset.action
   if arg_present(h_viewer) then h_viewer = pdefs.hardset.viewer
+  if arg_present(h_pdfviewer) then h_pdfviewer = pdefs.hardset.pdfviewer
   if arg_present(h_file)  then h_file = pdefs.hardset.name
 
   graff_clear, pdefs

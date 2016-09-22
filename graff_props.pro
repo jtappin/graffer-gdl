@@ -1,6 +1,6 @@
 pro Graff_props, file, title = title, subtitle = subtitle, $
-                 charsize = charsize, thick = thick, corners = $
-                 corners, $
+                 charsize = charsize, thick = thick, $
+                 corners = corners, $
                  aspect = aspect, comment = comment, xtitle = xtitle, $
                  xrange = xrange, xlog = xlog, xexact = xexact, $
                  xextend = xextend, xaxes = xaxes, xbox = xbox, $
@@ -26,7 +26,7 @@ pro Graff_props, file, title = title, subtitle = subtitle, $
                  h_ysize = h_ysize, h_xmargin = h_xmargin, $ $
                  h_ymargin = h_ymargin, isotropic = isotropic, h_cmyk = $
                  h_cmyk, ctable = ctable, h_print = h_print, h_viewer $
-                 = h_viewer, h_file = h_file
+                 = h_viewer, h_pdfviewer = h_pdfviewer, h_file = h_file
 ;+
 ; GRAFF_PROPS
 ;	User-callable interface to set global properties of a graffer
@@ -150,9 +150,13 @@ pro Graff_props, file, title = title, subtitle = subtitle, $
 ;				for (E)PS files. Specifying this
 ;				keyword will force colour (E)PS.
 ;	h_eps		input	Set or unset the generation of EPS
-;				file rather than PS (N.B. if h_eps is
+;				file or PDF rather than PS (N.B. if h_eps is
 ;				set and h_orient is not specified,
 ;				then h_orient=1 is implied).
+;				0: Normal PS file
+;				1: EPS file
+;				2: PDF file for printing
+;				3: PDF file for LaTeX inclusion
 ;	h_[xy]size	input	Set the X(Y) dimension of the page in cm
 ;	h_[xy]margin	input	Set the X(Y) offset of the page from
 ;				the lower-left corner of the page.
@@ -161,7 +165,9 @@ pro Graff_props, file, title = title, subtitle = subtitle, $
 ;				files (can be a scalar or 2-element aray).
 ;	h_viewer	input	Specify the command to view EPS output
 ;				files (can be a scalar or 2-element aray).
-;	h_file		input	Specify the output file for hardcopies.
+;	h_pdfviewer	input	Specify the command to view PDF output
+;				files (can be a scalar or 2-element aray).
+;;	h_file		input	Specify the output file for hardcopies.
 ;				
 ; Restrictions:
 ;	The ASPECT and CORNERS keys are exclusive (if both are given,
@@ -185,6 +191,7 @@ pro Graff_props, file, title = title, subtitle = subtitle, $
 ;	Add options for secondary Y-axis: 23/12/11; SJT
 ;	Add some more hardcopy options: 16/2/12; SJT
 ;	Advanced axis style settings: 21/8/12; SJT
+;	Add PDF keys: 21/9/16; SJT
 ;-
 
 ;	Check that the necessary inputs are present
@@ -469,8 +476,8 @@ pro Graff_props, file, title = title, subtitle = subtitle, $
   if (n_elements(h_colour) ne 0) then pdefs.hardset.colour = $
      keyword_set(h_colour)
   if (n_elements(h_eps) ne 0) then begin
-     pdefs.hardset.eps = keyword_set(h_eps)
-     if (keyword_set(h_eps) and n_elements(h_orient) eq 0) then $
+     pdefs.hardset.eps = h_eps
+     if (h_eps and 1b) && n_elements(h_orient) eq 0 then $
         pdefs.hardset.orient = 1b
   endif
 
@@ -493,6 +500,11 @@ pro Graff_props, file, title = title, subtitle = subtitle, $
      0:                         ; Not given do nothing
      1: pdefs.hardset.viewer = [h_viewer, ' &']
      2: pdefs.hardset.viewer = h_viewer[0:1]
+  endcase
+  case  n_elements(h_pdfviewer) of
+     0:                         ; Not given do nothing
+     1: pdefs.hardset.pdfviewer = [h_pdfviewer, ' &']
+     2: pdefs.hardset.pdfviewer = h_pdfviewer[0:1]
   endcase
   if n_elements(h_file) ne 0 then pdefs.hardset.name = h_file
 

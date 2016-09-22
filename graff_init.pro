@@ -88,7 +88,7 @@ pro Graff_init, pdefs, file, version = version
 ; Set defaults for these hardcopy actions, but they will be
 ; overwritten if an old file existed.
 
-  pdefs.hardset.Action = ['lp ', '']
+  pdefs.hardset.action = ['lp ', '']
 ; pdefs.hardset.viewer = [gr_find_viewer(/ps), ' &']
   pdefs.hardset.Size = [23., 18.]
   pdefs.hardset.Off = [3.35, 1.5]

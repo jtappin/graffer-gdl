@@ -15,6 +15,7 @@
 ;	Add font selection options: 10/10/96; SJT
 ;	Replace most cw_bbselectors with widget_droplist: 13/12/11; SJT
 ;	Allow selection of non-standard filename: 13/2/12; SJT
+;	Allow PDF generation: 21/9/16; SJT
 ;-
 
 
@@ -64,7 +65,8 @@ function Hopts_event, event
      else settings.opts.cmyk = event.index
 
      'EPS': if (track_flag) then $
-        graff_msg, settings.action, 'Toggle use of Encapsulated PostScript' $
+        graff_msg, settings.action, 'Toggle use of Encapsulated '+ $
+                   'PostScript and PDF generation' $
      else begin
         settings.opts.eps = event.index
         widget_control, settings.fileid, get_value = name
@@ -73,25 +75,42 @@ function Hopts_event, event
         fname = file_basename(name)
         dp = strpos(fname, '.', /reverse_search)
         if dp ne -1 then begin
-           if settings.opts.eps then extn = '.eps' $
-           else extn = '.ps'
+           ;; if settings.opts.eps and 1b then extn = '.eps' $
+           ;; else extn = '.ps'
+           case settings.opts.eps of
+              0: extn = '.ps'
+              1: extn = '.eps'
+              else: extn = '.pdf'
+           endcase
            name = dir+strmid(fname, 0, dp)
            widget_control, settings.fileid, set_value = name+extn
            widget_control, settings.cmid[1], set_value = $
                            'LABEL:'+file_basename(name+extn) 
         endif
-        if settings.opts.eps then begin
-           for j = 0, 1 do widget_control, settings.cmid[j], $
-                                           set_value = settings.opts.viewer[j]
-           widget_control, settings.cmid[0], set_value = "LABEL:View " + $
-                           "Command:"
-
-        endif else begin
-           for j = 0, 1 do widget_control, settings.cmid[j], $
-                                           set_value = settings.opts.action[j]
-           widget_control, settings.cmid[0], set_value = "LABEL:Spool " + $
-                           "Command:"
-        endelse
+        case settings.opts.eps of
+           1: begin
+              for j = 0, 1 do widget_control, settings.cmid[j], $
+                                              set_value = $
+                                              settings.opts.viewer[j]
+              widget_control, settings.cmid[0], set_value = "LABEL:View " + $
+                              "Command:"
+           end
+           0: begin
+              for j = 0, 1 do widget_control, settings.cmid[j], $
+                                              set_value = $
+                                              settings.opts.action[j]
+              widget_control, settings.cmid[0], set_value = "LABEL:Spool " + $
+                              "Command:"
+           end
+           else: begin
+              for j = 0, 1 do widget_control, settings.cmid[j], $
+                                              set_value = $
+                                              settings.opts.pdfviewer[j]
+              widget_control, settings.cmid[0], set_value = $
+                              "LABEL:PDF View " + $
+                              "Command:"
+           end
+        endcase
      endelse
      
      'ORI': if (track_flag) then $
@@ -218,8 +237,11 @@ function Hopts_event, event
      'PFILE': if track_flag then $
         graff_msg, settings.action, 'Pick the output file name' $
      else begin
-        if settings.opts.eps then filt = '*.eps' $
-        else filt = '*.ps'
+        case settings.opts.eps of
+           1: filt = '*.eps' 
+           0: filt = '*.ps'
+           else: filt = '*.pdf'
+        endcase
 
         file = dialog_pickfile(title = "Plot output file", $
                                /write, $
@@ -237,8 +259,11 @@ function Hopts_event, event
         graff_msg, settings.action, 'Reset the output file name to the ' + $
                    'default' $ 
      else begin
-        if settings.opts.eps then extn = '.eps' $
-        else extn = '.ps'
+        case settings.opts.eps of
+           1: extn = '.eps'
+           2: extn = '.ps'
+           else: extn = '.pdf'
+        endcase
         widget_control, settings.fileid, set_value = settings.tname+extn
         widget_control, settings.cmid[1], set_value = $
                         'LABEL:'+file_basename(settings.tname+extn)
@@ -254,10 +279,13 @@ function Hopts_event, event
      'FVIEW': if (track_flag) then $
         graff_msg, settings.action, 'Set viewer to the default PS ' + $
                    'viewer' $
-     else if settings.opts.eps eq 1 then $
-        widget_control, settings.cmid[0], set_value = $
-                        gr_find_viewer(/ps) $
-     else  widget_control, settings.cmid[0], set_value = 'lp'
+     else case settings.opts.eps of
+        1: widget_control, settings.cmid[0], set_value = $
+                           gr_find_viewer(/ps)
+        0:  widget_control, settings.cmid[0], set_value = 'lp'
+        else:  widget_control, settings.cmid[0], set_value = $
+                               gr_find_viewer(/pdf)
+     endcase
 
      'NOVIEW': if (track_flag) then $
         graff_msg, settings.action, 'Set viewer to "no viewer"' $
@@ -265,16 +293,15 @@ function Hopts_event, event
         widget_control, settings.cmid[0], set_value = ''
         widget_control, settings.cmid[1], set_value = ''
      endelse
-        
+     
      Else:     graff_msg, settings.action, "Whaat??????"       
   endcase
 
-;widget_control, settings.spbase, sensitive = (settings.opts.eps ne 1)
-  widget_control, settings.xoffid, sensitive = (settings.opts.eps ne 1)
-  widget_control, settings.yoffid, sensitive = (settings.opts.eps ne 1)
-  widget_control, settings.xleftid, sensitive = (settings.opts.eps ne 1)
-  widget_control, settings.yleftid, sensitive = (settings.opts.eps ne 1)
-  widget_control, settings.ctrid, sensitive = (settings.opts.eps ne 1)
+  widget_control, settings.xoffid, sensitive = ~(settings.opts.eps and 1)
+  widget_control, settings.yoffid, sensitive = ~(settings.opts.eps and 1)
+  widget_control, settings.xleftid, sensitive = ~(settings.opts.eps and 1)
+  widget_control, settings.yleftid, sensitive = ~(settings.opts.eps and 1)
+  widget_control, settings.ctrid, sensitive = ~(settings.opts.eps and 1)
 
 Miss_case:
 
@@ -289,259 +316,304 @@ end
 
 function Gr_hardopts, pdefs
 
-h = pdefs.hardset
+  h = pdefs.hardset
 
-tname = pdefs.name
-dp = strpos(tname, '.', /reverse_search)
-if dp ne -1 then tname = strmid(tname, 0, dp) 
-tname = pdefs.dir+tname
+  tname = pdefs.name
+  dp = strpos(tname, '.', /reverse_search)
+  if dp ne -1 then tname = strmid(tname, 0, dp) 
+  tname = pdefs.dir+tname
 
-uvs = { $
-      Opts:h, $
-      Cmid:lonarr(2), $
-      Wsid:0l, $
-      Wsids:lonarr(4), $
-      Spbase:0l, $
-      ctrid: 0l, $
-      Xsid:0l, $
-      Xoffid:0l, $
-      Xleftid:0l, $
-      Ysid:0l, $
-      Yoffid:0l, $
-      Yleftid:0l, $
-      fileid: 0l, $
-      modid: 0l, $
-      Action:0l, $
-      Psize:fltarr(2), $
-      tname: tname $
-      }
-uvs.psize = gr_get_page(h.psize, h.orient)
+  uvs = { $
+        Opts:h, $
+        Cmid:lonarr(2), $
+        Wsid:0l, $
+        Wsids:lonarr(4), $
+        Spbase:0l, $
+        ctrid: 0l, $
+        Xsid:0l, $
+        Xoffid:0l, $
+        Xleftid:0l, $
+        Ysid:0l, $
+        Yoffid:0l, $
+        Yleftid:0l, $
+        fileid: 0l, $
+        modid: 0l, $
+        Action:0l, $
+        Psize:fltarr(2), $
+        tname: tname $
+        }
+  uvs.psize = gr_get_page(h.psize, h.orient)
 
-widget_control, pdefs.ids.graffer, sensitive = 0
+  widget_control, pdefs.ids.graffer, sensitive = 0
 
-tlb = widget_base(title = 'Graffer Hard Copy', $
-                  group_leader = pdefs.ids.graffer, $
-                  resource = 'Graffer')
-base = widget_base(tlb, /column)
+  tlb = widget_base(title = 'Graffer Hard Copy', $
+                    group_leader = pdefs.ids.graffer, $
+                    resource = 'Graffer')
+  base = widget_base(tlb, /column)
 
                                 ; Basic toggle settings
 
-jb = widget_base(base, /row)
+  jb = widget_base(base, /row)
 
-junk = widget_droplist(jb, $
-                       value = ['Monochrome', 'Colour'], $
-                       uvalue = 'COL', $
-                       /track)
-widget_control, junk, set_droplist_select = h.colour
+  junk = widget_droplist(jb, $
+                         value = ['Monochrome', 'Colour'], $
+                         uvalue = 'COL', $
+                         /track)
+  widget_control, junk, set_droplist_select = h.colour
 
-junk = widget_droplist(jb, $
-                       value = ['Normal', 'Encapsulated'], $
-                       uvalue = 'EPS', $
-                       /track)
-widget_control, junk, set_droplist_select = h.eps
+  junk = widget_droplist(jb, $
+                         value = ['Normal', 'Encapsulated', $
+                                 'PDF (Print)', 'PDF (LaTeX)'], $
+                         uvalue = 'EPS', $
+                         /track)
+  widget_control, junk, set_droplist_select = h.eps
 
-junk = widget_droplist(jb, $
-                       value = ['Landscape', 'Portrait'], $
-                       uvalue = 'ORI', $
-                       /track)
-widget_control, junk,set_droplist_select = h.orient
+  junk = widget_droplist(jb, $
+                         value = ['Landscape', 'Portrait'], $
+                         uvalue = 'ORI', $
+                         /track)
+  widget_control, junk, set_droplist_select = h.orient
 
-uvs.modid = widget_droplist(jb, $
-                            value = ['RGB', 'CMYK'], $
-                            uvalue = 'CMYK', $
-                            /track)
-widget_control, uvs.modid, set_droplist_select = h.cmyk
+  uvs.modid = widget_droplist(jb, $
+                              value = ['RGB', 'CMYK'], $
+                              uvalue = 'CMYK', $
+                              /track)
+  widget_control, uvs.modid, set_droplist_select = h.cmyk
 
-widget_control, uvs.modid, sensitive = h.colour
+  widget_control, uvs.modid, sensitive = h.colour
 
                                 ; Page size
-cl = widget_base(base, $
-                 /row, $
-                 xpad = 0, $
-                 ypad = 0, $
-                 space = 0)
+  cl = widget_base(base, $
+                   /row, $
+                   xpad = 0, $
+                   ypad = 0, $
+                   space = 0)
 
-jb = widget_base(cl, /column)
-junk = widget_droplist(jb, $
-                       value = ['A4', 'Letter'], $
-                       title = 'Paper size:', $
-                       uvalue = 'PSIZE', $
-                       /track)
-widget_control, junk, set_droplist_select = h.psize
+  jb = widget_base(cl, /column)
+  junk = widget_droplist(jb, $
+                         value = ['A4', 'Letter'], $
+                         title = 'Paper size:', $
+                         uvalue = 'PSIZE', $
+                         /track)
+  widget_control, junk, set_droplist_select = h.psize
 
-uvs.ctrid = widget_button(jb, value = 'Centre on page', uvalue = $
-                          'CENTRE', /track, sensitive = h.eps ne 1)
-junk = widget_droplist(jb, $
-                       value = ['Off', 'On'], $
-                       title = "Plot timestamp", $
-                       uvalue = 'TIMEST', $
-                       /track)
-widget_control, junk, set_droplist_select = h.timestamp
+  uvs.ctrid = widget_button(jb, $
+                            value = 'Centre on page', $
+                            uvalue = 'CENTRE', $
+                            /track, $
+                            sensitive = ~(h.eps and 1))
+  junk = widget_droplist(jb, $
+                         value = ['Off', 'On'], $
+                         title = "Plot timestamp", $
+                         uvalue = 'TIMEST', $
+                         /track)
+  widget_control, junk, set_droplist_select = h.timestamp
 
-jb = widget_base(cl, /column)
-uvs.xsid = graff_enter(jb, /float, /all, label = 'X Size (cm):', value $
-                       = $
-                       h.size(0), uvalue = 'XSI', format = "(F5.2)", xsize $
-                       = 5, /track, /capture)
-uvs.xoffid = graff_enter(jb, /float, /all, label = 'X offset:',  $
-                         value = h.off(0), uvalue = 'XOFF', format = $
-                         "(F5.2)", xsize = 5, /track, /capture)
-uvs.xleftid = graff_enter(jb, /float, /display, label = 'X remain:', $
-                          value = uvs.psize(0)-h.size(0)-h.off(0), $
-                          format = $
-                          "(F5.2)", xsize = 5)
+  jb = widget_base(cl, /column)
+  uvs.xsid = graff_enter(jb, $
+                         /float, $
+                         /all, $
+                         label = 'X Size (cm):', $
+                         value = h.size[0], $
+                         uvalue = 'XSI', $
+                         format = "(F5.2)", $
+                         xsize = 5, $
+                         /track, $
+                         /capture)
+  uvs.xoffid = graff_enter(jb, $
+                           /float, $
+                           /all, $
+                           label = 'X offset:',  $
+                           value = h.off[0], $
+                           uvalue = 'XOFF', $
+                           format = "(F5.2)", $
+                           xsize = 5, $
+                           /track, $
+                           /capture)
+  uvs.xleftid = graff_enter(jb, $
+                            /float, $
+                            /display, $
+                            label = 'X remain:', $
+                            value = uvs.psize[0]-h.size[0]-h.off[0], $
+                            format = "(F5.2)", $
+                            xsize = 5)
 
-jb = widget_base(cl, /column)
-uvs.ysid = graff_enter(jb, $
-                       /float, $
-                       /all, $
-                       label = 'Y Size (cm):', $
-                       value  = h.size[1], $
-                       uvalue = 'YSI', $
-                       format = "(F5.2)", $
-                       xsize = 5, $
-                       /track, $
-                       /capture)
-uvs.yoffid = graff_enter(jb, /float, /all, label = 'Y offset:',  $
-                         value = h.off(1), uvalue = 'YOFF', format = $
-                         "(F5.2)", xsize = 5, /track, /capture)
-uvs.yleftid = graff_enter(jb, /float, /display, label = 'Y remain:', $
-                          value = uvs.psize(1)-h.size(1)-h.off(1), $
-                          format = $
-                          "(F5.2)", xsize = 5)
+  jb = widget_base(cl, /column)
+  uvs.ysid = graff_enter(jb, $
+                         /float, $
+                         /all, $
+                         label = 'Y Size (cm):', $
+                         value  = h.size[1], $
+                         uvalue = 'YSI', $
+                         format = "(F5.2)", $
+                         xsize = 5, $
+                         /track, $
+                         /capture)
+  uvs.yoffid = graff_enter(jb, $
+                           /float, $
+                           /all, $
+                           label = 'Y offset:',  $
+                           value = h.off[1], $
+                           uvalue = 'YOFF', $
+                           format = "(F5.2)", $
+                           xsize = 5, $
+                           /track, $
+                           /capture)
+  uvs.yleftid = graff_enter(jb, $
+                            /float, $
+                            /display, $
+                            label = 'Y remain:', $
+                            value = uvs.psize[1]-h.size[1]-h.off[1], $
+                            format = "(F5.2)", $
+                            xsize = 5)
 
-jb = widget_base(base, /row)
-junk = widget_droplist(jb, $
-                       value = ['Courier',  $
-                                'Helvetica',  $
-                                'Helvetica Narrow',  $
-                                'NC Schoolbook',  $
-                                'Palatino',  $
-                                'Times', $
-                                'Avant Garde Book',  $
-                                'Avant Garde Demi',  $
-                                'Bookman Demi',  $
-                                'Bookman Light',  $
-                                'Zapf Chancery',  $
-                                'Zapf Dingbats', $
-                                'Symbol'], $
-                       title = 'Font: Family:', $
-                       uvalue = 'FFAMILY', $
-                       /track)
-widget_control, junk, set_droplist_select = h.font.family
+  jb = widget_base(base, /row)
+  junk = widget_droplist(jb, $
+                         value = ['Courier',  $
+                                  'Helvetica',  $
+                                  'Helvetica Narrow',  $
+                                  'NC Schoolbook',  $
+                                  'Palatino',  $
+                                  'Times', $
+                                  'Avant Garde Book',  $
+                                  'Avant Garde Demi',  $
+                                  'Bookman Demi',  $
+                                  'Bookman Light',  $
+                                  'Zapf Chancery',  $
+                                  'Zapf Dingbats', $
+                                  'Symbol'], $
+                         title = 'Font: Family:', $
+                         uvalue = 'FFAMILY', $
+                         /track)
+  widget_control, junk, set_droplist_select = h.font.family
 
 ; Keep the bbselector here as we need to make items non-selectable.
-uvs.wsid = cw_bbselector(jb, $
-                         ['Normal',  $
-                          'Bold', $
-                          'Italic', $
-                          'Bold Italic'], $
-                         label_left = 'Weight/slope', $
-                         set_value = h.font.wg_sl, $
-                         uvalue = 'FWS', $
-                         ids = bids, $
-                         /track)
-uvs.wsids = bids
-widget_control, uvs.wsid, sensitive = h.font.family le 9
-for j = 1, 3, 2 do widget_control, uvs.wsids(j), sensitive = $
-  h.font.family le 5
+  uvs.wsid = cw_bbselector(jb, $
+                           ['Normal',  $
+                            'Bold', $
+                            'Italic', $
+                            'Bold Italic'], $
+                           label_left = 'Weight/slope', $
+                           set_value = h.font.wg_sl, $
+                           uvalue = 'FWS', $
+                           ids = bids, $
+                           /track)
+  uvs.wsids = bids
+  widget_control, uvs.wsid, sensitive = h.font.family le 9
+  for j = 1, 3, 2 do widget_control, uvs.wsids(j), sensitive = $
+                                     h.font.family le 5
 
                                 ; Filename
-jb = widget_base(base, $
-                 /row)
-uvs.fileid = graff_enter(jb, $
-                         label = 'File: ', $
-                         value = h.name, $
-                         xsize = 40, $
-                         uvalue = 'FILE', $
-                         /track, $
-                         /capture, $
-                         /all_events)
-junk = widget_button(jb, $
-                     value = 'Pick ...', $
-                     uvalue = 'PFILE', $
-                     /track)
-junk = widget_button(jb, $
-                     value = 'Default', $
-                     uvalue = 'DFILE', $
-                     /track)
+  jb = widget_base(base, $
+                   /row)
+  uvs.fileid = graff_enter(jb, $
+                           label = 'File: ', $
+                           value = h.name, $
+                           xsize = 40, $
+                           uvalue = 'FILE', $
+                           /track, $
+                           /capture, $
+                           /all_events)
+  junk = widget_button(jb, $
+                       value = 'Pick ...', $
+                       uvalue = 'PFILE', $
+                       /track)
+  junk = widget_button(jb, $
+                       value = 'Default', $
+                       uvalue = 'DFILE', $
+                       /track)
 
                                 ; Spool command
 
-uvs.spbase = widget_base(base, /row)
+  uvs.spbase = widget_base(base, /row)
 
 ;jb = widget_base(uvs.spbase, /row)
-if h.eps then begin
-    clab = 'View Command:'
-    ccmd = h.viewer[0]
-    scmd = h.viewer[1]
-endif else begin
-    clab = 'Spool Command:'
-    ccmd = h.action[0]
-    scmd = h.action[1]
-endelse
+  case h.eps of
+     1: begin
+        clab = 'View Command:'
+        ccmd = h.viewer[0]
+        scmd = h.viewer[1]
+     end
+     0: begin
+        clab = 'Spool Command:'
+        ccmd = h.action[0]
+        scmd = h.action[1]
+     end
+     else: begin
+        clab = 'PDF View Command:'
+        ccmd = h.pdfviewer[0]
+        scmd = h.pdfviewer[1]
+     end
+  endcase
 
-uvs.cmid[0] = graff_enter(uvs.spbase, $
-                          label = clab, $
-                          value = ccmd, $
-                          uvalue = 'CMD', $
-                          xsize = 12, $
-                          /track, $
-                          /capture)
+  uvs.cmid[0] = graff_enter(uvs.spbase, $
+                            label = clab, $
+                            value = ccmd, $
+                            uvalue = 'CMD', $
+                            xsize = 12, $
+                            /track, $
+                            /capture)
 
-uvs.cmid(1) = graff_enter(uvs.spbase, $
-                          value = scmd, $
-                          uvalue = 'SFX', $
-                          xsize = 8, $
-                          label = file_basename(h.name), $
-                          /track, $
-                          /capture)
+  uvs.cmid(1) = graff_enter(uvs.spbase, $
+                            value = scmd, $
+                            uvalue = 'SFX', $
+                            xsize = 8, $
+                            label = file_basename(h.name), $
+                            /track, $
+                            /capture)
 
-junk = widget_button(uvs.spbase, $
-                     value = 'Default', $
-                     uvalue = 'FVIEW')
+  junk = widget_button(uvs.spbase, $
+                       value = 'Default', $
+                       uvalue = 'FVIEW')
 
-junk = widget_button(uvs.spbase, $
-                     value = 'None', $
-                     uvalue = 'NOVIEW')
+  junk = widget_button(uvs.spbase, $
+                       value = 'None', $
+                       uvalue = 'NOVIEW')
 
-widget_control, uvs.xoffid, sensitive = (h.eps ne 1)
-widget_control, uvs.yoffid, sensitive = (h.eps ne 1)
-widget_control, uvs.xleftid, sensitive = (h.eps ne 1)
-widget_control, uvs.yleftid, sensitive = (h.eps ne 1)
-;widget_control, uvs.spbase, sensitive = (h.eps ne 1)
+  widget_control, uvs.xoffid, sensitive = ~(h.eps and 1)
+  widget_control, uvs.yoffid, sensitive = ~(h.eps and 1)
+  widget_control, uvs.xleftid, sensitive = ~(h.eps and 1)
+  widget_control, uvs.yleftid, sensitive = ~(h.eps and 1)
 
-uvs.action = graff_enter(base, /text, /display, value = '', xsize = $
-                         65, label = 'Action:')
+  uvs.action = graff_enter(base, $
+                           /text, $
+                           /display, $
+                           value = '', $
+                           xsize = 65, $
+                           label = 'Action:')
 
                                 ; Quit button
-jb = widget_base(base, /row)
-junk = widget_button(jb, value = '   Cancel   ', uvalue = 'CANCEL', $
-                     /track)
-junk = widget_button(jb, value = '    Do it    ', uvalue = 'DO', $
-                     /track)
+  jb = widget_base(base, /row)
+  junk = widget_button(jb, $
+                       value = '   Cancel   ', $
+                       uvalue = 'CANCEL', $
+                       /track)
+  junk = widget_button(jb, $
+                       value = '    Do it    ', $
+                       uvalue = 'DO', $
+                       /track)
 
-widget_control, base, set_uvalue = uvs, /no_copy
+  widget_control, base, set_uvalue = uvs, /no_copy
 
-widget_control, tlb, /real
+  widget_control, tlb, /real
 
 ;	RYO widget management to allow us to get the values back from
 ;	the event handler without using a common block, even after the
 ;	hierarchy has been destroyed.
 
-widget_control, base, event_func = 'hopts_event'
+  widget_control, base, event_func = 'hopts_event'
 
-repeat begin
-    ev = widget_event(base)
-endrep until (ev.exited ne 0)
+  repeat begin
+     ev = widget_event(base)
+  endrep until (ev.exited ne 0)
 
-widget_control, base, get_uvalue = uvs, /no_copy
-pdefs.hardset = uvs.opts
+  widget_control, base, get_uvalue = uvs, /no_copy
+  pdefs.hardset = uvs.opts
 
-widget_control, tlb, /destroy
+  widget_control, tlb, /destroy
 
-widget_control, pdefs.ids.graffer, /sensitive
+  widget_control, pdefs.ids.graffer, /sensitive
 
-return, ev.exited
+  return, ev.exited
 
 end
