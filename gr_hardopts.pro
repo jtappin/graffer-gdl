@@ -386,33 +386,32 @@ function Gr_hardopts, pdefs
 
                                 ; Page size
   cl = widget_base(base, $
-                   /row, $
-                   xpad = 0, $
-                   ypad = 0, $
-                   space = 0)
+                   column = 3, $
+                   /grid, $
+                   /base_align_right)
 
-  jb = widget_base(cl, /column)
-  uvs.paperid = widget_droplist(jb, $
+;  jb = widget_base(cl, /column)
+  uvs.paperid = widget_droplist(cl, $
                                 value = ['A4', 'Letter'], $
                                 title = 'Paper size:', $
                                 uvalue = 'PSIZE', $
                                 /track)
   widget_control, uvs.paperid, set_droplist_select = h.psize
 
-  uvs.ctrid = widget_button(jb, $
+  uvs.ctrid = widget_button(cl, $
                             value = 'Centre on page', $
                             uvalue = 'CENTRE', $
                             /track, $
                             sensitive = ~(h.eps and 1))
-  junk = widget_droplist(jb, $
+  junk = widget_droplist(cl, $
                          value = ['Off', 'On'], $
                          title = "Plot timestamp", $
                          uvalue = 'TIMEST', $
                          /track)
   widget_control, junk, set_droplist_select = h.timestamp
 
-  jb = widget_base(cl, /column)
-  uvs.xsid = graff_enter(jb, $
+;  jb = widget_base(cl, /column)
+  uvs.xsid = graff_enter(cl, $
                          /float, $
                          /all, $
                          label = 'X Size (cm):', $
@@ -422,7 +421,7 @@ function Gr_hardopts, pdefs
                          xsize = 5, $
                          /track, $
                          /capture)
-  uvs.xoffid = graff_enter(jb, $
+  uvs.xoffid = graff_enter(cl, $
                            /float, $
                            /all, $
                            label = 'X offset:',  $
@@ -432,7 +431,7 @@ function Gr_hardopts, pdefs
                            xsize = 5, $
                            /track, $
                            /capture)
-  uvs.xleftid = graff_enter(jb, $
+  uvs.xleftid = graff_enter(cl, $
                             /float, $
                             /display, $
                             label = 'X remain:', $
@@ -440,8 +439,8 @@ function Gr_hardopts, pdefs
                             format = "(F5.2)", $
                             xsize = 5)
 
-  jb = widget_base(cl, /column)
-  uvs.ysid = graff_enter(jb, $
+;  jb = widget_base(cl, /column)
+  uvs.ysid = graff_enter(cl, $
                          /float, $
                          /all, $
                          label = 'Y Size (cm):', $
@@ -451,7 +450,7 @@ function Gr_hardopts, pdefs
                          xsize = 5, $
                          /track, $
                          /capture)
-  uvs.yoffid = graff_enter(jb, $
+  uvs.yoffid = graff_enter(cl, $
                            /float, $
                            /all, $
                            label = 'Y offset:',  $
@@ -461,7 +460,7 @@ function Gr_hardopts, pdefs
                            xsize = 5, $
                            /track, $
                            /capture)
-  uvs.yleftid = graff_enter(jb, $
+  uvs.yleftid = graff_enter(cl, $
                             /float, $
                             /display, $
                             label = 'Y remain:', $
