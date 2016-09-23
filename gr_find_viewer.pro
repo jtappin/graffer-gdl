@@ -23,35 +23,32 @@ function gr_find_viewer, pdf = pdf, ps = ps, all = all, count = count
 ;	Extracted from gr_opt_set: 15/2/12; SJT
 ;-
 
-pdfapps = ['acroread', $
-           'okular', $
-           'evince', $
-           'gv', $
-           'kpdf', $
-           'xpdf', $
-           'kghostview']
+  pdfapps = ['acroread', $
+             'okular', $
+             'evince', $
+             'gv', $
+             'kpdf', $
+             'xpdf', $
+             'kghostview']
 
-psapps = ['okular', $
-          'evince', $
-          'gv', $
-          'kghostview', $
-          'ghostview']
+  psapps = ['okular', $
+            'evince', $
+            'gv', $
+            'kghostview', $
+            'ghostview']
 
-if keyword_set(ps) then applist = psapps $
-else applist = pdfapps
+  if keyword_set(ps) then applist = psapps $
+  else applist = pdfapps
 
-isapp = bytarr(n_elements(applist))
-for iapp = 0, n_elements(applist)-1 do begin
-    spawn, /sh, 'which '+applist[iapp], wh
-    if strlen(wh[0]) ne 0 then isapp[iapp] = 1b
-endfor
-locs = where(isapp, napp)
-if napp eq 0 then applist = [''] $
-else applist = applist[locs]
+  isapp = gr_find_program(applist)
 
-if arg_present(count) then count = napp
+  locs = where(isapp, napp)
+  if napp eq 0 then applist = [''] $
+  else applist = applist[locs]
 
-if keyword_set(all) then return, applist
-return, applist[0]
+  if arg_present(count) then count = napp
+
+  if keyword_set(all) then return, applist
+  return, applist[0]
 
 end

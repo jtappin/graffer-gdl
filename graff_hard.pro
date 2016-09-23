@@ -47,6 +47,23 @@ function Graff_hard, pdefs, no_set = no_set
      endcase
   endif
 
+ 
+  if ~keyword_set(no_set) then begin
+     ido = gr_hardopts(pdefs)
+     if (ido eq -1) then return, 0
+  endif else if (pdefs.hardset.eps and 2b) eq 2b && $
+     ~gr_find_program('gs') then begin
+     yn = dialog_message(['A PDF output format is set', $
+                          'but no "gs" executable could', $
+                          'be found.', $
+                          'Reset output to corresponding', $
+                          'PostScript format?'], $
+                         /cancel, $
+                         dialog_parent = pdefs.ids.graffer)
+     if yn eq 'Cancel' then return, 0 $
+     else pdefs.hardset.eps and= 1b
+  endif
+
   if pdefs.hardset.name eq '' then begin
      file = pdefs.name
      if (((dp = strpos(file, '.', /reverse_search))) ne -1) then  $
@@ -57,11 +74,6 @@ function Graff_hard, pdefs, no_set = no_set
         else: file = file+'.pdf'
      endcase
      pdefs.hardset.name = pdefs.dir+file
-  endif
-
-  if (not keyword_set(no_set)) then begin
-     ido = gr_hardopts(pdefs)
-     if (ido eq -1) then return, 0
   endif
 
   h = pdefs.hardset
@@ -200,6 +212,6 @@ function Graff_hard, pdefs, no_set = no_set
 
   pdefs.transient.current_only = tt
 
-  return, keyword_set(no_set) eq 0
+  return, ~keyword_set(no_set)
 
 end

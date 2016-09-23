@@ -210,6 +210,8 @@ print, 'gr_examine_tlv.pro'
 .r gr_examine_tlv
 print, 'gr_fcopy_menu.pro'
 .r gr_fcopy_menu
+print, 'gr_find_program.pro'
+.r gr_find_program
 print, 'gr_find_viewer.pro'
 .r gr_find_viewer
 print, 'gr_fit_dset.pro'

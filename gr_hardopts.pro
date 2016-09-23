@@ -42,8 +42,11 @@ function Hopts_event, event
         iexit = 1
         for j = 0, 1 do begin
            widget_control, settings.cmid(j), get_value = cmd
-           if settings.opts.eps then settings.opts.viewer[j] = cmd[0] $
-           else settings.opts.action[j] = cmd[0]
+           case settings.opts.eps of
+              0: settings.opts.action[j] = cmd[0]
+              1: settings.opts.viewer[j] = cmd[0]
+              else:  settings.opts.pdfviewer[j] = cmd[0]
+           endcase
         endfor
         widget_control, settings.fileid, get_value = file
         settings.opts.name = file
@@ -319,6 +322,13 @@ function Gr_hardopts, pdefs
 
   h = pdefs.hardset
 
+  output_types = ['Normal', 'Encapsulated', $
+                  'PDF (Print)', 'PDF (LaTeX)']
+  if ~gr_find_program("gs") then begin
+     h.eps and= 1b
+     output_types = output_types[0:1]
+  endif
+
   tname = pdefs.name
   dp = strpos(tname, '.', /reverse_search)
   if dp ne -1 then tname = strmid(tname, 0, dp) 
@@ -364,8 +374,7 @@ function Gr_hardopts, pdefs
   widget_control, junk, set_droplist_select = h.colour
 
   junk = widget_droplist(jb, $
-                         value = ['Normal', 'Encapsulated', $
-                                 'PDF (Print)', 'PDF (LaTeX)'], $
+                         value = output_types, $
                          uvalue = 'EPS', $
                          /track)
   widget_control, junk, set_droplist_select = h.eps
