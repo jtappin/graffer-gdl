@@ -166,15 +166,15 @@ function gr_custom_colour, index, w0, group = group
                     /column, $
                     /base_align_center)
 
-  re_id = cw_ffield(jbb, $
-                    label = 'Red', $
-                    /column, $
-                    format = "(I3)", $
-                    /capture, $
-                    xsize = 3, $
-                    /int, $
-                    value = bcolour[0], $
-                    uvalue = 'RED_E')
+  re_id = graff_enter(jbb, $
+                      label = 'Red', $
+                      /column, $
+                      format = "(I3)", $
+                      /capture, $
+                      xsize = 3, $
+                      /int, $
+                      value = bcolour[0], $
+                      uvalue = 'RED_E')
   rs_id = widget_slider(jbb, $
                         /vertical, $
                         min = 0, $
@@ -189,15 +189,15 @@ function gr_custom_colour, index, w0, group = group
                     /column, $
                     /base_align_center)
 
-  ge_id = cw_ffield(jbb, $
-                    label = 'Green', $
-                    /column, $
-                    format = "(I3)", $
-                    /capture, $
-                    xsize = 3, $
-                    /int, $
-                    value = bcolour[1], $
-                    uvalue = 'GRN_E')
+  ge_id = graff_enter(jbb, $
+                      label = 'Green', $
+                      /column, $
+                      format = "(I3)", $
+                      /capture, $
+                      xsize = 3, $
+                      /int, $
+                      value = bcolour[1], $
+                      uvalue = 'GRN_E')
   gs_id = widget_slider(jbb, $
                         /vertical, $
                         min = 0, $
@@ -213,15 +213,15 @@ function gr_custom_colour, index, w0, group = group
                     /column, $
                     /base_align_center)
 
-  be_id = cw_ffield(jbb, $
-                    label = 'Blue', $
-                    /column, $
-                    format = "(I3)", $
-                    /capture, $
-                    xsize = 3, $
-                    /int, $
-                    value = bcolour[2], $
-                    uvalue = 'BLU_E')
+  be_id = graff_enter(jbb, $
+                      label = 'Blue', $
+                      /column, $
+                      format = "(I3)", $
+                      /capture, $
+                      xsize = 3, $
+                      /int, $
+                      value = bcolour[2], $
+                      uvalue = 'BLU_E')
   bs_id = widget_slider(jbb, $
                         /vertical, $
                         min = 0, $
@@ -238,15 +238,15 @@ function gr_custom_colour, index, w0, group = group
                      /frame)
   widget_control, sc_b, sensitive = max(bcolour) gt 0
 
-  sce_id = cw_ffield(sc_b, $
-                     label = 'Scale (%)', $
-                     /column, $
-                     format = "(I3)", $
-                     /capture, $
-                     xsize = 3, $
-                     /int, $
-                     value = 100, $
-                     uvalue = 'SCALE_E')
+  sce_id = graff_enter(sc_b, $
+                       label = 'Scale (%)', $
+                       /column, $
+                       format = "(I3)", $
+                       /capture, $
+                       xsize = 3, $
+                       /int, $
+                       value = 100, $
+                       uvalue = 'SCALE_E')
   scs_id = widget_slider(sc_b, $
                          /vertical, $
                          min = 0, $
