@@ -21,7 +21,8 @@
 ;	Add extra colours: 8/2/12; SJT
 ; 	Add min & max values: 4/3/15; SJT
 ; 	Add display of current DS colour: 23/8/16; SJT
-;	Replace cw_pdtsmenu with cw_pdmenu_plus: 28/9/16; SJT
+;	Replace cw_pdtsmenu & last cw_bbselector with cw_pdmenu_plus:
+;	28/9/16; SJT
 ;-
 
 pro Gr_dsp_event, event
@@ -245,13 +246,18 @@ pro Gr_ds_menus, optbb, pdefs
 
   jjb = widget_base(pdefs.ids.plopts[0], /row)
 
-                                ; This stays as a bbselector as
-                                ; droplists don't do bitmaps 
-  pdefs.ids.psym = cw_bbselector(jjb, $
-                                 psym_bm, $
-                                 uvalue = 'PSYM', $
-                                 label_left = 'Symbol:', $
-                                 /track) 
+  junk = widget_label(jjb, $
+                      value = 'Symbol:')
+
+  sz = size(psym_bm, /dim)
+  bmstruct = replicate({bitmap: psym_bm[*, *, 0]}, sz[2])
+  for j = 0, sz[2]-1 do bmstruct[j].bitmap = psym_bm[*, *, j]
+
+  pdefs.ids.psym = cw_pdmenu_plus(jjb, $
+                                  bmstruct, $
+                                  uvalue = 'PSYM', $
+                                  /selector, $
+                                  /track) 
 
                                 ; Change symbol size
 

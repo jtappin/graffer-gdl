@@ -16,6 +16,7 @@
 ;	Replace most cw_bbselectors with widget_droplist: 13/12/11; SJT
 ;	Allow selection of non-standard filename: 13/2/12; SJT
 ;	Allow PDF generation: 21/9/16; SJT
+;	Replace last bbselector with cw_pdmenu_plus: 28/9/16; SJT
 ;-
 
 
@@ -497,17 +498,21 @@ function Gr_hardopts, pdefs
                          /track)
   widget_control, junk, set_droplist_select = h.font.family
 
-; Keep the bbselector here as we need to make items non-selectable.
-  uvs.wsid = cw_bbselector(jb, $
-                           ['Normal',  $
-                            'Bold', $
-                            'Italic', $
-                            'Bold Italic'], $
-                           label_left = 'Weight/slope', $
-                           set_value = h.font.wg_sl, $
-                           uvalue = 'FWS', $
-                           ids = bids, $
-                           /track)
+  junk = widget_label(jb, $
+                      value = 'Weight/slope:')
+
+  swopt = [{label: 'Normal'},  $
+           {label: 'Bold'}, $
+           {label: 'Italic'}, $
+           {label: 'Bold Italic'}]
+
+  uvs.wsid = cw_pdmenu_plus(jb, $
+                            swopt,  $
+                            /selector, $
+                            initial = h.font.wg_sl, $
+                            uvalue = 'FWS', $
+                            ids = bids, $
+                            /track)
   uvs.wsids = bids
   widget_control, uvs.wsid, sensitive = h.font.family le 9
   for j = 1, 3, 2 do widget_control, uvs.wsids(j), sensitive = $

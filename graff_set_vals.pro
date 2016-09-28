@@ -120,6 +120,7 @@ pro Graff_set_vals, pdefs, set_only = set_only
 
   data = (*pdefs.data)[pdefs.cset]
   widget_control, pdefs.ids.psym, set_value = data.psym
+;  cw_pdmenu_plus_set, pdefs.ids.psym, index = data.psym
   widget_control, pdefs.ids.pline, set_droplist_select = data.pline
   widget_control, pdefs.ids.symsize, set_value = $
                   data.symsize

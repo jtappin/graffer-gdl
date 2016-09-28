@@ -302,15 +302,6 @@ function Graff_text, pdefs, edit = edit, position = position
 
   jb = widget_base(base, /row)
 
-;; if pdefs.opts.colour_menu then begin
-;;     junk = cw_bbselector(jb, $
-;;                          col_bm[*, *, *, 1:*], $
-;;                          uvalue = 'COL', $
-;;                          label_left = 'Colour:', $
-;;                          set_value = $
-;;                          (*pdefs.text)[itxt].colour, $
-;;                          /track)
-;; endif else begin
   col_list = ['White (bg)', $
               'Black', $
               'Red', $

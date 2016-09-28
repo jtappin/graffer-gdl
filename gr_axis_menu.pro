@@ -605,7 +605,7 @@ junk = cw_pdmenu_plus(jb, $
                       return_type = 'full_name', $
                       uvalue = axis+'STY', $
                       /track, $
-                      delimeter = '/', $
+                      delimiter = '/', $
                       ids = buts)
 
 ;if (axis eq 'Yr') then widget_control, buts[19], sensitive = 0
