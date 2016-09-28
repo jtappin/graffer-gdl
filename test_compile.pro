@@ -2,12 +2,8 @@ print, 'aspect.pro'
 .r aspect
 print, 'cw_bbselector.pro'
 .r cw_bbselector
-print, 'cw_btgroup.pro'
-.r cw_btgroup
-print, 'cw_pdtmenu.pro'
-.r cw_pdtmenu
-print, 'cw_pdtsmenu.pro'
-.r cw_pdtsmenu
+print, 'cw_pdmenu_plus.pro'
+.r cw_pdmenu_plus
 print, 'fractile.pro'
 .r fractile
 print, 'gr_1dd_plot.pro'

@@ -21,6 +21,7 @@
 ;	Add extra colours: 8/2/12; SJT
 ; 	Add min & max values: 4/3/15; SJT
 ; 	Add display of current DS colour: 23/8/16; SJT
+;	Replace cw_pdtsmenu with cw_pdmenu_plus: 28/9/16; SJT
 ;-
 
 pro Gr_dsp_event, event
@@ -111,31 +112,25 @@ pro Gr_dsp_event, event
         val = str_sep(event.value, '.')
         if (n_elements(val) eq 1) then graff_msg, pdefs.ids.hlptxt, $
                                                   'Set other dataset options' $
-        else case val(1) of
-           'Sort X axis': if (track_flag) then $
+        else case val[1] of
+           'Sort X axis': if track_flag then $
               graff_msg, pdefs.ids.hlptxt, 'Toggle sorting of X axis' + $
                          ' values before plotting current data set' $
-           else if (val(2) eq 'On') then $
-              (*pdefs.data)[pdefs.cset].sort = 1b $
-           else (*pdefs.data)[pdefs.cset].sort = 0b
+           else (*pdefs.data)[pdefs.cset].sort = event.select
            
            'Clip to box': if (track_flag) then $
               graff_msg, pdefs.ids.hlptxt, 'Toggle clipping of' + $
                          ' current dataset to plot axes' $
-           else  if (val(2) eq 'On') then $
-              (*pdefs.data)[pdefs.cset].noclip = 0b $ 
-           else (*pdefs.data)[pdefs.cset].noclip = 1b
+           else   (*pdefs.data)[pdefs.cset].noclip = ~event.select
            
-           'Mouse editing':  if (track_flag) then $
+           'Mouse editing':  if track_flag then $
               graff_msg, pdefs.ids.hlptxt, 'Toggle use of mouse to ' + $
                          'edit dataset' $
            else begin
-              if (val(2) eq 'Enabled') then $
-                 (*pdefs.data)[pdefs.cset].medit = 1b $
-              else (*pdefs.data)[pdefs.cset].medit = 0b
+              (*pdefs.data)[pdefs.cset].medit = event.select
               
-              widget_control, pdefs.ids.draw, get_uvalue = state
-              if (state eq 'DRAW') then widget_control, $
+              widget_control, pdefs.ids.draw, get_uvalue = dstate
+              if (dstate eq 'DRAW') then widget_control, $
                  pdefs.ids.draw, draw_button_events = $
                  (*pdefs.data)[pdefs.cset].medit, track = $
                  (*pdefs.data)[pdefs.cset].medit 
@@ -293,22 +288,20 @@ pro Gr_ds_menus, optbb, pdefs
                                    /track, $
                                    title = 'Coords:')
 
-  xtras = [{CW_PDSMENU_S, flags:3, name:'Extras', state:0b}, $
-           {cw_pdsmenu_s, 1, 'Sort X axis', 0b}, $
-           {cw_pdsmenu_s, 0, 'Off', 0b}, $
-           {cw_pdsmenu_s, 2, 'On', 0b}, $
-           {cw_pdsmenu_s, 1, 'Clip to box', 0b}, $
-           {cw_pdsmenu_s, 0, 'On', 0b}, $
-           {cw_pdsmenu_s, 2, 'Off', 0b}, $
-           {cw_pdsmenu_s, 3, 'Mouse editing', 0b}, $
-           {cw_pdsmenu_s, 0, 'Disabled', 0b}, $
-           {cw_pdsmenu_s, 2, 'Enabled', 0b}]
+  xtras = [{CW_PDSMENU_S, flag:3, label:'Extras', state:0b}, $
+           {cw_pdsmenu_s, 4, 'Sort X axis', 0b}, $
+           {cw_pdsmenu_s, 4, 'Clip to box', 0b}, $
+           {cw_pdsmenu_s, 6, 'Mouse editing', 0b}]
 
 
-  junk = cw_pdtsmenu(jjb, xtras, /return_full_name, uvalue = 'XTRA', $
-                     /track, /states, ids = buts)
-  xpos = [1, 4, 7]
-  pdefs.ids.dsxtra = buts(xpos)
+  junk = cw_pdmenu_plus(jjb, $
+                        xtras, $
+                        return_type = 'full_name', $
+                        uvalue = 'XTRA', $
+                        /track, $
+                        ids = buts)
+
+  pdefs.ids.dsxtra = buts[1:*]
 
   pdefs.ids.minmaxbase = widget_base(pdefs.ids.plopts[0], $
                                      /column)

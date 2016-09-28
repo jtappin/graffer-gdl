@@ -14,6 +14,7 @@
 ;	Drop CDF support: 10/2/97; SJT
 ;	Add support for a second Y-scale: 22/12/11; SJT
 ;	Add "copy" as an option for functions and data: 7/2/12; SJT
+;	Replace cw_pdtmenu with cw_pdmenu_plus: 28/9/16; SJT
 ;-
 
 pro Gr_dsc_event, event
@@ -222,50 +223,50 @@ end
 
 pro Gr_ds_create, base, pdefs
 
-datopts = [{cw_pdmenu_sa, flags:1, name:'XY data', accel:''}, $
-           {cw_pdmenu_sa, 0, 'From file ...', ''}, $
-           {cw_pdmenu_sa, 0, 'Edit values ...', ''}, $
-           {cw_pdmenu_sa, 0, 'Top level variables ...', ''}, $
-           {cw_pdmenu_sa, 0, 'Copy ...', ''}, $
-           {cw_pdmenu_sa, 1, '2D Datasets', ''}, $
-           {cw_pdmenu_sa, 0, 'From file ...', ''}, $
-           {cw_pdmenu_sa, 0, 'Top level variables ...', ''}, $
-           {cw_pdmenu_sa, 2, 'Copy ...', ''}, $
-           {cw_pdmenu_sa, 2, 'Rescale Current ...', ''}, $
-           {cw_pdmenu_sa, 3, 'Function', ''}, $
-           {cw_pdmenu_sa, 0, 'y = f(x) ...', ''}, $
-           {cw_pdmenu_sa, 0, 'x = f(y) ...', ''}, $
-           {cw_pdmenu_sa, 0, 'x = f(t), y = g(t) ...', ''}, $
-           {cw_pdmenu_sa, 0, 'z = f(x,y) ...', ''}, $
-           {cw_pdmenu_sa, 0, 'From file ...', ''}, $
-           {cw_pdmenu_sa, 0, 'Copy ...', ''}, $
-           {cw_pdmenu_sa, 2, 'Fit Dataset ...', ''}]
+  datopts = [{ds_create_opts, flag:1, label:'XY data'}, $
+             {ds_create_opts, 0, 'From file ...'}, $
+             {ds_create_opts, 0, 'Edit values ...'}, $
+             {ds_create_opts, 0, 'Top level variables ...'}, $
+             {ds_create_opts, 0, 'Copy ...'}, $
+             {ds_create_opts, 1, '2D Datasets'}, $
+             {ds_create_opts, 0, 'From file ...'}, $
+             {ds_create_opts, 0, 'Top level variables ...'}, $
+             {ds_create_opts, 2, 'Copy ...'}, $
+             {ds_create_opts, 2, 'Rescale Current ...'}, $
+             {ds_create_opts, 3, 'Function'}, $
+             {ds_create_opts, 0, 'y = f(x) ...'}, $
+             {ds_create_opts, 0, 'x = f(y) ...'}, $
+             {ds_create_opts, 0, 'x = f(t), y = g(t) ...'}, $
+             {ds_create_opts, 0, 'z = f(x,y) ...'}, $
+             {ds_create_opts, 0, 'From file ...'}, $
+             {ds_create_opts, 0, 'Copy ...'}, $
+             {ds_create_opts, 2, 'Fit Dataset ...'}]
 
-jb = widget_base(base, $
-                 /row, $
-                 space = 0, $
-                 xpad = 0, $
-                 ypad = 0, $
-                 event_pro = 'gr_dsc_event')
+  jb = widget_base(base, $
+                   /row, $
+                   space = 0, $
+                   xpad = 0, $
+                   ypad = 0, $
+                   event_pro = 'gr_dsc_event')
 
 
-junk = cw_pdtmenu(jb, $
-                  datopts, $
-                  /return_full_name, $
-                  uvalue = 'EDITOR', $
-                  /track)
+  junk = cw_pdmenu_plus(jb, $
+                        datopts, $
+                        return_type = 'full_name', $
+                        uvalue = 'EDITOR', $
+                        /track)
 
-pdefs.ids.y_axis = widget_droplist(jb, $
-                                   value = ['Main', $
-                                            'Right'], $
-                                   uvalue = 'YAXIS', $
-                                   sensitive = pdefs.y_right, $
-                                   title = 'Y-axis:', $
-                                   /track)
+  pdefs.ids.y_axis = widget_droplist(jb, $
+                                     value = ['Main', $
+                                              'Right'], $
+                                     uvalue = 'YAXIS', $
+                                     sensitive = pdefs.y_right, $
+                                     title = 'Y-axis:', $
+                                     /track)
 
-if ptr_valid((*pdefs.data)[pdefs.cset]) then $
-  widget_control, pdefs.ids.y_axis, set_droplist_select = $
-  (*pdefs.data)[pdefs.cset].y_axis
+  if ptr_valid((*pdefs.data)[pdefs.cset]) then $
+     widget_control, pdefs.ids.y_axis, set_droplist_select = $
+                     (*pdefs.data)[pdefs.cset].y_axis
 
 
 end
