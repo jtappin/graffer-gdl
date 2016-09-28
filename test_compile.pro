@@ -1,7 +1,5 @@
 print, 'aspect.pro'
 .r aspect
-print, 'cw_bbselector.pro'
-.r cw_bbselector
 print, 'cw_pdmenu_plus.pro'
 .r cw_pdmenu_plus
 print, 'fractile.pro'

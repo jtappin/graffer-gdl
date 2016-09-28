@@ -245,6 +245,8 @@
 ;                     - Major changes to colour handling.
 ;               Version 4.09:
 ;                     - Add support for PDF output generation.
+;                     - replace 3 different local pulldowns with a
+;                       single cw_pdmeu_plus routine.
 ;-
 
 

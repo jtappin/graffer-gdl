@@ -329,6 +329,8 @@ Version 3.09 adds support for a secondary Y-axis.
 
 \begin{itemize}
 \item Add support for generating PDF output semi-directly.
+\item Replace 3 similar and confusing pulldown menu routines with a
+  single unified routine.
 \end{itemize}
 \section{Getting Started}
 
@@ -417,8 +419,6 @@ GRAFFER can accept a number of keywords to control its operation:
   and you want to be able to get variables from that procedure
   (although \texttt{GRAFF\_ADD} is usually preferred in such cases).
 \item[\texttt{RECOVER}:] Recover an autosave file.
-\item[\texttt{COLOUR\_MENU}:] Make the colour selector menus use colour
-  pixmaps to show the colours rather than text descriptions.
 \end{description}
 
 \subsection{A quick tour of the main window}
@@ -1761,7 +1761,7 @@ the \texttt{Quick} option of the pulldown. If you select the
 
  \begin{description}
  \item [Monochrome/Colour:]Whether to generate colour PostScript or
-   not.  The default is monochrome. In monochrome mode, all line plots
+   not.  The default is colour. In monochrome mode, all line plots
    appear black, but 2-D data displayed in {}``image'' format will
    appear as a greyscale.
  \item [Normal/Encapsulated:]Normal is just a regular printable
@@ -1770,9 +1770,10 @@ the \texttt{Quick} option of the pulldown. If you select the
    \texttt{.ps} or \texttt{.eps} according to the selected option. PDF
    (Print) generates a PDF file with the selected page size, suitable
    for printing, PDF (LaTeX) generates a PDF file suitable for
-   including into \LaTeX\ documents. Since IDL does not generate PDF
+   including into PDF\LaTeX\ documents. Since IDL does not generate PDF
    directly from direct graphics, a PS or EPS file is generated, and
-   then converted to PDF using \texttt{gs}.
+   then converted to PDF using \texttt{gs}, if \texttt{gs} is not
+   installed on your system, the PDF outputs will not be available.
  \item [Landscape/Portrait:]Describes the orientation of the plot on
    the page. If encapsulated PostScript is selected then this is
    ignored apart from changing the default dimensions.
@@ -2614,12 +2615,19 @@ compound widgets which offer some extensions over the versions in the
 IDL User's library:
 
 \begin{description}
-\item [cw\_bbselector]A pulldown menu like CW\_BSELECTOR, but able to
-  use bitmap labels (you can't mix bitmaps and text though).
-\item [cw\_btgroup]Like CW\_BGROUP but with tracking events.
-\item [cw\_pdtmenu]Like CW\_PDMENU but with tracking events.
-\item [cw\_pdtsmenu]A pulldown menu with options to put a state flag on
-  the lowest-level options.
+\item[cw\_pdmenu\_plus] An extended pulldown menu. Compared with the
+  supplied \texttt{cw\_pdmenu} this offers a number of extra
+  facilities:
+  \begin{itemize}
+  \item Tracking events that identify which menu item is entered.
+  \item Stateful buttons, including the option to create a group with
+    exclusive selection.
+  \item Bitmap buttons. Currently, all buttons must use bitmaps or all
+    buttons must use strings. Also for monochrome bitmaps, the number
+    of columns must be a multiple of 8.
+  \item A \texttt{cw\_bselector} or \texttt{widget\_droplist} like
+    mode, allowing desensitized menu items.
+  \end{itemize}
 \item [graff\_enter]An entry box with rather more options than
   CW\_FIELD (e.g. format, capture focus on pointing, tracking events).
 \item [fractile]Return specified percentiles of an array of values.
@@ -2645,8 +2653,6 @@ file with just five options.
   PDF help files. (searches for the first of \texttt{acroread},
   \texttt{kpdf}, \texttt{xpdf}, \texttt{kghostview}, \texttt{gv},
   \texttt{okular} and \texttt{evince} to be installed)
-\item[\texttt{ColourMenu:} \textit{bool}] Whether to use colour pixmaps
-  or text descriptions in the colour selectors. (0)
 \end{description}
 The usual way to create and modify it is via the \textsf{Options} menu
 (\textsc{\autoref{sec:options}}) by selecting \textsf{Save} or \textsf{Save
