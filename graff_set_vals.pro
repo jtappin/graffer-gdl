@@ -24,7 +24,7 @@ pro Graff_set_vals, pdefs, set_only = set_only
 ;	Add current-only setting: 26/1/12; SJT
 ;	Advanced axis style settings: 21/8/12; SJT
 ; 	Add min & max values: 4/3/15; SJT
-; 	Replace cw_pdtsmenu wit cw_pdmenu_plus: 28/9/16; SJT
+; 	Replace cw_pdtsmenu with cw_pdmenu_plus: 28/9/16; SJT
 ;-
 
   common Gr_psym_maps, psym_bm  ;, col_bm
@@ -133,7 +133,7 @@ pro Graff_set_vals, pdefs, set_only = set_only
   gr_show_colour, pdefs
 
   widget_control, pdefs.ids.thick, set_value = data.thick
-  sedit = data.type lt 0 || data.type eq 9 
+  sedit = data.type ge 0 && data.type ne 9 
   widget_control, pdefs.ids.dsxtra[0], sensitive = sedit
   widget_control, pdefs.ids.dsxtra[2], sensitive = sedit
   cw_pdmenu_plus_set, pdefs.ids.dsxtra[0], data.sort
