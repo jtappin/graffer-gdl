@@ -365,7 +365,7 @@ pro Gr_axis_event, event
      'YLAB': if track_flag then $
         graff_msg, pdefs.ids.hlptxt, 'Enter label for the Y axis' $
      else begin
-        pdefs.xtitle = event.value
+        pdefs.ytitle = event.value
      end
      
                                 ; Right-hand Y axis settings
