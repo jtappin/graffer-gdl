@@ -258,12 +258,19 @@ function cw_pdmenu_plus_event, event
      if locs[0] ge 0 then $
         widget_control, widget_info(event.id, /parent), $
                         set_value = uvalue.label
-     return, {cw_pdmenu_plus_event, $
-              id: event.handler, $
-              top: event.top, $
-              handler: 0l, $
-              value: uvalue.val, $
-              select: uvalue.state}
+     if size(uvalue.val, /type) eq 7 then $
+        return, {cw_pdmenu_plus_event_s, $
+                 id: event.handler, $
+                 top: event.top, $
+                 handler: 0l, $
+                 value: uvalue.val, $
+                 select: uvalue.state} $
+     else return, {cw_pdmenu_plus_event_l, $
+                   id: event.handler, $
+                   top: event.top, $
+                   handler: 0l, $
+                   value: long(uvalue.val), $
+                   select: uvalue.state}
   endelse
 
 end
@@ -487,7 +494,7 @@ function cw_pdmenu_plus, parent, udesc, column = column, row = row, $
   
   ids = lonarr(nbuttons)
 
-  cw_pdmenu_plus_build, base, descr, 0, nbuttons, etype, is_mb, $
+  cw_pdmenu_plus_build, base, descr, 0l, nbuttons, etype, is_mb, $
                         dhelp, delimiter, ids, isbitmap, $
                         selector = selector, $
                         tracking_events = tracking_events, $
