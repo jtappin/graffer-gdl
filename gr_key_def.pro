@@ -20,6 +20,7 @@
 ;	Add char size option: 29/4/09; SJT
 ;	Replace cw_bbselector with widget_droplist: 13/12/11; SJT
 ;	Add support for a second Y-scale: 22/12/11; SJT
+;	Use cw_spin_box for columns & charsize: 29/9/16; SJT
 ;-
 
 function Gr_key_event, event
@@ -57,12 +58,12 @@ case but of
     
     'Y1': begin
         uv.key.y(1) = event.value
-        if (event.cr) then grf_focus_enter, uv.csid
+        if (event.cr) then cw_spin_box_focus_enter, uv.csid
     end
     
     'CSIZE': begin
         uv.key.csize = event.value
-        if (event.cr) then grf_focus_enter, uv.cid
+        if (event.cr) then cw_spin_box_focus_enter, uv.cid
     end
 
     'COL': begin
@@ -160,11 +161,6 @@ junk = widget_button(jb, $
                      value = 'Draw a key on the plot?', $
                      uvalue = 'USE')
 widget_control, junk, set_button = pdefs.key.use
-;; junk = widget_droplist(base, $
-;;                        value = ['No', 'Yes'], $
-;;                        title = 'Draw a key on the plot?:', $
-;;                        uvalue = 'USE')
-;; widget_control, junk, set_droplist_select = pdefs.key.use
 
 bub.allid = widget_base(base, /row)
 jb = widget_base(bub.allid, /column)
@@ -191,14 +187,17 @@ bub.yid1 = graff_enter(jjb, /float, xsize = 11, /all_event, label = $
                        'Y:', value = pdefs.key.y(1), uvalue = 'Y1', $
                        /capture)
 jjb = widget_base(jb, /row)
-bub.csid = graff_enter(jjb, $
+bub.csid = cw_spin_box(jjb, $
                        /float, $
-                       xsize = 20, $
+                       xsize = 8, $
                        /all, $
                        label = 'Character Size:', $
                        value = pdefs.key.csize, $
                        uvalue = 'CSIZE', $
-                       /capture)
+                       /capture, $
+                       format = '(f0.2)', $
+                       min = 0., $
+                       step = 0.1)
 
 if (pdefs.y_right) then begin
     jjjb = widget_base(jjb, $
@@ -210,9 +209,17 @@ if (pdefs.y_right) then begin
 endif
 
 jjb = widget_base(jb, /row)
-bub.cid = graff_enter(jjb, /int, xsize = 3, /all_event, label = $
-                      'How many columns?: ', value = pdefs.key.cols, $
-                      uvalue = 'COL', /capture)
+bub.cid = cw_spin_box(jjb, $
+                      /int, $
+                      xsize = 3, $
+                      /all_event, $
+                      label = 'How many columns?: ', $
+                      value = pdefs.key.cols, $
+                      uvalue = 'COL', $
+                      /capture, $
+                      min = 1, $
+                      max = pdefs.nsets)
+
 junk = widget_droplist(jjb, $
                        value = ['2', '1'], $
                        title = 'Plot 1 or 2 points', $

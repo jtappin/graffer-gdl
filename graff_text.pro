@@ -26,6 +26,7 @@
 ;	Replace most cw_bbselectors with widget_droplist: 13/12/11; SJT
 ;	Fix widget ID for colour selector: 26/1/12; SJT
 ;	Add extra colours: 8/2/12; SJT
+;	Use cw_spin_box for sizes and thicknesses: 29/9/16; SJT
 ;-
 
 pro Gr_text_disp, text
@@ -268,9 +269,13 @@ function Graff_text, pdefs, edit = edit, position = position
 
   showit = widget_draw(base, ysize = 25, xsize = 320, /frame)
 
-  junk = graff_enter(base, /all_ev, xsize = 40, value = $
-                     (*pdefs.text)[itxt].text, $ 
-                     uvalue = 'TEXT', label = 'Text:', /track, $
+  junk = graff_enter(base, $
+                     /all_ev, $
+                     xsize = 40, $
+                     value = (*pdefs.text)[itxt].text, $ 
+                     uvalue = 'TEXT', $
+                     label = 'Text:', $
+                     /track, $
                      /capture, $
                      /graphics)
 
@@ -288,16 +293,18 @@ function Graff_text, pdefs, edit = edit, position = position
                      /track, $
                      /capture)
 
-  junk = graff_enter(jb, $
+  junk = cw_spin_box(jb, $
                      /float, $
                      /all_ev, $
-                     xsize = 6, $
+                     xsize = 7, $
                      value = (*pdefs.text)[itxt].size, $
-                     format = "(f6.1)", $
+                     format = "(f0.2)", $
                      uvalue = 'CHS', $
                      label = 'Charsize:', $
                      /track, $
-                     /capture)
+                     /capture, $
+                     min = 0., $
+                     step = 0.1)
 
 
   jb = widget_base(base, /row)
@@ -342,16 +349,18 @@ function Graff_text, pdefs, edit = edit, position = position
   widget_control, junk, set_droplist_select = ci
 ;; endelse
 
-  junk = graff_enter(jb, $
+  junk = cw_spin_box(jb, $
                      /float, $
-                     format = "(f6.1)", $
+                     format = "(f0.1)", $
                      /all_ev, $
                      xsize = 6, $
                      value = (*pdefs.text)[itxt].thick, $
                      uvalue = 'THI', $
                      label = 'Thickness:', $
                      /track, $
-                     /capture)
+                     /capture, $
+                     min = 0., $
+                     step = 1.)
 
                                 ; Alignment and orientation
 

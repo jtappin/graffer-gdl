@@ -23,6 +23,7 @@
 ; 	Add display of current DS colour: 23/8/16; SJT
 ;	Replace cw_pdtsmenu & last cw_bbselector with cw_pdmenu_plus:
 ;	28/9/16; SJT
+;	Use cw_spin_box for sizes and thicknesses: 29/9/16; SJT
 ;-
 
 pro Gr_dsp_event, event
@@ -261,27 +262,32 @@ pro Gr_ds_menus, optbb, pdefs
 
                                 ; Change symbol size
 
-  pdefs.ids.symsize = graff_enter(jjb, $
+  pdefs.ids.symsize = cw_spin_box(jjb, $
                                   /float, $
-                                  /all_ev, $
+                                  /all_events, $
                                   value = '1.0', $
                                   uvalue = 'SSIZE', $
-                                  xsize = 5, $
-                                  label = $
-                                  'Size:', format = "(f5.1)", $
-                                  /track, /capture)
+                                  xsize = 7, $
+                                  label = 'Size:', $
+                                  format = "(f0.2)", $
+                                  /track, $
+                                  /capture, $
+                                  min = 0., $
+                                  step = 0.1)
 
   jjb = widget_base(pdefs.ids.plopts[0], /row)
-  pdefs.ids.thick = graff_enter(jjb, $
+  pdefs.ids.thick = cw_spin_box(jjb, $
                                 /float, $
-                                format = "(f6.1)", $
-                                /all_ev, $
+                                /all_events, $
+                                format = "(f0.1)", $
                                 xsize = 6, $
                                 value = 1., $
                                 uvalue = 'THICK', $
                                 label = 'Thickness:', $
                                 /track, $
-                                /capture)
+                                /capture, $
+                                min = 0., $
+                                step = 1.)
 
 
   jjb = widget_base(pdefs.ids.plopts[0], $

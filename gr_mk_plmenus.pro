@@ -17,6 +17,7 @@
 ;	Original (extracted from GRAFFER): 29/11/96; SJT
 ;	Add CAPTURE key to entry boxes: 6/2/97; SJT
 ;	Add "Comment" key: 1/7/97; SJT
+;	Use cw_spin_box for line width & charsize: 29/9/16; SJT
 ;-
 
 pro Gr_pl_event, event
@@ -152,28 +153,31 @@ jb = widget_base(tjb, $
                  xpad = 0, $
                  ypad = 0, $
                  space = 0)
-pdefs.ids.charsize = graff_enter(jb, $
-                                 /all_events, $
+pdefs.ids.charsize = cw_spin_box(jb, $
                                  value = 1.0, $
+                                 /all_events, $
                                  /float, $
                                  xsize = 8, $
                                  uvalue = 'CHARSIZE', $
                                  label = 'Charsize:', $
-                                 format = "(F6.1)", $
+                                 format = "(F0.2)", $
+                                 step = 0.1, $
                                  /track, $
-                                 /capture)
+                                 /capture, $
+                                 minval = 0.)
 
-pdefs.ids.axthick = graff_enter(jb, $
-                                /all_events, $
+pdefs.ids.axthick = cw_spin_box(jb, $
                                 /float, $
-                                format = "(f6.1)", $
-                                value = 1, $
+                                /all_events, $
+                                format = "(f0.1)", $
+                                value = 1., $
                                 xsize = 6, $
                                 uvalue = 'AXTHICK', $
-                                label = $
-                                'Line width:', $
+                                label = 'Line width:', $
                                 /track, $
-                                /capture)
+                                /capture, $
+                                step = 1., $
+                                minval = 0.0)
 
 
 jb = widget_base(tjb, $
