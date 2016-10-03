@@ -20,7 +20,7 @@
 ;	/float		If set, then return a singe-precision floating
 ;			point value.
 ;	/double		If set, then return a double-precision fp value.
-;	/int		If set, then return a short integer (default).
+;	/int		If set, then return a short integer.
 ;	/long		If set, then return a long integer.
 ;	/very_long	If set, then return a 64-bit integer.
 ;	/byte		If set, then return a byte.
@@ -53,6 +53,11 @@
 ;			the box.
 ;	/capture_focus	If set, then the entry box captures the input
 ;			focus when the pointer is moved over it.
+;
+; Notes:
+;	If an explicit type is not given then if a VALUE is given, it
+;	determines the type, otherwise the default integer type is
+;	used.
 ;
 ; History:
 ;	Original: 29/9/16; SJT
@@ -332,6 +337,10 @@ function cw_spin_box, parent, row = row, column = column, $
 
   tcode = size(tt, /type)
 
+  if (tcode eq 4 || tcode eq 5) && keyword_set(unsigned) then $
+     message, /continue, "UNSIGNED Key not applicable to FP types, " + $
+              "ignoring"
+
   cstruct = {value: tt, $
              minval: tt, $
              maxval: tt, $
@@ -345,7 +354,7 @@ function cw_spin_box, parent, row = row, column = column, $
 
 
   if keyword_set(format) then cstruct.format = format $
-  else if tcode eq 4 or tcode eq 5 then cstruct.format = "(f0.2)" $
+  else if tcode eq 4 || tcode eq 5 then cstruct.format = "(f0.2)" $
   else cstruct.format = "(i0)"
 
   if keyword_set(step) then begin

@@ -86,7 +86,13 @@
 ;
 ;	The event returned may either be a standard tracking event or
 ;	has the structure:
-;	event = {id: 0, top:0l, handler: 0l, value: <>, state: 0b}
+;	event = {cw_pdmenu_plus_event_l, id: 0, top:0l, handler: 0l, $
+;		value: 0L, state: 0b}
+;	for return types of index or id	or:
+;	event = {cw_pdmenu_plus_event_s, id: 0, top:0l, handler: 0l, $
+;		value: '', state: 0b}
+;	for return types of name, full_name or uname.	
+;
 ;	For non-stateful buttons, state is always 0.
 ;
 ;	The align_* and row/column keys are ignored for a menu bar.
