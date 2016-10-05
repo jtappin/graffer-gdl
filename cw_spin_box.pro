@@ -53,6 +53,8 @@
 ;			the box.
 ;	/capture_focus	If set, then the entry box captures the input
 ;			focus when the pointer is moved over it.
+;	/flat		If set, then generate spin buttons without a
+;			"bevel" 
 ;
 ; Notes:
 ;	If an explicit type is not given then if a VALUE is given, it
@@ -313,7 +315,7 @@ function cw_spin_box, parent, row = row, column = column, $
                       sensitive = sensitive, no_edit = no_edit, $
                       tracking_events = tracking_events, $
                       all_events = all_events, xsize = xsize, $
-                      capture_focus = capture_focus
+                      capture_focus = capture_focus, flat = flat
 
   if ~widget_info(parent, /valid) then return, 0l
 
@@ -419,6 +421,7 @@ function cw_spin_box, parent, row = row, column = column, $
                       /row)
   cstruct.boxid = widget_text(ibase, $
                               xsize = xsize, $
+                              ysize = 1, $
                               value = $
                               string(cstruct.value, $
                                      format = cstruct.format), $
@@ -435,11 +438,13 @@ function cw_spin_box, parent, row = row, column = column, $
   cstruct.upid = widget_button(sbase, $
                                value = bup, $
                                x_bitmap_extra = xextra, $
-                               uvalue = 'UP')
+                               uvalue = 'UP', $
+                               flat = flat)
   cstruct.dnid = widget_button(sbase, $
                                value = bdown, $
                                x_bitmap_extra = xextra, $
-                               uvalue = 'DOWN')
+                               uvalue = 'DOWN', $
+                               flat = flat)
 
   widget_control, cstruct.dnid, sensitive = $
                   ~cstruct.ismin || cstruct.value gt cstruct.minval
@@ -449,7 +454,8 @@ function cw_spin_box, parent, row = row, column = column, $
 
   uid = widget_info(base, /child) ; This will either be the label, or
                                 ; the base with the box & buttons, but
-                                ; both are passive widgets.
+                                ; both are passive widgets, so it
+                                ; really doesn't matter
 
   widget_control, uid, set_uvalue = cstruct
 

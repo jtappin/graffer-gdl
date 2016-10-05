@@ -19,6 +19,7 @@
 ;	Add CAPTURE key to entry boxes: 6/2/97; SJT
 ;	Replace handles with pointers: 28/6/05; SJT
 ;	Add a chooser: 6/2/12; SJT
+;	Improve handling of "undefined" settings: 5/10/16; SJT
 ;-
 
 
@@ -174,33 +175,33 @@ end
 
 function Gr_tlv_z, pdefs
 
-fflag = ((*pdefs.data)(pdefs.cset).type ne 9) and $
-        (*pdefs.data)(pdefs.cset).ndata gt 0
-if (fflag) then begin
-   if dialog_message(['CURRENT DATA SET IS 1-D OR A FUNCTION,', $
-                      'ENTERING DATA WILL OVERWRITE IT', $
-                      'DO YOU REALLY WANT TO DO THIS?'], $
-                     /question, title = 'Overwriting ' + $
-                     'function', dialog_parent = $
-                     pdefs.ids.graffer, resource = 'Graffer') eq 'No' then $
-                        return, 0 $
-   else xydata = {graff_zdata}
-endif else begin       
+  fflag = ((*pdefs.data)[pdefs.cset].type ne 9) and $
+          (*pdefs.data)[pdefs.cset].ndata gt 0
+  if (fflag) then begin
+     if dialog_message(['CURRENT DATA SET IS 1-D OR A FUNCTION,', $
+                        'ENTERING DATA WILL OVERWRITE IT', $
+                        'DO YOU REALLY WANT TO DO THIS?'], $
+                       /question, title = 'Overwriting ' + $
+                       'function', dialog_parent = $
+                       pdefs.ids.graffer, resource = 'Graffer') eq 'No' then $
+                          return, 0 $
+     else xydata = {graff_zdata}
+  endif else begin       
 
-   if ptr_valid((*pdefs.data)[pdefs.cset].xydata) then $
-      xydata = *(*pdefs.data)[pdefs.cset].xydata $
-   else xydata = {graff_zdata}
-endelse
+     if ptr_valid((*pdefs.data)[pdefs.cset].xydata) then $
+        xydata = *(*pdefs.data)[pdefs.cset].xydata $
+     else xydata = {graff_zdata}
+  endelse
 
-uvs = { $
-      Xid:   0l, $
-      Yid:   0l, $
-      Zid:   0l, $
-      X:     xydata.x, $
-      Y:     xydata.y, $
-      Z:     xydata.z, $
-      mid:   0l $
-      }
+  uvs = { $
+        Xid:   0l, $
+        Yid:   0l, $
+        Zid:   0l, $
+        X:     xydata.x, $
+        Y:     xydata.y, $
+        Z:     xydata.z, $
+        mid:   0l $
+        }
 
 ;	Check out the type of the current ds
 
@@ -208,129 +209,135 @@ uvs = { $
 ; 	desensitize the main graffer panel and define the bases for
 ; 	this one.
 
-widget_control, pdefs.ids.graffer, sensitive = 0
+  widget_control, pdefs.ids.graffer, sensitive = 0
 
-tlb = widget_base(title = 'Graffer 2-D data from Variables',  $
-                  group_leader = pdefs.ids.graffer, resource = $
-                  'Graffer')
-base = widget_base(tlb, /column)
+  tlb = widget_base(title = 'Graffer 2-D data from Variables',  $
+                    group_leader = pdefs.ids.graffer, resource = $
+                    'Graffer')
+  base = widget_base(tlb, /column)
 
                                 ; The entry boxes for Z, X & Y
 
-jb = widget_base(base, $
-                 /row)
-uvs.zid = graff_enter(jb, $
-                      value = '', $
-                      /text, $
-                      uvalue = 'Z', $
-                      label = 'Z Variable:', $
-                      xsize = 12, $
-                      /capture)
-junk = widget_button(jb, $
-                     value = 'Pick...', $
-                     uvalue = 'ZP')
+  jb = widget_base(base, $
+                   /row)
+  uvs.zid = graff_enter(jb, $
+                        value = '', $
+                        /text, $
+                        uvalue = 'Z', $
+                        label = 'Z Variable:', $
+                        xsize = 12, $
+                        /capture)
+  junk = widget_button(jb, $
+                       value = 'Pick...', $
+                       uvalue = 'ZP')
 
-jb = widget_base(base, $
-                 /row)
-uvs.xid = graff_enter(jb, $
-                      value = '', $
-                      /text, $
-                      uvalue = 'X', $
-                      label = 'X Variable:', $
-                      xsize = 12, $
-                      /capture)
-junk = widget_button(jb, $
-                     value = 'Pick...', $
-                     uvalue = 'XP')
+  jb = widget_base(base, $
+                   /row)
+  uvs.xid = graff_enter(jb, $
+                        value = '', $
+                        /text, $
+                        uvalue = 'X', $
+                        label = 'X Variable:', $
+                        xsize = 12, $
+                        /capture)
+  junk = widget_button(jb, $
+                       value = 'Pick...', $
+                       uvalue = 'XP')
 
-jb = widget_base(base, $
-                 /row)
-uvs.yid = graff_enter(jb, $
-                      value = '', $
-                      /text, $
-                      uvalue = 'Y', $
-                      label = 'Y Variable:', $
-                      xsize = 12, $
-                      /capture)
-junk = widget_button(jb, $
-                     value = 'Pick...', $
-                     uvalue = 'YP')
+  jb = widget_base(base, $
+                   /row)
+  uvs.yid = graff_enter(jb, $
+                        value = '', $
+                        /text, $
+                        uvalue = 'Y', $
+                        label = 'Y Variable:', $
+                        xsize = 12, $
+                        /capture)
+  junk = widget_button(jb, $
+                       value = 'Pick...', $
+                       uvalue = 'YP')
 
 
-uvs.mid = graff_enter(base, $
-                      value = '', $
-                      ysize = 2, $
-                      xsize = 30, $
-                      /column, $
-                      /display, $
-                      label = 'Messages')
+  uvs.mid = graff_enter(base, $
+                        value = '', $
+                        ysize = 2, $
+                        xsize = 30, $
+                        /column, $
+                        /display, $
+                        label = 'Messages')
 
-junk = cw_bgroup(base, $
-                 ['Do it', 'Cancel'], $
-                 button_uvalue = [1, -1], $
-                 uvalue = 'ACTION', $
-                 /row)
+  junk = cw_bgroup(base, $
+                   ['Do it', 'Cancel'], $
+                   button_uvalue = [1, -1], $
+                   uvalue = 'ACTION', $
+                   /row)
 
 
 
                                 ; Realise and do RYO event handling
 
-widget_control, tlb, /real
+  widget_control, tlb, /real
 
-grf_focus_enter, uvs.zid
+  grf_focus_enter, uvs.zid
 
-widget_control, base, event_func = 'grf_tlz_event', set_uvalue = $
-                uvs, /no_copy
+  widget_control, base, event_func = 'grf_tlz_event', set_uvalue = $
+                  uvs, /no_copy
 
-repeat begin
-    ev = widget_event(base)
-endrep until (ev.exited ne 0)
+  repeat begin
+     ev = widget_event(base)
+  endrep until (ev.exited ne 0)
 
-widget_control, base, get_uvalue = uvs, /no_copy
-widget_control, tlb, /destroy
-widget_control, pdefs.ids.graffer, /sensitive 
+  widget_control, base, get_uvalue = uvs, /no_copy
+  widget_control, tlb, /destroy
+  widget_control, pdefs.ids.graffer, /sensitive 
 
-if (ev.exited eq -1) then return, 0
+  if (ev.exited eq -1) then return, 0
 
 
-xydata = {graff_zdata}
+  xydata = {graff_zdata}
 
-xydata.x = ptr_new(*uvs.x)
-xydata.x_is_2d = size(*uvs.x, /n_dim) eq 2
-xydata.y = ptr_new(*uvs.y)
-xydata.y_is_2d = size(*uvs.y, /n_dim) eq 2
-xydata.z = ptr_new(*uvs.z)
-ptr_free, uvs.x
-ptr_free, uvs.y
-ptr_free, uvs.z
+  xydata.x = ptr_new(*uvs.x)
+  xydata.x_is_2d = size(*uvs.x, /n_dim) eq 2
+  xydata.y = ptr_new(*uvs.y)
+  xydata.y_is_2d = size(*uvs.y, /n_dim) eq 2
+  xydata.z = ptr_new(*uvs.z)
+  ptr_free, uvs.x
+  ptr_free, uvs.y
+  ptr_free, uvs.z
 
-sz = size(*xydata.z)
-(*pdefs.data)(pdefs.cset).ndata = sz[1]
-(*pdefs.data)(pdefs.cset).ndata2 = sz[2]
+  sz = size(*xydata.z)
+  (*pdefs.data)[pdefs.cset].ndata = sz[1]
+  (*pdefs.data)[pdefs.cset].ndata2 = sz[2]
 
-if (*pdefs.data)(pdefs.cset).type eq 9 then ptr_free, $
-  (*(*pdefs.data)(pdefs.cset).xydata).x, $
-  (*(*pdefs.data)(pdefs.cset).xydata).y, $
-  (*(*pdefs.data)(pdefs.cset).xydata).z
+  if (*pdefs.data)[pdefs.cset].type eq 9 then ptr_free, $
+     (*(*pdefs.data)[pdefs.cset].xydata).x, $
+     (*(*pdefs.data)[pdefs.cset].xydata).y, $
+     (*(*pdefs.data)[pdefs.cset].xydata).z
 
-ptr_free, (*pdefs.data)(pdefs.cset).xydata
-(*pdefs.data)(pdefs.cset).xydata = ptr_new(xydata)
-(*pdefs.data)(pdefs.cset).type = 9
+  ptr_free, (*pdefs.data)[pdefs.cset].xydata
+  (*pdefs.data)[pdefs.cset].xydata = ptr_new(xydata)
+  (*pdefs.data)[pdefs.cset].type = 9
 
-if (*pdefs.data)(pdefs.cset).zopts.N_levels  eq 0 then begin ; No
-                                ; previously defined 2-D display mode
-    (*pdefs.data)(pdefs.cset).zopts.N_levels = 6
-    (*pdefs.data)(pdefs.cset).zopts.N_cols = 1
-    (*pdefs.data)(pdefs.cset).zopts.Colours = ptr_new(1)
-    (*pdefs.data)(pdefs.cset).zopts.N_sty =   1
-    (*pdefs.data)(pdefs.cset).zopts.style = ptr_new(0)
-    (*pdefs.data)(pdefs.cset).zopts.N_thick = 1
-    (*pdefs.data)(pdefs.cset).zopts.Thick = ptr_new(1.)
-    (*pdefs.data)(pdefs.cset).zopts.Pxsize = 0.5
-endif
 
-graff_set_vals, pdefs, /set_only
+  if (*pdefs.data)[pdefs.cset].zopts.N_levels  eq 0 then $
+     (*pdefs.data)[pdefs.cset].zopts.N_levels = 6
+  if ~ptr_valid((*pdefs.data)[pdefs.cset].zopts.Colours) then begin
+     (*pdefs.data)[pdefs.cset].zopts.N_cols = 1
+     (*pdefs.data)[pdefs.cset].zopts.Colours = ptr_new(1)
+  endif
+  if ~ptr_valid((*pdefs.data)[pdefs.cset].zopts.style) then begin
+     (*pdefs.data)[pdefs.cset].zopts.N_sty =   1
+     (*pdefs.data)[pdefs.cset].zopts.style = ptr_new(0)
+  endif
+  if ~ptr_valid((*pdefs.data)[pdefs.cset].zopts.Thick) then begin
+     (*pdefs.data)[pdefs.cset].zopts.N_thick = 1
+     (*pdefs.data)[pdefs.cset].zopts.Thick = ptr_new(1.)
+  endif
+  if (*pdefs.data)[pdefs.cset].zopts.Pxsize eq 0. then $
+     (*pdefs.data)[pdefs.cset].zopts.Pxsize = 0.5
 
-return, 1
+  graff_set_vals, pdefs, /set_only
+
+  return, 1
 
 end

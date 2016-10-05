@@ -206,17 +206,17 @@ pdefs.ids.zopts.c_levels = graff_enter(jb, $
 
 widget_control, pdefs.ids.zopts.c_levels, sensitive = iexpl
 
-pdefs.ids.zopts.c_nlevels = graff_enter(jb, $
+pdefs.ids.zopts.c_nlevels = cw_spin_box(jb, $
                                         /int, $
                                         /track, $
                                         uvalue = 'NLEVEL', $
                                         value = zopts.n_levels, $
-                                        xsize = 12, $
-                                        ysize = 1, $
+                                        xsize = 8, $
                                         /column, $
                                         label = '# Levels', $
                                         /capture, $
-                                        /all_events)
+                                        /all_events, $
+                                        min = 0)
 
 widget_control, pdefs.ids.zopts.c_nlevels, sensitive = iexpl eq 0
 
@@ -300,33 +300,34 @@ pdefs.ids.zopts.c_style = graff_enter(jb, $
                                       /all_events)
 
 
-pdefs.ids.zopts.c_label = graff_enter(jb, $
+pdefs.ids.zopts.c_label = cw_spin_box(jb, $
                                       /int, $
                                       /track, $
                                       uvalue = 'LABEL',  $
                                       value = zopts.label, $
                                       format = '(I0)', $
                                       xsize = 6, $
-                                      ysize = 1, $
                                       label = 'Label', $
                                       /capture, $
                                       /column, $
-                                      /all_events)
+                                      /all_events, $
+                                      min = 0)
 
 
 
-pdefs.ids.zopts.c_charsize = graff_enter(jb, $
+pdefs.ids.zopts.c_charsize = cw_spin_box(jb, $
                                          /float, $
                                          /track, $
                                          uvalue = 'CCSIZE', $
                                          value = zopts.charsize, $
-                                         format = "(F5.1)", $
+                                         format = "(F0.2)", $
                                          xsize = 6, $
-                                         ysize = 1, $
                                          label = 'Charsize', $
                                          /capture, $
                                          /column, $
-                                         /all_events)
+                                         /all_events, $
+                                         step = 0.1, $
+                                         min = 0.)
 widget_control, pdefs.ids.zopts.c_charsize, $
                 sensitive = zopts.label ne 0
 end

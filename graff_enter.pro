@@ -22,6 +22,9 @@
 ;				integers
 ;	long_int	input	If set then the values are long
 ;				integers
+;	very_long	input	If set, then values are 64-bit integers.
+;	unsigned	input	If set, then any integer type is
+;				unsigned.
 ;	text		input	If set, then the values are text
 ;				strings (default action)
 ;	format	string	input	The format for displaying the value.
@@ -55,6 +58,7 @@
 ;	/empty_nan	input	If set and this is a scalar float or
 ;				double box, then return a NaN value
 ;				for an empty box.
+;	uname	string	input	A user-defined name for the widget.
 ;
 ; Restrictions:
 ;	If the text window does not contain a valid value for the
@@ -78,6 +82,8 @@
 ;	updating of the plot when a title is typed rapidly: 3/7/97; SJT
 ;	Add option to set the label by using widget_control: 15/2/12; SJT
 ;	Get/Set non-finite values as an empty field: 4/3/15; SJT
+;	Few code modernizations, get rid of the no_copy's,
+;	support 64-bit ints & unsigned: 4/10/16; SJT
 ;-
 
 
@@ -86,11 +92,10 @@ pro Grf_focus_enter, id
                                 ; id.
 
   base = widget_info(id, /child)
-  widget_control, base, get_uvalue = state, /no_copy
+  widget_control, base, get_uvalue = state
 
   widget_control, state.text, /input_focus
 
-  widget_control, base, set_uvalue = state, /no_copy
 end
 
 
@@ -99,18 +104,17 @@ pro Grf_set_enter, id, value
                                 ; widget
 
   base = widget_info(id, /child)
-  widget_control, base, get_uvalue = state, /no_copy
+  widget_control, base, get_uvalue = state
 
   on_ioerror, no_set
 
-  if (not state.array) then v1 = value(0)  $
+  if (not state.array) then v1 = value[0]  $
   else v1 = value
 
   sv = size(v1[0], /type)
   if (sv eq 7 && n_elements(value) eq 1 && $
       strpos(v1, 'LABEL:') eq 0) then begin
      widget_control, state.label, set_value = strmid(v1, 6)
-     widget_control, base, set_uvalue = state, /no_copy
      return
   endif
 
@@ -120,6 +124,10 @@ pro Grf_set_enter, id, value
      2: vv = fix(v1)
      3: vv = long(v1)
      7: vv = strtrim(string(v1, /print), 2)
+     12: vv = uint(v1)
+     13: vv = ulong(v1)
+     14: vv = long64(v1)
+     15: vv = ulong64(v1)
      Else: message, 'Unknown entry field type'
   endcase else vv = v1
 
@@ -128,14 +136,12 @@ pro Grf_set_enter, id, value
   else vv = ''
 
   widget_control, state.text, set_value = vv
-  widget_control, base, set_uvalue = state, /no_copy
 
   return
 
 No_set:
 
   message, /continue, "Could not convert value to appropriate type."
-  widget_control, base, set_uvalue = state, /no_copy
 
 end
 
@@ -146,7 +152,7 @@ function Grf_get_enter, id
                                 ; widget
 
   base = widget_info(id, /child)
-  widget_control, base, get_uvalue = state, /no_copy
+  widget_control, base, get_uvalue = state
 
   widget_control, state.text, get_value = txt
   if (not state.array) then txt = txt(0)
@@ -169,6 +175,22 @@ function Grf_get_enter, id
      3: begin                   ; Long
         val = lonarr(nv0)
         v0 = 0l
+     end
+     12: begin                  ; UInt
+        val = uintarr(nv0)
+        v0 = 0u
+     end
+     13: begin                   ; ULong
+        val = ulonarr(nv0)
+        v0 = 0ul
+     end
+     14: begin                  ; Long64
+        val = lon64arr(nv0)
+        v0 = 0ll
+     end
+     15: begin                   ; ULong64
+        val = ulon64arr(nv0)
+        v0 = 0ull
      end
      7: begin                   ; Text
         val = txt
@@ -211,10 +233,9 @@ badval:
   else if (state.type eq 7) then val = 0 $
   else val = ''
 
-  if (nv eq 1) then val = val(0) ; Make single value a
+  if (nv eq 1) then val = val[0] ; Make single value a
                                 ; scalar
 
-  widget_control, base, set_uvalue = state, /no_copy
   return, val
 
 end
@@ -230,52 +251,37 @@ function Grf_enter_ev, event
   if (event.id eq 0l) then return, 0l
 
   base = widget_info(event.handler, /child)
-  widget_control, base, get_uvalue = state, /no_copy
+  widget_control, base, get_uvalue = state
 
   e_type = tag_names(event, /structure_name)
   if (e_type eq 'WIDGET_TRACKING') then begin
      trkopt = state.track
      if ((trkopt and 2b) ne 0 and event.enter) then $
         widget_control, state.text, /input_focus
-     widget_control, base, set_uvalue = state, /no_copy
+
      event.id = event.handler
      event.handler = 0l
      if (trkopt) then return, event $
      else return, 0l
   endif
 
-  if (state.dead) then begin    ; Not returning events
-     widget_control, base, set_uvalue = state, /no_copy
+  if (state.dead) then return, 0l ; Not returning events
+                                ; Dummy return
+
+  if (event.type eq 3 and not state.select) then $
      return, 0l                 ; Dummy return
-  endif
 
-  if (event.type eq 3 and not state.select) then begin
-     widget_control, base, set_uvalue = state, /no_copy
-     return, 0l                 ; Dummy return
-  endif
-
-                                ; This piece of code isn't as silly as
-                                ; it looks! The UVALUE of base is used
-                                ; in the GET_VALUE routine!
-
-  widget_control, base, set_uvalue = state, /no_copy
   widget_control, event.handler, get_value = val
-  widget_control, base, get_uvalue = state, /no_copy
-
+ 
   sv = size(val, /type)
-  if (sv ne state.type) then begin
-                                ; Value wasn't valid don't return
+  if (sv ne state.type) then $
+     return, 0l                 ; Value wasn't valid don't return
                                 ; anything
-     widget_control, base, set_uvalue = state, /no_copy
-     return, 0l                 ; Dummy return
-  endif
 
   cr = 0b
   if (event.type eq 0) then if (event.ch eq 10b) then cr = 1b $
   else begin
-     widget_control, base, set_uvalue = state, /no_copy
      new_event = widget_event(event.handler, /nowait)
-     widget_control, base, get_uvalue = state, /no_copy
   endelse
 
   ev = { $
@@ -287,7 +293,7 @@ function Grf_enter_ev, event
        Type:state.type $
        }
 
-  widget_control, base, set_uvalue = state, /no_copy
+  widget_control, base, set_uvalue = state
 
   return, ev
 
@@ -299,7 +305,8 @@ end
 
 function Graff_enter, parent, label=label, value=value, uvalue=uvalue, $
                       floating=floating, integer=integer, text=text, $
-                      long_int=long_int, double = double, $
+                      long_int=long_int, very_long = very_long, $
+                      unsigned = unsigned, double = double, $
                       format=format, xsize=xsize, ysize=ysize, $
                       column=column, frame=frame, box=box, $
                       all_events=all_events, no_events=no_events, $
@@ -312,91 +319,127 @@ function Graff_enter, parent, label=label, value=value, uvalue=uvalue, $
                                 ; First step: check that unset keys
                                 ; are set to something if needed.
 
-  if (n_elements(label) eq 0) then label = 'Value:'
-  if (n_elements(ysize) eq 0) then ysize = 1
-  if (n_elements(xsize) eq 0) then xsize = 0
-  if (n_elements(uvalue) eq 0) then uvalue = 0
-  if (n_elements(frame) eq 0) then frame = 0
-  if (n_elements(box) eq 0) then box = 0
+  if n_elements(label) eq 0 then label = 'Value:'
+  if n_elements(ysize) eq 0 then ysize = 1
+  if n_elements(xsize) eq 0 then xsize = 0
+  if n_elements(uvalue) eq 0 then uvalue = 0
+  if n_elements(frame) eq 0 then frame = 0
+  if n_elements(box) eq 0 then box = 0
 
 
-  all = keyword_set(all_events) and (not keyword_set(no_events))
+  all = keyword_set(all_events) && (~ keyword_set(no_events))
 
-  if (keyword_set(display)) then edit = 0b $
-  else edit = 1b
+  edit = ~keyword_set(display)
+  track = keyword_set(tracking_events) or $
+          2b*keyword_set(capture_focus)
 
                                 ; Set states according to the type
 
 ;sv = size(value)
-  if (keyword_set(floating)) then begin
-     if (not keyword_set(format)) then format = "(g10.3)"
+  if keyword_set(floating) then begin
+     if ~keyword_set(format) then format = "(g10.3)"
      vtype = 4                  ; Use the codes from SIZE for
                                 ; consistency
-     if (n_elements(value) eq 0) then value = 0.0
+     if n_elements(value) eq 0 then value = 0.0
   endif else if keyword_set(double) then begin
-     if (not keyword_set(format)) then format = "(g12.5)"
+     if ~keyword_set(format) then format = "(g12.5)"
      vtype = 5
-     if (n_elements(value) eq 0) then value = 0.0d0
-  endif else if (keyword_set(integer)) then begin
-     if (not keyword_set(format)) then format = "(I0)"
-     vtype = 2
-     if (n_elements(value) eq 0) then value = 0
-  endif else if (keyword_set(long_int)) then begin
-     if (not keyword_set(format)) then format = "(I0)"
-     vtype = 3
-     if (n_elements(value) eq 0) then value = 0l
+     if n_elements(value) eq 0 then value = 0.0d0
+  endif else if keyword_set(integer) then begin
+     if ~keyword_set(format) then format = "(I0)"
+     if keyword_set(unsigned) then begin
+        vtype = 12
+        if n_elements(value) eq 0 then value = 0u
+     endif else begin
+        vtype = 2
+        if n_elements(value) eq 0 then value = 0
+     endelse
+  endif else if keyword_set(long_int) then begin
+     if ~keyword_set(format) then format = "(I0)"
+     if keyword_set(unsigned) then begin
+        vtype = 13
+        if n_elements(value) eq 0 then value = 0ul
+     endif else begin
+        vtype = 3
+        if n_elements(value) eq 0 then value = 0l
+     endelse
+  endif else if keyword_set(very_long) then begin
+     if ~keyword_set(format) then format = "(I0)"
+     if keyword_set(unsigned) then begin
+        vtype = 15
+        if n_elements(value) eq 0 then value = 0ull
+     endif else begin
+        vtype = 14
+        if n_elements(value) eq 0 then value = 0ll
+     endelse
   endif else begin              ; No key is the same as /text
-     if (not keyword_set(format)) then format = "(A)"
+     if ~keyword_set(format) then format = "(A)"
      vtype = 7
-     if (n_elements(value) eq 0) then value = ''
+     if n_elements(value) eq 0 then value = ''
   endelse
 
-                                ; Define the heirarchy
+  return_nan = keyword_set(empty_nan) && $
+     (vtype eq 4 || vtype eq 5) && $
+     ~keyword_set(array_valued)
+
+                              ; Define the heirarchy
 
                                 ; This is the top-level base which the
                                 ; user will see
 
-  if (n_elements(parent) eq 0) then tlb = widget_base(uvalue = uvalue) $
-  else tlb = widget_base(parent, uvalue = uvalue)
+  if (n_elements(parent) eq 0) then $
+     tlb = widget_base(uvalue = uvalue, $
+                       uname = uname) $
+  else tlb = widget_base(parent, $
+                         uvalue = uvalue, $
+                        uname = uname)
 
                                 ; This is the base to contain the
-                                ; label and text box
+                                ; label and text box, and also has the
+                                ; configuration structure as its
+                                ; uvalue.
 
   if (keyword_set(column)) then  $
-     base = widget_base(tlb, /column, frame = frame) $
-  else base = widget_base(tlb, /row, frame = frame)
+     base = widget_base(tlb, $
+                        /column, $
+                        frame = frame) $
+  else base = widget_base(tlb, $
+                          /row, $
+                          frame = frame)
 
   label = widget_label(base, $
                        value = label, $
                        /dynamic)
 
-  tbox = widget_text(base, edit = edit, all_events = all, frame = box, $
-                     xsize = xsize, ysize = ysize, tracking_events = $
-                     keyword_set(tracking_events) or $
-                     keyword_set(capture_focus), scroll = $
-                     keyword_set(scroll))
+  tbox = widget_text(base, $
+                     edit = edit, $
+                     all_events = all, $
+                     frame = box, $
+                     xsize = xsize, $
+                     ysize = ysize, $
+                     tracking_events = keyword_set(tracking_events) || $
+                     keyword_set(capture_focus), $
+                     scroll = keyword_set(scroll))
 
   state = { $
           Text:   tbox, $
           label:  label, $
-          Dead:   keyword_set(no_events) or keyword_set(display), $
+          Dead:   keyword_set(no_events) || keyword_set(display), $
           Type:   vtype, $
           Format: format, $
-          Track:  keyword_set(tracking_events) or $
-          2b*keyword_set(capture_focus), $
+          Track:  track, $
           Select: keyword_set(select_events), $
           Array:  keyword_set(array_valued), $
           Graph:  keyword_set(graphics) && (vtype eq 7), $
-          empty_nan: keyword_set(empty_nan) && (vtype eq 4 || vtype eq 5) && $
-          ~keyword_set(array_valued) $
+          empty_nan: return_nan $
           }
 
-  widget_control, base, set_uvalue = state, /no_copy
+  widget_control, base, set_uvalue = state
 
-  widget_control, tlb, event_func = 'grf_enter_ev', func_get_value = $
-                  'grf_get_enter', pro_set_value = 'grf_set_enter'
-
-  widget_control, tlb, set_value = value
+  widget_control, tlb, event_func = 'grf_enter_ev', $
+                  func_get_value = 'grf_get_enter', $
+                  pro_set_value = 'grf_set_enter', $
+                  set_value = value
 
   return, tlb
 
