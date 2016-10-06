@@ -319,22 +319,22 @@ function Gr_tlv_z, pdefs
   (*pdefs.data)[pdefs.cset].type = 9
 
 
-  if (*pdefs.data)[pdefs.cset].zopts.N_levels  eq 0 then $
-     (*pdefs.data)[pdefs.cset].zopts.N_levels = 6
-  if ~ptr_valid((*pdefs.data)[pdefs.cset].zopts.Colours) then begin
-     (*pdefs.data)[pdefs.cset].zopts.N_cols = 1
-     (*pdefs.data)[pdefs.cset].zopts.Colours = ptr_new(1)
+  if (*pdefs.data)[pdefs.cset].zopts.n_levels  eq 0 then $
+     (*pdefs.data)[pdefs.cset].zopts.n_levels = 6
+  if ~ptr_valid((*pdefs.data)[pdefs.cset].zopts.colours) then begin
+     (*pdefs.data)[pdefs.cset].zopts.n_cols = 1
+     (*pdefs.data)[pdefs.cset].zopts.colours = ptr_new(1)
   endif
   if ~ptr_valid((*pdefs.data)[pdefs.cset].zopts.style) then begin
-     (*pdefs.data)[pdefs.cset].zopts.N_sty =   1
+     (*pdefs.data)[pdefs.cset].zopts.n_sty =   1
      (*pdefs.data)[pdefs.cset].zopts.style = ptr_new(0)
   endif
-  if ~ptr_valid((*pdefs.data)[pdefs.cset].zopts.Thick) then begin
-     (*pdefs.data)[pdefs.cset].zopts.N_thick = 1
-     (*pdefs.data)[pdefs.cset].zopts.Thick = ptr_new(1.)
+  if ~ptr_valid((*pdefs.data)[pdefs.cset].zopts.thick) then begin
+     (*pdefs.data)[pdefs.cset].zopts.n_thick = 1
+     (*pdefs.data)[pdefs.cset].zopts.thick = ptr_new(1.)
   endif
-  if (*pdefs.data)[pdefs.cset].zopts.Pxsize eq 0. then $
-     (*pdefs.data)[pdefs.cset].zopts.Pxsize = 0.5
+  if (*pdefs.data)[pdefs.cset].zopts.pxsize eq 0. then $
+     (*pdefs.data)[pdefs.cset].zopts.pxsize = 0.5
 
   graff_set_vals, pdefs, /set_only
 

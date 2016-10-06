@@ -38,7 +38,9 @@ function graff_colours, index, triple = triple
                255l, 255l, 127l, 85l, 170l, 0l, 85l, 0l, 85l, 170l, $
                255l, 170l, 255l, 170l, 255l, 0l, 85l]] ; Blue
 
-     imax = n_elements(cmap)
+     sz = size(cmap, /dim)
+     imax = sz[0]
+
      if index lt 0 || index ge imax then return, 0l
      
      if keyword_set(triple) then return, byte(reform(cmap[index, *])) $

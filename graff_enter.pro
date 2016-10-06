@@ -131,9 +131,9 @@ pro Grf_set_enter, id, value
      Else: message, 'Unknown entry field type'
   endcase else vv = v1
 
-  if state.type eq 7 || ~state.empty_nan || finite(vv)  then $
-     vv = string(vv, format = state.format) $
-  else vv = ''
+  if state.type ne 7 &&  state.empty_nan && ~finite(vv) then $
+     vv = '' $
+  else vv = string(vv, format = state.format)
 
   widget_control, state.text, set_value = vv
 
@@ -195,9 +195,9 @@ function Grf_get_enter, id
      7: begin                   ; Text
         val = txt
         if (state.graph) then for j = 0, nv0-1 do $
-           ivv(j) = (strmid(txt(j), strlen(txt(j))-1, 1) ne '!') ||  $
+           ivv[j] = (strmid(txt(j), strlen(txt(j))-1, 1) ne '!') ||  $
                     (strmid(txt(j), strlen(txt(j))-2, 2) eq '!!') $
-        else ivv(*) = 1b
+        else ivv[*] = 1b
      end
      
      Else: message, 'Unknown entry field type'
@@ -229,7 +229,7 @@ badval:
 ;	value is present!)
 
   locs = where(ivv, nv)
-  if (nv gt 0) then val = val(locs) $
+  if (nv gt 0) then val = val[locs] $
   else if (state.type eq 7) then val = 0 $
   else val = ''
 
