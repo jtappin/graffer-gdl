@@ -60,7 +60,8 @@ function gr_cc_event, event
      end
      'SCALE_E': begin
         sfact =  double(event.value)/100.
-        widget_control, (*uvs).scs_id, set_value = event.value
+        widget_control, (*uvs).scs_id, $
+                        set_value = fix(event.value) < 200
         for j =  0, 2 do begin
            (*uvs).colour[j] = byte(((*uvs).colour[j] * sfact) < 255)
            (*uvs).img[*, *, j] = (*uvs).colour[j]
@@ -76,7 +77,7 @@ function gr_cc_event, event
      end
     'SCALE_S': begin
         sfact =  double(event.value)/100.
-        widget_control, (*uvs).sce_id, set_value = event.value
+        widget_control, (*uvs).sce_id, set_value = float(event.value)
         ncv = bytarr(3)
         for j =  0, 2 do begin
            ncv[j] = byte(((*uvs).colour[j] * sfact) < 255)
@@ -101,7 +102,7 @@ function gr_cc_event, event
 
   if reset_s then begin
      widget_control, (*uvs).scs_id, set_value = 100
-     widget_control, (*uvs).sce_id, set_value = 100
+     widget_control, (*uvs).sce_id, set_value = 100.
      widget_control, (*uvs).sc_b, sensitive = max((*uvs).colour) gt 0
   endif
 
@@ -166,7 +167,7 @@ function gr_custom_colour, index, w0, group = group
                     /column, $
                     /base_align_center)
 
-  re_id = graff_enter(jbb, $
+  re_id = cw_spin_box(jbb, $
                       label = 'Red', $
                       /column, $
                       format = "(I3)", $
@@ -174,7 +175,9 @@ function gr_custom_colour, index, w0, group = group
                       xsize = 3, $
                       /int, $
                       value = bcolour[0], $
-                      uvalue = 'RED_E')
+                      uvalue = 'RED_E', $
+                      min = 0, $
+                      max = 255)
   rs_id = widget_slider(jbb, $
                         /vertical, $
                         min = 0, $
@@ -189,7 +192,7 @@ function gr_custom_colour, index, w0, group = group
                     /column, $
                     /base_align_center)
 
-  ge_id = graff_enter(jbb, $
+  ge_id = cw_spin_box(jbb, $
                       label = 'Green', $
                       /column, $
                       format = "(I3)", $
@@ -197,7 +200,9 @@ function gr_custom_colour, index, w0, group = group
                       xsize = 3, $
                       /int, $
                       value = bcolour[1], $
-                      uvalue = 'GRN_E')
+                      uvalue = 'GRN_E', $
+                      min = 0, $
+                      max = 255)
   gs_id = widget_slider(jbb, $
                         /vertical, $
                         min = 0, $
@@ -213,7 +218,7 @@ function gr_custom_colour, index, w0, group = group
                     /column, $
                     /base_align_center)
 
-  be_id = graff_enter(jbb, $
+  be_id = cw_spin_box(jbb, $
                       label = 'Blue', $
                       /column, $
                       format = "(I3)", $
@@ -221,7 +226,9 @@ function gr_custom_colour, index, w0, group = group
                       xsize = 3, $
                       /int, $
                       value = bcolour[2], $
-                      uvalue = 'BLU_E')
+                      uvalue = 'BLU_E', $
+                      min = 0, $
+                      max = 255)
   bs_id = widget_slider(jbb, $
                         /vertical, $
                         min = 0, $
@@ -241,12 +248,13 @@ function gr_custom_colour, index, w0, group = group
   sce_id = graff_enter(sc_b, $
                        label = 'Scale (%)', $
                        /column, $
-                       format = "(I3)", $
+                       format = "(f0.1)", $
                        /capture, $
-                       xsize = 3, $
-                       /int, $
-                       value = 100, $
+                       xsize = 5, $
+                       /float, $
+                       value = 100., $
                        uvalue = 'SCALE_E')
+
   scs_id = widget_slider(sc_b, $
                          /vertical, $
                          min = 0, $

@@ -383,8 +383,6 @@ function cw_pdmenu_plus, parent, udesc, column = column, row = row, $
                          initial_selection = initial_selection, $
                          _extra = _extra
 
-;  on_error, 2
-
   if n_params() ne 2 then message, "Must give a parent and a menu " + $
                                    "descriptor"
   

@@ -200,7 +200,7 @@ pro Gr_bin_save, pdefs, auto = auto
                graff_put_rec, ilu, 'ZL ', *(zopts.levels) $
         else graff_put_rec, ilu, 'ZNL', zopts.n_levels
         if zopts.n_cols gt 0 then graff_put_rec, ilu, 'ZC ', $
-                                                 *(zopts.colours)
+                                                 zopts.colours
         if zopts.n_sty gt 0 then graff_put_rec, ilu, 'ZS ', $
                                                 *(zopts.style)
         if zopts.n_thick gt 0 then graff_put_rec, ilu, 'ZT ', $

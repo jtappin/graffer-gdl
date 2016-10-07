@@ -63,8 +63,8 @@ pro Gr_2dd_plot, pdefs, i, csiz, grey_ps = grey_ps, shaded = shaded
                   data.zopts.label/2) mod data.zopts.label eq 0
      endif else labels = 0
 
-     if ptr_valid(data.zopts.colours) then begin
-        colours = *(data.zopts.colours)
+     if obj_valid(data.zopts.colours) then begin
+        colours = data.zopts.colours
         ncol = n_elements(colours)
         lcolours = lonarr(ncol)
         for j = 0, ncol-1 do lcolours[j] = graff_colours(colours[j])

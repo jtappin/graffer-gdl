@@ -67,17 +67,17 @@
 
 pro cw_spin_box_mk_bitmap, bup, bdown, xextra
 ; Create up & down arrow bitmaps
-  down =  bytarr(11, 6)
-  down[5, 0] = 255b
-  down[4:6, 1] = 255b
-  down[3:7, 2] = 255b
-  down[2:8, 3] = 255b
-  down[1:9, 4] = 255b
-  down[*, 5] = 255b
+  down =  bytarr(9, 5)
+  down[4, 0] = 255b
+  down[3:5, 1] = 255b
+  down[2:6, 2] = 255b
+  down[1:7, 3] = 255b
+;  down[1:9, 4] = 255b
+  down[*, 4] = 255b
   up = reverse(down, 2)
   bdown = cvttobm(down)
   bup = cvttobm(up)
-  xextra = 5
+  xextra = 7
 end
 
 pro cw_spin_box_focus_enter, id

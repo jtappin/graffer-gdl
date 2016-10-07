@@ -71,8 +71,6 @@ Pro Gr_err_y, X, Y, Low, High, Width = width, min_value = min_value, $
 ;	Shorten name: 25/11/96; SJT
 ;-
 
-  on_error, 2                   ;Return to caller if an error occurs
-
   if (n_params() eq 4) then up = y+high $
   else up = y+low
   down = y-low

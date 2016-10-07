@@ -20,6 +20,7 @@ pro graff_2d__define
 ;	Extracted: 30/6/05; SJT
 ;	Support colour inversion: 26/6/07; SJT
 ;	Add local colour table option: 17/11/11; SJT
+;	Make colours a list: 7/10/16; SJT
 ;-
 
 Zopts = {graff_2d, $
@@ -28,7 +29,7 @@ Zopts = {graff_2d, $
          N_levels:    0, $ 
          Levels:      ptr_new(), $
          N_cols:      0, $ 
-         Colours:     ptr_new(), $
+         Colours:     list(), $
          N_sty:       0, $
          Style:       ptr_new(), $
          N_thick:     0, $

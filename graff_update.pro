@@ -254,6 +254,7 @@ pro graff_update, file, idx, name = name, polar = polar, $
   if (n_elements(y_axis) ne 0) then (*pdefs.data)[pdefs.cset].y_axis = $
      $
      $
+     $
      y_axis
 
   if (keyword_set(rescale)) then begin
@@ -277,10 +278,23 @@ pro graff_update, file, idx, name = name, polar = polar, $
   endif
 
   if n_elements(z_colours) gt 0 then begin
-     if ptr_valid((*pdefs.data)[index].zopts.Colours) then $
-        ptr_free, (*pdefs.data)[index].zopts.Colours
+     if obj_valid((*pdefs.data)[index].zopts.Colours) then $
+        obj_destroy, (*pdefs.data)[index].zopts.Colours
      (*pdefs.data)[index].zopts.N_cols = n_elements(z_colours)
-     (*pdefs.data)[index].zopts.Colours = ptr_new(z_colours)
+     case size(z_colours, /type) of
+        11: (*pdefs.data)[index].zopts.Colours = z_colours
+        7: begin
+           clist = gr_cont_col_get(z_colours)
+           if size(clist, /type) eq 7 then $
+              (*pdefs.data)[index].zopts.Colours = clist $
+           else begin
+              (*pdefs.data)[index].zopts.N_cols = 1
+              (*pdefs.data)[index].zopts.Colours = list(1)
+           endelse
+        end
+        else: (*pdefs.data)[index].zopts.Colours = $
+           list(z_colours,  /extr)
+     endcase
   endif
 
   if n_elements(z_ctable) ne 0 then $

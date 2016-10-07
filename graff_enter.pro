@@ -27,7 +27,14 @@
 ;				unsigned.
 ;	text		input	If set, then the values are text
 ;				strings (default action)
-;	format	string	input	The format for displaying the value.
+;	list		input	If set, then values will be returned
+;				as an IDL list. In this case
+;				pro_set_list and func_get_list must
+;				both also be set. (N.B. /LIST implies
+;				/ARRAY_VALUED).
+;	format	string	input	The format for displaying the
+;				value. (not used for LIST entries, see
+;				SET_LIST).
 ;	xsize	int	input	The size of the text input box (chars)
 ;	ysize	int	input	The number of rows in the box
 ;	column		input	If set then put the label above the
@@ -59,6 +66,12 @@
 ;				double box, then return a NaN value
 ;				for an empty box.
 ;	uname	string	input	A user-defined name for the widget.
+;	set_list string	input	A user defined function to specify how
+;				to convert the list to a string array.
+;	get_list string	input	A user defined function to convert a
+;				string array to a list.
+;	/sensitive	input	Set whether the widget is sensitive to
+;				inputs or not.
 ;
 ; Restrictions:
 ;	If the text window does not contain a valid value for the
@@ -68,6 +81,22 @@
 ; Notes:
 ;	If widget_control, id, set_value='LABEL:...' is used, then the
 ;	label is reset to the part of the string after "LABEL:".
+;
+; List values:
+;	A list-valued entry box is implicitly array valued. Each line
+;	of the text widget is converted to an element of the list. The
+;	formatting/decoding is done by the routines specified by the
+;	PRO_SET_LIST and FUNC_GET_LIST keywords.
+;	SET_LIST -- Takes a single LIST argument and returns a
+;                   string array. If it fails it should return a
+;                   numeric value. 0 is the normal soft fail
+;                   e.g. while the value is incomplete, non-zero is a
+;                   hard fail.
+;	GET_LIST -- Takes a single string array argument and returns a
+;                   list. If it fails it should return a numeric
+;                   value. 0 is the normal soft fail
+;                   e.g. while the value is incomplete, non-zero is a
+;                   hard fail.
 ;
 ; History:
 ;	Original: 25/8/95; SJT
@@ -84,6 +113,7 @@
 ;	Get/Set non-finite values as an empty field: 4/3/15; SJT
 ;	Few code modernizations, get rid of the no_copy's,
 ;	support 64-bit ints & unsigned: 4/10/16; SJT
+;	Add support for list-valued entries: 6/10/16; SJT
 ;-
 
 
@@ -108,7 +138,7 @@ pro Grf_set_enter, id, value
 
   on_ioerror, no_set
 
-  if (not state.array) then v1 = value[0]  $
+  if ~state.array then v1 = value[0]  $
   else v1 = value
 
   sv = size(v1[0], /type)
@@ -128,10 +158,18 @@ pro Grf_set_enter, id, value
      13: vv = ulong(v1)
      14: vv = long64(v1)
      15: vv = ulong64(v1)
+     11: begin
+        vv = call_function(state.set_list, v1)
+        if size(vv, /type) ne 7 then $
+           message, continue = vv eq 0, $
+                    "Unable to convert LIST to string array"
+     end
+           
      Else: message, 'Unknown entry field type'
   endcase else vv = v1
 
-  if state.type ne 7 &&  state.empty_nan && ~finite(vv) then $
+  if state.type ne 7 && state.type ne 11 && $
+     state.empty_nan && ~finite(vv) then $
      vv = '' $
   else vv = string(vv, format = state.format)
 
@@ -199,11 +237,17 @@ function Grf_get_enter, id
                     (strmid(txt(j), strlen(txt(j))-2, 2) eq '!!') $
         else ivv[*] = 1b
      end
-     
+     11: begin                  ; LIST
+        val = call_function(state.get_list, txt)
+        if size(val, /type) ne 11 then begin
+           if val ne 0 then message, "Invalid contents read"
+           return, 0
+        endif
+     end
      Else: message, 'Unknown entry field type'
   endcase
 
-  if state.type ne 7 then begin
+  if state.type ne 7 &&  state.type ne 11 then begin
      on_ioerror, badval
      for j = 0, nv0-1 do begin
         if state.empty_nan && txt[j] eq '' then begin
@@ -227,14 +271,17 @@ badval:
 ;	return a null string for numeric types and zero for text types
 ;	(this allows a test that the type is right to test if a proper
 ;	value is present!)
+;	For Lists, excluding invalid lines is the job of the decoder.
 
-  locs = where(ivv, nv)
-  if (nv gt 0) then val = val[locs] $
-  else if (state.type eq 7) then val = 0 $
-  else val = ''
+  if state.type ne 11 then begin
+     locs = where(ivv, nv)
+     if (nv gt 0) then val = val[locs] $
+     else if (state.type eq 7) then val = 0 $
+     else val = ''
 
-  if (nv eq 1) then val = val[0] ; Make single value a
+     if (nv eq 1) then val = val[0] ; Make single value a
                                 ; scalar
+  endif
 
   return, val
 
@@ -314,7 +361,9 @@ function Graff_enter, parent, label=label, value=value, uvalue=uvalue, $
                       tracking_events=tracking_events, $
                       array_valued=array_valued, scroll=scroll, $
                       capture_focus=capture_focus, graphics=graphics, $
-                      empty_nan = empty_nan
+                      empty_nan = empty_nan, list = list, $
+                      set_list = set_list, $
+                      get_list = get_list, sensitive = sensitive
 
                                 ; First step: check that unset keys
                                 ; are set to something if needed.
@@ -335,7 +384,9 @@ function Graff_enter, parent, label=label, value=value, uvalue=uvalue, $
 
                                 ; Set states according to the type
 
-;sv = size(value)
+  sl = ''
+  gl = ''
+
   if keyword_set(floating) then begin
      if ~keyword_set(format) then format = "(g10.3)"
      vtype = 4                  ; Use the codes from SIZE for
@@ -372,11 +423,31 @@ function Graff_enter, parent, label=label, value=value, uvalue=uvalue, $
         vtype = 14
         if n_elements(value) eq 0 then value = 0ll
      endelse
+  endif else if keyword_set(list) then begin
+     if ~keyword_set(set_list) || $
+        ~keyword_set(get_list) then message, $
+        "A LIST-valued entry requires both SET_LIST and " + $
+        "GET_LIST"
+     sl = set_list
+     gl = get_list
+     vtype = 11
+     if n_elements(value) eq 0 then value = list()
+     if keyword_set(format) then message, /continue, $
+                                          "FORMAT should not be " + $
+                                          "set for LIST entries"
+     format = "(a)"
   endif else begin              ; No key is the same as /text
      if ~keyword_set(format) then format = "(A)"
      vtype = 7
      if n_elements(value) eq 0 then value = ''
   endelse
+
+  if vtype ne 11 &&  (keyword_set(pro_set_list) || $
+                      keyword_set(func_get_list)) then $
+                         message, /continue, $
+                                  "SET_LIST and " + $
+                                  "GET_LIST are ignored " + $
+                                  "for non-list entries"
 
   return_nan = keyword_set(empty_nan) && $
      (vtype eq 4 || vtype eq 5) && $
@@ -429,9 +500,11 @@ function Graff_enter, parent, label=label, value=value, uvalue=uvalue, $
           Format: format, $
           Track:  track, $
           Select: keyword_set(select_events), $
-          Array:  keyword_set(array_valued), $
+          Array:  keyword_set(array_valued) || vtype eq 11, $
           Graph:  keyword_set(graphics) && (vtype eq 7), $
-          empty_nan: return_nan $
+          empty_nan: return_nan, $
+          set_list: sl, $
+          get_list: gl $
           }
 
   widget_control, base, set_uvalue = state
@@ -439,7 +512,8 @@ function Graff_enter, parent, label=label, value=value, uvalue=uvalue, $
   widget_control, tlb, event_func = 'grf_enter_ev', $
                   func_get_value = 'grf_get_enter', $
                   pro_set_value = 'grf_set_enter', $
-                  set_value = value
+                  set_value = value, $
+                  sensitive = sensitive
 
   return, tlb
 

@@ -72,8 +72,6 @@ Pro Gr_err_th, r, th, Low, High, Width=width, mode=mode, _extra=extra
 ;	Shorten name: 25/11/96; SJT
 ;-
 
-; on_error, 2                     ;Return to caller if an error occurs
-
 if (!X.type or !Y.type) then return ; r & theta errors not allowed in
                                 ; log plots.
 

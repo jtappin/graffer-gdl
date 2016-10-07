@@ -21,36 +21,67 @@ pro graff_get_rec, ilu, tag, value, tcode, ndims = ndims, dims = $
 ; History:
 ;	Original: 5/1/12; SJT
 ;	Add ndims, nvals and dims keywords: 9/1/12; SJT
+;	Support LIST values: 6/10/16; SJT
 ;-
 
-on_error, 2
-
 ; Initialize the tag header information
-tag = '   '
-tcode = 0l
-ndims = 0l
+  tag = '   '
+  tcode = 0l
+  ndims = 0l
 
-readu, ilu, tag, tcode, ndims
+  readu, ilu, tag, tcode, ndims
 
-if tcode eq 0 then return       ; A tag with no values
+  if tcode eq 0 then return     ; A tag with no values
 
-if ndims gt 0 then begin
-    dims = lonarr(ndims)
-    readu, ilu, dims
-endif else dims = 1
+  if ndims gt 0 then begin
+     if ndims eq 1 then dims = 0l $
+     else dims = lonarr(ndims)
+     readu, ilu, dims
+  endif else dims = 1
 
-value = make_array(dims, type = tcode)
-if arg_present(nvals) then nvals = n_elements(value)
+  if tcode ne 11 then begin
+     value = make_array(dims, type = tcode)
+     if arg_present(nvals) then nvals = n_elements(value)
 
-if tcode eq 7 then begin
-    lstr = lonarr(dims)
-    readu, ilu, lstr
-    for j = 0, n_elements(lstr)-1 do  $
-      if lstr[j] ne 0 then value[j] = string(replicate(32b, lstr[j]))
-endif
+     if tcode eq 7 then begin
+        lstr = lonarr(dims)
+        readu, ilu, lstr
+        for j = 0, n_elements(lstr)-1 do  $
+           if lstr[j] ne 0 then value[j] = string(replicate(32b, lstr[j]))
+     endif
 
-if ndims eq 0 then value = value[0]
+     if ndims eq 0 then value = value[0]
 
-readu, ilu, value
+     readu, ilu, value
+  endif else begin              ; LISTS need different handling
+     value = list()
+
+     for j = 0, dims-1 do begin
+        itcode = 0l
+        indims = 0l
+        readu, ilu, itcode, indims
+        if itcode eq 0 then begin
+           value.add, !null
+           continue
+        endif
+        if indims eq 0 then idims = 1 $
+        else begin
+           idims = lonarr(indims)
+           readu, ilu, idims
+        endelse
+
+        ivalue = make_array(idims, type = itcode)
+        if itcode eq 7 then begin
+           ilstr = lonarr(idims)
+           readu, ilu, ilstr
+           for k = 0, n_elements(ilstr)-1 do $
+              if ilstr[j] ne 0 then $
+                 ivalue[j] = string(replicate(32b, ilstr[j]))
+        endif
+        if indims eq 0 then ivalue = ivalue[0]
+        readu, ilu, ivalue
+        value.add, ivalue
+     endfor
+  endelse
 
 end

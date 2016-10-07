@@ -73,8 +73,6 @@ Pro Gr_err_x, X, Y, Low, High, Width = width, min_value = min_value, $
 ;	Support min & max values: 28/7/15; SJT
 ;-
 
-  on_error, 2                   ;Return to caller if an error occurs
-
   if (n_params() eq 4) then up = x+high $
   else up = x+low
   down = x-low

@@ -106,10 +106,11 @@ pro Gr_get_ds, data, nset, ilu, msgid
            'Y': data[nset].y_axis = gr_int_val(tag_val[itag+1], 1)
 
            'M': data[nset].mode = gr_int_val(tag_val(itag+1), 1)
-           'MN': data[nset].min_val = gr_dbl_val(tag_val[itag+1],1)
-           'MX': data[nset].max_val = gr_dbl_val(tag_val[itag+1],1)
+           'MN': data[nset].min_val = gr_dbl_val(tag_val[itag+1], 1)
+           'MX': data[nset].max_val = gr_dbl_val(tag_val[itag+1], 1)
 
-           'ZF':  data[nset].zopts.format = gr_int_val(tag_val(itag+1), 1)
+           'ZF':  data[nset].zopts.format = $
+              gr_int_val(tag_val(itag+1), 1)
            
            'ZNL': begin
               data[nset].zopts.n_levels = $
@@ -139,18 +140,33 @@ pro Gr_get_ds, data, nset, ilu, msgid
            end
            'ZC': if (cflag(1)) then begin
               cols = gr_int_val(tag_val(itag+1), data[nset].zopts.n_cols)
-              data[nset].zopts.colours = ptr_new(cols)
+              data[nset].zopts.colours = list(cols, /extr)
            endif else $
               graff_msg, msgid, "** W A R N I N G ** Contour colour " + $
                          "list given without count - ignored"
            'ZCL': if (cflag(1)) then begin
               cols = intarr(data[nset].zopts.n_cols)
               readf, ilu, cols
-              data[nset].zopts.colours = ptr_new(cols)
+              data[nset].zopts.colours = list(cols, /extr)
            endif else $
               graff_msg, msgid, "** W A R N I N G ** Contour colour " + $
                          "list given without count - ignored"
            
+           'ZCX': if cflag[1] then begin
+              nce = gr_int_val(tag_val(itag+1), $
+                               data[nset].zopts.n_cols)
+              cols = list()
+              for j = 0, data[nset].zopts.n_cols do begin
+                 if nce[j] eq 1 then cc = 0 $
+                 else cc = bytarr(nce)
+                 readf, ilu, cc
+                 cols.add, cc
+              endfor
+              data[nset].zopts.colours = cols
+           endif else $
+              graff_msg, msgid, "** W A R N I N G ** Contour colour " + $
+                         "list given without count - ignored"
+
            'ZCT': data[nset].zopts.ctable = $
               gr_int_val(tag_val[itag+1], 1)
 
@@ -200,7 +216,8 @@ pro Gr_get_ds, data, nset, ilu, msgid
               gr_flt_val(tag_val(itag+1), 1)
 
            'ZR': data[nset].zopts.range = gr_dbl_val(tag_val(itag+1), 2)
-           'ZP': data[nset].zopts.pxsize = gr_flt_val(tag_val(itag+1), 1)
+           'ZP': data[nset].zopts.pxsize = gr_flt_val(tag_val(itag+1), $
+                                                      1)
            'ZIL': data[nset].zopts.ilog = gr_byt_val(tag_val(itag+1), $
                                                      1)
            'ZIN': data[nset].zopts.invert = $

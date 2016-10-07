@@ -132,7 +132,7 @@ pro Gr_bin_ds_v3, data, nset, ilu, msgid, version
         'ZNC': data(nset).zopts.n_cols = gr_int_rd(ilu, 1)
         'ZC': begin
            cols = gr_int_rd(ilu, data(nset).zopts.n_cols)
-           data(nset).zopts.colours = ptr_new(cols)
+           data(nset).zopts.colours = list(cols, /extract)
         end
 
         'ZCT': data(nset).zopts.ctable = gr_int_rd(ilu, 1)

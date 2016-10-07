@@ -35,8 +35,6 @@ pro gr_coord_convert, x, y, xt, yt, data = data, normal = normal, $
 ;	Original: 13/1/12; SJT
 ;-
 
-on_error, 2
-
 ninput = keyword_set(data) + keyword_set(normal) + $
   keyword_set(region) + keyword_set(frame) + keyword_set(device)
 

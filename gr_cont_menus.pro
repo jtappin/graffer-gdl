@@ -14,7 +14,10 @@
 ;	Original (after gr_cont_menus): 13/12/11; SJT
 ;	Revert to original name: 5/1/12; SJT
 ;	Levels etc. become pointers: 11/1/12; SJT
+;	Make contour colours a LIST: 7/10/16; SJT
 ;-
+
+
 
 pro Cont_event, event
 
@@ -33,7 +36,8 @@ pro Cont_event, event
 
   case but of
      'CMODE': if (track_flag) then $
-        graff_msg, pdefs.ids.hlptxt, 'Toggle explicit/automatic contour levels' $
+        graff_msg, pdefs.ids.hlptxt, $
+                   'Toggle explicit/automatic contour levels' $
      else begin
         zopts.set_levels = event.index
         if (event.index eq 1) then begin
@@ -70,8 +74,8 @@ pro Cont_event, event
         graff_msg, pdefs.ids.hlptxt, 'Set contour colours' $
      else begin
         widget_control, event.id, get_value = col
-        if ptr_valid(zopts.colours) then ptr_free, zopts.colours
-        zopts.colours = ptr_new(col)
+        if obj_valid(zopts.colours) then obj_destroy, zopts.colours
+        zopts.colours = col
         zopts.n_cols = n_elements(col)
      endelse
      
@@ -141,7 +145,7 @@ fflag = 0b
 zopts = (*pdefs.data)[i].zopts
 if (zopts.n_cols eq 0) then begin
     zopts.n_cols = 1
-    zopts.colours = ptr_new(1)
+    zopts.colours = list(1)
     fflag = 1b
 endif
 if (zopts.n_thick eq 0) then begin
@@ -189,23 +193,6 @@ widget_control, pdefs.ids.zopts.c_auto, set_droplist_select = iexpl
 if (iexpl and ptr_valid(zopts.levels)) then l0 = *(zopts.levels)  $
 else l0 = 0.d0
 
-pdefs.ids.zopts.c_levels = graff_enter(jb, $
-                                       /double, $
-                                       /array, $
-                                       /track, $
-                                       uvalue = 'LEVEL', $
-                                       value = l0, $
-                                       format = "(g11.4)", $
-                                       xsize = 10, $
-                                       ysize = 7, $
- ;                                      /scroll, $
-                                       /column, $
-                                       label = 'Levels', $
-                                       /capture, $
-                                       /all_events)
-
-widget_control, pdefs.ids.zopts.c_levels, sensitive = iexpl
-
 pdefs.ids.zopts.c_nlevels = cw_spin_box(jb, $
                                         /int, $
                                         /track, $
@@ -216,9 +203,24 @@ pdefs.ids.zopts.c_nlevels = cw_spin_box(jb, $
                                         label = '# Levels', $
                                         /capture, $
                                         /all_events, $
-                                        min = 0)
+                                        min = 0, $
+                                        sensitive = iexpl eq 0)
 
-widget_control, pdefs.ids.zopts.c_nlevels, sensitive = iexpl eq 0
+pdefs.ids.zopts.c_levels = graff_enter(jb, $
+                                       /double, $
+                                       /array, $
+                                       /track, $
+                                       uvalue = 'LEVEL', $
+                                       value = l0, $
+                                       format = "(g11.4)", $
+                                       xsize = 10, $
+                                       ysize = 6, $
+ ;                                      /scroll, $
+                                       /column, $
+                                       label = 'Levels', $
+                                       /capture, $
+                                       /all_events, $
+                                       sensitive = iexpl)
 
 
 jbx = widget_base(obase, $
@@ -235,35 +237,27 @@ pdefs.ids.zopts.c_type = widget_droplist(jbx, $
                                          /track)
 widget_control, pdefs.ids.zopts.c_type, set_droplist_select = zopts.fill
 
+pdefs.ids.zopts.c_colour = graff_enter(jbx, $
+                                       /list, $
+                                       /track, $
+                                       uvalue = 'COLOUR', $
+                                       /capture, $
+                                       value = zopts.colours, $
+                                       xsize = 16, $
+                                       ysize = 4, $
+                                       /column, $
+                                       label = 'Colours', $
+                                       /all_events, $
+                                       set_list = 'gr_cont_col_set', $
+                                       get_list = 'gr_cont_col_get')
+
 jby = widget_base(jbx, $
                   /row, $
                   xpad = 0, $
                   ypad = 0, $
                   space = 0)
 
-jb = widget_base(jby, $
-                 /column, $
-                 xpad = 0, $
-                 ypad = 0, $
-                 space = 0)
-
-pdefs.ids.zopts.c_colour = graff_enter(jb, $
-                                       /int, $
-                                       /array, $
-                                       /track, $
-                                       uvalue = 'COLOUR', $
-                                       /capture, $
-                                       value = *(zopts.colours), $
-                                       format = "(i0)", $
-                                       xsize = 6, $
-                                       ysize = 5, $
-;                                       /scroll, $
-                                       /column, $
-                                       label = 'Colours', $
-                                       /all_events)
-
-
-pdefs.ids.zopts.c_thick = graff_enter(jb, $
+pdefs.ids.zopts.c_thick = graff_enter(jby, $
                                       /float, $ 
                                       format = "(f6.1)", $
                                       /array, $
@@ -271,20 +265,13 @@ pdefs.ids.zopts.c_thick = graff_enter(jb, $
                                       uvalue = 'THICK', $
                                       /capture, $
                                       value = *(zopts.thick), $ 
-                                      xsize = 6, $
-                                      ysize = 5, $
+                                      xsize = 8, $
+                                      ysize = 4, $
 ;                                      /scroll, $
                                       /column, $
                                       label = 'Thicknesses', $
                                       /all_events)
-
-jb = widget_base(jby, $
-                 /column, $
-                 xpad = 0, $
-                 ypad = 0, $
-                 space = 0)
-
-pdefs.ids.zopts.c_style = graff_enter(jb, $
+pdefs.ids.zopts.c_style = graff_enter(jby, $
                                       /int, $
                                       /array, $
                                       /track, $
@@ -292,15 +279,23 @@ pdefs.ids.zopts.c_style = graff_enter(jb, $
                                       /capture, $
                                       value = *(zopts.style), $
                                       format = "(I0)", $
-                                      xsize = 6, $
-                                      ysize = 5, $
+                                      xsize = 8, $
+                                      ysize = 4, $
 ;                                      /scroll, $
                                       /column, $
                                       label = 'Styles', $
                                       /all_events)
+jby = widget_base(base, $
+                 /row, $
+                 xpad = 0, $
+                 ypad = 0, $
+                 space = 0)
 
 
-pdefs.ids.zopts.c_label = cw_spin_box(jb, $
+
+
+
+pdefs.ids.zopts.c_label = cw_spin_box(jby, $
                                       /int, $
                                       /track, $
                                       uvalue = 'LABEL',  $
@@ -315,7 +310,7 @@ pdefs.ids.zopts.c_label = cw_spin_box(jb, $
 
 
 
-pdefs.ids.zopts.c_charsize = cw_spin_box(jb, $
+pdefs.ids.zopts.c_charsize = cw_spin_box(jby, $
                                          /float, $
                                          /track, $
                                          uvalue = 'CCSIZE', $
@@ -327,8 +322,8 @@ pdefs.ids.zopts.c_charsize = cw_spin_box(jb, $
                                          /column, $
                                          /all_events, $
                                          step = 0.1, $
-                                         min = 0.)
-widget_control, pdefs.ids.zopts.c_charsize, $
-                sensitive = zopts.label ne 0
+                                         min = 0., $
+                                        sensitive = zopts.label ne 0)
+
 end
 

@@ -17,65 +17,66 @@
 
 pro Graff_dsdel, pdefs
 
-cdesc = (*pdefs.data)[pdefs.cset].descript
+  cdesc = (*pdefs.data)[pdefs.cset].descript
 
-if (pdefs.nsets gt 1) then begin
-    msg = ['Do you really want to', $
-           'delete the current', $
-           'data set containing', $
-           cdesc]
-    ans = dialog_message(msg, /question, $
-                         dialog_parent = pdefs.ids.graffer, resource = $
-                         'Graffer')
-    if ans eq 'No' then return
-endif else begin
-    msg = ["Can't delete the only", $
-           "data set present"]
-    ans = dialog_message(msg, dialog_parent = pdefs.ids.graffer, $
-                         resource = 'Graffer')
-    return
-endelse
+  if (pdefs.nsets gt 1) then begin
+     msg = ['Do you really want to', $
+            'delete the current', $
+            'data set containing', $
+            cdesc]
+     ans = dialog_message(msg, /question, $
+                          dialog_parent = pdefs.ids.graffer, resource $
+                          = $
+                          'Graffer')
+     if ans eq 'No' then return
+  endif else begin
+     msg = ["Can't delete the only", $
+            "data set present"]
+     ans = dialog_message(msg, dialog_parent = pdefs.ids.graffer, $
+                          resource = 'Graffer')
+     return
+  endelse
 
-if (*pdefs.data)[pdefs.cset].type eq 9 then $
-  ptr_free, (*(*pdefs.data)[pdefs.cset].xydata).x, $
-            (*(*pdefs.data)[pdefs.cset].xydata).y, $
-            (*(*pdefs.data)[pdefs.cset].xydata).z
+  if (*pdefs.data)[pdefs.cset].type eq 9 then $
+     ptr_free, (*(*pdefs.data)[pdefs.cset].xydata).x, $
+               (*(*pdefs.data)[pdefs.cset].xydata).y, $
+               (*(*pdefs.data)[pdefs.cset].xydata).z
 
-ptr_free, (*pdefs.data)[pdefs.cset].xydata
+  ptr_free, (*pdefs.data)[pdefs.cset].xydata
 
-ptr_free, (*pdefs.data)[pdefs.cset].zopts.levels, $
-  (*pdefs.data)[pdefs.cset].zopts.style, $
-  (*pdefs.data)[pdefs.cset].zopts.thick, $
-  (*pdefs.data)[pdefs.cset].zopts.colours
+  ptr_free, (*pdefs.data)[pdefs.cset].zopts.levels, $
+            (*pdefs.data)[pdefs.cset].zopts.style, $
+            (*pdefs.data)[pdefs.cset].zopts.thick
+  obj_destroy, (*pdefs.data)[pdefs.cset].zopts.colours
 
-if ptr_valid(pdefs.key.list) then list = *pdefs.key.list
-ikey = bytarr(n_elements((*pdefs.data)))
+  if ptr_valid(pdefs.key.list) then list = *pdefs.key.list
+  ikey = bytarr(n_elements((*pdefs.data)))
 
-if (n_elements(list) ne 0) then ikey(list) = 1b
+  if (n_elements(list) ne 0) then ikey(list) = 1b
 
-if (pdefs.cset eq 0) then begin
-    *pdefs.data = (*pdefs.data)(1:*)
-    ikey = ikey(1:*)
-endif else if (pdefs.cset eq pdefs.nsets-1) then begin
-    *pdefs.data = (*pdefs.data)(0:pdefs.cset-1)
-    ikey = ikey(0:pdefs.cset-1)
-endif else begin
-    (*pdefs.data) = [(*pdefs.data)(0:Pdefs.cset-1), $
-                     (*pdefs.data)(Pdefs.cset+1:*)]
-    ikey = [ikey(0:Pdefs.cset-1), ikey(Pdefs.cset+1:*)]
-endelse
-list = where(ikey, nkey)
+  if (pdefs.cset eq 0) then begin
+     *pdefs.data = (*pdefs.data)(1:*)
+     ikey = ikey(1:*)
+  endif else if (pdefs.cset eq pdefs.nsets-1) then begin
+     *pdefs.data = (*pdefs.data)(0:pdefs.cset-1)
+     ikey = ikey(0:pdefs.cset-1)
+  endif else begin
+     (*pdefs.data) = [(*pdefs.data)(0:Pdefs.cset-1), $
+                      (*pdefs.data)(Pdefs.cset+1:*)]
+     ikey = [ikey(0:Pdefs.cset-1), ikey(Pdefs.cset+1:*)]
+  endelse
+  list = where(ikey, nkey)
 
-if (nkey ne 0) then *pdefs.key.list = list $
-else begin
-    ptr_free, pdefs.key.list
-    pdefs.key.use = 0b
-endelse
+  if (nkey ne 0) then *pdefs.key.list = list $
+  else begin
+     ptr_free, pdefs.key.list
+     pdefs.key.use = 0b
+  endelse
 
 
-pdefs.nsets = pdefs.nsets-1
-pdefs.cset = pdefs.cset < (pdefs.nsets-1)
+  pdefs.nsets = pdefs.nsets-1
+  pdefs.cset = pdefs.cset < (pdefs.nsets-1)
 
-graff_set_vals, pdefs, /set_only
+  graff_set_vals, pdefs, /set_only
 
 end

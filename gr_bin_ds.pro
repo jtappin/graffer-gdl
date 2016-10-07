@@ -130,7 +130,8 @@ pro Gr_bin_ds, data, nset, ilu, msgid
         end
 
         'ZC': begin
-           data[nset].zopts.colours = ptr_new(fix(value))
+           if tcode eq 11 then data[nset].zopts.colours = value $
+           else data[nset].zopts.colours = list(fix(value), /extract)
            data[nset].zopts.n_cols = nvals
         end
 

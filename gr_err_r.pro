@@ -72,8 +72,6 @@ Pro Gr_err_r, r, th, Low, High, Width=width, mode=mode, _extra=extra
 ;	Shorten name: 25/11/96; SJT
 ;-
 
-; on_error, 2                     ;Return to caller if an error occurs
-
 if (!x.type or !y.type) then return
 
 if (n_params() eq 4) then up = r+high $

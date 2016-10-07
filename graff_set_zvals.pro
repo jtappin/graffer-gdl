@@ -20,7 +20,7 @@ pro graff_set_zvals, pdefs
   fflag = 0b
   if (zopts.n_cols eq 0) then begin
      zopts.n_cols = 1
-     zopts.colours = ptr_new(1)
+     zopts.colours = list(1)
      fflag = 1b
   endif
   if (zopts.n_thick eq 0) then begin
@@ -59,7 +59,7 @@ pro graff_set_zvals, pdefs
   widget_control, zids.c_nlevels, set_value = zopts.n_levels, $
                   sensitive = ~iexpl
 
-  widget_control, zids.c_colour, set_value = *(zopts.colours)
+  widget_control, zids.c_colour, set_value = zopts.colours
   widget_control, zids.c_thick, set_value = *(zopts.thick)
   widget_control, zids.c_style, set_value = *(zopts.style)
 

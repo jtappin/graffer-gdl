@@ -113,7 +113,7 @@ if (pdefs.cset eq pdefs.nsets) then begin ; Need to extend the data
 
     (*pdefs.data)[pdefs.cset].zopts.N_levels =  6
     (*pdefs.data)[pdefs.cset].zopts.N_cols =    1
-    (*pdefs.data)[pdefs.cset].zopts.Colours =   ptr_new(1)
+    (*pdefs.data)[pdefs.cset].zopts.Colours =   list(1)
     (*pdefs.data)[pdefs.cset].zopts.N_sty =     1
     (*pdefs.data)[pdefs.cset].zopts.style = ptr_new(0)
     (*pdefs.data)[pdefs.cset].zopts.N_thick =   1

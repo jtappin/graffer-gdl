@@ -247,6 +247,8 @@
 ;                     - Add support for PDF output generation.
 ;                     - replace 3 different local pulldowns with a
 ;                       single cw_pdmeu_plus routine.
+;                     - Make the contour colours into a LIST so that
+;                       custom colours can be used.
 ;-
 
 

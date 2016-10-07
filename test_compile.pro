@@ -2,6 +2,8 @@ print, 'aspect.pro'
 .r aspect
 print, 'cw_pdmenu_plus.pro'
 .r cw_pdmenu_plus
+print, 'cw_spin_box.pro'
+.r cw_spin_box
 print, 'fractile.pro'
 .r fractile
 print, 'gr_1dd_plot.pro'

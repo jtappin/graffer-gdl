@@ -30,13 +30,13 @@
 
 \title{\includegraphics[width=0.80\textwidth]{logo} \\
 A Flexible Electronic Graph Paper\\
-Version 4.08\\
+Version 4.09\\
 File Format Description}
 
 \author{\textsf{\textbf{\Large James Tappin}}\\
 \texttt{\textbf{\Large james.tappin@stfc.ac.uk}}}
 
-\date{\textsf{\textbf{\large Sep.\ 2016}}}
+\date{\textsf{\textbf{\large Oct.\ 2016}}}
 
 \maketitle
 
@@ -152,13 +152,25 @@ ordering).
     \hline
     TAG & Str*3 & 1 & The field identification tag \\
     TYPE & Long & 1 & The type code as returned by IDL's \texttt{SIZE}
-    function.\\
+    function. TYPE=11, implies a LIST object, any other sort of object
+    is an error.\\
     NDIMS & Long & 1 & How many dimensions, 0 for a scalar.\\
     DIMS & Long & NDIMS & The size of the dimensions (not present when
     NDIMS=0).\\
     LENS & Long & NVALS & The lengths of strings. NVALS = PRODUCT(DIMS)
     or 1 for a scalar. Not present if TYPE is not 7 (string).\\
-    DATA & TYPE & NVALS & The actual values.\\
+    DATA & TYPE & NVALS & The actual values. For list types (TYPE=11)
+    see below for the storage of list elements.\\
+    \hline
+    ETYPE & Long & 1 & The type of the list element. Note that lists of
+    lists are not allowed.\\
+    ENDIMS & Long & 1 & The number of dimensions  in the list
+    element.\\
+    EDIMS &  Long & ENDIMS & The size of the dimensions (not present if
+    ENDIMS=0).\\
+    ELENS & Long & ENVALS & The lengths of the strings if the element
+    is of string type. ENVALS=PRODUCT(EDIMS) or 1.\\
+    EDATA & TYPE & ENVALS & The actual values in the element.\\
     \hline
   \end{tabular}
   \caption{The subfields of a Graffer~V4 record.}
@@ -424,13 +436,21 @@ These tags define a specific dataset within the plot.
   ZLL & Null & 0 & Indicates that the contour levels follow on multiple
   lines. Only used in V4 ASCII files when ZNL is more than 5.\\
   ZNC& Int& 1&
-  Number of colours to use for coloured contouring (Not present in V4).\\
-  ZC& Int& <ZNC>&
-  The colour indices to use.\\
+  Number of colours to use for coloured contouring (Not present in V4
+  binary files).\\
+  ZC& List & <ZNC>&
+  The colour indices to use. List elements are either integers or
+  3-element byte arrays. From V4.09, this is not used in ASCII files,
+  but can still be read.\\
   ZCL & Null & 0 & Indicates that the colours follow on multiple
-  lines. Only used in V4 ASCII files when ZNC is more than 20.\\
+  lines. Only used in V4 ASCII files when ZNC is more than 20. No
+  longer used as of V4.09 but can still be read.\\
+  ZCX & Int & <ZNC> & In ASCII files in V4.09 and above, the value
+  gives the number of elements in each colour value. The values then
+  follow, one colour per line on the remainaing <ZNC> lines. \\
   ZNT& Int & 1&
-  The number of line thicknesses to use in contouring (Not present in V4).\\
+  The number of line thicknesses to use in contouring (Not present in
+  V4 binary files).\\
   ZT& Float& <ZNT>&
   The line thicknesses to use.\\
   ZTL & Null & 0 & Indicates that the thicknesses follow on multiple

@@ -470,10 +470,23 @@ pro Graff_add, file, a1, a2, a3, errors = errors, $
 
      if n_elements(z_colours) gt 0 then begin
         (*pdefs.data)[pdefs.cset].zopts.N_cols = n_elements(z_colours)
-        (*pdefs.data)[pdefs.cset].zopts.Colours = ptr_new(z_colours)
+        case size(z_colours, /type) of
+           11: (*pdefs.data)[pdefs.cset].zopts.Colours = z_colours
+           7: begin
+              clist = gr_cont_col_get(z_colours)
+              if size(clist, /type) eq 7 then $
+                 (*pdefs.data)[pdefs.cset].zopts.Colours = clist $
+              else begin
+                 (*pdefs.data)[pdefs.cset].zopts.N_cols = 1
+                 (*pdefs.data)[pdefs.cset].zopts.Colours = list(1)
+              endelse
+           end
+           else: (*pdefs.data)[pdefs.cset].zopts.Colours = $
+              list(z_colours,  /extr)
+        endcase
      endif else begin
         (*pdefs.data)[pdefs.cset].zopts.N_cols = 1
-        (*pdefs.data)[pdefs.cset].zopts.Colours = ptr_new(1)
+        (*pdefs.data)[pdefs.cset].zopts.Colours = list(1)
      endelse
 
      if n_elements(z_ctable) ne 0 then $

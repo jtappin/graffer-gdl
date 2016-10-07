@@ -28,7 +28,7 @@ function gr_new_ds, pdefs, nds
   ds[*].Thick =    1.
   ds[*].Zopts.N_levels = 6
   ds[*].Zopts.N_cols =  1
-  ds[*].Zopts.Colours = ptr_new(1)
+  ds[*].Zopts.Colours = list(1)
   ds[*].Zopts.N_sty = 1
   ds[*].Zopts.style = ptr_new(0)
   ds[*].Zopts.N_thick =  1
