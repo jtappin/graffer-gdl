@@ -1129,26 +1129,6 @@ window. Note that these options are identical for functions and for
 observational data.
 
 \begin{description}
-\item [Symbol:]The symbol to use for plotting the points. The pull down
-  menu has images of the symbols, and displays the current one on the
-  undisturbed button. The default is a continuous plot. There are now
-  several extra symbols beyond the default IDL symbol set.
-\item [Join:]Set the type of line to join the points. This can be
-  straight lines joining the points, a histogram type line or no line
-  at all.  Note that no symbol and no line is allowed and will result
-  in the trace becoming invisible.
-\item [Size:]The size to use for the plotting symbols as a multiple of
-  the default size. This is ignored for continuous or histogram plots.
-  Any floating point value is accepted. The symbol size also determines
-  the length of the caps on error bars.
-\item [Line~style:]Line style to use for continuous plots, ignored for
-  discrete symbols. The pull down menu shows the available
-  styles. Error bars are always drawn with solid lines.
-\item [Line~thickness:]The width of the line in terms of the basic line
-  width. Enter any real value ($>0. \& \leq100.$) to set the width. This is used
-  both for continuous plots and for discrete symbols. Note that at
-  least on the printers I use, there is very little visible difference
-  between a thickness of 1 and of 2.
 \item [Colour:]The colour is set via a pulldown. Most colours have
   names, but some for which I couldn't think of a description are given
   as an RGB triple. There is a difference between \texttt{omit} and
@@ -1156,7 +1136,29 @@ observational data.
   all; in the second, it is drawn in the background colour which will
   overwrite earlier traces and also take time. If ``Custom'' is
   selected, then a pop-up menu allows you to define a colour using
-  sliders or entry boxes.
+  sliders or entry boxes.  The selected colour is shown in the
+  window beside the pulldown.
+\item [Join:]Set the type of line to join the points. This can be
+  straight lines joining the points, a histogram type line or no line
+  at all.  Note that no symbol and no line is allowed and will result
+  in the trace becoming invisible.
+\item [Line~style:]Line style to use for continuous plots, ignored for
+  discrete symbols. The pull down menu shows the available
+  styles. Error bars are always drawn with solid lines. This option is
+  unavailable if \texttt{join} is set to none.
+\item [Symbol:]The symbol to use for plotting the points. The pull down
+  menu has images of the symbols, and displays the current one on the
+  undisturbed button. The default is a continuous plot. There are 
+  several extra symbols beyond the default IDL symbol set.
+\item [Size:]The size to use for the plotting symbols as a multiple of
+  the default size. This is ignored for continuous or histogram plots.
+  Any floating point value is accepted. The symbol size also determines
+  the length of the caps on error bars.
+\item [Line~thickness:]The width of the line in terms of the basic line
+  width. Enter any real value ($>0. \& \leq100.$) to set the width. This is used
+  both for continuous plots and for discrete symbols. Note that at
+  least on the printers I use, there is very little visible difference
+  between a thickness of 1 and of 2.
 \item [Coordinates:]The pull down allows you to select one of three
   coordinate systems:
 
@@ -1189,6 +1191,10 @@ observational data.
     \texttt{Mouse editing} option to allow the current dataset to be
     changed with the mouse.
   \end{description}
+\item[Min Value, Max Value:] These allow you to set minimum and
+  maximum values to be plotted from a dataset (also sets the bounds
+  for the dataset's contribution to autoscaling). These are both
+  disabled for functions.
 \end{description}
 
 \subsubsection{2-Dimensional data}
@@ -1200,8 +1206,7 @@ a single button which allows you to toggle between contours and an
 to set the detailed options.
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=0.4\textwidth]{main-ds3a}~\includegraphics[width=0.4\textwidth]{main-ds2}
-  % \includegraphics{contour}
+  \includegraphics[width=0.4\textwidth]{main_ds_cn}~\includegraphics[width=0.4\textwidth]{main_ds_cl}
   \caption{The datasets panel with (left) contouring options and
     (right) colour/greyscale options shown.}
   \label{contour}
@@ -1224,11 +1229,12 @@ to set the detailed options.
     the levels box and enable the \texttt{\# Levels} box in which you
     can enter how many contour levels you want. This doesn't use IDL's
     internal level setting routines as they do not allow all of the
-    other options, so it is done by GRAFFER\footnote{For real enthusiasts, the levels are determined as
-      \texttt{levels = rg {*} (findgen(nl)+.5)/nl + mn} where
-      \texttt{rg} is the range of the data (ignoring infinities \&
-      NaNs), \texttt{mn} is the smallest value in the data and
-      \texttt{nl} is the number of levels.}.
+    other options, so it is done by GRAFFER\footnote{For real
+      enthusiasts, the levels are determined as \texttt{levels = rg
+        {*} (findgen(nl)+.5)/nl + mn} where \texttt{rg} is the range
+      of the data (ignoring infinities \& NaNs), \texttt{mn} is the
+      smallest value in the data and \texttt{nl} is the number of
+      levels.}.
 
   \item [Colours:]Specify the colours of the colour lines (or fill if
     requested).  Unlike the colour settings for line plots, these are
@@ -1274,9 +1280,11 @@ to set the detailed options.
         \end{tabular}
       \end{center}
     \end{table}
-    \textsc{\autoref{col_index}}. If the number of colour indices given
-    is less than the number of levels plotted, then the indices are
-    recycled.
+    \textsc{\autoref{col_index}}. Alternatively colours may be gicen
+    as a RGB triple, as 3 numbers on the line.
+
+    If the number of colour indices given is less than the number of
+    levels plotted, then the indices are recycled.
   \item [Thickness:]Specify line thicknesses for the contours.
   \item [Styles:]Specify the linestyles for the contour lines. These
     are the standard IDL linestyles, described in the PLOT keywords
@@ -1285,14 +1293,6 @@ to set the detailed options.
     contours.  With a suitable selection of colours this can be a very
     effective way of displaying data but for large datasets it is slow.
 
-\begin{quote}
-  \textsf{\textbf{HINT:}} \textsf{There is a dirty way to get a
-    {}``Stepped greyscale'' effect. Firstly ensure you have the
-    greyscale colour table loaded by GRAFFER (this is not the same
-    thing as using LOADCT, 0; display the data in {}``Image'' format
-    and select the grey table there) and then use colour indices
-    selected in the range 16-143.}
-\end{quote}
 \item [Labelling:]IDL allows the labelling of selected
   contours. GRAFFER doesn't allow the full functionality but allows you
   to label every $n^{\mathrm{th}}$ contour. Specifying 0 means don't
@@ -1659,7 +1659,7 @@ the pointer. Both the edit and delete operations have a maximum
 distance of 5 pixels.
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=12cm]{Text}
+  \includegraphics[width=12cm]{text}
   \caption{The text input/editing menu of GRAFFER.}
   \label{text panel}
 \end{figure}
@@ -1679,14 +1679,15 @@ accomplished via the same text input pop-up (\textsc{\autoref{text
   printed on a hard copy, nor is it displayed while editing the
   text. Also, text items after the current one may not appear while
   editing is in progress.
+\item[ID:] An identification string, mainly for use by the
+  programmatic tools.
 \item [Character~Size:]Enter a floating-point value to give the
   character size in terms of the default value. When hard copies are
   made, the size is adjusted to give the same number of characters
   across the page as were on the screen.
 \item [Colour:]The colour of the text, the pulldown has the same
   colours as for plot traces, except that there is no option to omit
-  the text entirely. In the figure the ``alternate'' colour pixmap
-  selector is enabled. Custom colours can be defined in the same way
+  the text entirely. Custom colours can be defined in the same way
   as for plots.
 \item [Thickness:]Enter a real value to specify the line thickness
   to be used for the character drawing. This should be used with
@@ -2591,6 +2592,166 @@ graff_get_data, file[, index, <extraction keys>]
 \item[\texttt{yerr} \textit{double}] A variable to contain the Y
   errors.
 \end{description}
+
+\section{GRAFF\_INFO}
+\label{sec:graff_info}
+
+ 
+	User-callable interface to retrieve global properties of a graffer
+	file.
+
+ \subsection{Usage:}
+ \label{sec:gi-usage}
+
+ 
+\begin{verbatim}
+graff_info, file, nsets = nsets,  title = title, $
+       subtitle = subtitle, charsize = charsize, $
+       thick = thick, corners = corners, $
+       aspect = aspect, comment = comment, xtitle = xtitle, $
+       xrange = xrange, xlog = xlog, xexact = xexact, $
+       xextend = xextend, xaxes = xaxes, xbox = xbox, $
+       xminor = xminor, xtime = xtime, xorigin = xorigin, $
+       xgrid = xgrid, xannotate = xannotate, $
+       xmajor = xmajor, xtickv = xtickv, xstyle = xstyle, $
+       ytitle = ytitle, yrange = yrange, ylog = ylog, $
+       yexact = yexact, yextend = yextend, yaxes = yaxes, $
+       ybox = ybox, yminor = yminor, ytime = ytime, $
+       yorigin = yorigin, ygrid = ygrid, $
+       yannotate = yannotate, ymajor = ymajor, $
+       ytickv = ytickv, ystyle = ystyle, $
+       yr_enable = yr_enable, yrtitle = yrtitle, $
+       yrmajor = yrmajor, yrtickv = yrtickv, $
+       yrstyle = yrstyle, yrrange = yrrange, yrlog = yrlog, $
+       yrexact = yrexact, yrextend = yrextend, $
+       yraxes = yraxes, yrminor = yrminor, yrtime = yrtime, $
+       yrorigin = yrorigin, yrgrid = yrgrid, $
+       yrannotate = yrannotate, $
+       h_orient = h_orient, h_colour = h_colour, $
+       h_eps = h_eps, h_xsize = h_xsize, $
+       h_ysize = h_ysize, h_xmargin = h_xmargin, $
+       h_ymargin = h_ymargin, isotropic = isotropic, $
+       h_cmyk =  h_cmyk, ctable = ctable, $
+       h_print = h_print, h_viewer = h_viewer, $
+       h_pdfviewer = h_pdfviewer, $
+       h_file = h_file
+\end{verbatim}
+
+ \subsection{Argument:}
+ \label{sec:gi-arg}
+
+ 
+ \begin{description}
+ \item[\texttt{file} \textit{string}] The graffer file to query.
+ \end{description}
+
+ \subsection{Keywords:}
+ \label{sec:gi_keys}
+
+ \begin{description}
+   \item[\texttt{nsets}]	Get the number of datasets in the file
+   \item[\texttt{title}]	Get the plot title.
+   \item[\texttt{subtitle}]	Get the subtitle for the plot.
+   \item[\texttt{charsize}]	Get the character size to be used for
+     axis labelling and plot annotations.
+   \item[\texttt{thick}]	Get the line thickness to be used for
+     drawing the axes.
+   \item[\texttt{corners}]	Get the location of the plot in
+     normalized coordinates by specifying
+     the locations of the corners
+     (4-element array [x0,y0, x1,y1])
+     \item[\texttt{aspect}]	Get the location of the plot within
+       the normalized coordinate system by
+       aspect ratio and margin (2-element
+       array [aspect, margin]
+       N.B. Specifying both ASPECT \&
+       CORNERS is an error and the
+       plot location is unchanged.
+     \item[\texttt{isotropic}]	Get the plot to use isotropic
+       coordinates.
+     \item[\texttt{comment}]	Get a descriptive comment for the
+       whole file. (String array)
+     \item[\texttt{[xyyr]title}]	Get the title for the specified axis.
+     \item[\texttt{[xyyr]range}]	Get the range of the specified axis
+       (2-element array).
+     \item[\texttt{[xyyr]log}]	Get  the use of logarithmic
+       axes.
+     \item[\texttt{[xyyr]exact}]	Get  the exact range bit of
+       the IDL axis style setting
+     \item[\texttt{[xyyr]extend}]	Get  the extended range bit of
+       the IDL axis style setting
+     \item[\texttt{[xyyr]axes}]	Get  the axis plotting bit of
+       the IDL axis style setting.
+     \item[\texttt{[xy]box}]	Get  the "box-axis" bit in the
+       IDL axis style setting
+     \item[\texttt{[xyyr]style}]	Get the IDL axis style parameter.
+     \item[\texttt{[xyyr]minor}]	If set, then display minor ticks on
+       the plot; if explicitly zero, then
+       turn off the minor ticks. If a
+       non-unit value then set the number of
+       minor intervals to that.
+     \item[\texttt{[xyyr]major}]	Get the number of major intervals.
+     \item[\texttt{[xyyr]tickv}]	Get explicit tick locations. Set to a
+       scalar value, or set [xyyr]major without
+       setting this key to revert to automatic.
+     \item[\texttt{[xyyr]time}]	Will return a 
+       structure with the following members:
+       \begin{description}
+       \item[set:] Whether time labeling is set.
+
+       \item [unit:] 
+         \begin{itemize}
+         \item 0 == seconds
+         \item 1 == minutes
+         \item 2 == hours
+         \item 3 == days
+         \end{itemize}
+       Gives the unit in which the
+       time is expressed in the axis data.
+
+     \item [max\_unit:] gives the largest unit to
+       display on the plot (same code as
+       for unit)
+
+     \item [zero:] gives the value to be used for
+       the zero of the axis (expressed in
+       units of  max\_unit	
+     \end{description}
+   \item[\texttt{[xyyr]origin}]	If set, then plot an axis at the origin.
+   \item[\texttt{[xyyr]grid}]   Make a grid from the major ticks,
+     using linestyle n-1 (0 == no grid).
+   \item[\texttt{[xyyr]annotate}]	Get this explicity to zero to suppress
+     annotations on the axis
+   \item[\texttt{yr\_enable}]	If set, then enable the secondary Y-axis.
+   \item[\texttt{h\_orient}]	Get landscape(0) or portrait (1)
+     orientation of the page.
+   \item[\texttt{h\_colour}]	Get  the generation of a
+     colour (E)PS file.
+   \item[\texttt{h\_cmyk}]	Get  the use of the CMYK model
+     for (E)PS files. Specifying this
+     keyword will force colour (E)PS.
+   \item[\texttt{h\_eps}]	Get  the generation of EPS
+     file rather than PS (N.B. if h\_eps is
+     set and h\_orient is not specified,
+     then h\_orient=1 is implied).
+   \item[\texttt{h\_[xy]size}]	Get the X(Y) dimension of the page in cm
+   \item[\texttt{h\_[xy]margin}]	Get the X(Y) offset of the page from
+     the lower-left corner of the page.
+   \item[\texttt{ctable}]	Get the default colour table for image display.
+   \item[\texttt{h\_print}]	Specify the command to print PS output
+     files (can be a scalar or 2-element aray).
+   \item[\texttt{h\_viewer}]	Specify the command to view EPS output
+     files (can be a scalar or 2-element aray).
+   \item[\texttt{h\_pdfviewer}]	Specify the command to view PDF output
+     files (can be a scalar or 2-element aray).
+   \item[\texttt{h\_file}]	Specify the output file for hardcopies.
+ \end{description}
+				
+ \subsection{Restrictions:}
+ \label{sec:gi-restrictions}
+
+ 
+ 	Some settings may not return meaningful values for all files
 
 
 
