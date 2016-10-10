@@ -65,7 +65,9 @@
 ;	Original: 29/9/16; SJT
 ;-
 
-pro cw_spin_box_mk_bitmap, bup, bdown, xextra
+pro cw_spin_box_mk_bitmap, bup, bdown, xextra, $
+                           transparent = transparent
+
 ; Create up & down arrow bitmaps
   down =  bytarr(9, 5)
   down[4, 0] = 255b
@@ -75,9 +77,22 @@ pro cw_spin_box_mk_bitmap, bup, bdown, xextra
 ;  down[1:9, 4] = 255b
   down[*, 4] = 255b
   up = reverse(down, 2)
-  bdown = cvttobm(down)
-  bup = cvttobm(up)
-  xextra = 7
+
+  if keyword_set(transparent) then begin
+     bdown = bytarr([size(down, /dim), 4])
+     bup = bytarr([size(up, /dim), 4])
+     for j =  0, 2 do begin
+        bdown[*, *, j] = not down
+        bup[*, *, j] = not up
+     endfor
+     bdown[*, *, 3] = down
+     bup[*, *, 3] = up
+     xextra = 0
+  endif else begin
+     bdown = cvttobm(down)
+     bup = cvttobm(up)
+     xextra = 7
+  endelse
 end
 
 pro cw_spin_box_focus_enter, id
@@ -315,7 +330,8 @@ function cw_spin_box, parent, row = row, column = column, $
                       sensitive = sensitive, no_edit = no_edit, $
                       tracking_events = tracking_events, $
                       all_events = all_events, xsize = xsize, $
-                      capture_focus = capture_focus, flat = flat
+                      capture_focus = capture_focus, flat = flat, $
+                      transparent = transparent
 
   if ~widget_info(parent, /valid) then return, 0l
 
@@ -408,7 +424,7 @@ function cw_spin_box, parent, row = row, column = column, $
 ; Now the gui stuff
 
   if ~keyword_set(xsize) then xsize = 8
-  cw_spin_box_mk_bitmap, bup, bdown, xextra
+  cw_spin_box_mk_bitmap, bup, bdown, xextra, transparent = transparent
 
   if keyword_set(column) then base = widget_base(parent, $
                                                  /column) $

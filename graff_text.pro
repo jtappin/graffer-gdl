@@ -304,7 +304,8 @@ function Graff_text, pdefs, edit = edit, position = position
                      /track, $
                      /capture, $
                      min = 0., $
-                     step = 0.1)
+                     step = 0.1, $
+                     /trans)
 
 
   jb = widget_base(base, /row)
@@ -360,7 +361,8 @@ function Graff_text, pdefs, edit = edit, position = position
                      /track, $
                      /capture, $
                      min = 0., $
-                     step = 1.)
+                     step = 1., $
+                     /trans)
 
                                 ; Alignment and orientation
 

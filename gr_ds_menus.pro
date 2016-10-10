@@ -273,7 +273,8 @@ pro Gr_ds_menus, optbb, pdefs
                                   /track, $
                                   /capture, $
                                   min = 0., $
-                                  step = 0.1)
+                                  step = 0.1, $
+                                  /trans)
 
   jjb = widget_base(pdefs.ids.plopts[0], /row)
   pdefs.ids.thick = cw_spin_box(jjb, $
@@ -287,7 +288,8 @@ pro Gr_ds_menus, optbb, pdefs
                                 /track, $
                                 /capture, $
                                 min = 0., $
-                                step = 1.)
+                                step = 1., $
+                                /trans)
 
 
   jjb = widget_base(pdefs.ids.plopts[0], $

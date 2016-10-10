@@ -197,7 +197,8 @@ bub.csid = cw_spin_box(jjb, $
                        /capture, $
                        format = '(f0.2)', $
                        min = 0., $
-                       step = 0.1)
+                       step = 0.1, $
+                       /trans)
 
 if (pdefs.y_right) then begin
     jjjb = widget_base(jjb, $
@@ -218,7 +219,8 @@ bub.cid = cw_spin_box(jjb, $
                       uvalue = 'COL', $
                       /capture, $
                       min = 1, $
-                      max = pdefs.nsets)
+                      max = pdefs.nsets, $
+                      /trans)
 
 junk = widget_droplist(jjb, $
                        value = ['2', '1'], $

@@ -204,7 +204,8 @@ pdefs.ids.zopts.c_nlevels = cw_spin_box(jb, $
                                         /capture, $
                                         /all_events, $
                                         min = 0, $
-                                        sensitive = iexpl eq 0)
+                                        sensitive = iexpl eq 0, $
+                                        /trans)
 
 pdefs.ids.zopts.c_levels = graff_enter(jb, $
                                        /double, $
@@ -306,7 +307,8 @@ pdefs.ids.zopts.c_label = cw_spin_box(jby, $
                                       /capture, $
                                       /column, $
                                       /all_events, $
-                                      min = 0)
+                                      min = 0, $
+                                      /trans)
 
 
 
@@ -323,7 +325,8 @@ pdefs.ids.zopts.c_charsize = cw_spin_box(jby, $
                                          /all_events, $
                                          step = 0.1, $
                                          min = 0., $
-                                        sensitive = zopts.label ne 0)
+                                         sensitive = zopts.label ne 0, $
+                                         /trans)
 
 end
 

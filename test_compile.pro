@@ -168,6 +168,10 @@ print, 'gr_check_box.pro'
 .r gr_check_box
 print, 'gr_comment.pro'
 .r gr_comment
+print, 'gr_cont_col_get.pro'
+.r gr_cont_col_get
+print, 'gr_cont_col_set.pro'
+.r gr_cont_col_set
 print, 'gr_cont_menus.pro'
 .r gr_cont_menus
 print, 'gr_control_menu.pro'

@@ -177,7 +177,8 @@ function gr_custom_colour, index, w0, group = group
                       value = bcolour[0], $
                       uvalue = 'RED_E', $
                       min = 0, $
-                      max = 255)
+                      max = 255, $
+                      /trans)
   rs_id = widget_slider(jbb, $
                         /vertical, $
                         min = 0, $
@@ -202,7 +203,8 @@ function gr_custom_colour, index, w0, group = group
                       value = bcolour[1], $
                       uvalue = 'GRN_E', $
                       min = 0, $
-                      max = 255)
+                      max = 255, $
+                      /trans)
   gs_id = widget_slider(jbb, $
                         /vertical, $
                         min = 0, $
@@ -228,7 +230,8 @@ function gr_custom_colour, index, w0, group = group
                       value = bcolour[2], $
                       uvalue = 'BLU_E', $
                       min = 0, $
-                      max = 255)
+                      max = 255, $
+                      /trans)
   bs_id = widget_slider(jbb, $
                         /vertical, $
                         min = 0, $

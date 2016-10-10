@@ -164,7 +164,8 @@ pdefs.ids.charsize = cw_spin_box(jb, $
                                  step = 0.1, $
                                  /track, $
                                  /capture, $
-                                 minval = 0.)
+                                 minval = 0., $
+                                 /trans)
 
 pdefs.ids.axthick = cw_spin_box(jb, $
                                 /float, $
@@ -177,7 +178,8 @@ pdefs.ids.axthick = cw_spin_box(jb, $
                                 /track, $
                                 /capture, $
                                 step = 1., $
-                                minval = 0.0)
+                                minval = 0.0, $
+                                /trans)
 
 
 jb = widget_base(tjb, $
