@@ -54,15 +54,32 @@
 ;	/capture_focus	If set, then the entry box captures the input
 ;			focus when the pointer is moved over it.
 ;	/flat		If set, then generate spin buttons without a
-;			"bevel" 
+;			"bevel"
+;	/transparent	If set, then the white surround of the buttons
+;			is made transparent.
+;	/roll		If set, then clicking past the limits rolls
+;			the value around to the other limit. Requires
+;			both limits to be set. Does not apply to typed
+;			values which are still truncated to the limits.
 ;
 ; Notes:
 ;	If an explicit type is not given then if a VALUE is given, it
 ;	determines the type, otherwise the default integer type is
 ;	used.
 ;
+;	Event structure:
+;	 {id: 0l, $
+;         top: 0l, $
+;         handler: 0l, $
+;         value: <type>, $
+;         roll: 0, $    ; +1 if the value was rolled by clicking UP
+;         		; past max, -1 if the value was rolled by
+;         		; clicking past min. 0 otherwise.
+;           cr: 0b}	; Set to 1 if a CR was entered in the text box.
+;
 ; History:
 ;	Original: 29/9/16; SJT
+;	Add transparent and roll keys: 10/10/16; SJT
 ;-
 
 pro cw_spin_box_mk_bitmap, bup, bdown, xextra, $
@@ -124,6 +141,7 @@ function cw_spin_box_event, event
   widget_control, event.id, get_uvalue = but
 
   cr = 0b
+  roll = 0
   case but of
      'BOX': begin
         on_ioerror, invalid
@@ -149,29 +167,38 @@ function cw_spin_box_event, event
      end
      'UP': begin
         cstruct.value += cstruct.step
-        if cstruct.ismax then cstruct.value <= cstruct.maxval
+        if cstruct.rolls && cstruct.value gt cstruct.maxval then begin
+           cstruct.value = cstruct.minval
+           roll = 1
+        endif else if cstruct.ismax then cstruct.value <= cstruct.maxval
         widget_control, cstruct.boxid, set_value = $
                         string(cstruct.value, format = cstruct.format)
      end
      'DOWN': begin
         cstruct.value -= cstruct.step
-        if cstruct.ismin then cstruct.value >= cstruct.minval
+        if cstruct.rolls && cstruct.value lt cstruct.minval then begin
+           cstruct.value = cstruct.maxval
+           roll = -1
+        endif else if cstruct.ismin then cstruct.value >= cstruct.minval
         widget_control, cstruct.boxid, set_value = $
                         string(cstruct.value, format = cstruct.format)
      end
   endcase
 
   widget_control, cstruct.dnid, sensitive = $
-                  ~cstruct.ismin || cstruct.value gt cstruct.minval
+                  cstruct.rolls || ~cstruct.ismin || $
+                  cstruct.value gt cstruct.minval
 
   widget_control, cstruct.upid, sensitive = $
-                  ~cstruct.ismax || cstruct.value lt cstruct.maxval
+                  cstruct.rolls || ~cstruct.ismax || $
+                  cstruct.value lt cstruct.maxval
 
   widget_control, id2, set_uvalue = cstruct
   return, {id: event.handler, $
            top: event.top, $
            handler: 0l, $
            value: cstruct.value, $
+           roll: roll, $
            cr: cr}
 
 invalid:
@@ -225,10 +252,12 @@ pro cw_spin_box_set, id, value
   widget_control, cstruct.boxid, set_value = $
                   string(cstruct.value, format = cstruct.format)
   widget_control, cstruct.dnid, sensitive = $
-                  ~cstruct.ismin || cstruct.value gt cstruct.minval
+                  cstruct.rolls || ~cstruct.ismin || $
+                  cstruct.value gt cstruct.minval
 
   widget_control, cstruct.upid, sensitive = $
-                  ~cstruct.ismax || cstruct.value lt cstruct.maxval
+                  cstruct.rolls || ~cstruct.ismax || $
+                  cstruct.value lt cstruct.maxval
 
   widget_control, id2, set_uvalue = cstruct
 
@@ -239,6 +268,11 @@ pro cw_spin_box_set_min, id, minval, clear = clear
   widget_control, id2, get_uvalue = cstruct
 
   if keyword_set(clear) then begin
+     if cstruct.roll then begin
+        message, /continue, $
+                 "Cannot clear the limits on a rolling spin box."
+        return
+     endif
      cstruct.minval = 0
      cstruct.ismin = 0b
   endif else begin
@@ -256,10 +290,12 @@ pro cw_spin_box_set_min, id, minval, clear = clear
   endelse
 
   widget_control, cstruct.dnid, sensitive = $
-                  ~cstruct.ismin || cstruct.value gt cstruct.minval
+                  cstruct.rolls || ~cstruct.ismin || $
+                  cstruct.value gt cstruct.minval
 
   widget_control, cstruct.upid, sensitive = $
-                  ~cstruct.ismax || cstruct.value lt cstruct.maxval
+                  cstruct.rolls || ~cstruct.ismax || $
+                  cstruct.value lt cstruct.maxval
 
   widget_control, id2, set_uvalue = cstruct
 
@@ -270,6 +306,11 @@ pro cw_spin_box_set_max, id, maxval, clear = clear
   widget_control, id2, get_uvalue = cstruct
 
   if keyword_set(clear) then begin
+     if cstruct.roll then begin
+        message, /continue, $
+                 "Cannot clear the limits on a rolling spin box."
+        return
+     endif
      cstruct.maxval = 0
      cstruct.ismax = 0b
   endif else begin
@@ -287,10 +328,12 @@ pro cw_spin_box_set_max, id, maxval, clear = clear
   endelse
 
   widget_control, cstruct.dnid, sensitive = $
-                  ~cstruct.ismin || cstruct.value gt cstruct.minval
+                  cstruct.rolls || ~cstruct.ismin || $
+                  cstruct.value gt cstruct.minval
 
   widget_control, cstruct.upid, sensitive = $
-                  ~cstruct.ismax || cstruct.value lt cstruct.maxval
+                  cstruct.rolls || ~cstruct.ismax || $
+                  cstruct.value lt cstruct.maxval
 
   widget_control, id2, set_uvalue = cstruct
 
@@ -331,7 +374,7 @@ function cw_spin_box, parent, row = row, column = column, $
                       tracking_events = tracking_events, $
                       all_events = all_events, xsize = xsize, $
                       capture_focus = capture_focus, flat = flat, $
-                      transparent = transparent
+                      transparent = transparent, roll = roll
 
   if ~widget_info(parent, /valid) then return, 0l
 
@@ -368,7 +411,8 @@ function cw_spin_box, parent, row = row, column = column, $
              format: '', $
              boxid: 0l, $
              upid: 0l, $
-             dnid: 0l}
+             dnid: 0l, $
+             rolls: 0b}
 
 
   if keyword_set(format) then cstruct.format = format $
@@ -420,6 +464,13 @@ function cw_spin_box, parent, row = row, column = column, $
   endif else if cstruct.ismin then cstruct.value = cstruct.minval $
   else if cstruct.ismax then cstruct.value = cstruct.maxval $
   else cstruct.value = 0
+
+  if keyword_set(roll) then begin
+     if ~cstruct.ismin || ~cstruct.ismax then $
+        message, /continue, $
+                 "ROLL requires both limits to be set" $
+     else cstruct.roll = 1b
+  endif
 
 ; Now the gui stuff
 
