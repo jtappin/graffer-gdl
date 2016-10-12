@@ -28,6 +28,7 @@ pro Gr_2dd_plot, pdefs, i, csiz, grey_ps = grey_ps, shaded = shaded
 ;	Contour levels etc. become pointers: 11/1/12; SJT
 ;	Handle hidden datasets: 26/1/12; SJT
 ;	Send back flag if axes need redrawing: 20/1/16; SJT
+;	Add non-linear contour level maps: 12/10/16; SJT
 ;-
 
   data = (*pdefs.data)[i]
@@ -46,17 +47,23 @@ pro Gr_2dd_plot, pdefs, i, csiz, grey_ps = grey_ps, shaded = shaded
      endif else begin
         if (data.zopts.n_levels eq 0) then nl = 6 $
         else nl = data.zopts.n_levels
-        locs = where(finite(z), nfin)
-        if (nfin ne 0) then rg = (max(z(locs), min = mn)-mn) $
-        else rg = 0.
+        if data.zopts.lmap eq 1 then $
+           locs = where(finite(z) and z gt 0., nfin) $
+        else locs = where(finite(z), nfin)
+        
+        if (nfin ne 0) then begin
+           mx = max(z[locs], min = mn)
+           rg = mx-mn
+        endif else rg = 0.
         
         if (rg eq 0.) then begin
            graff_msg, pdefs.ids.message, 'Flat dataset - not able to ' + $
                       'contour'
            return
         endif
-        levels = rg * (dindgen(nl)+.5)/nl + mn
-     endelse
+
+        levels = gr_make_levels(mn, mx, nl, data.zopts.lmap)
+    endelse
      
      if (data.zopts.label ne 0 and n_elements(nl) eq 1) then begin
         labels = (indgen(nl) - $

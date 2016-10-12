@@ -13,6 +13,7 @@ pro graff_set_zvals, pdefs
 ; History:
 ; 	Original: 13/12/11; SJT
 ; 	Handle hidden datasets: 26/1/12; SJT
+;	Add non-linear contour level maps: 12/10/16; SJT
 ;-
 
 ; First make sure uninitialzed things are initialized.
@@ -49,15 +50,17 @@ pro graff_set_zvals, pdefs
 
   iexpl = zopts.set_levels
   widget_control, zids.c_auto, set_droplist_select = iexpl
+  widget_control, zids.cl_base[0], map = ~iexpl
+  widget_control, zids.cl_base[1], map = iexpl
 
   if (iexpl and ptr_valid(zopts.levels)) then $
      l0 = *(zopts.levels)  $
   else l0 = 0.d0
-  widget_control, zids.c_levels, set_value = l0, sensitive = iexpl
+  widget_control, zids.c_levels, set_value = l0
 
 
-  widget_control, zids.c_nlevels, set_value = zopts.n_levels, $
-                  sensitive = ~iexpl
+  widget_control, zids.c_nlevels, set_value = zopts.n_levels
+  widget_control, zids.c_map, set_droplist_select = zopts.lmap
 
   widget_control, zids.c_colour, set_value = zopts.colours
   widget_control, zids.c_thick, set_value = *(zopts.thick)

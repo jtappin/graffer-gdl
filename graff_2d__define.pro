@@ -21,12 +21,14 @@ pro graff_2d__define
 ;	Support colour inversion: 26/6/07; SJT
 ;	Add local colour table option: 17/11/11; SJT
 ;	Make colours a list: 7/10/16; SJT
+;	Add non-linear contour level maps: 12/10/16; SJT
 ;-
 
 Zopts = {graff_2d, $
          Format:      0, $
          set_levels:  0b, $
-         N_levels:    0, $ 
+         N_levels:    0, $
+         lmap:        0, $ 
          Levels:      ptr_new(), $
          N_cols:      0, $ 
          Colours:     list(), $

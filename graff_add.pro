@@ -14,7 +14,8 @@ pro Graff_add, file, a1, a2, a3, errors = errors, $
                z_range, z_label = z_label, z_pxsize = z_pxsize, $
                z_invert = z_invert, z_fill = z_fill, z_log = z_log, $
                z_ctable = z_ctable, xy_file = xy_file, z_file = $
-               z_file, func_file = func_file, y_axis = y_axis, $
+               z_file, z_lmap = z_lmap, $
+               func_file = func_file, y_axis = y_axis, $
                z_missing = z_missing, z_charsize = z_charsize, z_mode $
                = zmode
 
@@ -32,7 +33,7 @@ pro Graff_add, file, a1, a2, a3, errors = errors, $
 ;               frange=frange, /graffer, /ascii, /noclip, $
 ;               min_val=min_val, max_val=max_val, $
 ;               mouse=mouse,z_format=z_format, z_nlevels = z_nlevels, $
-;               z_levels = $ 
+;               z_lmap=z_lmap, z_levels = $ 
 ;               z_levels, z_colours = z_colours, z_style = z_style, $
 ;               z_thick = z_thick, z_range = z_range, z_label = $
 ;               z_label, z_pxsize = z_pxsize, z_invert = z_invert, $
@@ -103,6 +104,9 @@ pro Graff_add, file, a1, a2, a3, errors = errors, $
 ;				automatic contours
 ;	z_levels float	input	For 2D datasets, select levels for
 ;				explicit contours
+;	z_lmap  int	input	For 2-D datasets, set the mapping of
+;				automatic contour levels. 0=linear,
+;				1=log, 2=sqrt
 ;	z_colours int	input	For 2D datasets, select the colours
 ;				for the contours
 ;	z_style	int	input	For 2D datasets, select linestyles for contours
@@ -116,7 +120,7 @@ pro Graff_add, file, a1, a2, a3, errors = errors, $
 ;				size to use in images for PS device.
 ;	/z_invert	input	For image display, invert the colour
 ;				table if set.
-;	z_mode	int	input	0=linear, 1=log, 2=sqrt.
+;	z_mode	int	input	0=linear, 1=log, 2=sqrt. For colour displays.
 ;	z_ctable int	input	Select a colour table for 2-D display
 ;				of images.
 ;	xy_file	string	input	A file with a graffer dataset (x-y plot).
@@ -154,6 +158,7 @@ pro Graff_add, file, a1, a2, a3, errors = errors, $
 ;	Deprecate func[xyz], replace with [xyz]_func: 3/2/12; SJT
 ;	Add min_val, max_val: 2/6/15; SJT
 ;	z_log -> z_mode: 18/11/15: SJT
+;	Add non-linear contour level maps: 12/10/16; SJT
 ;-
 
 ;	Check that the necessary inputs are present
@@ -467,6 +472,8 @@ pro Graff_add, file, a1, a2, a3, errors = errors, $
      endif else if keyword_set(z_nlevels) then $
         (*pdefs.data)[pdefs.cset].zopts.N_levels = z_nlevels $
      else (*pdefs.data)[pdefs.cset].zopts.N_levels = 6
+     if keyword_set(z_lmap) then (*pdefs.data)[pdefs.cset].zopts.lmap $
+        = z_lmap
 
      if n_elements(z_colours) gt 0 then begin
         (*pdefs.data)[pdefs.cset].zopts.N_cols = n_elements(z_colours)

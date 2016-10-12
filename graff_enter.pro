@@ -117,7 +117,7 @@
 ;-
 
 
-pro Grf_focus_enter, id
+pro grf_focus_enter, id
                                 ; Set input focus to the text widget
                                 ; id.
 
@@ -129,7 +129,7 @@ pro Grf_focus_enter, id
 end
 
 
-pro Grf_set_enter, id, value
+pro grf_set_enter, id, value
                                 ; Set the value of a graff_enter
                                 ; widget
 
@@ -185,7 +185,7 @@ end
 
 
 
-function Grf_get_enter, id
+function grf_get_enter, id
                                 ; Get the value of a graff_enter
                                 ; widget
 
@@ -291,7 +291,7 @@ end
 
 
 
-function Grf_enter_ev, event
+function grf_enter_ev, event
                                 ; Process events from a graff_enter
                                 ; widget
 
@@ -350,7 +350,7 @@ end
 
 
 
-function Graff_enter, parent, label=label, value=value, uvalue=uvalue, $
+function graff_enter, parent, label=label, value=value, uvalue=uvalue, $
                       floating=floating, integer=integer, text=text, $
                       long_int=long_int, very_long = very_long, $
                       unsigned = unsigned, double = double, $
@@ -493,15 +493,15 @@ function Graff_enter, parent, label=label, value=value, uvalue=uvalue, $
                      scroll = keyword_set(scroll))
 
   state = { $
-          Text:   tbox, $
+          text:   tbox, $
           label:  label, $
-          Dead:   keyword_set(no_events) || keyword_set(display), $
-          Type:   vtype, $
-          Format: format, $
-          Track:  track, $
-          Select: keyword_set(select_events), $
-          Array:  keyword_set(array_valued) || vtype eq 11, $
-          Graph:  keyword_set(graphics) && (vtype eq 7), $
+          dead:   keyword_set(no_events) || keyword_set(display), $
+          type:   vtype, $
+          format: format, $
+          track:  track, $
+          select: keyword_set(select_events), $
+          array:  keyword_set(array_valued) || vtype eq 11, $
+          graph:  keyword_set(graphics) && (vtype eq 7), $
           empty_nan: return_nan, $
           set_list: sl, $
           get_list: gl $

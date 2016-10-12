@@ -21,6 +21,7 @@ pro graff_ids__define
 ;	Add support for a second Y-scale: 22/12/11; SJT
 ;	Add "current" ds only id: 26/1/12; SJT
 ; 	Add min & max values: 4/3/15; SJT
+;	Add non-linear contour level maps: 12/10/16; SJT
 ;-
 
 Ids = { graff_ids, $
@@ -55,9 +56,11 @@ Ids = { graff_ids, $
         Plopts:  lonarr(2), $
         zopts:   {graff_zids, $
                   bases: lonarr(2), $
-                  c_auto: 0l, $
+                  c_auto: 0l, $ 
+                  cl_base: lonarr(2), $
                   c_levels: 0l, $
                   c_nlevels: 0l, $
+                  c_map: 0l, $
                   c_colour: 0l, $
                   c_thick: 0l, $
                   c_style: 0l, $

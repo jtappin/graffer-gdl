@@ -433,6 +433,8 @@ These tags define a specific dataset within the plot.
   for automatic levels.\\
   ZL& Double& <ZNL>&
   The contour levels to use\\
+  ZLM & Int & 1 & Mapping mode for automatic contour levels. 0=linear,
+  1=log, 2=square root. \\
   ZLL & Null & 0 & Indicates that the contour levels follow on multiple
   lines. Only used in V4 ASCII files when ZNL is more than 5.\\
   ZNC& Int& 1&
@@ -471,7 +473,8 @@ These tags define a specific dataset within the plot.
   The range of Z values to display in gray/colour display\\
   ZP& Float& 1&
   The pixel size to use (in mm) for hardcopy.\\
-  ZIL & Byte & 1 & Whether the colour scaling is logarithmic.\\
+  ZIL & Byte & 1 & Whether the colour scaling is
+  logarithmic. 0=linear, 1=log, 2=square root.\\
   ZIN & Byte & 1 & Whether the colour map is inverted.\\
   ZM & Double & 1 & A value to use for regions of an image display that
   do not map from the data.\\

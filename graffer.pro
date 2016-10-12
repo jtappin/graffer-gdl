@@ -249,6 +249,8 @@
 ;                       single cw_pdmeu_plus routine.
 ;                     - Make the contour colours into a LIST so that
 ;                       custom colours can be used.
+;                     - Add option for log or sqrt mapping of
+;                       automatic contours.  
 ;-
 
 

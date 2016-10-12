@@ -29,6 +29,7 @@ pro Gr_bin_ds, data, nset, ilu, msgid
 ;	Eliminate goto and redundant code: 11/1/12; SJT
 ; 	Add min & max values: 4/3/15; SJT
 ; 	Fix init of min & max: 2/6/15; SJT
+;	Add non-linear contour level maps: 12/10/16; SJT
 ;-
 
   tag = '   '
@@ -123,6 +124,8 @@ pro Gr_bin_ds, data, nset, ilu, msgid
            data[nset].zopts.n_levels = value
            data[nset].zopts.set_levels = 0b
         end
+        'ZLM': data[nset].zopts.lmap = value
+
         'ZL': begin
            data[nset].zopts.levels = ptr_new(double(value))
            data[nset].zopts.n_levels = nvals

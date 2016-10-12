@@ -5,6 +5,7 @@ pro graff_update, file, idx, name = name, polar = polar, $
                   sort = sort, ascii = ascii, noclip = noclip, $
                   mouse = mouse, z_format = z_format, $
                   z_nlevels = z_nlevels, z_levels = z_levels, $
+                  z_lmap = z_lmap, $
                   z_colours = z_colours, z_style = z_style, $
                   z_thick = z_thick, z_range = z_range, $
                   z_label = z_label, z_pxsize = z_pxsize, $
@@ -43,7 +44,7 @@ pro graff_update, file, idx, name = name, polar = polar, $
 ;                  y_axis = y_axis, make_current = make_current, $
 ;                  x_values = x_values, y_values = y_values, $
 ;                  z_values = z_values, xy_file = xy_file, $
-;                  z_file = z_file, $
+;                  z_file = z_file, z_lmap=z_lmap, $
 ;                  errors = errors, errtype = errtype, neval = neval, $
 ;                  frange = frange, x_func = x_func, y_func = y_func, $
 ;                  z_func = z_func, z_missing = z_missing, $
@@ -95,6 +96,8 @@ pro graff_update, file, idx, name = name, polar = polar, $
 ;				format (0=contour, 1=colour image)
 ;	z_nlevels int	input	For 2D datasets, select number of
 ;				automatic contours
+;	z_lmap	int	input	Select mapping for automatic contour
+;				levels. 0=linear, 1=log, 2=sqrt
 ;	z_levels float	input	For 2D datasets, select levels for
 ;				explicit contours
 ;	z_colours int	input	For 2D datasets, select the colours
@@ -110,7 +113,7 @@ pro graff_update, file, idx, name = name, polar = polar, $
 ;				size to use in images for PS device.
 ;	/z_invert	input	For image display, invert the colour
 ;				table if set.
-;	z_mode	int	input	Z scaling mode, 0=linear, 1=log, 2=sqrt.
+;	z_mode	int	input	Z image scaling mode, 0=linear, 1=log, 2=sqrt.
 ;	z_ctable int	input	Select a colour table for 2-D display
 ;				of images.
 ;	y_axis	int	input	Specify which Y axis to use. (0 or 1)
@@ -159,6 +162,7 @@ pro graff_update, file, idx, name = name, polar = polar, $
 ;	Deprecate func[xyz], replace with [xyz]_func: 3/2/12; SJT
 ;	Add STATUS keyword: 24/2/12; SJT
 ;	Add X & Y shifts and scale: 26/1/16; SJT
+;	Add non-linear contour level maps: 12/10/16; SJT
 ;-
 
   on_error, 2                   ; Return to caller on error
@@ -251,11 +255,8 @@ pro graff_update, file, idx, name = name, polar = polar, $
      (*pdefs.data)[index].descript = description 
   if (n_elements(noclip)  ne 0) then (*pdefs.data)[index].noclip = noclip
   if (n_elements(mouse) ne 0) then (*pdefs.data)[index].medit = mouse
-  if (n_elements(y_axis) ne 0) then (*pdefs.data)[pdefs.cset].y_axis = $
-     $
-     $
-     $
-     y_axis
+  if (n_elements(y_axis) ne 0) then $
+     (*pdefs.data)[pdefs.cset].y_axis = y_axis
 
   if (keyword_set(rescale)) then begin
      gr_autoscale, pdefs, /xaxis, /ignore
@@ -276,6 +277,8 @@ pro graff_update, file, idx, name = name, polar = polar, $
      (*pdefs.data)[index].zopts.N_levels = z_nlevels 
      (*pdefs.data)[index].zopts.set_levels = 0b
   endif
+  if keyword_set(z_lmap) then  (*pdefs.data)[index].zopts.lmap = $
+     z_lmap
 
   if n_elements(z_colours) gt 0 then begin
      if obj_valid((*pdefs.data)[index].zopts.Colours) then $

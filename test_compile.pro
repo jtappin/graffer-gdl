@@ -262,6 +262,8 @@ print, 'gr_lon_rd.pro'
 .r gr_lon_rd
 print, 'gr_lon_val.pro'
 .r gr_lon_val
+print, 'gr_make_levels.pro'
+.r gr_make_levels
 print, 'gr_mk_plmenus.pro'
 .r gr_mk_plmenus
 print, 'gr_new_ds.pro'

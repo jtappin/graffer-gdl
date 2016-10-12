@@ -20,6 +20,7 @@ pro Gr_get_ds, data, nset, ilu, msgid
 ;	Add support for a second Y-scale: 22/12/11; SJT
 ; 	Add min & max values: 4/3/15; SJT
 ; 	Fix init of min & max: 2/6/15; SJT
+;	Add non-linear contour level maps: 12/10/16; SJT
 ;-
 
   inline = ''
@@ -117,6 +118,9 @@ pro Gr_get_ds, data, nset, ilu, msgid
                  abs(gr_int_val(tag_val(itag+1), 1))
               cflag(0) = 1b
            end
+           'ZLM': data[nset].zopts.lmap = $
+              gr_int_val(tag_val[itag+1], 1)
+
            'ZL': if (cflag(0)) then begin
               levels = gr_dbl_val(tag_val(itag+1), $
                                   data[nset].zopts.n_levels) 

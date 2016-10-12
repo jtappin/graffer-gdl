@@ -16,26 +16,28 @@ function gr_new_ds, pdefs, nds
 ; History:
 ; 	Original: 10/1/12; SJT
 ; 	Add min & max values: 4/3/15; SJT
+;	Add non-linear contour level maps: 12/10/16; SJT
 ;-
 
   if n_params() eq 2 then $
      ds = replicate({graff_data}, nds) $
   else ds = {graff_data}
 
-  ds[*].Pline = 1
-  ds[*].Symsize =  1.
-  ds[*].Colour =   1
-  ds[*].Thick =    1.
-  ds[*].Zopts.N_levels = 6
-  ds[*].Zopts.N_cols =  1
-  ds[*].Zopts.Colours = list(1)
-  ds[*].Zopts.N_sty = 1
-  ds[*].Zopts.style = ptr_new(0)
-  ds[*].Zopts.N_thick =  1
-  ds[*].Zopts.Thick = ptr_new(1.)
-  ds[*].Zopts.Pxsize =  0.5
+  ds[*].pline = 1
+  ds[*].symsize =  1.
+  ds[*].colour =   1
+  ds[*].thick =    1.
+  ds[*].zopts.n_levels = 6
+  ds[*].zopts.lmap = 0
+  ds[*].zopts.n_cols =  1
+  ds[*].zopts.colours = list(1)
+  ds[*].zopts.n_sty = 1
+  ds[*].zopts.style = ptr_new(0)
+  ds[*].zopts.n_thick =  1
+  ds[*].zopts.thick = ptr_new(1.)
+  ds[*].zopts.pxsize =  0.5
 
-  ds[*].Medit = pdefs.opts.mouse
+  ds[*].medit = pdefs.opts.mouse
 
   ds[*].max_val = !values.d_nan
   ds[*].min_val = !values.d_nan

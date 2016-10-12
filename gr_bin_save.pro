@@ -30,6 +30,7 @@ pro Gr_bin_save, pdefs, auto = auto
 ;	Advanced axis style settings: 21/8/12; SJT
 ; 	Add min & max values: 4/3/15; SJT
 ; 	PDF view command: 21/9/16; SJT
+;	Add non-linear contour level maps: 12/10/16; SJT
 ;-
 
   if (keyword_set(auto)) then begin
@@ -198,7 +199,10 @@ pro Gr_bin_save, pdefs, auto = auto
         if (zopts.set_levels and $
             ptr_valid(zopts.levels)) then $ ; Explicit levels
                graff_put_rec, ilu, 'ZL ', *(zopts.levels) $
-        else graff_put_rec, ilu, 'ZNL', zopts.n_levels
+        else begin
+           graff_put_rec, ilu, 'ZNL', zopts.n_levels
+           graff_put_rec, ilu, 'ZLM', zopts.lmap
+        endelse
         if zopts.n_cols gt 0 then graff_put_rec, ilu, 'ZC ', $
                                                  zopts.colours
         if zopts.n_sty gt 0 then graff_put_rec, ilu, 'ZS ', $
