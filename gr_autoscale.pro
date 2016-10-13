@@ -29,11 +29,11 @@ pro Gr_autoscale, pdefs, xaxis = xaxis, yaxis = yaxis, $
 
   widgets = pdefs.ids.graffer ne 0
 
-  if (not keyword_set(xaxis) and not keyword_set(yaxis)) then begin
+  if ~keyword_set(xaxis) && ~keyword_set(yaxis) then begin
      graff_msg, pdefs.ids.message, "Must specify either XAXIS or YAXIS " + $
                 "key"
      return
-  endif else if (keyword_set(xaxis) and keyword_set(yaxis)) then begin
+  endif else if keyword_set(xaxis) && keyword_set(yaxis) then begin
      graff_msg, pdefs.ids.message, "Cannot autoscale both axes at once"
      return
   endif
@@ -48,10 +48,10 @@ pro Gr_autoscale, pdefs, xaxis = xaxis, yaxis = yaxis, $
         range = pdefs.xrange
      for i = 0, pdefs.nsets-1 do begin
         
-        if ((*pdefs.data)[i].ndata eq 0) then continue ; Trying to autoscale
+        if (*pdefs.data)[i].ndata eq 0 then continue ; Trying to autoscale
                                 ; on an empty data set is silly
-        
-        if (pdefs.y_right and (*pdefs.data)[i].y_axis eq 1) then $
+
+        if pdefs.y_right && (*pdefs.data)[i].y_axis eq 1 then $
            yrange = pdefs.yrange_r $
         else yrange = pdefs.yrange
         if ((*pdefs.data)[i].mode ne 0) then $
@@ -74,10 +74,10 @@ pro Gr_autoscale, pdefs, xaxis = xaxis, yaxis = yaxis, $
      
      for i = 0, pdefs.nsets-1 do begin
         
-        if ((*pdefs.data)[i].ndata eq 0) then continue ; Trying to autoscale
+        if (*pdefs.data)[i].ndata eq 0 then continue ; Trying to autoscale
                                 ; on an empty data set is silly
         if (*pdefs.data)[i].y_axis eq 0 then continue
-        if ((*pdefs.data)[i].mode ne 0) then $
+        if (*pdefs.data)[i].mode ne 0 then $
            gr_as_ya, (*pdefs.data)[i], pdefs.xrange, pdefs.yrange_r, range $ 
         else gr_as_yr, (*pdefs.data)[i], pdefs.xrange, pdefs.xtype, $
                        range, visible = visible
@@ -97,10 +97,10 @@ pro Gr_autoscale, pdefs, xaxis = xaxis, yaxis = yaxis, $
      
      for i = 0, pdefs.nsets-1 do begin
         
-        if ((*pdefs.data)[i].ndata eq 0) then continue ; Trying to autoscale
+        if (*pdefs.data)[i].ndata eq 0 then continue ; Trying to autoscale
                                 ; on an empty data set is silly
-        if pdefs.y_right and (*pdefs.data)[i].y_axis eq 1 then continue
-        if ((*pdefs.data)[i].mode ne 0) then $
+        if pdefs.y_right && (*pdefs.data)[i].y_axis eq 1 then continue
+        if (*pdefs.data)[i].mode ne 0 then $
            gr_as_ya, (*pdefs.data)[i], pdefs.xrange, pdefs.yrange, range $ 
         else gr_as_yr, (*pdefs.data)[i], pdefs.xrange, pdefs.xtype, $
                        range, visible = visible

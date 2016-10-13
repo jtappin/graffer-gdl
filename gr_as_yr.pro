@@ -23,7 +23,16 @@ pro Gr_as_yr, data, xrange, xtype, range, visible = visible
 ;	Change handles to pointers: 27/6/05; SJT
 ;	Support max & min vals: Apr 16; SJT
 ;	Add visible key: 31/5/16; SJT
+;	Ignore undisplayed datasets: 13/10/16; SJT
 ;-
+
+; Ignore undisplayed datasets
+
+  if data.type eq 9 || data.type eq -4 then begin
+     if data.zopts.format eq 2 then return
+  endif else begin
+     if data.colour eq -1 then return
+  endelse
 
   fv = 0.                       ; Just create the variable
 

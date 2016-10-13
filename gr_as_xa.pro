@@ -18,9 +18,18 @@ pro Gr_as_xa, data, xrange, yrange, range, visible = visible
 ;	Extracted from GR_AUTOSCALE: 16/12/96; SJT
 ;	Convert handles to pointers: 27/6/05; SJT
 ;	Add visible key: 31/5/16; SJT
+;	Ignore undisplayed datasets: 13/10/16; SJT
 ;-
 
   maxrange = sqrt(max(xrange^2)+max(yrange^2))
+
+; Ignore undisplayed datasets
+
+  if data.type eq 9 || data.type eq -4 then begin
+     if data.zopts.format eq 2 then return
+  endif else begin
+     if data.colour eq -1 then return
+  endelse
 
   case (data.type) of
      -1: begin                  ; th = f(r)
