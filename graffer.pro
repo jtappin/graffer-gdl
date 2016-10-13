@@ -250,7 +250,8 @@
 ;                     - Make the contour colours into a LIST so that
 ;                       custom colours can be used.
 ;                     - Add option for log or sqrt mapping of
-;                       automatic contours.  
+;                       automatic contours.
+;                     - Convert graff_enter to cw_enter  
 ;-
 
 
@@ -493,8 +494,12 @@ pro Graffer, file, group = group, xsize = xsize, ysize = ysize, debug $
      strlen(pdefs.dir)-1 then fullname = pdefs.dir+path_sep()+pdefs.name $
   else fullname = pdefs.dir+pdefs.name
   
-  pdefs.ids.name = graff_enter(cbase, /display, /text, value = $
-                               fullname, xsize = 30, label = "Name:")
+  pdefs.ids.name = cw_enter(cbase, $
+                            /display, $
+                            /text, $
+                            value = fullname, $
+                            xsize = 30, $
+                            label = "Name:")
 
   tbase = widget_tab(cbase, $
                      uvalue = 'TABS', $
@@ -573,10 +578,20 @@ pro Graffer, file, group = group, xsize = xsize, ysize = ysize, debug $
 
 
   jb = widget_base(cbase, /row, xpad = 0, ypad = 0, space = 0)
-  pdefs.ids.xcp = graff_enter(jb, /float, /display, xsize = 14, value = $
-                              0., label = 'X:', format = "(g14.7)") 
-  pdefs.ids.ycp = graff_enter(jb, /float, /display, xsize = 14, value = $
-                              0., label = 'Y:', format = "(g14.7)") 
+  pdefs.ids.xcp = cw_enter(jb, $
+                           /float, $
+                           /display, $
+                           xsize = 14, $
+                           value = 0., $
+                           label = 'X:', $
+                           format = "(g14.7)") 
+  pdefs.ids.ycp = cw_enter(jb, $
+                           /float, $
+                           /display, $
+                           xsize = 14, $
+                           value = 0., $
+                           label = 'Y:', $
+                           format = "(g14.7)") 
 
 
 
@@ -593,15 +608,25 @@ pro Graffer, file, group = group, xsize = xsize, ysize = ysize, debug $
   else ywsize = ysize > 600
 
   if ((xwsize >  ywsize) gt 600) then $
-     pdefs.ids.draw = widget_draw(cbase, xsize = xwsize, x_scroll_size = $
-                                  600, ysize = ywsize, y_scroll_size = $
-                                  600, $
-                                  uvalue = 'DRAW', /button_event, $
-                                  /motion_event, /track, /frame) $
+     pdefs.ids.draw = widget_draw(cbase, $
+                                  xsize = xwsize, $
+                                  x_scroll_size = 600, $
+                                  ysize = ywsize, $
+                                  y_scroll_size = 600, $
+                                  uvalue = 'DRAW', $
+                                  /button_event, $
+                                  /motion_event, $
+                                  /track, $
+                                  /frame) $
   else $
-     pdefs.ids.draw = widget_draw(cbase, xsize = xwsize, ysize = ywsize, $
-                                  uvalue = 'DRAW', /button_event, $
-                                  /motion_event, /track, /frame)
+     pdefs.ids.draw = widget_draw(cbase, $
+                                  xsize = xwsize, $
+                                  ysize = ywsize, $
+                                  uvalue = 'DRAW', $
+                                  /button_event, $
+                                  /motion_event, $
+                                  /track, $
+                                  /frame)
 
 
   tjb = widget_base(cbase, $
@@ -611,9 +636,15 @@ pro Graffer, file, group = group, xsize = xsize, ysize = ysize, debug $
                                 ; because there's some space, give it
                                 ; a UVALUE so that we can use it with
                                 ; a timer event to control the autosave
-  pdefs.ids.message = graff_enter(tjb, /display, xsize = 78, ysize = 2, $
-                                  value = '', label = 'Messages:', $
-                                  uvalue = 'AUTOSAVE', /track, /array)
+  pdefs.ids.message = cw_enter(tjb, $
+                               /display, $
+                               xsize = 78, $
+                               ysize = 2, $
+                               value = '', $
+                               label = 'Messages:', $
+                               uvalue = 'AUTOSAVE', $
+                               /track, $
+                               /array)
 
   pdefs.ids.hlptxt = pdefs.ids.message
 

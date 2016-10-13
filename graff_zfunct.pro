@@ -16,6 +16,7 @@
 ;	Made to function returning "cancel" state: 18/12/96; SJT
 ;	Add CAPTURE key to text inputs: 6/2/97; SJT
 ;	Replace handles with pointers: 28/6/05; SJT
+;	Replace graff_enter with cw_enter: 13/10/16; SJT
 ;-
 
 function Zfunct_event, event
@@ -44,13 +45,13 @@ case but of
         iexit = event.value
     end
     
-    'XMIN': grf_focus_enter, uvs.rgid(1, 0)
-    'XMAX': grf_focus_enter, uvs.rgid(0, 1)
-    'YMIN': grf_focus_enter, uvs.rgid(1, 1)
-    'YMAX': grf_focus_enter, uvs.nid(0)
-    'NUM1': grf_focus_enter, uvs.nid(1)
-    'NUM2': grf_focus_enter, uvs.fid
-    'FUNC': grf_focus_enter, uvs.rgid(0, 0)
+    'XMIN': cw_enter_focus, uvs.rgid(1, 0)
+    'XMAX': cw_enter_focus, uvs.rgid(0, 1)
+    'YMIN': cw_enter_focus, uvs.rgid(1, 1)
+    'YMAX': cw_enter_focus, uvs.nid(0)
+    'NUM1': cw_enter_focus, uvs.nid(1)
+    'NUM2': cw_enter_focus, uvs.fid
+    'FUNC': cw_enter_focus, uvs.rgid(0, 0)
     
 endcase
 widget_control, event.handler, set_uvalue = uvs, /no_copy
@@ -103,23 +104,28 @@ endelse
 
 widget_control, pdefs.ids.graffer, sensitive = 0
 
-tlb = widget_base(title = 'Graffer 2-D Function Plot', group_leader = $
-                  pdefs.ids.graffer, resource = 'Graffer')
+tlb = widget_base(title = 'Graffer 2-D Function Plot', $
+                  group_leader = pdefs.ids.graffer, $
+                  resource = 'Graffer')
 base = widget_base(tlb, /column)
 
                                 ; The actual function definition
 
-uvs.fid = graff_enter(base, xsize = 40, value = funct, label $
-                      = 'Function:', uvalue = 'FUNC', /capture)
+uvs.fid = cw_enter(base, $
+                   xsize = 40, $
+                   value = funct, $
+                   label = 'Function:', $
+                   uvalue = 'FUNC', $
+                   /capture)
 
                                 ; X axis range
 
 rgb = widget_base(base, /row)
-uvs.rgid(0, 0) = graff_enter(rgb, /double, xsize = 10, $
+uvs.rgid(0, 0) = cw_enter(rgb, /double, xsize = 10, $
                              uvalue = 'XMIN', value = range(0, 0), $
                              format = "(g10.3)", label = $
                              'X axis range: Min:', /capture)
-uvs.rgid(1, 0) = graff_enter(rgb, /double, xsize = 10, $
+uvs.rgid(1, 0) = cw_enter(rgb, /double, xsize = 10, $
                              uvalue = 'XMAX', value = range(1, 0), $
                              format = "(g10.3)", label = ' Max:', $
                              /capture)
@@ -127,11 +133,11 @@ uvs.rgid(1, 0) = graff_enter(rgb, /double, xsize = 10, $
                                 ; Y axis range
 
 rgb = widget_base(base, /row)
-uvs.rgid(0, 1) = graff_enter(rgb, /double, xsize = 10, $
+uvs.rgid(0, 1) = cw_enter(rgb, /double, xsize = 10, $
                              uvalue = 'YMIN', value = range(0, 1), $
                              format = "(g10.3)", label =  $
                              'Y axis range: Min:', /capture)
-uvs.rgid(1, 1) = graff_enter(rgb, /double, xsize = 10, $
+uvs.rgid(1, 1) = cw_enter(rgb, /double, xsize = 10, $
                              uvalue = 'YMAX', value = range(1, 1), $
                              format = "(g10.3)", label = ' Max:', $
                              /capture)
@@ -139,11 +145,11 @@ uvs.rgid(1, 1) = graff_enter(rgb, /double, xsize = 10, $
                                 ; Number of points
 
 njb = widget_base(base, /row)
-uvs.nid(0) = graff_enter(njb, /int, xsize = 5, uvalue = $
+uvs.nid(0) = cw_enter(njb, /int, xsize = 5, uvalue = $
                          'NUM1', value = numpts, format = "(I0)", $
                          label = 'Number of function evaluations X:', $
                          /capture)
-uvs.nid(1) = graff_enter(njb, /int, xsize = 5, uvalue = $
+uvs.nid(1) = cw_enter(njb, /int, xsize = 5, uvalue = $
                          'NUM2', value = numpts, format = "(I0)", $
                          label = 'Y:', /capture)
 

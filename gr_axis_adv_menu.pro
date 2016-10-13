@@ -14,6 +14,7 @@
 ;
 ; History:
 ;	Original: 21/8/12; SJT
+;	Replace graff_enter with cw_enter: 13/10/16; SJT
 ;-
 function gr_is_format, name
 
@@ -116,32 +117,32 @@ function gr_axis_adv_menu, pdefs, xaxis = xaxis, yaxis = yaxis
   junk = widget_label(base, $
                       value = 'Advanced '+axname+' axis settings')
 
-  ntickid = graff_enter(base, $
-                        label = "Number of major ticks:", $
-                        /int, $
-                        value = sty.major, $
-                        xsize = 5, $
-                        uvalue = 'MAJOR', $
-                        /all, $
-                        /capture)
-
-  junk = graff_enter(base, $
-                     label = "Format specification:", $
-                     /text, $
-                     value = sty.format, $
-                     xsize = 10, $
-                     uvalue = 'FORMAT', $
-                     /all, $
-                     /capture)
-
-  junk = graff_enter(base, $
-                     label = "Number of minor ticks:", $
+  ntickid = cw_enter(base, $
+                     label = "Number of major ticks:", $
                      /int, $
-                     value = sty.minor, $
+                     value = sty.major, $
                      xsize = 5, $
-                     uvalue = 'MINOR', $
+                     uvalue = 'MAJOR', $
                      /all, $
                      /capture)
+
+  junk = cw_enter(base, $
+                  label = "Format specification:", $
+                  /text, $
+                  value = sty.format, $
+                  xsize = 10, $
+                  uvalue = 'FORMAT', $
+                  /all, $
+                  /capture)
+
+  junk = cw_enter(base, $
+                  label = "Number of minor ticks:", $
+                  /int, $
+                  value = sty.minor, $
+                  xsize = 5, $
+                  uvalue = 'MINOR', $
+                  /all, $
+                  /capture)
 
   jb = widget_base(base, $
                    /column, $
@@ -157,17 +158,17 @@ function gr_axis_adv_menu, pdefs, xaxis = xaxis, yaxis = yaxis
 
 ; It would be nice if this could be scrollable, but scrollable widgets
 ; may not be embedded in modal bases.
-  locid = graff_enter(jb, $
-                      /column, $
-                      label = "Tick locations", $
-                      /double, $
-                      value = vlist, $
-                      xsize = 25, $
-                      ysize = ny, $
-                      /array, $
-                      uvalue = 'VALS', $
-                      /all, $
-                      /capture)
+  locid = cw_enter(jb, $
+                   /column, $
+                   label = "Tick locations", $
+                   /double, $
+                   value = vlist, $
+                   xsize = 25, $
+                   ysize = ny, $
+                   /array, $
+                   uvalue = 'VALS', $
+                   /all, $
+                   /capture)
 
   junk = widget_button(jb, $
                        value = 'Clear', $

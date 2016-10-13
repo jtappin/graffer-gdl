@@ -27,6 +27,7 @@
 ;	Fix widget ID for colour selector: 26/1/12; SJT
 ;	Add extra colours: 8/2/12; SJT
 ;	Use cw_spin_box for sizes and thicknesses: 29/9/16; SJT
+;	Replace graff_enter with cw_enter: 13/10/16; SJT
 ;-
 
 pro Gr_text_disp, text
@@ -269,7 +270,7 @@ function Graff_text, pdefs, edit = edit, position = position
 
   showit = widget_draw(base, ysize = 25, xsize = 320, /frame)
 
-  junk = graff_enter(base, $
+  junk = cw_enter(base, $
                      /all_ev, $
                      xsize = 40, $
                      value = (*pdefs.text)[itxt].text, $ 
@@ -283,7 +284,7 @@ function Graff_text, pdefs, edit = edit, position = position
 
   jb = widget_base(base, /row)
 
-  junk = graff_enter(jb, $
+  junk = cw_enter(jb, $
                      /text, $
                      /all_events, $
                      xsize = 15, $
@@ -375,17 +376,23 @@ function Graff_text, pdefs, edit = edit, position = position
 
   jb = widget_base(base, /row)
   junk = widget_droplist(jb, $
-                         value = ['Left', 'Centre', 'Right', 'Other ' + $
-                                  '...'], $
+                         value = ['Left', 'Centre', $
+                                  'Right', 'Other ...'], $
                          uvalue = 'JUST', $
                          title = 'Justification:', $
                          /track)
   widget_control, junk, set_droplist_select = ial
 
-  junk = graff_enter(jb, /float, /all_event, xsize = 6, uvalue = 'ORI', $
-                     value = (*pdefs.text)[itxt].orient, format = $
-                     "(f6.1)",  $
-                     label = 'Orientation (°):', /track, /capture)
+  junk = cw_enter(jb, $
+                  /float, $
+                  /all_event, $
+                  xsize = 6, $
+                  uvalue = 'ORI', $
+                  value = (*pdefs.text)[itxt].orient, $
+                  format = "(f6.1)",  $
+                  label = 'Orientation (°):', $
+                  /track, $
+                  /capture)
 
                                 ; Position
 
@@ -413,14 +420,26 @@ function Graff_text, pdefs, edit = edit, position = position
 
   pb = widget_base(base, /row)
 
-  xpos = graff_enter(pb, /float, /all_event, xsize = 15, uvalue = 'TX', $
-                     value = (*pdefs.text)[itxt].x, format = $
-                     "(g15.8)", label = $
-                     'Position:  X:', /track, /capture) 
-  ypos = graff_enter(pb, /float, /all_event, xsize = 15, uvalue = 'TY', $
-                     value = (*pdefs.text)[itxt].y, format = $
-                     "(g15.8)", label = $
-                     'Y:', /track, /capture)
+  xpos = cw_enter(pb, $
+                  /float, $
+                  /all_event, $
+                  xsize = 15, $
+                  uvalue = 'TX', $
+                  value = (*pdefs.text)[itxt].x, $
+                  format = "(g15.8)", $
+                  label = 'Position:  X:', $
+                  /track, $
+                  /capture) 
+  ypos = cw_enter(pb, $
+                  /float, $
+                  /all_event, $
+                  xsize = 15, $
+                  uvalue = 'TY', $
+                  value = (*pdefs.text)[itxt].y, $
+                  format = "(g15.8)", $
+                  label = 'Y:', $
+                  /track, $
+                  /capture)
 
   widget_control, cdbase, set_uvalue = [xpos, ypos]
 

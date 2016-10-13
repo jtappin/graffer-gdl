@@ -1,5 +1,7 @@
 print, 'aspect.pro'
 .r aspect
+print, 'cw_enter.pro'
+.r cw_enter
 print, 'cw_pdmenu_plus.pro'
 .r cw_pdmenu_plus
 print, 'cw_spin_box.pro'
@@ -42,8 +44,6 @@ print, 'graff_dsdel.pro'
 .r graff_dsdel
 print, 'graff_dump.pro'
 .r graff_dump
-print, 'graff_enter.pro'
-.r graff_enter
 print, 'graffer.pro'
 .r graffer
 print, 'graff_export.pro'

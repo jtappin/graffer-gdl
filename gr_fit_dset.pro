@@ -24,42 +24,45 @@
 ;	Add capture key to input boxes: 6/2/97; SJT
 ;	Change handles to pointers: 27/6/05; SJT
 ;	Replace most cw_bbselectors with widget_droplist: 13/12/11; SJT
+;	Replace graff_enter with cw_enter: 13/10/16; SJT
 ;-
 
 function Grf_fit_event, event
 
-base = widget_info(event.top, /child)
-widget_control, base, get_uvalue = uv, /no_copy
-widget_control, event.id, get_uvalue = but
+  base = widget_info(event.top, /child)
+  widget_control, base, get_uvalue = uv, /no_copy
+  widget_control, event.id, get_uvalue = but
 
-iexit = 0;	Change to make this the outer routine & allow higher degree
-;	fits: 22/11/96; SJT
+  iexit = 0                     ;	Change to make this the outer
+                                ;	routine & allow higher
+                                ;	degree 
+                                ;	fits: 22/11/96; SJT
 
-case (but) of
-    'CHOOSE': begin
+  case (but) of
+     'CHOOSE': begin
         uv.chosen = event.index
         widget_control, uv.chid, set_value = uv.list(event.index)
         widget_control, uv.dobid, /sensitive
         widget_control, uv.upid, /sensitive
-    end
-    
-    'FITT': uv.type(0) = event.index
-    'FITD': if (event.index ne uv.type(1)) then begin
+     end
+     
+     'FITT': uv.type(0) = event.index
+     'FITD': if (event.index ne uv.type(1)) then begin
         if (uv.type(0) eq 1 or uv.type(0) eq 2) then begin
-            uv.type(0) = uv.type(0) xor 3
-            widget_control, uv.ftype, set_value = uv.type(0)
+           uv.type(0) = uv.type(0) xor 3
+           widget_control, uv.ftype, set_value = uv.type(0)
         endif
         uv.type(1) = event.index
-    endif
-    'FITN': begin
+     endif
+     'FITN': begin
         uv.type(2) = event.index
         widget_control, uv.degid, sensitive = (event.index eq 0)
      end
-    'NAN': uv.nan = event.select
-       
-        
-    'DONT': iexit = -1
-    'DO': begin
+     'NAN': uv.nan = event.select
+     
+     
+     'DONT': iexit = -1
+     'DO': begin
         iexit = 1
         widget_control, uv.nid, get_value = np
         uv.np = np
@@ -67,8 +70,8 @@ case (but) of
         uv.slice = sl
         widget_control, uv.degid, get_value = dg
         uv.type(3) = dg
-    end
-    'UPDATE': begin
+     end
+     'UPDATE': begin
         iexit = 2
         widget_control, uv.nid, get_value = np
         uv.np = np
@@ -76,207 +79,207 @@ case (but) of
         uv.slice = sl
         widget_control, uv.degid, get_value = dg
         uv.type(3) = dg
-    end
-    
-end
+     end
+     
+  end
 
-widget_control, base, set_uvalue = uv, /no_copy
+  widget_control, base, set_uvalue = uv, /no_copy
 
-return, {id:event.handler, top:event.top, handler:event.handler, $
-         Exit:iexit}
+  return, {id:event.handler, top:event.top, handler:event.handler, $
+           Exit:iexit}
 end
 
 function Gr_fit_dset, pdefs
 
-fflag = ((*pdefs.data)[pdefs.cset].type eq -1 or  $
-         (*pdefs.data)[pdefs.cset].type eq -2 or $
-         (*pdefs.data)[pdefs.cset].ndata eq 0)
+  fflag = ((*pdefs.data)[pdefs.cset].type eq -1 or  $
+           (*pdefs.data)[pdefs.cset].type eq -2 or $
+           (*pdefs.data)[pdefs.cset].ndata eq 0)
 
-tc = ['PF', 'F(Y)', 'F(X)', 'XY', 'XYE', 'XYEE', 'XYF', 'XYFF', $
-      'XYFE', 'XYFEE', 'XYFFE', 'XYFFEE']
-fitts = ['Polynomial', '"Exponential"', '"Logarithmic"', $
-         '"Power-law"', $
-         'Piecewise linear']
-fittd = pdefs.ytype + 2*pdefs.xtype
+  tc = ['PF', 'F(Y)', 'F(X)', 'XY', 'XYE', 'XYEE', 'XYF', 'XYFF', $
+        'XYFE', 'XYFEE', 'XYFFE', 'XYFFEE']
+  fitts = ['Polynomial', '"Exponential"', '"Logarithmic"', $
+           '"Power-law"', $
+           'Piecewise linear']
+  fittd = pdefs.ytype + 2*pdefs.xtype
 
-fitn = ['Least Square', '"Median"']
+  fitn = ['Least Square', '"Median"']
 
-fitd = ['y = f(x)', 'x = f(y)']
+  fitd = ['y = f(x)', 'x = f(y)']
 
-dlist = (*pdefs.data).descript
+  dlist = (*pdefs.data).descript
 
-nlist = string(indgen(n_elements(dlist)), $
-               format = "(I3,')')")
+  nlist = string(indgen(n_elements(dlist)), $
+                 format = "(I3,')')")
 
-llist = string((*pdefs.data).ndata, format = "(' <',I0,'> ')")
-lll = max(strlen(llist))
-fmt = "(A"+string(lll, format = "(I0)")+")"
-llist = string(llist, format = fmt)
-nlist = nlist+llist
-nlist = nlist+string([tc((*pdefs.data).type+3)], format = "(A6, ' - ')")
+  llist = string((*pdefs.data).ndata, format = "(' <',I0,'> ')")
+  lll = max(strlen(llist))
+  fmt = "(A"+string(lll, format = "(I0)")+")"
+  llist = string(llist, format = fmt)
+  nlist = nlist+llist
+  nlist = nlist+string([tc((*pdefs.data).type+3)], format = "(A6, ' - ')")
 
-dlist = nlist+dlist
-arexyd = where((*pdefs.data).type ge 0 and $
-               (*pdefs.data).type le 8 $ 
-               and (*pdefs.data).ndata ge 2, nxy) ; Only
+  dlist = nlist+dlist
+  arexyd = where((*pdefs.data).type ge 0 and $
+                 (*pdefs.data).type le 8 $ 
+                 and (*pdefs.data).ndata ge 2, nxy) ; Only
                                 ; X/Y datasets 
 
-if (nxy eq 0) then begin
-    message = ['No suitable datasets', $
-               'Cannot perform fitting']
-    junk = dialog_message(message, $
-                          title = 'Graffer: No XY Data', $
-                          dialog_parent = pdefs.ids.graffer, $
-                          resource = 'Graffer')
+  if (nxy eq 0) then begin
+     message = ['No suitable datasets', $
+                'Cannot perform fitting']
+     junk = dialog_message(message, $
+                           title = 'Graffer: No XY Data', $
+                           dialog_parent = pdefs.ids.graffer, $
+                           resource = 'Graffer')
 
-    return, 0
-    
-endif 
+     return, 0
+     
+  endif 
 
-if (not fflag) then begin
-    message = ['CURRENT DATA SET IS XY DATA OR A PARAMETRIC', $ $
-               'OR 2-D FUNCTION. USING IT AS A FIT WILL ' + $
-               'OVERWRITE', $
-               'IT. DO YOU REALLY WANT TO DO THIS?' $
-              ] 
-    if (dialog_message(message, $
-                       title = 'Graffer: No XY Data', $
-                       dialog_parent = pdefs.ids.graffer, $
-                       resource = 'Graffer', $
-                       /question)) eq 'No' then return, 0
-endif
+  if (not fflag) then begin
+     message = ['CURRENT DATA SET IS XY DATA OR A PARAMETRIC', $ $
+                'OR 2-D FUNCTION. USING IT AS A FIT WILL ' + $
+                'OVERWRITE', $
+                'IT. DO YOU REALLY WANT TO DO THIS?' $
+               ] 
+     if (dialog_message(message, $
+                        title = 'Graffer: No XY Data', $
+                        dialog_parent = pdefs.ids.graffer, $
+                        resource = 'Graffer', $
+                        /question)) eq 'No' then return, 0
+  endif
 
-dlist = dlist(arexyd)
+  dlist = dlist(arexyd)
 
-widget_control, pdefs.ids.graffer, sensitive = 0
-
-
-tlb = widget_base(title = 'Graffer data set select', group = $
-                  pdefs.ids.graffer, resource = 'Graffer')
-base = widget_base(tlb, /column)
-
-b1 = widget_base(base, /row)
-
-jb = widget_base(b1, /column)
-curr = widget_label(jb, value = 'Data Sets')
-junk = widget_list(jb, value = dlist, uvalue = 'CHOOSE', $
-                   ysize = (8 < n_elements(dlist)))
-
-choice = graff_enter(jb, value = '', /text, /no_event, /display, $
-                     xsize = max(strlen(dlist)), label = 'Current ' + $
-                     'Selection', /column)
+  widget_control, pdefs.ids.graffer, sensitive = 0
 
 
-jb = widget_base(b1, $
-                 /column, $
-                 /base_align_right, $
-                 xpad = 0, $
-                 ypad = 0, $
-                 space = 0)
-ftp = widget_droplist(jb, $
-                      value = fitts, $
-                      title = 'Fit type', $
-                      uvalue = 'FITT')
-widget_control, ftp, set_droplist_select = fittd
+  tlb = widget_base(title = 'Graffer data set select', group = $
+                    pdefs.ids.graffer, resource = 'Graffer')
+  base = widget_base(tlb, /column)
 
-junk = widget_droplist(jb, $
-                       value = fitn, $
-                       title = 'Fit norm', $
-                       uvalue = 'FITN')
+  b1 = widget_base(base, /row)
 
-junk = widget_droplist(jb, $
-                       value = fitd, $
-                       title = 'Fit sense', $
-                       uvalue = 'FITD')
+  jb = widget_base(b1, /column)
+  curr = widget_label(jb, value = 'Data Sets')
+  junk = widget_list(jb, value = dlist, uvalue = 'CHOOSE', $
+                     ysize = (8 < n_elements(dlist)))
 
-degid = graff_enter(jb, /int, value = 1, /no_event, xsize = 3, $
-                    label = $
-                    'Degree:', /capture) 
+  choice = cw_enter(jb, value = '', /text, /no_event, /display, $
+                    xsize = max(strlen(dlist)), label = 'Current ' + $
+                    'Selection', /column)
 
-npts = graff_enter(jb, /int, value = 25, /no_event, xsize = 3, $
+
+  jb = widget_base(b1, $
+                   /column, $
+                   /base_align_right, $
+                   xpad = 0, $
+                   ypad = 0, $
+                   space = 0)
+  ftp = widget_droplist(jb, $
+                        value = fitts, $
+                        title = 'Fit type', $
+                        uvalue = 'FITT')
+  widget_control, ftp, set_droplist_select = fittd
+
+  junk = widget_droplist(jb, $
+                         value = fitn, $
+                         title = 'Fit norm', $
+                         uvalue = 'FITN')
+
+  junk = widget_droplist(jb, $
+                         value = fitd, $
+                         title = 'Fit sense', $
+                         uvalue = 'FITD')
+
+  degid = cw_enter(jb, /int, value = 1, /no_event, xsize = 3, $
                    label = $
-                   '# evaluations:', /capture)
-part = graff_enter(jb, /text, value = '', /no_event, xsize = 15, label $
-                   = 'Slice:', /capture)
+                   'Degree:', /capture) 
 
-jbb = widget_base(jb, $
-                  /nonexclusive)
+  npts = cw_enter(jb, /int, value = 25, /no_event, xsize = 3, $
+                  label = $
+                  '# evaluations:', /capture)
+  part = cw_enter(jb, /text, value = '', /no_event, xsize = 15, label $
+                  = 'Slice:', /capture)
 
-junk = widget_button(jbb, $
-                     value = "Ignore NaNs?", $
-                     uvalue = "NAN")
-widget_control, junk, /set_button
+  jbb = widget_base(jb, $
+                    /nonexclusive)
 
-jb = widget_base(base, /column, /align_center, /base_align_center)
-resid = graff_enter(jb, /text, value = '', /no_event, /display, $
-                    xsize = 40, label = 'Fit', /column)
-csqid = graff_enter(jb, /float, value = 0., /no_event, /display, $
-                    xsize = 14, label = 'Prob chance:')
+  junk = widget_button(jbb, $
+                       value = "Ignore NaNs?", $
+                       uvalue = "NAN")
+  widget_control, junk, /set_button
 
-jb = widget_base(base, /row, /align_center)
-junk = widget_button(jb, value = '   Cancel   ', uvalue = 'DONT')
-upid = widget_button(jb, value = '   Update   ', uvalue = 'UPDATE')
-dobid = widget_button(jb, value = '    Do it    ', uvalue = 'DO')
-widget_control, dobid, sensitive = 0
-widget_control, upid, sensitive = 0
+  jb = widget_base(base, /column, /align_center, /base_align_center)
+  resid = cw_enter(jb, /text, value = '', /no_event, /display, $
+                   xsize = 40, label = 'Fit', /column)
+  csqid = cw_enter(jb, /float, value = 0., /no_event, /display, $
+                   xsize = 14, label = 'Prob chance:')
 
-widget_control, base, set_uvalue = {chosen: 0, $
-                                    List:   dlist, $
-                                    Chid:   choice, $
-                                    Degid:  degid, $
-                                    Nid:    npts, $
-                                    Dobid:  dobid, $
-                                    Upid:   upid, $
-                                    Part:   part, $
-                                    Ftype:  ftp, $
-                                    Np:     25, $
-                                    nan:    1b, $
-                                    Slice:  '', $
-                                    Type:   [fittd, 0, 0, 1]}
+  jb = widget_base(base, /row, /align_center)
+  junk = widget_button(jb, value = '   Cancel   ', uvalue = 'DONT')
+  upid = widget_button(jb, value = '   Update   ', uvalue = 'UPDATE')
+  dobid = widget_button(jb, value = '    Do it    ', uvalue = 'DO')
+  widget_control, dobid, sensitive = 0
+  widget_control, upid, sensitive = 0
+
+  widget_control, base, set_uvalue = {chosen: 0, $
+                                      List:   dlist, $
+                                      Chid:   choice, $
+                                      Degid:  degid, $
+                                      Nid:    npts, $
+                                      Dobid:  dobid, $
+                                      Upid:   upid, $
+                                      Part:   part, $
+                                      Ftype:  ftp, $
+                                      Np:     25, $
+                                      nan:    1b, $
+                                      Slice:  '', $
+                                      Type:   [fittd, 0, 0, 1]}
 
 
 
-widget_control, base, event_func = 'grf_fit_event'
+  widget_control, base, event_func = 'grf_fit_event'
 
-widget_control, tlb, /real
+  widget_control, tlb, /real
 
-old_data = (*pdefs.data)[pdefs.cset] ; Save the old settings
+  old_data = (*pdefs.data)[pdefs.cset] ; Save the old settings
 
 ;			DIY widget management here
 
-fitflag = 0
-repeat begin
-    ev = widget_event(base) 
-    if (ev.exit gt 0) then begin
+  fitflag = 0
+  repeat begin
+     ev = widget_event(base) 
+     if (ev.exit gt 0) then begin
         widget_control, base, get_uvalue = uv
         fitstr = gr_fit_funct(pdefs, uv.type, uv.np, uv.slice, $
                               arexyd(uv.chosen), pr, resid, $
                               nan = uv.nan)
         if (fitstr eq '') then begin
-            ev.exit = 0
+           ev.exit = 0
         endif else begin
-            if (ev.exit eq 2) then begin
-                widget_control, resid, set_value = fitstr
-                widget_control, csqid, set_value = pr
-            endif
-            gr_plot_object, pdefs
-            fitflag = 1
+           if (ev.exit eq 2) then begin
+              widget_control, resid, set_value = fitstr
+              widget_control, csqid, set_value = pr
+           endif
+           gr_plot_object, pdefs
+           fitflag = 1
         endelse
-    endif
-endrep  until (ev.exit and 1) ne 0
+     endif
+  endrep  until (ev.exit and 1) ne 0
 
-widget_control, base, get_uvalue = uv, /no_copy
-widget_control, tlb, /destroy
-widget_control, pdefs.ids.graffer, sensitive = 1
+  widget_control, base, get_uvalue = uv, /no_copy
+  widget_control, tlb, /destroy
+  widget_control, pdefs.ids.graffer, sensitive = 1
 
-if (ev.exit eq -1) then begin
-    if (fitflag) then begin
+  if (ev.exit eq -1) then begin
+     if (fitflag) then begin
         (*pdefs.data)[pdefs.cset] = old_data
-    endif
-    return, 0
-endif
+     endif
+     return, 0
+  endif
 
-return, 1
+  return, 1
 
 end
 

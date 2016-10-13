@@ -134,6 +134,7 @@ function gr_custom_colour, index, w0, group = group
 ; History:
 ;	Original: 17/5/16; SJT
 ;	Add scaler: 23/8/16; SJT
+;	Replace graff_enter with cw_enter: 13/10/16; SJT
 ;-
 
   if n_elements(index) eq 1 then begin
@@ -248,7 +249,7 @@ function gr_custom_colour, index, w0, group = group
                      /frame)
   widget_control, sc_b, sensitive = max(bcolour) gt 0
 
-  sce_id = graff_enter(sc_b, $
+  sce_id = cw_enter(sc_b, $
                        label = 'Scale (%)', $
                        /column, $
                        format = "(f0.1)", $

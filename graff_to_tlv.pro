@@ -170,6 +170,7 @@ pro graff_to_tlv, pdefs
 ;	Make a gui to change names: 12/7/12; SJT
 ;	Make defaults include DS number, and allow non-saving:
 ;	2/12/15; SJT
+;	Replace graff_enter with cw_enter: 13/10/16; SJT
 ;-
 
   data = (*pdefs.data)[pdefs.cset]
@@ -193,211 +194,211 @@ pro graff_to_tlv, pdefs
            y_err_b: ["GR_Y_ERR_L"+sfx, "GR_Y_ERR_U"+sfx]}
   
   if data.type eq 9 then begin
-     junk = graff_enter(base, $
-                        /text, $
-                        value = names.z, $
-                        xsize = 10, $
-                        label = "Z:", $
-                        uvalue = 'Z', $
-                        /all, $
-                        /capture)
-     junk = graff_enter(base, $
-                        /text, $
-                        value = names.x, $
-                        xsize = 10, $
-                        label = "X:", $
-                        uvalue = 'X', $
-                        /all, $
-                        /capture)
-     junk = graff_enter(base, $
-                        /text, $
-                        value = names.y, $
-                        xsize = 10, $
-                        label = "Y:", $
-                        uvalue = 'Y', $
-                        /all, $
-                        /capture)
+     junk = cw_enter(base, $
+                     /text, $
+                     value = names.z, $
+                     xsize = 10, $
+                     label = "Z:", $
+                     uvalue = 'Z', $
+                     /all, $
+                     /capture)
+     junk = cw_enter(base, $
+                     /text, $
+                     value = names.x, $
+                     xsize = 10, $
+                     label = "X:", $
+                     uvalue = 'X', $
+                     /all, $
+                     /capture)
+     junk = cw_enter(base, $
+                     /text, $
+                     value = names.y, $
+                     xsize = 10, $
+                     label = "Y:", $
+                     uvalue = 'Y', $
+                     /all, $
+                     /capture)
 
   endif else begin 
-     junk = graff_enter(base, $
-                        /text, $
-                        value = names.x, $
-                        xsize = 10, $
-                        label = "X:", $
-                        uvalue = 'X', $
-                        /all, $
-                        /capture)
-     junk = graff_enter(base, $
-                        /text, $
-                        value = names.y, $
-                        xsize = 10, $
-                        label = "Y:", $
-                        uvalue = 'Y', $
-                        /all, $
-                        /capture)
+     junk = cw_enter(base, $
+                     /text, $
+                     value = names.x, $
+                     xsize = 10, $
+                     label = "X:", $
+                     uvalue = 'X', $
+                     /all, $
+                     /capture)
+     junk = cw_enter(base, $
+                     /text, $
+                     value = names.y, $
+                     xsize = 10, $
+                     label = "Y:", $
+                     uvalue = 'Y', $
+                     /all, $
+                     /capture)
 
 
      case data.type of
-        1: junk = graff_enter(base, $
-                              /text, $
-                              value = names.y_err, $
-                              xsize = 10, $
-                              label = "Y err:", $
-                              uvalue = 'YERR', $
-                              /all, $
-                              /capture)
+        1: junk = cw_enter(base, $
+                           /text, $
+                           value = names.y_err, $
+                           xsize = 10, $
+                           label = "Y err:", $
+                           uvalue = 'YERR', $
+                           /all, $
+                           /capture)
 
-        3: junk = graff_enter(base, $
-                              /text, $
-                              value = names.x_err, $
-                              xsize = 10, $
-                              label = "X err:", $
-                              uvalue = 'XERR', $
-                              /all, $
-                              /capture)
+        3: junk = cw_enter(base, $
+                           /text, $
+                           value = names.x_err, $
+                           xsize = 10, $
+                           label = "X err:", $
+                           uvalue = 'XERR', $
+                           /all, $
+                           /capture)
         2: begin
-           junk = graff_enter(base, $
-                              /text, $
-                              value = names.y_err_l[0], $
-                              xsize = 10, $
-                              label = "Y err-:", $
-                              uvalue = 'YERR-', $
-                              /all, $
-                              /capture)
-           junk = graff_enter(base, $
-                              /text, $
-                              value = names.y_err_l[1], $
-                              xsize = 10, $
-                              label = "Y err+:", $
-                              uvalue = 'YERR+', $
-                              /all, $
-                              /capture)
+           junk = cw_enter(base, $
+                           /text, $
+                           value = names.y_err_l[0], $
+                           xsize = 10, $
+                           label = "Y err-:", $
+                           uvalue = 'YERR-', $
+                           /all, $
+                           /capture)
+           junk = cw_enter(base, $
+                           /text, $
+                           value = names.y_err_l[1], $
+                           xsize = 10, $
+                           label = "Y err+:", $
+                           uvalue = 'YERR+', $
+                           /all, $
+                           /capture)
         end
         4: begin
-           junk = graff_enter(base, $
-                              /text, $
-                              value = names.x_err_l[0], $
-                              xsize = 10, $
-                              label = "X err-:", $
-                              uvalue = 'XERR-', $
-                              /all, $
-                              /capture)
-           junk = graff_enter(base, $
-                              /text, $
-                              value = names.x_err_l[1], $
-                              xsize = 10, $
-                              label = "X err+:", $
-                              uvalue = 'XERR+', $
-                              /all, $
-                              /capture)
+           junk = cw_enter(base, $
+                           /text, $
+                           value = names.x_err_l[0], $
+                           xsize = 10, $
+                           label = "X err-:", $
+                           uvalue = 'XERR-', $
+                           /all, $
+                           /capture)
+           junk = cw_enter(base, $
+                           /text, $
+                           value = names.x_err_l[1], $
+                           xsize = 10, $
+                           label = "X err+:", $
+                           uvalue = 'XERR+', $
+                           /all, $
+                           /capture)
         end
         5: begin
-           junk = graff_enter(base, $
-                              /text, $
-                              value = names.x_err, $
-                              xsize = 10, $
-                              label = "X err:", $
-                              uvalue = 'XERR', $
-                              /all, $
-                              /capture)
-           junk = graff_enter(base, $
-                              /text, $
-                              value = names.y_err, $
-                              xsize = 10, $
-                              label = "Y err:", $
-                              uvalue = 'YERR', $
-                              /all, $
-                              /capture)
+           junk = cw_enter(base, $
+                           /text, $
+                           value = names.x_err, $
+                           xsize = 10, $
+                           label = "X err:", $
+                           uvalue = 'XERR', $
+                           /all, $
+                           /capture)
+           junk = cw_enter(base, $
+                           /text, $
+                           value = names.y_err, $
+                           xsize = 10, $
+                           label = "Y err:", $
+                           uvalue = 'YERR', $
+                           /all, $
+                           /capture)
         end
 
         6: begin
-           junk = graff_enter(base, $
-                              /text, $
-                              value = names.x_err, $
-                              xsize = 10, $
-                              label = "X err:", $
-                              uvalue = 'XERR', $
-                              /all, $
-                              /capture)
-           junk = graff_enter(base, $
-                              /text, $
-                              value = names.y_err_l[0], $
-                              xsize = 10, $
-                              label = "Y err-:", $
-                              uvalue = 'YERR-', $
-                              /all, $
-                              /capture)
-           junk = graff_enter(base, $
-                              /text, $
-                              value = names.y_err_l[1], $
-                              xsize = 10, $
-                              label = "Y err+:", $
-                              uvalue = 'YERR+', $
-                              /all, $
-                              /capture)
+           junk = cw_enter(base, $
+                           /text, $
+                           value = names.x_err, $
+                           xsize = 10, $
+                           label = "X err:", $
+                           uvalue = 'XERR', $
+                           /all, $
+                           /capture)
+           junk = cw_enter(base, $
+                           /text, $
+                           value = names.y_err_l[0], $
+                           xsize = 10, $
+                           label = "Y err-:", $
+                           uvalue = 'YERR-', $
+                           /all, $
+                           /capture)
+           junk = cw_enter(base, $
+                           /text, $
+                           value = names.y_err_l[1], $
+                           xsize = 10, $
+                           label = "Y err+:", $
+                           uvalue = 'YERR+', $
+                           /all, $
+                           /capture)
         end
 
         7: begin
-           junk = graff_enter(base, $
-                              /text, $
-                              value = names.x_err_l[0], $
-                              xsize = 10, $
-                              label = "X err-:", $
-                              uvalue = 'XERR-', $
-                              /all, $
-                              /capture)
-           junk = graff_enter(base, $
-                              /text, $
-                              value = names.x_err_l[1], $
-                              xsize = 10, $
-                              label = "X err+:", $
-                              uvalue = 'XERR+', $
-                              /all, $
-                              /capture)
-           junk = graff_enter(base, $
-                              /text, $
-                              value = names.y_err, $
-                              xsize = 10, $
-                              label = "Y err:", $
-                              uvalue = 'YERR', $
-                              /all, $
-                              /capture)
+           junk = cw_enter(base, $
+                           /text, $
+                           value = names.x_err_l[0], $
+                           xsize = 10, $
+                           label = "X err-:", $
+                           uvalue = 'XERR-', $
+                           /all, $
+                           /capture)
+           junk = cw_enter(base, $
+                           /text, $
+                           value = names.x_err_l[1], $
+                           xsize = 10, $
+                           label = "X err+:", $
+                           uvalue = 'XERR+', $
+                           /all, $
+                           /capture)
+           junk = cw_enter(base, $
+                           /text, $
+                           value = names.y_err, $
+                           xsize = 10, $
+                           label = "Y err:", $
+                           uvalue = 'YERR', $
+                           /all, $
+                           /capture)
         end
 
         
         8: begin
-           junk = graff_enter(base, $
-                              /text, $
-                              value = names.x_err_l[0], $
-                              xsize = 10, $
-                              label = "X err-:", $
-                              uvalue = 'XERR-', $
-                              /all, $
-                              /capture)
-           junk = graff_enter(base, $
-                              /text, $
-                              value = names.x_err_l[1], $
-                              xsize = 10, $
-                              label = "X err+:", $
-                              uvalue = 'XERR+', $
-                              /all, $
-                              /capture)
-           junk = graff_enter(base, $
-                              /text, $
-                              value = names.y_err_l[0], $
-                              xsize = 10, $
-                              label = "Y err-:", $
-                              uvalue = 'YERR-', $
-                              /all, $
-                              /capture)
-           junk = graff_enter(base, $
-                              /text, $
-                              value = names.y_err_l[1], $
-                              xsize = 10, $
-                              label = "Y err+:", $
-                              uvalue = 'YERR+', $
-                              /all, $
-                              /capture)
+           junk = cw_enter(base, $
+                           /text, $
+                           value = names.x_err_l[0], $
+                           xsize = 10, $
+                           label = "X err-:", $
+                           uvalue = 'XERR-', $
+                           /all, $
+                           /capture)
+           junk = cw_enter(base, $
+                           /text, $
+                           value = names.x_err_l[1], $
+                           xsize = 10, $
+                           label = "X err+:", $
+                           uvalue = 'XERR+', $
+                           /all, $
+                           /capture)
+           junk = cw_enter(base, $
+                           /text, $
+                           value = names.y_err_l[0], $
+                           xsize = 10, $
+                           label = "Y err-:", $
+                           uvalue = 'YERR-', $
+                           /all, $
+                           /capture)
+           junk = cw_enter(base, $
+                           /text, $
+                           value = names.y_err_l[1], $
+                           xsize = 10, $
+                           label = "Y err+:", $
+                           uvalue = 'YERR+', $
+                           /all, $
+                           /capture)
         end
         else:
      endcase

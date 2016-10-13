@@ -24,6 +24,7 @@
 ;	Replace cw_pdtsmenu & last cw_bbselector with cw_pdmenu_plus:
 ;	28/9/16; SJT
 ;	Use cw_spin_box for sizes and thicknesses: 29/9/16; SJT
+;	Replace graff_enter with cw_enter: 13/10/16; SJT
 ;-
 
 pro Gr_dsp_event, event
@@ -319,25 +320,25 @@ pro Gr_ds_menus, optbb, pdefs
 
   pdefs.ids.minmaxbase = widget_base(pdefs.ids.plopts[0], $
                                      /column)
-  pdefs.ids.minval = graff_enter(pdefs.ids.minmaxbase, $
-                                 /double, $
-                                 format = "(g12.4)", $
-                                 /all_event, $
-                                 xsize = 13, $
-                                 uvalue = 'MINVAL', $
-                                 label = 'Min Value:', $
-                                 /track, $
-                                 /capture, $
-                                 /empty_nan)
-  pdefs.ids.maxval = graff_enter(pdefs.ids.minmaxbase, $
-                                 /double, $
-                                 format = "(g12.4)", $
-                                 /all_event, $
-                                 xsize = 13, $
-                                 uvalue = 'MAXVAL', $
-                                 label = 'Max Value:', $
-                                 /track, $
-                                 /capture, $
-                                 /empty_nan)
+  pdefs.ids.minval = cw_enter(pdefs.ids.minmaxbase, $
+                              /double, $
+                              format = "(g12.4)", $
+                              /all_event, $
+                              xsize = 13, $
+                              uvalue = 'MINVAL', $
+                              label = 'Min Value:', $
+                              /track, $
+                              /capture, $
+                              /empty_nan)
+  pdefs.ids.maxval = cw_enter(pdefs.ids.minmaxbase, $
+                              /double, $
+                              format = "(g12.4)", $
+                              /all_event, $
+                              xsize = 13, $
+                              uvalue = 'MAXVAL', $
+                              label = 'Max Value:', $
+                              /track, $
+                              /capture, $
+                              /empty_nan)
 
 end

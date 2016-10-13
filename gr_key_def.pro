@@ -21,6 +21,7 @@
 ;	Replace cw_bbselector with widget_droplist: 13/12/11; SJT
 ;	Add support for a second Y-scale: 22/12/11; SJT
 ;	Use cw_spin_box for columns & charsize: 29/9/16; SJT
+;	Replace graff_enter with cw_enter: 13/10/16; SJT
 ;-
 
 function Gr_key_event, event
@@ -43,17 +44,17 @@ case but of
     
     'X0': begin
         uv.key.x(0) = event.value
-        if (event.cr) then grf_focus_enter, uv.yid0
+        if (event.cr) then cw_enter_focus, uv.yid0
     end
     
     'Y0': begin
         uv.key.y(0) = event.value
-        if (event.cr) then grf_focus_enter, uv.xid1
+        if (event.cr) then cw_enter_focus, uv.xid1
     end
     
     'X1': begin
         uv.key.x(1) = event.value
-        if (event.cr) then grf_focus_enter, uv.yid1
+        if (event.cr) then cw_enter_focus, uv.yid1
     end
     
     'Y1': begin
@@ -68,12 +69,12 @@ case but of
 
     'COL': begin
         uv.key.cols = event.value
-        if (event.cr) then grf_focus_enter, uv.tid
+        if (event.cr) then cw_enter_focus, uv.tid
     end
     
     'TITLE': begin
         uv.key.title = event.value
-        if (event.cr) then grf_focus_enter, uv.xid0
+        if (event.cr) then cw_enter_focus, uv.xid0
     end
     
     'USE': uv.key.use = event.select
@@ -172,18 +173,18 @@ junk = widget_droplist(jb, $
 widget_control, junk, set_droplist_select = pdefs.key.norm
 
 jjb = widget_base(jb, /row)
-bub.xid0 = graff_enter(jjb, /float, xsize = 11, /all_event, label = $
+bub.xid0 = cw_enter(jjb, /float, xsize = 11, /all_event, label = $
                        'Lower left: X:', value = pdefs.key.x(0), $
                        uvalue = 'X0', /capture)
-bub.yid0 = graff_enter(jjb, /float, xsize = 11, /all_event, label = $
+bub.yid0 = cw_enter(jjb, /float, xsize = 11, /all_event, label = $
                        'Y:', value = pdefs.key.y(0), uvalue = 'Y0', $
                        /capture)
 
 jjb = widget_base(jb, /row)
-bub.xid1 = graff_enter(jjb, /float, xsize = 11, /all_event, label = $
+bub.xid1 = cw_enter(jjb, /float, xsize = 11, /all_event, label = $
                        'Upper right: X:', value = pdefs.key.x(1), $
                        uvalue = 'X1', /capture)
-bub.yid1 = graff_enter(jjb, /float, xsize = 11, /all_event, label = $
+bub.yid1 = cw_enter(jjb, /float, xsize = 11, /all_event, label = $
                        'Y:', value = pdefs.key.y(1), uvalue = 'Y1', $
                        /capture)
 jjb = widget_base(jb, /row)
@@ -234,7 +235,7 @@ junk = widget_droplist(jb, $
                      uvalue = 'FRAME')
 widget_control, junk, set_droplist_select = pdefs.key.frame
 
-bub.tid = graff_enter(jb, value = pdefs.key.title, /text, /all_event, $
+bub.tid = cw_enter(jb, value = pdefs.key.title, /text, /all_event, $
                       label = 'Key title:', xsize = 20, uvalue = $
                       'TITLE', /capture)
 

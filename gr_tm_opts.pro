@@ -6,6 +6,7 @@
 ;	Shorten name: 25/11/96; SJT
 ;	Add CAPTURE key to text inputs: 6/2/97; SJT
 ;	Replace cw_bbselectors with widget_droplist: 14/12/11; SJT
+;	Replace graff_enter with cw_enter: 13/10/16; SJT
 ;-
 
 function Gr_to_event, event
@@ -39,67 +40,67 @@ return, rv
 
 end
 
-function Gr_tm_opts, tmopt, zero, group=group
+function Gr_tm_opts, tmopt, zero, group = group
 
 
-unit = (tmopt / 2) and 3
-munit = (tmopt / 8) and 3
+  unit = (tmopt / 2) and 3
+  munit = (tmopt / 8) and 3
 
-ulist = ['Seconds', 'Minutes', 'Hours', 'Days']
+  ulist = ['Seconds', 'Minutes', 'Hours', 'Days']
 
-widget_control, group, sensitive = 0
+  widget_control, group, sensitive = 0
 
-tlb = widget_base(title = 'GRAFFER time opts', group = group, resource $
-                  = 'Graffer')
-base = widget_base(tlb, /column)
+  tlb = widget_base(title = 'GRAFFER time opts', group = group, resource $
+                    = 'Graffer')
+  base = widget_base(tlb, /column)
 
-junk = widget_label(base, value = 'Time label options')
+  junk = widget_label(base, value = 'Time label options')
 
-jb = widget_base(base, /row)
-junk = widget_droplist(jb, $
-                       value = ulist, $
-                       title = 'Units', $
-                       uvalue = 'UNIT')
-widget_control, junk, set_droplist_select = unit
-
-dispid = widget_droplist(jb, $
+  jb = widget_base(base, /row)
+  junk = widget_droplist(jb, $
                          value = ulist, $
-                         title = 'Display in', $
-                         uvalue = 'MUNIT')
-widget_control, dispid, sensitive = unit le 3, set_droplist_select = munit
+                         title = 'Units', $
+                         uvalue = 'UNIT')
+  widget_control, junk, set_droplist_select = unit
 
-zid = graff_enter(base, /int, value = zero, uvalue = 'ZERO', label = $
-                  'Label 0 as:', xsize = 5, /all, /capture)
-widget_control, zid, sensitive = unit le 3
+  dispid = widget_droplist(jb, $
+                           value = ulist, $
+                           title = 'Display in', $
+                           uvalue = 'MUNIT')
+  widget_control, dispid, sensitive = unit le 3, set_droplist_select = munit
 
-jb = widget_base(base, /row)
-junk = widget_button(jb, value = '   Do it   ', uvalue = 'DO')
-junk = widget_button(jb, value = '  Cancel  ', uvalue = 'CANCEL')
+  zid = cw_enter(base, /int, value = zero, uvalue = 'ZERO', label = $
+                 'Label 0 as:', xsize = 5, /all, /capture)
+  widget_control, zid, sensitive = unit le 3
+
+  jb = widget_base(base, /row)
+  junk = widget_button(jb, value = '   Do it   ', uvalue = 'DO')
+  junk = widget_button(jb, value = '  Cancel  ', uvalue = 'CANCEL')
 
 ;	RYO widget management to allow us to get the values back from
 ;	the event handler without using a common block, even after the
 ;	hierarchy has been destroyed.
 
-widget_control, tlb, /real
-widget_control, base, event_func = 'gr_to_event',  $
-                set_uvalue = {unit:unit, $
-                              munit:munit, $
-                              zero:zero, $
-                              dispid: dispid, $
-                              zid: zid}
+  widget_control, tlb, /real
+  widget_control, base, event_func = 'gr_to_event',  $
+                  set_uvalue = {unit:unit, $
+                                munit:munit, $
+                                zero:zero, $
+                                dispid: dispid, $
+                                zid: zid}
 
-repeat begin
-    ev = widget_event(tlb)
-endrep until (ev.exited ne 0)
+  repeat begin
+     ev = widget_event(tlb)
+  endrep until (ev.exited ne 0)
 
-widget_control, base, get_uvalue = ntopt, /no_copy
+  widget_control, base, get_uvalue = ntopt, /no_copy
 
-widget_control, ev.top, /destroy
-widget_control, group, sensitive = 1
+  widget_control, ev.top, /destroy
+  widget_control, group, sensitive = 1
 
 
-if (ev.exited eq -1) then return, [tmopt, zero]$
-else return, [1 + ntopt.unit*2 + ntopt.munit*8, ntopt.zero]
+  if (ev.exited eq -1) then return, [tmopt, zero]$
+  else return, [1 + ntopt.unit*2 + ntopt.munit*8, ntopt.zero]
 
 end
 

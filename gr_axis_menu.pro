@@ -545,126 +545,132 @@ end
 
 pro Gr_axis_menu, axis, base, pdefs
 
-tjb = widget_base(base, /column, /frame, xpad = 0, ypad = 0, $
-                  space = 0, event_pro = 'gr_axis_event')
-junk = widget_label(tjb, value = axis+'-Axis')
+  tjb = widget_base(base, /column, /frame, xpad = 0, ypad = 0, $
+                    space = 0, event_pro = 'gr_axis_event')
+  junk = widget_label(tjb, value = axis+'-Axis')
 
                                 ; Title
 
-title = graff_enter(tjb, /all_events, value = '', xsize = 25, uvalue = $
-                    axis+'LAB', label = axis+' Label:', /track, $
-                    /capture, /graphics)
+  title = cw_enter(tjb, $
+                   /all_events, $
+                   value = '', $
+                   xsize = 25, $
+                   uvalue = axis+'LAB', $
+                   label = axis+' Label:', $
+                   /track, $
+                   /capture, $
+                   /graphics)
 
 
                                 ; Log/linear
 
-jb = widget_base(tjb, /row, xpad = 0, ypad = 0, space = 0)
-log = widget_droplist(jb, $
-                      value = ['Linear', 'Log'], $
-                      uvalue = axis+'LOG', $
-                      title = axis+' Log/Lin:', $
-                      /track)
+  jb = widget_base(tjb, /row, xpad = 0, ypad = 0, space = 0)
+  log = widget_droplist(jb, $
+                        value = ['Linear', 'Log'], $
+                        uvalue = axis+'LOG', $
+                        title = axis+' Log/Lin:', $
+                        /track)
 
                                 ; Exact or rounded axis range
 
-box_ok =  ~(axis eq 'Yr' || (axis eq 'Y' && pdefs.y_right))
-oa_ok = axis ne 'X' ||  ~pdefs.y_right
+  box_ok =  ~(axis eq 'Yr' || (axis eq 'Y' && pdefs.y_right))
+  oa_ok = axis ne 'X' ||  ~pdefs.y_right
 
-stydesc = [{AXMENU_OPTS, flag:3, label:axis+' style', state:0b, $
-            group: 0, sensitive: 1b},  $
-           {axmenu_opts, 4, 'Exact Range', 0b, 0, 1b}, $
-           {axmenu_opts, 4, 'Extended Range', 0b, 0, 1b}, $
-           {axmenu_opts, 4, 'Draw Axes', 0b, 0, 1b}, $
-           {axmenu_opts, 4, 'Draw Box Axis', 0b, 0, box_ok}, $
-           {axmenu_opts, 4, 'Minor Ticks', 0b, 0, 1b}, $
-           {axmenu_opts, 4, 'Annotation', 0b, 0, 1b}, $
-           {axmenu_opts, 4, 'Time Labelling', 0b, 0, 1b}, $
-           {axmenu_opts, 1, 'Origin Axis', 0b, 0, oa_ok}, $
-           {axmenu_opts, 4, 'Off', 1b, 1, 1b}, $
-           {axmenu_opts, 4, 'On', 0b, 1, 1b}, $
-           {axmenu_opts, 6, 'Full', 0b, 1, 1b}, $
-           {axmenu_opts, 1, 'Grid', 0b, 0, 1b}, $
-           {axmenu_opts, 4, ' None ', 1b, 2, 1b}, $
-           {axmenu_opts, 4, '______', 0b, 2, 1b}, $
-           {axmenu_opts, 4, '......', 0b, 2, 1b}, $
-           {axmenu_opts, 4, '_ _ _ ', 0b, 2, 1b}, $
-           {axmenu_opts, 4, '_._._.', 0b, 2, 1b}, $
-           {axmenu_opts, 4, '_...  ', 0b, 2, 1b}, $
-           {axmenu_opts, 6, '__  __', 0b, 2, 1b}, $
-           {axmenu_opts, 1, 'Autoscale', 0b, 0, 1b}, $
-           {axmenu_opts, 0, 'Extend', 0b, 0, 1b}, $
-           {axmenu_opts, 0, 'Extend or Shrink', 0b, 0, 1b}, $
-           {axmenu_opts, 2, 'Visible Only', 0b, 0, 1b}, $
-           {axmenu_opts, 2, 'Advanced ...', 0b, 0, 1b}]
+  stydesc = [{AXMENU_OPTS, flag:3, label:axis+' style', state:0b, $
+              group: 0, sensitive: 1b},  $
+             {axmenu_opts, 4, 'Exact Range', 0b, 0, 1b}, $
+             {axmenu_opts, 4, 'Extended Range', 0b, 0, 1b}, $
+             {axmenu_opts, 4, 'Draw Axes', 0b, 0, 1b}, $
+             {axmenu_opts, 4, 'Draw Box Axis', 0b, 0, box_ok}, $
+             {axmenu_opts, 4, 'Minor Ticks', 0b, 0, 1b}, $
+             {axmenu_opts, 4, 'Annotation', 0b, 0, 1b}, $
+             {axmenu_opts, 4, 'Time Labelling', 0b, 0, 1b}, $
+             {axmenu_opts, 1, 'Origin Axis', 0b, 0, oa_ok}, $
+             {axmenu_opts, 4, 'Off', 1b, 1, 1b}, $
+             {axmenu_opts, 4, 'On', 0b, 1, 1b}, $
+             {axmenu_opts, 6, 'Full', 0b, 1, 1b}, $
+             {axmenu_opts, 1, 'Grid', 0b, 0, 1b}, $
+             {axmenu_opts, 4, ' None ', 1b, 2, 1b}, $
+             {axmenu_opts, 4, '______', 0b, 2, 1b}, $
+             {axmenu_opts, 4, '......', 0b, 2, 1b}, $
+             {axmenu_opts, 4, '_ _ _ ', 0b, 2, 1b}, $
+             {axmenu_opts, 4, '_._._.', 0b, 2, 1b}, $
+             {axmenu_opts, 4, '_...  ', 0b, 2, 1b}, $
+             {axmenu_opts, 6, '__  __', 0b, 2, 1b}, $
+             {axmenu_opts, 1, 'Autoscale', 0b, 0, 1b}, $
+             {axmenu_opts, 0, 'Extend', 0b, 0, 1b}, $
+             {axmenu_opts, 0, 'Extend or Shrink', 0b, 0, 1b}, $
+             {axmenu_opts, 2, 'Visible Only', 0b, 0, 1b}, $
+             {axmenu_opts, 2, 'Advanced ...', 0b, 0, 1b}]
 
-junk = widget_label(jb, $
-                    value = 'Style:')
+  junk = widget_label(jb, $
+                      value = 'Style:')
 
-junk = cw_pdmenu_plus(jb, $
-                      stydesc, $
-                      return_type = 'full_name', $
-                      uvalue = axis+'STY', $
-                      /track, $
-                      delimiter = '/', $
-                      ids = buts)
+  junk = cw_pdmenu_plus(jb, $
+                        stydesc, $
+                        return_type = 'full_name', $
+                        uvalue = axis+'STY', $
+                        /track, $
+                        delimiter = '/', $
+                        ids = buts)
 
 ;if (axis eq 'Yr') then widget_control, buts[19], sensitive = 0
 
-if axis eq 'Y' then pdefs.ids.y_box = buts[4]
-if axis eq 'X' then pdefs.ids.x_origin = buts[8]
+  if axis eq 'Y' then pdefs.ids.y_box = buts[4]
+  if axis eq 'X' then pdefs.ids.x_origin = buts[8]
 
-asty_pos = [1, 2, 3 , 4,  5,  6,  7,  8,  12]
+  asty_pos = [1, 2, 3, 4,  5,  6,  7,  8,  12]
 
                                 ; Minimum
 
-jb = widget_base(tjb, $
-                 /row, $
-                 xpad = 0, $
-                 ypad = 0, $
-                 space = 0)
+  jb = widget_base(tjb, $
+                   /row, $
+                   xpad = 0, $
+                   ypad = 0, $
+                   space = 0)
 
-amin = graff_enter(jb, $
-                   /float, $
-                   /all_events, $
-                   value = 0., $
-                   xsize = 12, $
-                   uvalue = axis+'MIN', $
-                   label = axis+' Min:', $
-                   format = "(g14.7)", $
-                   /track, $
-                   /capture)
+  amin = cw_enter(jb, $
+                  /float, $
+                  /all_events, $
+                  value = 0., $
+                  xsize = 12, $
+                  uvalue = axis+'MIN', $
+                  label = axis+' Min:', $
+                  format = "(g14.7)", $
+                  /track, $
+                  /capture)
 
                                 ; Maximum
 
-amax = graff_enter(jb, $
-                   /float, $
-                   /all_events, $
-                   value = 0., $
-                   xsize = 12, $
-                   uvalue = axis+'MAX', $
-                   label = 'Max:', $
-                   format = "(g14.7)", $
-                   /track, $
-                   /capture)
+  amax = cw_enter(jb, $
+                  /float, $
+                  /all_events, $
+                  value = 0., $
+                  xsize = 12, $
+                  uvalue = axis+'MAX', $
+                  label = 'Max:', $
+                  format = "(g14.7)", $
+                  /track, $
+                  /capture)
 
-if (axis eq 'X') then begin
-    pdefs.ids.xtitle = title
-    pdefs.ids.xlog = log
-    pdefs.ids.xmin = amin
-    pdefs.ids.xmax = amax
-    pdefs.ids.xsty = buts[asty_pos]
-endif else if (axis eq 'Y') then begin
-    pdefs.ids.ytitle = title
-    pdefs.ids.ylog = log
-    pdefs.ids.ymin = amin
-    pdefs.ids.ymax = amax
-    pdefs.ids.ysty = buts[asty_pos]
-endif else if (axis eq 'Yr') then begin
-    pdefs.ids.ytitle_r = title
-    pdefs.ids.ylog_r = log
-    pdefs.ids.ymin_r = amin
-    pdefs.ids.ymax_r = amax
-    pdefs.ids.ysty_r = buts[asty_pos]
-endif else message, '** O U C H ** Unknown axis ('+axis+')'
+  if (axis eq 'X') then begin
+     pdefs.ids.xtitle = title
+     pdefs.ids.xlog = log
+     pdefs.ids.xmin = amin
+     pdefs.ids.xmax = amax
+     pdefs.ids.xsty = buts[asty_pos]
+  endif else if (axis eq 'Y') then begin
+     pdefs.ids.ytitle = title
+     pdefs.ids.ylog = log
+     pdefs.ids.ymin = amin
+     pdefs.ids.ymax = amax
+     pdefs.ids.ysty = buts[asty_pos]
+  endif else if (axis eq 'Yr') then begin
+     pdefs.ids.ytitle_r = title
+     pdefs.ids.ylog_r = log
+     pdefs.ids.ymin_r = amin
+     pdefs.ids.ymax_r = amax
+     pdefs.ids.ysty_r = buts[asty_pos]
+  endif else message, '** O U C H ** Unknown axis ('+axis+')'
 
 end

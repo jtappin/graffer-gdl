@@ -1,9 +1,9 @@
 ;+
-; GRAFF_ENTER
+; CW_ENTER
 ;	A labeled text entry field
 ;
 ; Usage:
-;	id = graff_enter(parent, ...)
+;	id = cw_enter(parent, ...)
 ;
 ; Return:
 ;	id	long	The ID of the compound widget
@@ -27,10 +27,10 @@
 ;				unsigned.
 ;	text		input	If set, then the values are text
 ;				strings (default action)
-;	list		input	If set, then values will be returned
+;	list_object	input	If set, then values will be returned
 ;				as an IDL list. In this case
 ;				pro_set_list and func_get_list must
-;				both also be set. (N.B. /LIST implies
+;				both also be set. (N.B. /LIST_OBJECT implies
 ;				/ARRAY_VALUED).
 ;	format	string	input	The format for displaying the
 ;				value. (not used for LIST entries, see
@@ -72,6 +72,11 @@
 ;				string array to a list.
 ;	/sensitive	input	Set whether the widget is sensitive to
 ;				inputs or not.
+;	font	string	input	The font to use for the label.
+;	fieldfont string input	The font to use for the entry box.
+;
+;	Other keywords are passed directly to the base that is
+;	returned.
 ;
 ; Restrictions:
 ;	If the text window does not contain a valid value for the
@@ -86,7 +91,7 @@
 ;	A list-valued entry box is implicitly array valued. Each line
 ;	of the text widget is converted to an element of the list. The
 ;	formatting/decoding is done by the routines specified by the
-;	PRO_SET_LIST and FUNC_GET_LIST keywords.
+;	SET_LIST and GET_LIST keywords.
 ;	SET_LIST -- Takes a single LIST argument and returns a
 ;                   string array. If it fails it should return a
 ;                   numeric value. 0 is the normal soft fail
@@ -97,6 +102,58 @@
 ;                   value. 0 is the normal soft fail
 ;                   e.g. while the value is incomplete, non-zero is a
 ;                   hard fail.
+;	The examples below are suitable get and set functions for an
+;	entry for a list who's elements can contain an arbitrary number of
+;	integer values.
+;
+;; function tlist_get, str
+;;   nli = n_elements(str)
+;;   rv = list()
+;;   on_ioerror, fail
+;
+;;   for j = 0, nli-1 do begin
+;;      junk = strsplit(str[j], ' 	,', count = nn)
+;;      if nn eq 0 then continue
+;;      el = intarr(nn)
+;;      reads, str[j], el
+;;      rv.add, el
+;;   endfor
+;
+;;   if n_elements(rv) eq 0 then return, 0
+;;   return, rv
+;
+;; fail:
+;;   return, 0
+;; end
+;; function tlist_set, lis
+;;   nli = n_elements(lis)
+;
+;;   if ~obj_valid(lis) || nli eq 0 then return, 0
+;
+;;   print, nli, lis
+;;   rv = strarr(nli)
+;
+;;   for j = 0, nli-1 do begin
+;;      nn = n_elements(lis[j])
+;;      if nn gt 0 then begin
+;;         fmt = string(nn, format = "('(',i0,'(1x,i0))')")
+;;         rv[j] = string(lis[j], format = fmt)
+;;      endif else rv[j] = ''
+;;   endfor
+;
+;;   return, rv
+;; end
+;
+; Events:
+;	If tracking events are requested these are passed through with
+;	updated ID and HANDLER fields.
+;	Other events have the form:
+;	{ID: 0l, TOP: 0l, HANDLER: 0l, VALUE: <type>, CR: 0B, TYPE:
+;	0L}
+;	VALUE is the contents of the widget converted to the type
+;	specified. CR is set to 1 if a carriage return was entered or
+;	if the widget lost focus. TYPE is type of the value as would
+;	returned by size(value, /type), lists have type=11.
 ;
 ; History:
 ;	Original: 25/8/95; SJT
@@ -114,10 +171,12 @@
 ;	Few code modernizations, get rid of the no_copy's,
 ;	support 64-bit ints & unsigned: 4/10/16; SJT
 ;	Add support for list-valued entries: 6/10/16; SJT
+;	Merge graff_enter and cw_ffield, and store value in the state
+;	structure: 13/10/16; SJT
 ;-
 
 
-pro grf_focus_enter, id
+pro cw_enter_focus, id
                                 ; Set input focus to the text widget
                                 ; id.
 
@@ -129,8 +188,8 @@ pro grf_focus_enter, id
 end
 
 
-pro grf_set_enter, id, value
-                                ; Set the value of a graff_enter
+pro cw_enter_set, id, value
+                                ; Set the value of a cw_enter
                                 ; widget
 
   base = widget_info(id, /child)
@@ -141,7 +200,7 @@ pro grf_set_enter, id, value
   if ~state.array then v1 = value[0]  $
   else v1 = value
 
-  sv = size(v1[0], /type)
+  sv = size(v1, /type)
   if (sv eq 7 && n_elements(value) eq 1 && $
       strpos(v1, 'LABEL:') eq 0) then begin
      widget_control, state.label, set_value = strmid(v1, 6)
@@ -159,21 +218,37 @@ pro grf_set_enter, id, value
      14: vv = long64(v1)
      15: vv = ulong64(v1)
      11: begin
-        vv = call_function(state.set_list, v1)
-        if size(vv, /type) ne 7 then $
+        vv = call_function(state.get_list, v1)
+        if size(vv, /type) ne 11 then begin
            message, continue = vv eq 0, $
-                    "Unable to convert LIST to string array"
+                    "Unable to convert input to a list"
+           return
+        endif
      end
            
      Else: message, 'Unknown entry field type'
   endcase else vv = v1
 
-  if state.type ne 7 && state.type ne 11 && $
-     state.empty_nan && ~finite(vv) then $
-     vv = '' $
-  else vv = string(vv, format = state.format)
+  *state.value = vv
+  
+  case state.type of
+     7: vs = vv
+     11: begin
+        vs = call_function(state.set_list, vv)
+        if size(vs, /type) ne 7 then begin
+           message, continue = vs eq 0, $
+                    "Unable to convert input to a list"
+           return
+        endif
+     end
+     else: begin
+        if state.empty_nan && ~finite(vv) then vs = '' $
+        else vs = string(vv, format = state.format)
+     end
+  endcase
+  widget_control, state.text, set_value = vs
 
-  widget_control, state.text, set_value = vv
+  widget_control, base, set_uvalue = state
 
   return
 
@@ -183,11 +258,23 @@ No_set:
 
 end
 
+function cw_enter_get, id
+                                ; get the value of a cw_enter widget
+                                ; from the value stored in the state
+                                ; structure.
 
+  base = widget_info(id, /child)
+  widget_control, base, get_uvalue = state
+  
+  return, *(state.value)
 
-function grf_get_enter, id
-                                ; Get the value of a graff_enter
-                                ; widget
+end
+
+function cw_enter_read, id
+                                ; Get the value of a cw_enter
+                                ; widget from the text widget (used by
+                                ; the event handler). A user get_value
+                                ; can access the stored value.
 
   base = widget_info(id, /child)
   widget_control, base, get_uvalue = state
@@ -218,7 +305,7 @@ function grf_get_enter, id
         val = uintarr(nv0)
         v0 = 0u
      end
-     13: begin                   ; ULong
+     13: begin                  ; ULong
         val = ulonarr(nv0)
         v0 = 0ul
      end
@@ -226,7 +313,7 @@ function grf_get_enter, id
         val = lon64arr(nv0)
         v0 = 0ll
      end
-     15: begin                   ; ULong64
+     15: begin                  ; ULong64
         val = ulon64arr(nv0)
         v0 = 0ull
      end
@@ -242,12 +329,14 @@ function grf_get_enter, id
         if size(val, /type) ne 11 then begin
            if val ne 0 then message, "Invalid contents read"
            return, 0
-        endif
+        endif else return, val
      end
      Else: message, 'Unknown entry field type'
   endcase
 
-  if state.type ne 7 &&  state.type ne 11 then begin
+; Note that list types will have returned by we get here
+
+  if state.type ne 7 then begin
      on_ioerror, badval
      for j = 0, nv0-1 do begin
         if state.empty_nan && txt[j] eq '' then begin
@@ -273,26 +362,20 @@ badval:
 ;	value is present!)
 ;	For Lists, excluding invalid lines is the job of the decoder.
 
-  if state.type ne 11 then begin
-     locs = where(ivv, nv)
-     if (nv gt 0) then val = val[locs] $
-     else if (state.type eq 7) then val = 0 $
-     else val = ''
+  locs = where(ivv, nv)
+  if (nv gt 0) then val = val[locs] $
+  else if (state.type eq 7) then val = 0 $
+  else val = ''
 
-     if (nv eq 1) then val = val[0] ; Make single value a
+  if (nv eq 1) then val = val[0] ; Make single value a
                                 ; scalar
-  endif
 
   return, val
 
 end
 
-
-
-
-
-function grf_enter_ev, event
-                                ; Process events from a graff_enter
+function cw_enter_event, event
+                                ; Process events from a cw_enter
                                 ; widget
 
   if (event.id eq 0l) then return, 0l
@@ -301,43 +384,70 @@ function grf_enter_ev, event
   widget_control, base, get_uvalue = state
 
   e_type = tag_names(event, /structure_name)
-  if (e_type eq 'WIDGET_TRACKING') then begin
-     trkopt = state.track
-     if ((trkopt and 2b) ne 0 and event.enter) then $
-        widget_control, state.text, /input_focus
 
-     event.id = event.handler
-     event.handler = 0l
-     if (trkopt) then return, event $
-     else return, 0l
-  endif
+  case e_type  of
+     'WIDGET_TRACKING': begin
+        trkopt = state.track
+        if ((trkopt and 2b) ne 0 and event.enter) then $
+           widget_control, state.text, /input_focus
 
-  if (state.dead) then return, 0l ; Not returning events
+        event.id = event.handler
+        event.handler = 0l
+        if (trkopt) then return, event $
+        else return, 0l
+     end
+     'WIDGET_KBRD_FOCUS': begin
+        if event.enter || ~state.chflag || state.dead then return, 0l
+        state.chflag = 0b
+        cr = 1b
+     end
+
+     else: begin
+        if state.dead then return, 0l ; Not returning events
                                 ; Dummy return
 
-  if (event.type eq 3 and not state.select) then $
-     return, 0l                 ; Dummy return
+        if event.type eq 3 && ~state.select then $
+           return, 0l           ; Dummy return
 
-  widget_control, event.handler, get_value = val
- 
+        if event.type eq 0 && event.ch eq 10b then begin
+           cr = 1b
+           state.chflag = 0b
+        endif else begin
+           cr = 0b
+           state.chflag = event.type ne 3
+        endelse
+
+        if ~(state.all || cr) then begin
+           widget_control, base, set_uvalue = state
+           return, 0l
+        endif
+     end
+  endcase
+
+  val = cw_enter_read(event.handler)
+
   sv = size(val, /type)
-  if (sv ne state.type) then $
-     return, 0l                 ; Value wasn't valid don't return
-                                ; anything
+  if (sv ne state.type) then return, 0l ; Value wasn't valid don't
+                                ; return anything
 
-  cr = 0b
-  if (event.type eq 0) then if (event.ch eq 10b) then cr = 1b $
-  else begin
-     new_event = widget_event(event.handler, /nowait)
-  endelse
+  *(state.value) = val
+
+;	Absorb any events that have come during the processing (I
+;	suspect that this is a hangover from very old machines where
+;	it was possible to type faster than the event handler could
+;	cope).
+
+  widget_control, base, set_uvalue = state
+  new_event = widget_event(event.handler, /nowait)
+  widget_control, base, get_uvalue = state
 
   ev = { $
-       Id:event.handler, $
-       Top:event.top, $
-       Handler:event.handler, $
-       Value:val, $
-       cr:cr, $
-       Type:state.type $
+       Id:      event.handler, $
+       Top:     event.top, $
+       Handler: 0l, $
+       Value:   *(state.value), $
+       cr:      cr, $
+       Type:    state.type $
        }
 
   widget_control, base, set_uvalue = state
@@ -346,37 +456,39 @@ function grf_enter_ev, event
 
 end
 
+pro cw_enter_cleanup, bid
+  widget_control, bid, get_uvalue = state, /no_copy
+  if n_elements(state) ne 0 &&  ptr_valid(state.value) then $
+     ptr_free, state.value
+end
 
+function cw_enter, parent, label = label, value = value, $
+                   uvalue = uvalue, floating = floating, $
+                   integer = integer, text = text, $
+                   long_int = long_int, very_long = very_long, $
+                   unsigned = unsigned, double = double, $
+                   format = format, xsize = xsize, ysize = ysize, $
+                   column = column, frame = frame, box = box, $
+                   all_events = all_events, no_events = no_events, $ $
+                   select_events = select_events, display = display, $
+                   tracking_events = tracking_events, $
+                   array_valued = array_valued, scroll = scroll, $
+                   capture_focus = capture_focus, $
+                   graphics = graphics, empty_nan = empty_nan, $
+                   list_object = list_object, set_list = set_list, $
+                   get_list = get_list, sensitive = sensitive, $
+                   uname = uname, font=font, $
+                   fieldfont = fieldfont, $
+                   _extra = _extra
 
-
-
-function graff_enter, parent, label=label, value=value, uvalue=uvalue, $
-                      floating=floating, integer=integer, text=text, $
-                      long_int=long_int, very_long = very_long, $
-                      unsigned = unsigned, double = double, $
-                      format=format, xsize=xsize, ysize=ysize, $
-                      column=column, frame=frame, box=box, $
-                      all_events=all_events, no_events=no_events, $
-                      select_events=select_events, display=display, $
-                      tracking_events=tracking_events, $
-                      array_valued=array_valued, scroll=scroll, $
-                      capture_focus=capture_focus, graphics=graphics, $
-                      empty_nan = empty_nan, list = list, $
-                      set_list = set_list, $
-                      get_list = get_list, sensitive = sensitive
 
                                 ; First step: check that unset keys
                                 ; are set to something if needed.
 
-  if n_elements(label) eq 0 then label = 'Value:'
   if n_elements(ysize) eq 0 then ysize = 1
-  if n_elements(xsize) eq 0 then xsize = 0
-  if n_elements(uvalue) eq 0 then uvalue = 0
-  if n_elements(frame) eq 0 then frame = 0
-  if n_elements(box) eq 0 then box = 0
 
-
-  all = keyword_set(all_events) && (~ keyword_set(no_events))
+  txt_all_events = ~(keyword_set(no_events) || keyword_set(display))
+  all = keyword_set(all_events) && txt_all_events
 
   edit = ~keyword_set(display)
   track = keyword_set(tracking_events) or $
@@ -387,15 +499,25 @@ function graff_enter, parent, label=label, value=value, uvalue=uvalue, $
   sl = ''
   gl = ''
 
+  return_nan =  0b
+
   if keyword_set(floating) then begin
      if ~keyword_set(format) then format = "(g10.3)"
+     return_nan = keyword_set(empty_nan) && $
+        ~keyword_set(array_valued)
      vtype = 4                  ; Use the codes from SIZE for
                                 ; consistency
-     if n_elements(value) eq 0 then value = 0.0
+     if n_elements(value) eq 0 then $
+        value = return_nan ? !values.f_nan : 0.0
+
   endif else if keyword_set(double) then begin
      if ~keyword_set(format) then format = "(g12.5)"
+     return_nan = keyword_set(empty_nan) && $
+        ~keyword_set(array_valued)
      vtype = 5
-     if n_elements(value) eq 0 then value = 0.0d0
+     if n_elements(value) eq 0 then $
+        value = return_nan ? !values.d_nan : 0.0d0
+
   endif else if keyword_set(integer) then begin
      if ~keyword_set(format) then format = "(I0)"
      if keyword_set(unsigned) then begin
@@ -405,6 +527,7 @@ function graff_enter, parent, label=label, value=value, uvalue=uvalue, $
         vtype = 2
         if n_elements(value) eq 0 then value = 0
      endelse
+
   endif else if keyword_set(long_int) then begin
      if ~keyword_set(format) then format = "(I0)"
      if keyword_set(unsigned) then begin
@@ -414,6 +537,7 @@ function graff_enter, parent, label=label, value=value, uvalue=uvalue, $
         vtype = 3
         if n_elements(value) eq 0 then value = 0l
      endelse
+
   endif else if keyword_set(very_long) then begin
      if ~keyword_set(format) then format = "(I0)"
      if keyword_set(unsigned) then begin
@@ -423,7 +547,8 @@ function graff_enter, parent, label=label, value=value, uvalue=uvalue, $
         vtype = 14
         if n_elements(value) eq 0 then value = 0ll
      endelse
-  endif else if keyword_set(list) then begin
+
+  endif else if keyword_set(list_object) then begin
      if ~keyword_set(set_list) || $
         ~keyword_set(get_list) then message, $
         "A LIST-valued entry requires both SET_LIST and " + $
@@ -436,34 +561,34 @@ function graff_enter, parent, label=label, value=value, uvalue=uvalue, $
                                           "FORMAT should not be " + $
                                           "set for LIST entries"
      format = "(a)"
+
   endif else begin              ; No key is the same as /text
      if ~keyword_set(format) then format = "(A)"
      vtype = 7
      if n_elements(value) eq 0 then value = ''
   endelse
 
-  if vtype ne 11 &&  (keyword_set(pro_set_list) || $
-                      keyword_set(func_get_list)) then $
+  if vtype ne 11 &&  (keyword_set(set_list) || $
+                      keyword_set(get_list)) then $
                          message, /continue, $
                                   "SET_LIST and " + $
                                   "GET_LIST are ignored " + $
                                   "for non-list entries"
 
-  return_nan = keyword_set(empty_nan) && $
-     (vtype eq 4 || vtype eq 5) && $
-     ~keyword_set(array_valued)
 
-                              ; Define the heirarchy
+                                ; Define the heirarchy
 
                                 ; This is the top-level base which the
                                 ; user will see
 
   if (n_elements(parent) eq 0) then $
      tlb = widget_base(uvalue = uvalue, $
-                       uname = uname) $
+                       uname = uname, $
+                       _extra = _extra) $
   else tlb = widget_base(parent, $
                          uvalue = uvalue, $
-                        uname = uname)
+                         uname = uname, $
+                         _extra = _extra)
 
                                 ; This is the base to contain the
                                 ; label and text box, and also has the
@@ -473,28 +598,35 @@ function graff_enter, parent, label=label, value=value, uvalue=uvalue, $
   if (keyword_set(column)) then  $
      base = widget_base(tlb, $
                         /column, $
-                        frame = frame) $
+                        frame = frame, $
+                        kill_notify = 'cw_enter_cleanup') $
   else base = widget_base(tlb, $
                           /row, $
-                          frame = frame)
+                          frame = frame, $
+                          kill_notify = 'cw_enter_cleanup')
 
-  label = widget_label(base, $
-                       value = label, $
-                       /dynamic)
+  if n_elements(label) ne 0 then $
+     label = widget_label(base, $
+                          value = label, $
+                          /dynamic, $
+                          font = font)
 
   tbox = widget_text(base, $
                      edit = edit, $
-                     all_events = all, $
+                     all_events = txt_all_events, $
+                     kbrd_focus_events = txt_all_events, $
                      frame = box, $
                      xsize = xsize, $
                      ysize = ysize, $
-                     tracking_events = keyword_set(tracking_events) || $
-                     keyword_set(capture_focus), $
-                     scroll = keyword_set(scroll))
+                     tracking_events = (keyword_set(tracking_events) || $
+                                        keyword_set(capture_focus)), $
+                     scroll = keyword_set(scroll), $
+                     font = fieldfont)
 
   state = { $
           text:   tbox, $
           label:  label, $
+          all:    all, $
           dead:   keyword_set(no_events) || keyword_set(display), $
           type:   vtype, $
           format: format, $
@@ -504,14 +636,16 @@ function graff_enter, parent, label=label, value=value, uvalue=uvalue, $
           graph:  keyword_set(graphics) && (vtype eq 7), $
           empty_nan: return_nan, $
           set_list: sl, $
-          get_list: gl $
+          get_list: gl, $
+          value: ptr_new(value), $
+          chflag: 0b $
           }
 
   widget_control, base, set_uvalue = state
 
-  widget_control, tlb, event_func = 'grf_enter_ev', $
-                  func_get_value = 'grf_get_enter', $
-                  pro_set_value = 'grf_set_enter', $
+  widget_control, tlb, event_func = 'cw_enter_event', $
+                  func_get_value = 'cw_enter_get', $
+                  pro_set_value = 'cw_enter_set', $
                   set_value = value, $
                   sensitive = sensitive
 

@@ -20,6 +20,7 @@
 ;	Replace handles with pointers: 28/6/05; SJT
 ;	Add a chooser: 6/2/12; SJT
 ;	Improve handling of "undefined" settings: 5/10/16; SJT
+;	Replace graff_enter with cw_enter: 13/10/16; SJT
 ;-
 
 
@@ -121,9 +122,9 @@ function Grf_tlz_event, event
         
      endelse
      
-     'Z': grf_focus_enter, uvs.xid
-     'X': grf_focus_enter, uvs.yid
-     'Y': grf_focus_enter, uvs.zid
+     'Z': cw_enter_focus, uvs.xid
+     'X': cw_enter_focus, uvs.yid
+     'Y': cw_enter_focus, uvs.zid
      'ZP': begin
         name = gr_pick_tlv(event.top, level)
         if name ne '' then begin
@@ -132,7 +133,7 @@ function Grf_tlz_event, event
                               string(level, format = "(I0,'\')")+name $
            else widget_control, uvs.zid, set_value = name
         endif
-        grf_focus_enter, uvs.zid
+        cw_enter_focus, uvs.zid
      end
      'XP': begin
         name = gr_pick_tlv(event.top, level)
@@ -142,7 +143,7 @@ function Grf_tlz_event, event
                               string(level, format = "(I0,'\')")+name $
            else widget_control, uvs.xid, set_value = name
         endif
-        grf_focus_enter, uvs.xid
+        cw_enter_focus, uvs.xid
      end
      'YP': begin
         name = gr_pick_tlv(event.top, level)
@@ -152,7 +153,7 @@ function Grf_tlz_event, event
                               string(level, format = "(I0,'\')")+name $
            else widget_control, uvs.yid, set_value = name
         endif
-        grf_focus_enter, uvs.yid
+        cw_enter_focus, uvs.yid
      end
   endcase
 
@@ -220,51 +221,51 @@ function Gr_tlv_z, pdefs
 
   jb = widget_base(base, $
                    /row)
-  uvs.zid = graff_enter(jb, $
-                        value = '', $
-                        /text, $
-                        uvalue = 'Z', $
-                        label = 'Z Variable:', $
-                        xsize = 12, $
-                        /capture)
+  uvs.zid = cw_enter(jb, $
+                     value = '', $
+                     /text, $
+                     uvalue = 'Z', $
+                     label = 'Z Variable:', $
+                     xsize = 12, $
+                     /capture)
   junk = widget_button(jb, $
                        value = 'Pick...', $
                        uvalue = 'ZP')
 
   jb = widget_base(base, $
                    /row)
-  uvs.xid = graff_enter(jb, $
-                        value = '', $
-                        /text, $
-                        uvalue = 'X', $
-                        label = 'X Variable:', $
-                        xsize = 12, $
-                        /capture)
+  uvs.xid = cw_enter(jb, $
+                     value = '', $
+                     /text, $
+                     uvalue = 'X', $
+                     label = 'X Variable:', $
+                     xsize = 12, $
+                     /capture)
   junk = widget_button(jb, $
                        value = 'Pick...', $
                        uvalue = 'XP')
 
   jb = widget_base(base, $
                    /row)
-  uvs.yid = graff_enter(jb, $
-                        value = '', $
-                        /text, $
-                        uvalue = 'Y', $
-                        label = 'Y Variable:', $
-                        xsize = 12, $
-                        /capture)
+  uvs.yid = cw_enter(jb, $
+                     value = '', $
+                     /text, $
+                     uvalue = 'Y', $
+                     label = 'Y Variable:', $
+                     xsize = 12, $
+                     /capture)
   junk = widget_button(jb, $
                        value = 'Pick...', $
                        uvalue = 'YP')
 
 
-  uvs.mid = graff_enter(base, $
-                        value = '', $
-                        ysize = 2, $
-                        xsize = 30, $
-                        /column, $
-                        /display, $
-                        label = 'Messages')
+  uvs.mid = cw_enter(base, $
+                     value = '', $
+                     ysize = 2, $
+                     xsize = 30, $
+                     /column, $
+                     /display, $
+                     label = 'Messages')
 
   junk = cw_bgroup(base, $
                    ['Do it', 'Cancel'], $
@@ -278,7 +279,7 @@ function Gr_tlv_z, pdefs
 
   widget_control, tlb, /real
 
-  grf_focus_enter, uvs.zid
+  cw_enter_focus, uvs.zid
 
   widget_control, base, event_func = 'grf_tlz_event', set_uvalue = $
                   uvs, /no_copy

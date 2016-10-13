@@ -17,6 +17,7 @@
 ;	Add CAPTURE key to text inputs: 6/2/97; SJT
 ;	Replace handles with pointers: 28/6/05; SJT
 ;	Add division option: 12/9/16; SJT
+;	Replace graff_enter with cw_enter: 13/10/16; SJT
 ;-
 
 function Rescale_event, event
@@ -59,21 +60,21 @@ function Rescale_event, event
      
      'XSCALE': if (track_flag) then $
         graff_msg, wids.msg, "Specify scaling factor for X values" $
-     else grf_focus_enter, wids.boxes[1]
+     else cw_enter_focus, wids.boxes[1]
 
      'XSHIFT': if (track_flag) then $
         graff_msg, wids.msg, $
                    "Specify shift for X values (post scaling units)" $
-     else grf_focus_enter, wids.boxes[2]
+     else cw_enter_focus, wids.boxes[2]
 
      'YSCALE': if (track_flag) then $
         graff_msg, wids.msg, "Specify scaling factor for Y values" $
-     else grf_focus_enter, wids.boxes[3]
+     else cw_enter_focus, wids.boxes[3]
 
      'YSHIFT': if (track_flag) then $
         graff_msg, wids.msg, $
                    "Specify shift for Y values (post scaling units)" $
-     else grf_focus_enter, wids.boxes[0]
+     else cw_enter_focus, wids.boxes[0]
      
      'DIVX': if (track_flag) then $
         graff_msg, wids.msg, 'Set to divide by the X scale factor'
@@ -128,14 +129,14 @@ function Graff_rescale, pdefs
 
   jb = widget_base(base, /row, /frame)
 
-  wids.boxes[0] = graff_enter(jb, $
-                              label = 'X: Scaling:', $
-                              value = 1.0, $
-                              /float, $
-                              xsize = 11, $
-                              uvalue = 'XSCALE', $
-                              /track, $
-                              /capture)
+  wids.boxes[0] = cw_enter(jb, $
+                           label = 'X: Scaling:', $
+                           value = 1.0, $
+                           /float, $
+                           xsize = 11, $
+                           uvalue = 'XSCALE', $
+                           /track, $
+                           /capture)
 
   jbb = widget_base(jb, $
                     /nonexclusive)
@@ -143,25 +144,25 @@ function Graff_rescale, pdefs
                                   value = 'Divide', $
                                   uvalue = 'DIVX')
 
-  wids.boxes[1] = graff_enter(jb, $
-                              label = 'Shift:', $
-                              value = 0., $
-                              /float, $
-                              xsize = 11, $
-                              uvalue = 'XSHIFT', $
-                              /track, $
-                              /capture)
+  wids.boxes[1] = cw_enter(jb, $
+                           label = 'Shift:', $
+                           value = 0., $
+                           /float, $
+                           xsize = 11, $
+                           uvalue = 'XSHIFT', $
+                           /track, $
+                           /capture)
 
   jb = widget_base(base, /row, /frame)
 
-  wids.boxes[2] = graff_enter(jb, $
-                              label = 'Y: Scaling:', $
-                              value = 1.0, $
-                              /float, $
-                              xsize = 11, $
-                              uvalue = 'YSCALE', $
-                              /track, $
-                              /capture)
+  wids.boxes[2] = cw_enter(jb, $
+                           label = 'Y: Scaling:', $
+                           value = 1.0, $
+                           /float, $
+                           xsize = 11, $
+                           uvalue = 'YSCALE', $
+                           /track, $
+                           /capture)
 
   jbb = widget_base(jb, $
                     /nonexclusive)
@@ -169,22 +170,27 @@ function Graff_rescale, pdefs
                                   value = 'Divide', $
                                   uvalue = 'DIVY')
 
-  wids.boxes[3] = graff_enter(jb, $
-                              label = 'Shift:', $
-                              value = 0., $
-                              /float, $
-                              xsize = 11, $
-                              uvalue = 'YSHIFT', $
-                              /track, $
-                              /capture)
+  wids.boxes[3] = cw_enter(jb, $
+                           label = 'Shift:', $
+                           value = 0., $
+                           /float, $
+                           xsize = 11, $
+                           uvalue = 'YSHIFT', $
+                           /track, $
+                           /capture)
 
   wids.msg = widget_text(base, value = '')
 
   jb = widget_base(base, /row)
 
-  junk = widget_button(jb, value = '     Cancel    ', uvalue = $
-                       'CANCEL', /track)
-  junk = widget_button(jb, value = '     Do  it    ', uvalue = 'DO', /track)
+  junk = widget_button(jb, $
+                       value = '     Cancel    ', $
+                       uvalue = 'CANCEL', $
+                       /track)
+  junk = widget_button(jb, $
+                       value = '     Do  it    ', $
+                       uvalue = 'DO', $
+                       /track)
 
 
 ;	Realise the widgets and use a DIY widget handling procedure

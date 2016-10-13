@@ -17,6 +17,7 @@
 ;	Allow selection of non-standard filename: 13/2/12; SJT
 ;	Allow PDF generation: 21/9/16; SJT
 ;	Replace last bbselector with cw_pdmenu_plus: 28/9/16; SJT
+;	Replace graff_enter with cw_enter: 13/10/16; SJT
 ;-
 
 
@@ -421,62 +422,62 @@ function Gr_hardopts, pdefs
   widget_control, junk, set_droplist_select = h.timestamp
 
 ;  jb = widget_base(cl, /column)
-  uvs.xsid = graff_enter(cl, $
+  uvs.xsid = cw_enter(cl, $
+                      /float, $
+                      /all, $
+                      label = 'X Size (cm):', $
+                      value = h.size[0], $
+                      uvalue = 'XSI', $
+                      format = "(F5.2)", $
+                      xsize = 5, $
+                      /track, $
+                      /capture)
+  uvs.xoffid = cw_enter(cl, $
+                        /float, $
+                        /all, $
+                        label = 'X offset:',  $
+                        value = h.off[0], $
+                        uvalue = 'XOFF', $
+                        format = "(F5.2)", $
+                        xsize = 5, $
+                        /track, $
+                        /capture)
+  uvs.xleftid = cw_enter(cl, $
                          /float, $
-                         /all, $
-                         label = 'X Size (cm):', $
-                         value = h.size[0], $
-                         uvalue = 'XSI', $
+                         /display, $
+                         label = 'X remain:', $
+                         value = uvs.psize[0]-h.size[0]-h.off[0], $
                          format = "(F5.2)", $
-                         xsize = 5, $
-                         /track, $
-                         /capture)
-  uvs.xoffid = graff_enter(cl, $
-                           /float, $
-                           /all, $
-                           label = 'X offset:',  $
-                           value = h.off[0], $
-                           uvalue = 'XOFF', $
-                           format = "(F5.2)", $
-                           xsize = 5, $
-                           /track, $
-                           /capture)
-  uvs.xleftid = graff_enter(cl, $
-                            /float, $
-                            /display, $
-                            label = 'X remain:', $
-                            value = uvs.psize[0]-h.size[0]-h.off[0], $
-                            format = "(F5.2)", $
-                            xsize = 5)
+                         xsize = 5)
 
 ;  jb = widget_base(cl, /column)
-  uvs.ysid = graff_enter(cl, $
+  uvs.ysid = cw_enter(cl, $
+                      /float, $
+                      /all, $
+                      label = 'Y Size (cm):', $
+                      value  = h.size[1], $
+                      uvalue = 'YSI', $
+                      format = "(F5.2)", $
+                      xsize = 5, $
+                      /track, $
+                      /capture)
+  uvs.yoffid = cw_enter(cl, $
+                        /float, $
+                        /all, $
+                        label = 'Y offset:',  $
+                        value = h.off[1], $
+                        uvalue = 'YOFF', $
+                        format = "(F5.2)", $
+                        xsize = 5, $
+                        /track, $
+                        /capture)
+  uvs.yleftid = cw_enter(cl, $
                          /float, $
-                         /all, $
-                         label = 'Y Size (cm):', $
-                         value  = h.size[1], $
-                         uvalue = 'YSI', $
+                         /display, $
+                         label = 'Y remain:', $
+                         value = uvs.psize[1]-h.size[1]-h.off[1], $
                          format = "(F5.2)", $
-                         xsize = 5, $
-                         /track, $
-                         /capture)
-  uvs.yoffid = graff_enter(cl, $
-                           /float, $
-                           /all, $
-                           label = 'Y offset:',  $
-                           value = h.off[1], $
-                           uvalue = 'YOFF', $
-                           format = "(F5.2)", $
-                           xsize = 5, $
-                           /track, $
-                           /capture)
-  uvs.yleftid = graff_enter(cl, $
-                            /float, $
-                            /display, $
-                            label = 'Y remain:', $
-                            value = uvs.psize[1]-h.size[1]-h.off[1], $
-                            format = "(F5.2)", $
-                            xsize = 5)
+                         xsize = 5)
 
   jb = widget_base(base, /row)
   junk = widget_droplist(jb, $
@@ -521,14 +522,14 @@ function Gr_hardopts, pdefs
                                 ; Filename
   jb = widget_base(base, $
                    /row)
-  uvs.fileid = graff_enter(jb, $
-                           label = 'File: ', $
-                           value = h.name, $
-                           xsize = 40, $
-                           uvalue = 'FILE', $
-                           /track, $
-                           /capture, $
-                           /all_events)
+  uvs.fileid = cw_enter(jb, $
+                        label = 'File: ', $
+                        value = h.name, $
+                        xsize = 40, $
+                        uvalue = 'FILE', $
+                        /track, $
+                        /capture, $
+                        /all_events)
   junk = widget_button(jb, $
                        value = 'Pick ...', $
                        uvalue = 'PFILE', $
@@ -561,21 +562,21 @@ function Gr_hardopts, pdefs
      end
   endcase
 
-  uvs.cmid[0] = graff_enter(uvs.spbase, $
-                            label = clab, $
-                            value = ccmd, $
-                            uvalue = 'CMD', $
-                            xsize = 12, $
-                            /track, $
-                            /capture)
+  uvs.cmid[0] = cw_enter(uvs.spbase, $
+                         label = clab, $
+                         value = ccmd, $
+                         uvalue = 'CMD', $
+                         xsize = 12, $
+                         /track, $
+                         /capture)
 
-  uvs.cmid(1) = graff_enter(uvs.spbase, $
-                            value = scmd, $
-                            uvalue = 'SFX', $
-                            xsize = 8, $
-                            label = file_basename(h.name), $
-                            /track, $
-                            /capture)
+  uvs.cmid(1) = cw_enter(uvs.spbase, $
+                         value = scmd, $
+                         uvalue = 'SFX', $
+                         xsize = 8, $
+                         label = file_basename(h.name), $
+                         /track, $
+                         /capture)
 
   junk = widget_button(uvs.spbase, $
                        value = 'Default', $
@@ -592,12 +593,12 @@ function Gr_hardopts, pdefs
   widget_control, uvs.paperid, sensitive = ~(h.eps and 1)
   widget_control, uvs.ctrid, sensitive = ~(h.eps and 1)
 
-  uvs.action = graff_enter(base, $
-                           /text, $
-                           /display, $
-                           value = '', $
-                           xsize = 65, $
-                           label = 'Action:')
+  uvs.action = cw_enter(base, $
+                        /text, $
+                        /display, $
+                        value = '', $
+                        xsize = 65, $
+                        label = 'Action:')
 
                                 ; Quit button
   jb = widget_base(base, /row)

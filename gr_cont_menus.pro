@@ -16,6 +16,7 @@
 ;	Levels etc. become pointers: 11/1/12; SJT
 ;	Make contour colours a LIST: 7/10/16; SJT
 ;	Add non-linear contour level maps: 12/10/16; SJT
+;	Replace graff_enter with cw_enter: 13/10/16; SJT
 ;-
 
 
@@ -242,19 +243,19 @@ pro Gr_cont_menus, sb, pdefs
                                            /col, $
                                            map = iexpl)
 
-  pdefs.ids.zopts.c_levels = graff_enter(pdefs.ids.zopts.cl_base[1], $
-                                         /double, $
-                                         /array, $
-                                         /track, $
-                                         uvalue = 'LEVEL', $
-                                         value = l0, $
-                                         format = "(g11.4)", $
-                                         xsize = 10, $
-                                         ysize = 6, $
-                                         /column, $ 
-                                         label = 'Levels', $ 
-                                         /capture, $ 
-                                         /all_events)
+  pdefs.ids.zopts.c_levels = cw_enter(pdefs.ids.zopts.cl_base[1], $
+                                      /double, $
+                                      /array, $
+                                      /track, $
+                                      uvalue = 'LEVEL', $
+                                      value = l0, $
+                                      format = "(g11.4)", $
+                                      xsize = 10, $
+                                      ysize = 6, $
+                                      /column, $ 
+                                      label = 'Levels', $ 
+                                      /capture, $ 
+                                      /all_events)
 
 
   jbx = widget_base(obase, $
@@ -271,22 +272,22 @@ pro Gr_cont_menus, sb, pdefs
                                            /track)
   widget_control, pdefs.ids.zopts.c_type, set_droplist_select = zopts.fill
 
-  pdefs.ids.zopts.c_colour = graff_enter(jbx, $
-                                         /list, $
-                                         /track, $
-                                         uvalue = 'COLOUR', $
-                                         /capture, $
-                                         value = zopts.colours, $
-                                         xsize = 16, $
-                                         ysize = 4, $
-                                         /column, $
-                                         label = 'Colours', $
-                                         /all_events, $
-                                         set_list = 'gr_cont_col_set', $
-                                         $
-                                         $
-                                         $
-                                         get_list = 'gr_cont_col_get')
+  pdefs.ids.zopts.c_colour = cw_enter(jbx, $
+                                      /list, $
+                                      /track, $
+                                      uvalue = 'COLOUR', $
+                                      /capture, $
+                                      value = zopts.colours, $
+                                      xsize = 16, $
+                                      ysize = 4, $
+                                      /column, $
+                                      label = 'Colours', $
+                                      /all_events, $ $
+                                      set_list = 'gr_cont_col_set', $
+                                      $
+                                      $
+                                      $
+                                      get_list = 'gr_cont_col_get')
 
   jby = widget_base(jbx, $
                     /row, $
@@ -294,34 +295,34 @@ pro Gr_cont_menus, sb, pdefs
                     ypad = 0, $
                     space = 0)
 
-  pdefs.ids.zopts.c_thick = graff_enter(jby, $
-                                        /float, $ 
-                                        format = "(f6.1)", $
-                                        /array, $
-                                        /track, $
-                                        uvalue = 'THICK', $
-                                        /capture, $
-                                        value = *(zopts.thick), $ 
-                                        xsize = 8, $
-                                        ysize = 4, $
+  pdefs.ids.zopts.c_thick = cw_enter(jby, $
+                                     /float, $ 
+                                     format = "(f6.1)", $
+                                     /array, $
+                                     /track, $
+                                     uvalue = 'THICK', $
+                                     /capture, $
+                                     value = *(zopts.thick), $ 
+                                     xsize = 8, $
+                                     ysize = 4, $
 ;                                      /scroll, $
-                                        /column, $
-                                        label = 'Thicknesses', $
-                                        /all_events)
-  pdefs.ids.zopts.c_style = graff_enter(jby, $
-                                        /int, $
-                                        /array, $
-                                        /track, $
-                                        uvalue = 'STYLE', $
-                                        /capture, $
-                                        value = *(zopts.style), $
-                                        format = "(I0)", $
-                                        xsize = 8, $
-                                        ysize = 4, $
+                                     /column, $
+                                     label = 'Thicknesses', $
+                                     /all_events)
+  pdefs.ids.zopts.c_style = cw_enter(jby, $
+                                     /int, $
+                                     /array, $
+                                     /track, $
+                                     uvalue = 'STYLE', $
+                                     /capture, $
+                                     value = *(zopts.style), $
+                                     format = "(I0)", $
+                                     xsize = 8, $
+                                     ysize = 4, $
 ;                                      /scroll, $
-                                        /column, $
-                                        label = 'Styles', $
-                                        /all_events)
+                                     /column, $
+                                     label = 'Styles', $
+                                     /all_events)
   jby = widget_base(base, $
                     /row, $
                     xpad = 0, $

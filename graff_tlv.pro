@@ -21,6 +21,7 @@
 ;	Add missing check for 2-D dataset: 21/1/09; SJT
 ;	Replace cw_bbselectors with widget_droplist: 14/12/11; SJT
 ;	Add a chooser: 6/2/12; SJT
+;	Replace graff_enter with cw_enter: 13/10/16; SJT
 ;-
 
 
@@ -182,12 +183,12 @@ case object of
          endif 
     endelse
     
-    'X': grf_focus_enter, uvs.yid
-    'Y': grf_focus_enter, uvs.eloxid
-    'ELOX': grf_focus_enter, uvs.ehixid
-    'EHIX': grf_focus_enter, uvs.eloyid
-    'ELOY': grf_focus_enter, uvs.ehiyid
-    'EHIY': grf_focus_enter, uvs.xid
+    'X': cw_enter_focus, uvs.yid
+    'Y': cw_enter_focus, uvs.eloxid
+    'ELOX': cw_enter_focus, uvs.ehixid
+    'EHIX': cw_enter_focus, uvs.eloyid
+    'ELOY': cw_enter_focus, uvs.ehiyid
+    'EHIY': cw_enter_focus, uvs.xid
     'XP': begin
         name = gr_pick_tlv(event.top, level)
         if name ne '' then begin
@@ -195,7 +196,7 @@ case object of
               string(level, format = "(I0,'\')")+name $
             else widget_control, uvs.xid, set_value = name
         endif
-        grf_focus_enter, uvs.xid
+        cw_enter_focus, uvs.xid
     end
     'YP': begin
         name = gr_pick_tlv(event.top, level)
@@ -204,7 +205,7 @@ case object of
               string(level, format = "(I0,'\')")+name $
             else widget_control, uvs.yid, set_value = name
         endif
-        grf_focus_enter, uvs.yid
+        cw_enter_focus, uvs.yid
     end
     'ELOXP': begin
         name = gr_pick_tlv(event.top, level)
@@ -213,7 +214,7 @@ case object of
               string(level, format = "(I0,'\')")+name $
             else widget_control, uvs.eloxid, set_value = name
         endif
-        grf_focus_enter, uvs.eloxid
+        cw_enter_focus, uvs.eloxid
     end
     'EHIXP': begin
         name = gr_pick_tlv(event.top, level)
@@ -222,7 +223,7 @@ case object of
               string(level, format = "(I0,'\')")+name $
             else widget_control, uvs.ehixid, set_value = name
         endif
-        grf_focus_enter, uvs.ehixid
+        cw_enter_focus, uvs.ehixid
     end
     'ELOYP': begin
         name = gr_pick_tlv(event.top, level)
@@ -231,7 +232,7 @@ case object of
               string(level, format = "(I0,'\')")+name $
             else widget_control, uvs.eloyid, set_value = name
         endif
-        grf_focus_enter, uvs.eloyid
+        cw_enter_focus, uvs.eloyid
     end
     'EHIYP': begin
         name = gr_pick_tlv(event.top, level)
@@ -240,7 +241,7 @@ case object of
               string(level, format = "(I0,'\')")+name $
             else widget_control, uvs.ehiyid, set_value = name
         endif
-        grf_focus_enter, uvs.ehiyid
+        cw_enter_focus, uvs.ehiyid
     end
 
 
@@ -365,7 +366,7 @@ function Graff_tlv, pdefs
 
   uvs.xbid = widget_base(base, $
                          /row)
-  uvs.xid = graff_enter(uvs.xbid, $
+  uvs.xid = cw_enter(uvs.xbid, $
                         value = '', $
                         /text, $
                         uvalue = 'X', $
@@ -378,7 +379,7 @@ function Graff_tlv, pdefs
 
   uvs.ybid = widget_base(base, $
                          /row)
-  uvs.yid = graff_enter(uvs.ybid, $
+  uvs.yid = cw_enter(uvs.ybid, $
                         value = '', $
                         /text, $
                         uvalue = 'Y', $
@@ -391,7 +392,7 @@ function Graff_tlv, pdefs
 
   uvs.eloxbid = widget_base(base, $
                             /row)
-  uvs.eloxid = graff_enter(uvs.eloxbid, $
+  uvs.eloxid = cw_enter(uvs.eloxbid, $
                            value = '', $
                            /text, $
                            uvalue = 'ELOX', $
@@ -407,7 +408,7 @@ function Graff_tlv, pdefs
 
   uvs.ehixbid = widget_base(base, $
                             /row)
-  uvs.ehixid = graff_enter(uvs.ehixbid, $
+  uvs.ehixid = cw_enter(uvs.ehixbid, $
                            value = '', $
                            /text, $
                            uvalue = 'EHIX', $
@@ -423,7 +424,7 @@ function Graff_tlv, pdefs
 
   uvs.eloybid = widget_base(base, $
                             /row)
-  uvs.eloyid = graff_enter(uvs.eloybid, $
+  uvs.eloyid = cw_enter(uvs.eloybid, $
                            value = '', $
                            /text, $
                            uvalue = 'ELOY', $
@@ -438,7 +439,7 @@ function Graff_tlv, pdefs
 
   uvs.ehiybid = widget_base(base, $
                             /row)
-  uvs.ehiyid = graff_enter(uvs.ehiybid, $
+  uvs.ehiyid = cw_enter(uvs.ehiybid, $
                            value = '', $
                            /text, $
                            uvalue = 'EHIY', $
@@ -477,19 +478,25 @@ function Graff_tlv, pdefs
   widget_control, errid, set_droplist_select = $
                   (*pdefs.data)[pdefs.cset].type > 0
 
-  uvs.mid = graff_enter(base, value = '', ysize = 2, xsize = 30, $
-                        /column, /display, label = 'Messages')
+  uvs.mid = cw_enter(base, $
+                     value = '', $
+                     ysize = 2, $
+                     xsize = 30, $
+                     /column, $
+                     /display, $
+                     label = 'Messages')
 
-  junk = cw_bgroup(base, ['Do it', 'Cancel'], button_uvalue = [1, -1], $
-                   $
-                   $
-                   uvalue = 'ACTION', /row)
+  junk = cw_bgroup(base, $
+                   ['Do it', 'Cancel'], $
+                   button_uvalue = [1, -1], $
+                   uvalue = 'ACTION', $
+                   /row)
 
                                 ; Realise and do RYO event handling
 
   widget_control, tlb, /real
 
-  grf_focus_enter, uvs.xid
+  cw_enter_focus, uvs.xid
 
   widget_control, base, event_func = 'grf_tlv_event', set_uvalue = $
                   uvs, /no_copy
