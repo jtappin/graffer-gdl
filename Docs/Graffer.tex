@@ -331,7 +331,12 @@ Version 3.09 adds support for a secondary Y-axis.
 \item Add support for generating PDF output semi-directly.
 \item Replace 3 similar and confusing pulldown menu routines with a
   single unified routine.
+\item Make contour colours able to be a triple defining an explicit
+  colour.
+\item Add options to use logarithmic or square-root scaling for
+  automatic contour levels.
 \end{itemize}
+
 \section{Getting Started}
 
 
@@ -1280,7 +1285,7 @@ to set the detailed options.
         \end{tabular}
       \end{center}
     \end{table}
-    \textsc{\autoref{col_index}}. Alternatively colours may be gicen
+    \textsc{\autoref{col_index}}. Alternatively colours may be given
     as a RGB triple, as 3 numbers on the line.
 
     If the number of colour indices given is less than the number of
@@ -2789,7 +2794,7 @@ IDL User's library:
   \item A \texttt{cw\_bselector} or \texttt{widget\_droplist} like
     mode, allowing desensitized menu items.
   \end{itemize}
-\item [graff\_enter]An entry box with rather more options than
+\item [cw\_enter] An entry box with rather more options than
   CW\_FIELD (e.g. format, capture focus on pointing, tracking events).
 \item [fractile]Return specified percentiles of an array of values.
 \end{description}
@@ -2807,7 +2812,7 @@ file with just five options.
   operations in seconds. (300.)
 \item[\texttt{Supp2D:} \textit{bool}] Whether to suppress display of
   2-D datasets (for slow machines, really a legacy of the
-  mid-90's whne GRAFFER was first developed). (0)
+  mid-90's when GRAFFER was first developed). (0)
 \item[\texttt{MouseEdit:} \textit{bool}] Whether to enable mouse
   editing of data by default. (0)
 \item[\texttt{PDFView:} \textit{string}] The program to use to view the

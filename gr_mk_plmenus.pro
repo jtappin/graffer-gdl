@@ -132,7 +132,7 @@ pro Gr_mk_plmenus, base, pdefs
   pdefs.ids.title = cw_enter(tjb, $
                              /all_events, $
                              value = '', $
-                             xsize = 25, $
+                             xsize = 30, $
                              uvalue = 'TITLE', $
                              label = 'Title:', $
                              /track, $
@@ -142,7 +142,7 @@ pro Gr_mk_plmenus, base, pdefs
   pdefs.ids.subtitle = cw_enter(tjb, $
                                 /all_events, $
                                 value = '', $
-                                xsize = 25, $
+                                xsize = 30, $
                                 uvalue = 'SUBTITLE', $
                                 label = 'Subtitle:', $
                                 /track, $
@@ -158,7 +158,7 @@ pro Gr_mk_plmenus, base, pdefs
                                    value = 1.0, $
                                    /all_events, $
                                    /float, $
-                                   xsize = 8, $
+                                   xsize = 6, $
                                    uvalue = 'CHARSIZE', $
                                    label = 'Charsize:', $
                                    format = "(F0.2)", $
@@ -173,7 +173,7 @@ pro Gr_mk_plmenus, base, pdefs
                                   /all_events, $
                                   format = "(f0.1)", $
                                   value = 1., $
-                                  xsize = 6, $
+                                  xsize = 5, $
                                   uvalue = 'AXTHICK', $
                                   label = 'Line width:', $
                                   /track, $
