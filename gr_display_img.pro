@@ -47,6 +47,7 @@ pro Gr_display_img, zin, xin, yin, range = range, $
 ;	Fix failure to display when axis reversed: 24/8/12; SJT
 ;	Replace logarithmic with scale_mode: 18/11/15; SJT
 ;	Redesign colour handling for true-colour displays: 16/5/16; SJT
+;	Work around buggy triangulate: 14/10/16; SJT
 ;-
 
   if n_elements(logarithmic) ne 0 then graff_msg, 0l, $
@@ -144,8 +145,11 @@ pro Gr_display_img, zin, xin, yin, range = range, $
                               /error)
         return
      endif
-     triangulate, x, y, triangles, tol = 1e-12*(max(abs(x)) > $
-                                                max(abs(y)))
+     triangulate, x, y, triangles ;, tol = 1e-12*(max(abs(x)) > $
+                                ;               max(abs(y)))
+     areas = gr_tri_area(x, y, triangles, usable = usable, nbad = $
+                         nbad)
+     if nbad ne 0 then triangles = triangles[*, usable]
      zz = trigrid(x, y, ztmp, triangles, $
                   [(mxx-mnx)/dvxsize, (mxy-mny)/dvysize], $
                   [mnx, mny, mxx, mxy],  missing = missing)

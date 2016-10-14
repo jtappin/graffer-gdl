@@ -250,8 +250,8 @@ pro Gr_cont_menus, sb, pdefs
                                       uvalue = 'LEVEL', $
                                       value = l0, $
                                       format = "(g11.4)", $
-                                      xsize = 10, $
-                                      ysize = 6, $
+                                      xsize = 11, $
+                                      ysize = 8, $
                                       /column, $ 
                                       label = 'Levels', $ 
                                       /capture, $ 
