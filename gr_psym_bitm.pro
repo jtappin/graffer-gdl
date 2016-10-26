@@ -49,10 +49,12 @@ pro Gr_psym_bitm                ;, ncols
   read_x11_bitmap, bmpath+'ps12.xbm', ps12
   read_x11_bitmap, bmpath+'ps13.xbm', ps13
   read_x11_bitmap, bmpath+'ps14.xbm', ps14
+  read_x11_bitmap, bmpath+'ps15.xbm', ps15
+  read_x11_bitmap, bmpath+'ps16.xbm', ps16
 
   psym_bm = [[[ps0]], [[ps1]], [[ps2]], [[ps3]], [[ps4]], [[ps5]], $
              [[ps6]], [[ps7]], [[ps8]], [[ps9]], [[ps10]], [[ps11]], $
-             [[ps12]], [[ps13]], [[ps14]]]
+             [[ps12]], [[ps13]], [[ps14]], [[ps15]], [[ps16]]]
 
 ;; openr, ilu, /get, bmpath+'omit.dat'
 ;; nx = 0

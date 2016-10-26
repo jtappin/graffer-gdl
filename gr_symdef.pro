@@ -17,57 +17,71 @@ pro Gr_symdef, index
 ;					12 - filled circle
 ;					13 - inverted triangle
 ;					14 - filled inverted triangle
+;					15 - hexagon
+;					16 - filled hexagon
 ;					any other value "?"
 ;
 ; History:
 ;	Original: Jan 97; SJT
 ;-
 
-case index of
-    8: begin
+  case index of
+     8: begin
         th = findgen(31)*12*!Dtor
         x = cos(th)
         y = sin(th)
         ifill = 0
-    end
-    9: begin
+     end
+     9: begin
         x = [0., 1., 0., -1.]
         y = [-1., 0., 1., 0.]
         ifill = 1
-    end
-    10: begin
+     end
+     10: begin
         x = [-1., 1., 0., -1]
         y = [-1., -1., 1., -1]
         ifill = 1
-    end
-    11: begin
+     end
+     11: begin
         x = [-1., 1., 1., -1.]
         y = [-1., -1., 1., 1.]
         ifill = 1
-    end
-    12: begin
+     end
+     12: begin
         th = findgen(30)*12*!Dtor
         x = cos(th)
         y = sin(th)
         ifill = 1
-    end
-    13: begin
+     end
+     13: begin
         x = [-1., 1., 0., -1]
         y = [1., 1., -1., 1]
         ifill = 0
-    end
-    14: begin
+     end
+     14: begin
         x = [-1., 1., 0., -1]
         y = [1., 1., -1., 1]
         ifill = 1
-    end
-    Else: begin
+     end
+     15: begin
+        th = findgen(7) * 60. * !dtor
+        x = cos(th)
+        y = sin(th)
+        ifill = 0
+     end
+     16: begin
+        th = findgen(6) * 60. * !dtor
+        x = cos(th)
+        y = sin(th)
+        ifill = 1
+     end
+     Else: begin
         x = [0., 0., .8, .8, .6, -.6, -.8]
         y = [-1., -.2, .2, .7, .9, .9, .7]
         ifill = 0
-    end
-endcase
+     end
+  endcase
 
-usersym, fill = ifill, x, y
+  usersym, fill = ifill, x, y
 
 end
