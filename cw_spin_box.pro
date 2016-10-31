@@ -80,7 +80,10 @@
 ; Ancilliary routines:
 ;	Routines use to provide functionality the would be provided by
 ;	widget_control or widget_info for native widgets. (set_ and
-;	get_value are available).
+;	get_value are available). For set_value, the special values
+;	"+1", "-1" (as strings) increment and decrement by 1 honouring
+;	the roll settings, and "inc[rement]" and "dec[rement]"
+;	increment or decrement by the step value, honouring the roll.
 ;
 ;	cw_spin_box_has_limits(id) : Get whether the box has limits
 ;			returned as [ismin, ismax].
@@ -264,17 +267,61 @@ pro cw_spin_box_set, id, value
   id2 = widget_info(id, /child)
   widget_control, id2, get_uvalue = cstruct
 
-  cstruct.value = value
-  if cstruct.ismin &&  value lt cstruct.minval then begin
-     message, "Value less than minimum, setting to minimum", $
-              /continue 
-     cstruct.value = cstruct.minval
-  endif
-  if cstruct.ismax &&  value gt cstruct.maxval then begin
-     message, "Value greater than maximum, setting to maximum", $
-              /continue 
-     cstruct.value = cstruct.maxval
-  endif
+  if size(value, /tname) eq 'STRING' then begin
+     switch strupcase(value) of
+        '+1': begin
+           cstruct.value ++
+           if cstruct.ismax &&  value gt cstruct.maxval then begin
+              if cstruct.rolls then cstruct.value = cstruct.minval $
+              else cstruct.value = cstruct.maxval
+           endif
+           break
+        end
+        '-1': begin
+           cstruct.value --
+           if cstruct.ismin &&  value lt cstruct.minval then begin
+              if cstruct.rolls then cstruct.value = cstruct.maxval $
+              else cstruct.value = cstruct.minval
+           endif
+           break
+        end
+        'INC':
+        'INCREMENT': begin
+           cstruct.value += cstruct.step
+           if cstruct.ismax &&  value gt cstruct.maxval then begin
+              if cstruct.rolls then cstruct.value = cstruct.minval $
+              else cstruct.value = cstruct.maxval
+           endif
+           break
+        end
+        'DEC':
+        'DECREMENT': begin
+           cstruct.value -= cstruct.step
+           if cstruct.ismin &&  value lt cstruct.minval then begin
+              if cstruct.rolls then cstruct.value = cstruct.maxval $
+              else cstruct.value = cstruct.minval
+           endif
+           break
+        end
+        else: begin
+           message, /continue, $
+                    "Invalid value, ignored"
+           return
+        end
+     endswitch
+  endif else begin
+     cstruct.value = value
+     if cstruct.ismin &&  value lt cstruct.minval then begin
+        message, "Value less than minimum, setting to minimum", $
+                 /continue 
+        cstruct.value = cstruct.minval
+     endif
+     if cstruct.ismax &&  value gt cstruct.maxval then begin
+        message, "Value greater than maximum, setting to maximum", $
+                 /continue 
+        cstruct.value = cstruct.maxval
+     endif
+  endelse
 
   widget_control, cstruct.boxid, set_value = $
                   string(cstruct.value, format = cstruct.format)
@@ -295,7 +342,7 @@ pro cw_spin_box_set_min, id, minval, clear = clear
   widget_control, id2, get_uvalue = cstruct
 
   if keyword_set(clear) then begin
-     if cstruct.roll then begin
+     if cstruct.rolls then begin
         message, /continue, $
                  "Cannot clear the limits on a rolling spin box."
         return
@@ -333,7 +380,7 @@ pro cw_spin_box_set_max, id, maxval, clear = clear
   widget_control, id2, get_uvalue = cstruct
 
   if keyword_set(clear) then begin
-     if cstruct.roll then begin
+     if cstruct.rolls then begin
         message, /continue, $
                  "Cannot clear the limits on a rolling spin box."
         return

@@ -320,6 +320,8 @@ print, 'gr_tlv_z.pro'
 .r gr_tlv_z
 print, 'gr_tm_opts.pro'
 .r gr_tm_opts
+print, 'gr_tri_area.pro'
+.r gr_tri_area
 print, 'gr_write_ds.pro'
 .r gr_write_ds
 print, 'gr_xycopy_menu.pro'
