@@ -78,7 +78,7 @@
 ;           cr: 0b}	; Set to 1 if a CR was entered in the text box.
 ;
 ; Ancilliary routines:
-;	Routines use to provide functionality the would be provided by
+;	Routines used to provide functionality the would be provided by
 ;	widget_control or widget_info for native widgets. (set_ and
 ;	get_value are available). For set_value, the special values
 ;	"+1", "-1" (as strings) increment and decrement by 1 honouring
@@ -93,12 +93,25 @@
 ;			up or down.
 ;	cw_spin_box_get_format(id) : Get the format used to display
 ;			the value.
+;	cw_spin_box_get_roll(id) : Get whether the spin box is a
+;			rolling box.
 ;	cw_spin_box_set_min, id, [min | /clear] : Set the lower limit
 ;			or clear the limit.
 ;	cw_spin_box_set_max, id, [max | /clear] : Set the upper limit
 ;			or clear the limit.
 ;	cw_spin_box_set_format, id, format : Set the format to display
 ;			the value.
+;	cw_spin_box_set_roll, id, roll : Set whether the box can roll
+;			over.
+;
+;	cw_spin_box_get(id) : Get the widget value (usually called via
+;			widget_control)
+;	cw_spin_box_set, id, value, rolled=rolled : Set the widget
+;			value, usually called via widget_control, but
+;			can be called natively to allow the rolled
+;			keyword to return whether the value was rolled
+;			by the increment or decrement special values.
+
 ; History:
 ;	Original: 29/9/16; SJT
 ;	Add transparent and roll keys: 10/10/16; SJT
@@ -260,28 +273,39 @@ function cw_spin_box_get_format, id
   widget_control, id2, get_uvalue = cstruct
   return, cstruct.format
 end
+function cw_spin_box_get_roll, id
+  id2 = widget_info(id, /child)
+  widget_control, id2, get_uvalue = cstruct
+  return, cstruct.rolls
+end
+ 
 
 ; Usually called via widget_control
-pro cw_spin_box_set, id, value
+pro cw_spin_box_set, id, value, rolled = rolled
 
   id2 = widget_info(id, /child)
   widget_control, id2, get_uvalue = cstruct
 
+  if arg_present(rolled) then rolled = 0
   if size(value, /tname) eq 'STRING' then begin
      switch strupcase(value) of
         '+1': begin
            cstruct.value ++
            if cstruct.ismax &&  value gt cstruct.maxval then begin
-              if cstruct.rolls then cstruct.value = cstruct.minval $
-              else cstruct.value = cstruct.maxval
+              if cstruct.rolls then begin
+                 cstruct.value = cstruct.minval
+                 if arg_present(rolled) then rolled = 1
+              endif else cstruct.value = cstruct.maxval
            endif
            break
         end
         '-1': begin
            cstruct.value --
            if cstruct.ismin &&  value lt cstruct.minval then begin
-              if cstruct.rolls then cstruct.value = cstruct.maxval $
-              else cstruct.value = cstruct.minval
+              if cstruct.rolls then begin
+                 cstruct.value = cstruct.maxval 
+                 if arg_present(rolled) then rolled = -1
+              endif else cstruct.value = cstruct.minval
            endif
            break
         end
@@ -289,8 +313,10 @@ pro cw_spin_box_set, id, value
         'INCREMENT': begin
            cstruct.value += cstruct.step
            if cstruct.ismax &&  value gt cstruct.maxval then begin
-              if cstruct.rolls then cstruct.value = cstruct.minval $
-              else cstruct.value = cstruct.maxval
+              if cstruct.rolls then begin
+                 cstruct.value = cstruct.minval 
+                 if arg_present(rolled) then rolled = 1
+              endif else cstruct.value = cstruct.maxval
            endif
            break
         end
@@ -298,8 +324,10 @@ pro cw_spin_box_set, id, value
         'DECREMENT': begin
            cstruct.value -= cstruct.step
            if cstruct.ismin &&  value lt cstruct.minval then begin
-              if cstruct.rolls then cstruct.value = cstruct.maxval $
-              else cstruct.value = cstruct.minval
+              if cstruct.rolls then begin
+                 cstruct.value = cstruct.maxval 
+                 if arg_present(rolled) then rolled = -1
+              endif else cstruct.value = cstruct.minval
            endif
            break
         end
@@ -433,6 +461,22 @@ pro cw_spin_box_set_format, id, format
   cstruct.format = format
   widget_control, cstruct.boxid, set_value = $
                   string(cstruct.value, format = cstruct.format)
+
+  widget_control, id2, set_uvalue = cstruct
+
+end
+
+pro cw_spin_box_set_roll, id, roll
+  id2 = widget_info(id, /child)
+  widget_control, id2, get_uvalue = cstruct
+
+  if roll && ~(cstruct.ismin && cstruct.ismax) then begin
+     message, /continue, $
+              "Both limits must be set for a rollable box"
+     return
+  endif
+
+  cstruct.rolls = roll
 
   widget_control, id2, set_uvalue = cstruct
 
