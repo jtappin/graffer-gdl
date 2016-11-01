@@ -416,8 +416,8 @@ pro cw_spin_box_set_max, id, maxval, clear = clear
      cstruct.maxval = 0
      cstruct.ismax = 0b
   endif else begin
-     if cstruct.ismin &&  maxval ge cstruct.minval then begin
-        message, "Cannot have maximum greater than minimum", /continue
+     if cstruct.ismin &&  maxval le cstruct.minval then begin
+        message, "Cannot have maximum less than minimum", /continue
         return
      endif
      cstruct.maxval = maxval
@@ -632,10 +632,12 @@ function cw_spin_box, parent, row = row, column = column, $
                                flat = flat)
 
   widget_control, cstruct.dnid, sensitive = $
-                  ~cstruct.ismin || cstruct.value gt cstruct.minval
+                  cstruct.rolls || ~cstruct.ismin || $
+                  cstruct.value gt cstruct.minval
 
   widget_control, cstruct.upid, sensitive = $
-                  ~cstruct.ismax || cstruct.value lt cstruct.maxval
+                  cstruct.rolls || ~cstruct.ismax || $
+                  cstruct.value lt cstruct.maxval
 
   uid = widget_info(base, /child) ; This will either be the label, or
                                 ; the base with the box & buttons, but
