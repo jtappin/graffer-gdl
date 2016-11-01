@@ -587,7 +587,7 @@ function cw_spin_box, parent, row = row, column = column, $
      if ~cstruct.ismin || ~cstruct.ismax then $
         message, /continue, $
                  "ROLL requires both limits to be set" $
-     else cstruct.roll = 1b
+     else cstruct.rolls = 1b
   endif
 
 ; Now the gui stuff
