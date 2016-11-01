@@ -291,7 +291,7 @@ pro cw_spin_box_set, id, value, rolled = rolled
      switch strupcase(value) of
         '+1': begin
            cstruct.value ++
-           if cstruct.ismax &&  value gt cstruct.maxval then begin
+           if cstruct.ismax &&  cstruct.value gt cstruct.maxval then begin
               if cstruct.rolls then begin
                  cstruct.value = cstruct.minval
                  if arg_present(rolled) then rolled = 1
@@ -301,7 +301,7 @@ pro cw_spin_box_set, id, value, rolled = rolled
         end
         '-1': begin
            cstruct.value --
-           if cstruct.ismin &&  value lt cstruct.minval then begin
+           if cstruct.ismin &&  cstruct.value lt cstruct.minval then begin
               if cstruct.rolls then begin
                  cstruct.value = cstruct.maxval 
                  if arg_present(rolled) then rolled = -1
@@ -312,7 +312,7 @@ pro cw_spin_box_set, id, value, rolled = rolled
         'INC':
         'INCREMENT': begin
            cstruct.value += cstruct.step
-           if cstruct.ismax &&  value gt cstruct.maxval then begin
+           if cstruct.ismax &&  cstruct.value gt cstruct.maxval then begin
               if cstruct.rolls then begin
                  cstruct.value = cstruct.minval 
                  if arg_present(rolled) then rolled = 1
@@ -323,7 +323,7 @@ pro cw_spin_box_set, id, value, rolled = rolled
         'DEC':
         'DECREMENT': begin
            cstruct.value -= cstruct.step
-           if cstruct.ismin &&  value lt cstruct.minval then begin
+           if cstruct.ismin &&  cstruct.value lt cstruct.minval then begin
               if cstruct.rolls then begin
                  cstruct.value = cstruct.maxval 
                  if arg_present(rolled) then rolled = -1
