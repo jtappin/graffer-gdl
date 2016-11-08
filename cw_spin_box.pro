@@ -75,7 +75,7 @@
 ;         roll: 0, $    ; +1 if the value was rolled by clicking UP
 ;         		; past max, -1 if the value was rolled by
 ;         		; clicking DOWN past min, 0 otherwise.
-;           cr: 0b}	; Set to 1 if a CR was entered in the text box.
+;         cr: 0b}	; Set to 1 if a CR was entered in the text box.
 ;
 ; Ancilliary routines:
 ;	Routines used to provide functionality the would be provided by
@@ -111,10 +111,13 @@
 ;			can be called natively to allow the rolled
 ;			keyword to return whether the value was rolled
 ;			by the increment or decrement special values.
-
+;	cw_spin_box_focus_enter, id : Set the keyboard focus to the
+;			text box of the compound.
+;
 ; History:
 ;	Original: 29/9/16; SJT
 ;	Add transparent and roll keys: 10/10/16; SJT
+;	Better handling of out-of-range values: 8/11/16; SJT
 ;-
 
 pro cw_spin_box_mk_bitmap, bup, bdown, xextra, $
@@ -179,26 +182,34 @@ function cw_spin_box_event, event
   roll = 0
   case but of
      'BOX': begin
+        if tag_names(event, /struct) eq 'WIDGET_KBRD_FOCUS' then begin
+           if event.enter eq 1 then return, 0l
+           cr = 1b
+        endif else cr = event.type eq 0b &&  event.ch eq 10b
+
         on_ioerror, invalid
         value = cstruct.value   ; Ensure correct type
         widget_control, event.id, get_value = inln
         reads, inln, value
-        cstruct.value = value
+
         if cstruct.ismin &&  value lt cstruct.minval then begin
+           if ~cr then return, 0l
            message, "Value less than minimum, setting to minimum", $
                     /continue 
            cstruct.value = cstruct.minval
            widget_control, cstruct.boxid, set_value = $
                            string(cstruct.value, format = cstruct.format)
-        endif
-        if cstruct.ismax &&  value gt cstruct.maxval then begin
+        endif else if cstruct.ismax && $
+           value gt cstruct.maxval then begin
+           if ~cr then return, 0l
+
            message, "Value greater than maximum, setting to maximum", $
                     /continue 
            cstruct.value = cstruct.maxval
            widget_control, cstruct.boxid, set_value = $
                            string(cstruct.value, format = cstruct.format)
-        endif
-        cr = event.type eq 0b &&  event.ch eq 10b
+        endif else cstruct.value = value
+
      end
      'UP': begin
         cstruct.value += cstruct.step
@@ -613,6 +624,7 @@ function cw_spin_box, parent, row = row, column = column, $
                               editable = ~keyword_set(no_edit), $
                               uvalue = 'BOX', $
                               all_events = all_events, $
+                              kbrd_focus_events = all_events, $
                               tracking_events = capture_focus)
 
   sbase = widget_base(ibase, $
