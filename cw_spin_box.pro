@@ -118,6 +118,7 @@
 ;	Original: 29/9/16; SJT
 ;	Add transparent and roll keys: 10/10/16; SJT
 ;	Better handling of out-of-range values: 8/11/16; SJT
+;	Don't return event on focus exit if no changes: 9/11/16; SJT
 ;-
 
 pro cw_spin_box_mk_bitmap, bup, bdown, xextra, $
@@ -183,9 +184,12 @@ function cw_spin_box_event, event
   case but of
      'BOX': begin
         if tag_names(event, /struct) eq 'WIDGET_KBRD_FOCUS' then begin
-           if event.enter eq 1 then return, 0l
+           if event.enter eq 1 || ~cstruct.eflag then return, 0l
            cr = 1b
         endif else cr = event.type eq 0b &&  event.ch eq 10b
+
+        if event.type eq 3 && ~cstruct.eflag then return, 0l
+        if event.type ne 3 then cstruct.eflag = 1b
 
         on_ioerror, invalid
         value = cstruct.value   ; Ensure correct type
@@ -193,7 +197,10 @@ function cw_spin_box_event, event
         reads, inln, value
 
         if cstruct.ismin &&  value lt cstruct.minval then begin
-           if ~cr then return, 0l
+           if ~cr then begin
+              widget_control, id2, set_uvalue = cstruct
+              return, 0l
+           endif
            message, "Value less than minimum, setting to minimum", $
                     /continue 
            cstruct.value = cstruct.minval
@@ -201,7 +208,10 @@ function cw_spin_box_event, event
                            string(cstruct.value, format = cstruct.format)
         endif else if cstruct.ismax && $
            value gt cstruct.maxval then begin
-           if ~cr then return, 0l
+           if ~cr then begin
+              widget_control, id2, set_uvalue = cstruct
+              return, 0l
+           endif
 
            message, "Value greater than maximum, setting to maximum", $
                     /continue 
@@ -239,6 +249,7 @@ function cw_spin_box_event, event
                   cstruct.rolls || ~cstruct.ismax || $
                   cstruct.value lt cstruct.maxval
 
+  cstruct.eflag = 0b
   widget_control, id2, set_uvalue = cstruct
   return, {id: event.handler, $
            top: event.top, $
@@ -541,7 +552,8 @@ function cw_spin_box, parent, row = row, column = column, $
              boxid: 0l, $
              upid: 0l, $
              dnid: 0l, $
-             rolls: 0b}
+             rolls: 0b, $
+             eflag: 0b}
 
 
   if keyword_set(format) then cstruct.format = format $
