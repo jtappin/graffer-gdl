@@ -398,7 +398,6 @@ function cw_enter_event, event
      end
      'WIDGET_KBRD_FOCUS': begin
         if event.enter || ~state.chflag || state.dead then return, 0l
-        state.chflag = 0b
         cr = 1b
      end
 
@@ -411,10 +410,10 @@ function cw_enter_event, event
 
         if event.type eq 0 && event.ch eq 10b then begin
            cr = 1b
-           state.chflag = 0b
+           state.chflag = 1b
         endif else begin
            cr = 0b
-           state.chflag = event.type ne 3
+           if event.type ne 3 then state.chflag = 1b
         endelse
 
         if ~(state.all || cr) then begin
@@ -447,9 +446,11 @@ function cw_enter_event, event
        Handler: 0l, $
        Value:   *(state.value), $
        cr:      cr, $
+       changed: state.chflag, $
        Type:    state.type $
        }
 
+  state.chflag = 0b
   widget_control, base, set_uvalue = state
 
   return, ev

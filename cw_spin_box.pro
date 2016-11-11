@@ -186,9 +186,9 @@ function cw_spin_box_event, event
         if tag_names(event, /struct) eq 'WIDGET_KBRD_FOCUS' then begin
            if event.enter eq 1 || ~cstruct.eflag then return, 0l
            cr = 1b
-        endif else cr = event.type eq 0b &&  event.ch eq 10b
+        endif else if event.type eq 3  then return, 0l $
+        else cr = event.type eq 0b &&  event.ch eq 10b
 
-        if event.type eq 3 && ~cstruct.eflag then return, 0l
         if event.type ne 3 then cstruct.eflag = 1b
 
         on_ioerror, invalid
