@@ -23,10 +23,11 @@ function gr_find_program, name, return_path = return_path
 ;
 ; History:
 ;	Extracted from gr_find_viewer & expanded: 23/9/16; SJT
+;	Capture stderr output: 17/11/16; SJT
 ;-
 
   if n_elements(name) eq 1 then begin
-     spawn, /sh, 'which '+name, wh
+     spawn, /sh, 'which '+name, wh, whe
      if keyword_set(return_path) then return, wh[0]
      return, strlen(wh[0]) gt 0
   endif else begin
@@ -34,7 +35,7 @@ function gr_find_program, name, return_path = return_path
      if keyword_set(return_path) then rv = strarr(nn) $
      else rv = bytarr(nn)
      for j = 0, nn-1 do begin
-        spawn, /sh, 'which '+name[j], wh
+        spawn, /sh, 'which '+name[j], wh, whe
         if keyword_set(return_path) then rv[j] = wh[0] $
         else rv[j] = strlen(wh[0]) gt 0
      endfor
