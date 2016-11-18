@@ -168,6 +168,9 @@ function Graff_hard, pdefs, no_set = no_set
   device, /close
 
   set_plot, dev
+  gr_plot_object, pdefs         ; Redraw to ensure coordinates are
+                                ; correct. 
+
   case h.eps of
      1: begin
         if h.viewer[0] ne '' then $
