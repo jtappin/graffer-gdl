@@ -27,7 +27,7 @@ device, set_graphics_function = 10 ; Set graphics function to
 case pdefs.transient.mode of
     0: begin                    ; Normal mode, draw solid
                                 ; cross hairs out to the axes
-        if (pdefs.y_right and (*pdefs.data)[pdefs.cset].y_axis eq 1) $
+        if (pdefs.y_right && (*pdefs.data)[pdefs.cset].y_axis eq 1) $
           then ytype = pdefs.ytype_r $
         else ytype = pdefs.ytype
 

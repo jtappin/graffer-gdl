@@ -176,7 +176,8 @@ pro Gr_plot_object, pdefs, no_null = no_null, charsize = charsize, $
   endif
 
 ; Set the Y-transform appropriate to the current dataset.
-  !y = pdefs.ytransform[(*pdefs.data)[pdefs.cset].y_axis]
+  if pdefs.y_right then $
+     !y = pdefs.ytransform[(*pdefs.data)[pdefs.cset].y_axis]
 
   empty                         ; Force an update
 
