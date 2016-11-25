@@ -220,17 +220,28 @@ pro Graff_add, file, a1, a2, a3, errors = errors, $
 
   case (n_params()) of
      0: message, "Must specify a GRAFFER file"
-     1: if (~keyword_set(x_func) and $
-            ~keyword_set(y_func) and $
-            ~keyword_set(z_func) and $
-            ~keyword_set(xy_file) and $
-            ~keyword_set(z_file) and $
+     1: if (~keyword_set(x_func) && $
+            ~keyword_set(y_func) && $
+            ~keyword_set(z_func) && $
+            ~keyword_set(xy_file) && $
+            ~keyword_set(z_file) && $
             ~keyword_set(func_file)) then $
                message, "Must give data arrays, data file or a " + $
                         "function specification"
      2: begin
-        y = double(a1)
-        x = dindgen(n_elements(y))
+        sx = size(a1)
+        if sx[0] eq 2 &&  (sx[1] eq 2 || sx[2] eq 2) then begin
+           if sx[1] eq 2 then begin
+              x = double(reform(a1[0, *]))
+              y = double(reform(a1[1, *]))
+           endif else begin
+              x = double(a1[*, 0])
+              y = double(a1[*, 1])
+           endelse
+        endif else begin
+           y = double(a1)
+           x = dindgen(n_elements(y))
+        endelse
      end
      3: begin                   ; 1-D dataset
         x = double(a1)
