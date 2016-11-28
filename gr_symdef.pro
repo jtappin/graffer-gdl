@@ -23,6 +23,8 @@ pro Gr_symdef, index, thick = thick
 ;
 ; History:
 ;	Original: Jan 97; SJT
+;	Add hexagon: Oct 16; SJT
+;	Add thick keyword: 29/11/16; SJT
 ;-
 
   case index of
@@ -82,6 +84,7 @@ pro Gr_symdef, index, thick = thick
      end
   endcase
 
-  usersym, fill = ifill, x, y, thick = thick
+  if ifill eq 0 && keyword_set(thick) then ithick = thick
+  usersym, fill = ifill, x, y, thick = ithick
 
 end
