@@ -97,7 +97,8 @@ pro Gr_pl_key, pdefs, csiz
      endif
      
      if ((*pdefs.data)[i].psym ne 0) then begin
-        if ((*pdefs.data)[i].psym ge 8) then gr_symdef, (*pdefs.data)[i].psym 
+        if ((*pdefs.data)[i].psym ge 8) then $
+           gr_symdef, (*pdefs.data)[i].psym, thick = (*pdefs.data)[i].thick
         if (pdefs.key.one_point) then $
            plots, /norm, x0(icol)+x(1), y(irow)+yoff, color = $
                   lcolour, psym = (*pdefs.data)[i].psym $

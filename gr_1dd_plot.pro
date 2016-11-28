@@ -53,7 +53,7 @@ pro Gr_1dd_plot, pdefs, i, csiz
   endif
 
   if (data.psym ne 0) then begin
-     if (data.psym ge 8) then gr_symdef, data.psym 
+     if (data.psym ge 8) then gr_symdef, data.psym, thick = data.thick
      oplot, xydata(0, 0:data.ndata-1), xydata(1, *)*pcf, color = $
             lcolour, psym = data.psym < 8, thick = $
             data.thick, $

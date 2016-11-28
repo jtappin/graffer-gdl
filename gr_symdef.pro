@@ -1,4 +1,4 @@
-pro Gr_symdef, index
+pro Gr_symdef, index, thick = thick
 
 ;+
 ; GR_SYMDEF
@@ -82,6 +82,6 @@ pro Gr_symdef, index
      end
   endcase
 
-  usersym, fill = ifill, x, y
+  usersym, fill = ifill, x, y, thick = thick
 
 end

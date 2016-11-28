@@ -141,7 +141,7 @@ pro Gr_1df_plot, pdefs, i, csiz
      endif
      
      if (data.psym ne 0) then begin
-        if (data.psym ge 8) then gr_symdef, data.psym 
+        if (data.psym ge 8) then gr_symdef, data.psym, thick = data.thick
         oplot, x, y*pcf, color = lcolour, psym = $
                data.psym < 8, thick = data.thick, symsize = $
                abs(data.symsize)*csiz, polar = (data.mode ne 0), $
