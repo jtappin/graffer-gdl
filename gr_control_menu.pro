@@ -74,13 +74,13 @@ pro Gr_ctl_event, event
         graff_msg, pdefs.ids.hlptxt, 'Define hardcopy parameters and ' + $
                    'make copy' $
      else begin
-        ichange = graff_hard(pdefs)
+        ichange = graff_hard(pdefs,  /redraw)
         if (ichange) then nch = 10
      endelse
      
      'Hard Copy.Quick': if track_flag then $
         graff_msg, pdefs.ids.hlptxt, 'Make hardcopy using current settings' $
-     else ichange = graff_hard(pdefs, /no_set)
+     else ichange = graff_hard(pdefs, /no_set, /redraw)
      
      'File': graff_msg, pdefs.ids.hlptxt, 'Saving and opening files'
      

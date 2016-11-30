@@ -1,4 +1,4 @@
-function Graff_hard, pdefs, no_set = no_set
+function Graff_hard, pdefs, no_set = no_set, redraw = redraw
 
 ;+
 ; GRAFF_HARD
@@ -14,8 +14,11 @@ function Graff_hard, pdefs, no_set = no_set
 ;	pdefs	struct	in/out	The plot definition structure.
 ;
 ; Keyword:
-;	no_set		input	If set and non-zero, then don't call
-;				gr_hardopts to set up the options.
+;	/no_set	input	If set and non-zero, then don't call
+;			gr_hardopts to set up the options.
+;	/redraw	input	If set, then redraw the plot on the
+;			screen device to ensure that the coordinate
+;			system is reset properly.
 ;				
 ; History:
 ;	Carved from graffer: 17/8/95; SJT
@@ -27,9 +30,10 @@ function Graff_hard, pdefs, no_set = no_set
 ;	shown: 26/1/12; SJT
 ;	Handle case when current-only is selected: 26/1/12; SJT
 ;	Support PDF output: 21/9/16; SJT
+;	Add redraw key: 30/11/16; SJT
 ;-
 
-; For hard copy we don't notmally want to show current DS only.
+; For hard copy we don't normally want to show current DS only.
   tt = pdefs.transient.current_only
   if pdefs.transient.current_only then begin
      yn = dialog_message(["Display current dataset only is", $
@@ -168,8 +172,6 @@ function Graff_hard, pdefs, no_set = no_set
   device, /close
 
   set_plot, dev
-  gr_plot_object, pdefs         ; Redraw to ensure coordinates are
-                                ; correct. 
 
   case h.eps of
      1: begin
@@ -214,6 +216,9 @@ function Graff_hard, pdefs, no_set = no_set
   !p.background = graff_colours(0)
 
   pdefs.transient.current_only = tt
+  if keyword_set(redraw) then $
+     gr_plot_object, pdefs      ; Redraw to ensure coordinates are
+                                ; correct. 
 
   return, ~keyword_set(no_set)
 
