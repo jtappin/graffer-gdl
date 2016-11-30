@@ -36,10 +36,10 @@ function Graff_hard, pdefs, no_set = no_set, redraw = redraw
 ; For hard copy we don't normally want to show current DS only.
   tt = pdefs.transient.current_only
   if pdefs.transient.current_only then begin
-     yn = dialog_message(["Display current dataset only is", $
-                          "currently selected.", $
-                          "Do you really want to print just", $
-                          "the current dataset"], $
+     yn = dialog_message(['"Display current dataset only"', $
+                          'is currently selected.', $
+                          'Do you really want to print just', $
+                          'the current dataset'], $
                          /question, $
                          /cancel, $
                          dialog_parent = pdefs.ids.graffer)
@@ -51,7 +51,7 @@ function Graff_hard, pdefs, no_set = no_set, redraw = redraw
      endcase
   endif
 
- 
+  ido = 0
   if ~keyword_set(no_set) then begin
      ido = gr_hardopts(pdefs)
      if (ido eq -1) then return, 0
@@ -220,6 +220,6 @@ function Graff_hard, pdefs, no_set = no_set, redraw = redraw
      gr_plot_object, pdefs      ; Redraw to ensure coordinates are
                                 ; correct. 
 
-  return, ~keyword_set(no_set)
+  return, ido
 
 end

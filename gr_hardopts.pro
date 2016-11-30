@@ -3,7 +3,11 @@
 ;	Set hardcopy options
 ;
 ; Usage
-;	gr_hardopts, pdefs	; Not intended for direct user usage
+;	istat = gr_hardopts(pdefs)	; Not intended for direct user usage
+;
+; Returns:
+;	-1 for cancelled, 1 for options changed, 0 for options
+;	unchanged.
 ;
 ; Arguments:
 ;	pdefs	struct	in/out	The graffer data structure.
@@ -12,12 +16,14 @@
 ;	Original: 3/8/95; SJT
 ;	Add timer event to push to front if obscured: 23/8/95; SJT
 ;	Renamed as GR_HARDOPTS (was hardopts): 18/9/96; SJT
+;	Made into a function: Unknown: SJT
 ;	Add font selection options: 10/10/96; SJT
 ;	Replace most cw_bbselectors with widget_droplist: 13/12/11; SJT
 ;	Allow selection of non-standard filename: 13/2/12; SJT
 ;	Allow PDF generation: 21/9/16; SJT
 ;	Replace last bbselector with cw_pdmenu_plus: 28/9/16; SJT
 ;	Replace graff_enter with cw_enter: 13/10/16; SJT
+;	Detect if options changed: 30/11/16; SJT
 ;-
 
 
@@ -42,17 +48,20 @@ function Hopts_event, event
         graff_msg, settings.action, 'Save the settings & make the hardcopy' $
      else begin
         iexit = 1
-        for j = 0, 1 do begin
-           widget_control, settings.cmid(j), get_value = cmd
-           case settings.opts.eps of
-              0: settings.opts.action[j] = cmd[0]
-              1: settings.opts.viewer[j] = cmd[0]
-              else:  settings.opts.pdfviewer[j] = cmd[0]
-           endcase
-        endfor
-        widget_control, settings.fileid, get_value = file
-        settings.opts.name = file
-     end
+        if settings.chflag then begin
+           for j = 0, 1 do begin
+              widget_control, settings.cmid(j), get_value = cmd
+              case settings.opts.eps of
+                 0: settings.opts.action[j] = cmd[0]
+                 1: settings.opts.viewer[j] = cmd[0]
+                 else:  settings.opts.pdfviewer[j] = cmd[0]
+              endcase
+           endfor
+           widget_control, settings.fileid, get_value = file
+           settings.opts.name = file
+        endif
+     endelse
+
      'CANCEL': if (track_flag) then $
         graff_msg, settings.action, "Forget new settings &" + $
                    " don't make a hardcopy" $
@@ -61,18 +70,23 @@ function Hopts_event, event
      'COL': if (track_flag) then $
         graff_msg, settings.action, 'Toggle use of colour PostScript' $
      else begin
+        settings.chflag or=  (settings.opts.colour ne event.index)
         settings.opts.colour = event.index
         widget_control, settings.modid, sensitive = event.index
      endelse
 
      'CMYK': if (track_flag) then $
         graff_msg, settings.action, 'Select RGB or CMYK colour model' $
-     else settings.opts.cmyk = event.index
+     else begin
+        settings.chflag or= (settings.opts.cmyk ne event.index)
+        settings.opts.cmyk = event.index
+     endelse
 
      'EPS': if (track_flag) then $
         graff_msg, settings.action, 'Toggle use of Encapsulated '+ $
                    'PostScript and PDF generation' $
      else begin
+        settings.chflag or= (settings.opts.eps ne event.index)
         settings.opts.eps = event.index
         widget_control, settings.fileid, get_value = name
         dir = file_dirname(name, /mark)
@@ -121,6 +135,7 @@ function Hopts_event, event
      'ORI': if (track_flag) then $
         graff_msg, settings.action, 'Toggle landscape/portrait orientation' $
      else begin
+        settings.chflag or= (settings.opts.orient ne event.index)
         settings.opts.orient = event.index
         settings.psize = gr_get_page(settings.opts.psize, $
                                      settings.opts.orient)
@@ -156,6 +171,7 @@ function Hopts_event, event
      'PSIZE': if (track_flag) then $
         graff_msg, settings.action, 'Toggle A4/Letter sized paper' $
      else begin
+        settings.chflag or= (settings.opts.psize ne event.index)
         settings.opts.psize = event.index
         settings.psize = gr_get_page(settings.opts.psize, $
                                      settings.opts.orient)
@@ -170,6 +186,7 @@ function Hopts_event, event
      'CENTRE': if (track_flag) then $
         graff_msg, settings.action, 'Centre the plot on the page' $
      else begin
+        settings.chflag = 1
         xs = (settings.psize(0)-settings.opts.size(0))/2.
         settings.opts.off(0) = xs
         widget_control, settings.xleftid, set_value = xs
@@ -184,6 +201,7 @@ function Hopts_event, event
      'XSI': if (track_flag) then $
         graff_msg, settings.action, 'Set the X size of the plot (in cm)' $
      else begin
+        settings.chflag = 1
         widget_control, event.id, get_value = sx
         settings.opts.size(0) = sx
         xlft = settings.psize(0)-sx-settings.opts.off(0)
@@ -192,6 +210,7 @@ function Hopts_event, event
      'YSI': if (track_flag) then $
         graff_msg, settings.action, 'Set the Y size of the plot (in cm)' $
      else begin
+        settings.chflag = 1
         widget_control, event.id, get_value = sy
         settings.opts.size(1) = sy
         ylft = settings.psize(1)-sy-settings.opts.off(1)
@@ -200,6 +219,7 @@ function Hopts_event, event
      'XOFF': if (track_flag) then $
         graff_msg, settings.action, 'Set the X offset of the plot (in cm)' $
      else begin
+        settings.chflag = 1
         widget_control, event.id, get_value = sx
         settings.opts.off(0) = sx
         xlft = settings.psize(0)-sx-settings.opts.size(0)
@@ -208,6 +228,7 @@ function Hopts_event, event
      'YOFF': if (track_flag) then $
         graff_msg, settings.action, 'Set the Y offset of the plot (in cm)' $
      else begin
+        settings.chflag = 1
         widget_control, event.id, get_value = sy
         settings.opts.off(1) = sy
         ylft = settings.psize(1)-sy-settings.opts.size(1)
@@ -218,6 +239,7 @@ function Hopts_event, event
         graff_msg, settings.action, 'Select the font family for plot ' + $
                    'annotation' $
      else begin
+        settings.chflag or= (settings.opts.font.family ne event.index)
         settings.opts.font.family = event.index
         widget_control, settings.wsid, sensitive = event.index le 9
         for j = 1, 3, 2 do widget_control, settings.wsids(j), $
@@ -227,17 +249,26 @@ function Hopts_event, event
      'FWS': if (track_flag) then $
         graff_msg, settings.action, 'Select the weight & slant for plot ' + $
                    'annotation' $
-     else settings.opts.font.wg_sl = event.value
+     else begin
+        settings.chflag or= (settings.opts.font.wg_sl ne event.value)
+        settings.opts.font.wg_sl = event.value
+     endelse
      
      'TIMEST': if (track_flag) then $
         graff_msg, settings.action, 'Toggle printing of a timestamp on ' + $
                    'the plot' $
-     else settings.opts.timestamp = event.index
+     else begin
+        settings.chflag or= (settings.opts.timestamp ne event.index)
+        settings.opts.timestamp = event.index
+     endelse
      
      'FILE': if track_flag then $
         graff_msg, settings.action, 'Set the output file name' $
-     else widget_control, settings.cmid[1], set_value = $
-                          'LABEL:'+file_basename(event.value)
+     else begin
+        widget_control, settings.cmid[1], set_value = $
+                        'LABEL:'+file_basename(event.value)
+        settings.chflag = 1
+     endelse
 
      'PFILE': if track_flag then $
         graff_msg, settings.action, 'Pick the output file name' $
@@ -257,6 +288,7 @@ function Hopts_event, event
            widget_control, settings.fileid, set_value = file
            widget_control, settings.cmid[1], set_value = $
                            'LABEL:'+file_basename(file)
+           settings.chflag = 1
         endif
      endelse
 
@@ -272,31 +304,39 @@ function Hopts_event, event
         widget_control, settings.fileid, set_value = settings.tname+extn
         widget_control, settings.cmid[1], set_value = $
                         'LABEL:'+file_basename(settings.tname+extn)
+        settings.chflag = 1
      endelse
      
      'CMD':if (track_flag) then $
         graff_msg, settings.action, 'Enter the command for spooling or ' + $
-                   'viewing the plot file'
+                   'viewing the plot file' $
+     else settings.chflag = 1
+
      'SFX':if (track_flag) then $
         graff_msg, settings.action, 'Enter part the command for spooling ' + $
-                   'or viewing the plot after the filename'
+                   'or viewing the plot after the filename' $
+     else settings.chflag = 1
      
      'FVIEW': if (track_flag) then $
-        graff_msg, settings.action, 'Set viewer to the default PS ' + $
+        graff_msg, settings.action, 'Set viewer to the default PS/PDF ' + $
                    'viewer' $
-     else case settings.opts.eps of
-        1: widget_control, settings.cmid[0], set_value = $
-                           gr_find_viewer(/ps)
-        0:  widget_control, settings.cmid[0], set_value = 'lp'
-        else:  widget_control, settings.cmid[0], set_value = $
-                               gr_find_viewer(/pdf)
-     endcase
+     else begin
+        case settings.opts.eps of
+           1: widget_control, settings.cmid[0], set_value = $
+                              gr_find_viewer(/ps)
+           0:  widget_control, settings.cmid[0], set_value = 'lp'
+           else:  widget_control, settings.cmid[0], set_value = $
+                                  gr_find_viewer(/pdf)
+        endcase
+        settings.chflag = 1
+     endelse
 
      'NOVIEW': if (track_flag) then $
         graff_msg, settings.action, 'Set viewer to "no viewer"' $
      else begin
         widget_control, settings.cmid[0], set_value = ''
         widget_control, settings.cmid[1], set_value = ''
+        settings.chflag = 1
      endelse
      
      Else:     graff_msg, settings.action, "Whaat??????"       
@@ -354,7 +394,8 @@ function Gr_hardopts, pdefs
         paperid: 0l, $
         Action: 0l, $
         Psize: fltarr(2), $
-        tname: tname $
+        tname: tname, $
+        chflag: 0 $
         }
   uvs.psize = gr_get_page(h.psize, h.orient)
 
@@ -422,26 +463,32 @@ function Gr_hardopts, pdefs
   widget_control, junk, set_droplist_select = h.timestamp
 
 ;  jb = widget_base(cl, /column)
-  uvs.xsid = cw_enter(cl, $
-                      /float, $
-                      /all, $
-                      label = 'X Size (cm):', $
-                      value = h.size[0], $
-                      uvalue = 'XSI', $
-                      format = "(F5.2)", $
-                      xsize = 5, $
-                      /track, $
-                      /capture)
-  uvs.xoffid = cw_enter(cl, $
-                        /float, $
-                        /all, $
-                        label = 'X offset:',  $
-                        value = h.off[0], $
-                        uvalue = 'XOFF', $
-                        format = "(F5.2)", $
-                        xsize = 5, $
-                        /track, $
-                        /capture)
+  uvs.xsid = cw_spin_box(cl, $
+                         /float, $
+                         /all, $
+                         label = 'X Size (cm):', $
+                         value = h.size[0], $
+                         uvalue = 'XSI', $
+                         format = "(F5.2)", $
+                         xsize = 5, $
+                         /track, $
+                         /capture, $
+                         min = 0., $
+                         step = 0.5, $
+                         /transp)
+  uvs.xoffid = cw_spin_box(cl, $
+                           /float, $
+                           /all, $
+                           label = 'X offset:',  $
+                           value = h.off[0], $
+                           uvalue = 'XOFF', $
+                           format = "(F5.2)", $
+                           xsize = 5, $
+                           /track, $
+                           /capture, $
+                           min = 0., $
+                           step = 0.5, $
+                           /transp)
   uvs.xleftid = cw_enter(cl, $
                          /float, $
                          /display, $
@@ -451,26 +498,32 @@ function Gr_hardopts, pdefs
                          xsize = 5)
 
 ;  jb = widget_base(cl, /column)
-  uvs.ysid = cw_enter(cl, $
-                      /float, $
-                      /all, $
-                      label = 'Y Size (cm):', $
-                      value  = h.size[1], $
-                      uvalue = 'YSI', $
-                      format = "(F5.2)", $
-                      xsize = 5, $
-                      /track, $
-                      /capture)
-  uvs.yoffid = cw_enter(cl, $
-                        /float, $
-                        /all, $
-                        label = 'Y offset:',  $
-                        value = h.off[1], $
-                        uvalue = 'YOFF', $
-                        format = "(F5.2)", $
-                        xsize = 5, $
-                        /track, $
-                        /capture)
+  uvs.ysid = cw_spin_box(cl, $
+                         /float, $
+                         /all, $
+                         label = 'Y Size (cm):', $
+                         value  = h.size[1], $
+                         uvalue = 'YSI', $
+                         format = "(F5.2)", $
+                         xsize = 5, $
+                         /track, $
+                         /capture, $
+                         min = 0., $
+                         step = 0.5, $
+                         /transp)
+  uvs.yoffid = cw_spin_box(cl, $
+                           /float, $
+                           /all, $
+                           label = 'Y offset:',  $
+                           value = h.off[1], $
+                           uvalue = 'YOFF', $
+                           format = "(F5.2)", $
+                           xsize = 5, $
+                           /track, $
+                           /capture, $
+                           min = 0., $
+                           step = 0.5, $
+                           /transp)
   uvs.yleftid = cw_enter(cl, $
                          /float, $
                          /display, $
@@ -632,6 +685,7 @@ function Gr_hardopts, pdefs
 
   widget_control, pdefs.ids.graffer, /sensitive
 
-  return, ev.exited
+  if ev.exited eq -1 then return, -1 $
+  else return, uvs.chflag
 
 end
