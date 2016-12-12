@@ -61,10 +61,12 @@ pro Gr_autoscale, pdefs, xaxis = xaxis, yaxis = yaxis, $
         
      endfor
      
-     pdefs.xrange = range
-     if (widgets) then begin
-        widget_control, pdefs.ids.xmin, set_value = range(0)
-        widget_control, pdefs.ids.xmax, set_value = range(1)
+     if (finite(range[0]) &&  finite(range[1])) then begin
+        pdefs.xrange = range
+        if (widgets) then begin
+           widget_control, pdefs.ids.xmin, set_value = range(0)
+           widget_control, pdefs.ids.xmax, set_value = range(1)
+        endif
      endif
 
   endif else if yaxis eq 2 and pdefs.y_right then begin
@@ -84,12 +86,13 @@ pro Gr_autoscale, pdefs, xaxis = xaxis, yaxis = yaxis, $
 
      endfor
      
-     pdefs.yrange_r = range
-     if (widgets) then begin
-        widget_control, pdefs.ids.ymin_r, set_value = range(0)
-        widget_control, pdefs.ids.ymax_r, set_value = range(1)
+     if (finite(range[0]) &&  finite(range[1])) then begin
+        pdefs.yrange_r = range
+        if (widgets) then begin
+           widget_control, pdefs.ids.ymin_r, set_value = range(0)
+           widget_control, pdefs.ids.ymax_r, set_value = range(1)
+        endif
      endif
-     
   endif else begin
      
      if ~keyword_set(ignore) && ~keyword_set(visible) then $
@@ -107,10 +110,12 @@ pro Gr_autoscale, pdefs, xaxis = xaxis, yaxis = yaxis, $
 
      endfor
      
-     pdefs.yrange = range
-     if (widgets) then begin
-        widget_control, pdefs.ids.ymin, set_value = range(0)
-        widget_control, pdefs.ids.ymax, set_value = range(1)
+     if (finite(range[0]) &&  finite(range[1])) then begin
+        pdefs.yrange = range
+        if (widgets) then begin
+           widget_control, pdefs.ids.ymin, set_value = range(0)
+           widget_control, pdefs.ids.ymax, set_value = range(1)
+        endif
      endif
      
   endelse
