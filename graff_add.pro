@@ -238,6 +238,9 @@ pro Graff_add, file, a1, a2, a3, errors = errors, $
               x = double(a1[*, 0])
               y = double(a1[*, 1])
            endelse
+        endif else if sx[sx[0]+1] eq 6 || sx[sx[0]+1] eq 9 then begin
+           x = double(real_part(a1))
+           y = double(imaginary(a1))
         endif else begin
            y = double(a1)
            x = dindgen(n_elements(y))
