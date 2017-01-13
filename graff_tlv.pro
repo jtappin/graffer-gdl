@@ -88,7 +88,13 @@ function Grf_tlv_event, event
                     iexit = 0
                     goto, donefor
                  endelse
-              endif else begin
+              endif else if sx[sx[0]+1] eq 6 || $
+                 sx[sx[0]+1] eq 9 then begin
+                 y = imaginary(x[*])
+                 x = real_part(x[*])
+                 nx = n_elements(x)
+                 ny = nx
+               endif else begin
                  widget_control, uvs.mid, set_value = $
                                  'If Y is not set, X must be a ' + $
                                  '2xN or Nx2 array'

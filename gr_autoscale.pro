@@ -69,7 +69,7 @@ pro Gr_autoscale, pdefs, xaxis = xaxis, yaxis = yaxis, $
         endif
      endif
 
-  endif else if yaxis eq 2 and pdefs.y_right then begin
+  endif else if yaxis eq 2 && pdefs.y_right then begin
 
      if ~keyword_set(ignore) && ~keyword_set(visible) then $
         range = pdefs.yrange_r
