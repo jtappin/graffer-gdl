@@ -1,6 +1,5 @@
-pro graff_dump, pdefs, png = png, tiff = tiff, nrif = nrif, dialogue = $
-                $
-                dialogue
+pro graff_dump, pdefs, png = png, tiff = tiff, nrif = nrif, $
+                dialogue = dialogue
 
 ;+
 ; GRAFF_DUMP
@@ -58,8 +57,11 @@ pro graff_dump, pdefs, png = png, tiff = tiff, nrif = nrif, dialogue = $
         graff_msg, pdefs.ids.message, 'Wrote NRIF to: '+tname+'.nrf'
 
      endif else if (keyword_set(dialogue)) then begin
+        if widget_info(pdefs.ids.graffer,  /valid) then $
+           parent = pdefs.ids.graffer
+
         junk = dialog_write_image(image, $
-                                  dialog_parent = pdefs.ids.graffer, $
+                                  dialog_parent = parent, $
                                   file = tname+'.png', $
                                   type = 'PNG', $
                                   /warn_exist, $
@@ -82,8 +84,11 @@ pro graff_dump, pdefs, png = png, tiff = tiff, nrif = nrif, dialogue = $
         write_nrif, tname+'.nrf', image, r, g, b 
 
      endif else if (keyword_set(dialogue)) then begin
+        if widget_info(pdefs.ids.graffer,  /valid) then $
+           parent = pdefs.ids.graffer
+
         junk = dialog_write_image(image, r, g, b, $
-                                  dialog_parent = pdefs.ids.graffer, $
+                                  dialog_parent = parent, $
                                   file = tname+'.png', $
                                   type = 'PNG', $
                                   /warn_exist, $

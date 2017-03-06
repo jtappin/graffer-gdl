@@ -25,7 +25,7 @@ pro graff_make_dump, file, png = png, tiff = tiff, nrif = nrif, $
 ;	Original (ideas from graff_print): 6/3/17; SJT
 ;-
 
-  on_error, 2                   ; Return to caller on error
+;  on_error, 2                   ; Return to caller on error
 
   if n_params() eq 0 then message, "Must specify a GRAFFER file"
   gr_state, /save
@@ -47,6 +47,9 @@ pro graff_make_dump, file, png = png, tiff = tiff, nrif = nrif, $
 
   set_plot, 'x'
   window, /free, /pixmap,  xsize = xsize, ysize = ysize
+  device, decomposed = 1
+  !p.color = graff_colours(1)
+  !p.background = graff_colours(0)
   gr_plot_object, pdefs
 
   graff_dump, pdefs, png = png, tiff = tiff, nrif = nrif, $
