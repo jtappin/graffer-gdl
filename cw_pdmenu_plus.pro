@@ -245,14 +245,22 @@ function cw_pdmenu_plus_event, event
 
   widget_control, event.id, get_uvalue = uvalue
 
-  if tag_names(event, /struct) eq 'WIDGET_TRACKING' then  $
-     return, {cw_pdmenu_plus_track_event, $
-              id: event.handler, $
-              top: event.top, $
-              handler: 0l, $
-              enter: event.enter, $
-              value: uvalue.val} $
-  else begin
+  if tag_names(event, /struct) eq 'WIDGET_TRACKING' then begin
+     if size(uvalue.val, /type) eq 7 then $
+        return, {cw_pdmenu_plus_track_event_s, $
+                 id: event.handler, $
+                 top: event.top, $
+                 handler: 0l, $
+                 enter: event.enter, $
+                 value: uvalue.val} $
+     else $
+        return, {cw_pdmenu_plus_track_event_l, $
+                 id: event.handler, $
+                 top: event.top, $
+                 handler: 0l, $
+                 enter: event.enter, $
+                 value: long(uvalue.val}
+  endif else begin
      if uvalue.check then begin
         uvalue.state = ~uvalue.state
         widget_control, event.id, set_button = uvalue.state, $
