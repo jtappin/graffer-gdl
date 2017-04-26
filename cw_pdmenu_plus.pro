@@ -259,7 +259,7 @@ function cw_pdmenu_plus_event, event
                  top: event.top, $
                  handler: 0l, $
                  enter: event.enter, $
-                 value: long(uvalue.val}
+                 value: long(uvalue.val)}
   endif else begin
      if uvalue.check then begin
         uvalue.state = ~uvalue.state
