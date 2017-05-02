@@ -30,6 +30,7 @@ pro Gr_bin_ds, data, nset, ilu, msgid
 ; 	Add min & max values: 4/3/15; SJT
 ; 	Fix init of min & max: 2/6/15; SJT
 ;	Add non-linear contour level maps: 12/10/16; SJT
+;	Add labelling offset: 2/5/17; SJT
 ;-
 
   tag = '   '
@@ -154,6 +155,7 @@ pro Gr_bin_ds, data, nset, ilu, msgid
 
         'ZCF': data[nset].zopts.fill = value
         'ZLI': data[nset].zopts.label = value
+        'ZLO': data[nset].zopts.label_off = value
         'ZCS': data[nset].zopts.charsize = value
 
         'ZR': data[nset].zopts.range = value

@@ -33,6 +33,7 @@ pro Gr_asc_save, pdefs
 ; 	Add min & max values: 4/3/15; SJT
 ; 	Add PDF viewer: 21/9/16; SJT
 ;	Add non-linear contour level maps: 12/10/16; SJT
+;	Add labelling offset: 2/5/17; SJT
 ;-
 
   file = pdefs.dir+pdefs.name
@@ -210,8 +211,9 @@ pro Gr_asc_save, pdefs
                 ':ZLM:', zopts.lmap, $
                 ':ZCT:', zopts.ctable, $
                 ':ZLI:', zopts.label, $
+                ':ZLO:', zopts.label_off, $
                 ':ZCS:', zopts.charsize, $ 
-                format = "(4(a,i3),3(a,i2),a,i3,a,f7.3)" 
+                format = "(4(a,i3),3(a,i2),2(a,i3),a,f7.3)" 
         printf, ilu, 'ZCG:', zopts.gamma, format = "(a,f7.3)"
 
         if (zopts.set_levels and $

@@ -14,6 +14,7 @@ pro graff_set_zvals, pdefs
 ; 	Original: 13/12/11; SJT
 ; 	Handle hidden datasets: 26/1/12; SJT
 ;	Add non-linear contour level maps: 12/10/16; SJT
+;	Add labelling offset: 2/5/17; SJT
 ;-
 
 ; First make sure uninitialzed things are initialized.
@@ -69,6 +70,8 @@ pro graff_set_zvals, pdefs
   widget_control, zids.c_type, set_droplist_select = zopts.fill
 
   widget_control, zids.c_label, set_value = zopts.label
+  widget_control, zids.c_label_off, set_value = zopts.label_off
+
   if (zopts.charsize eq 0.) then zopts.charsize = 1.
   widget_control, zids.c_charsize, set_value = zopts.charsize, sensitive $
                   = zopts.label ne 0

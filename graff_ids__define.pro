@@ -22,6 +22,7 @@ pro graff_ids__define
 ;	Add "current" ds only id: 26/1/12; SJT
 ; 	Add min & max values: 4/3/15; SJT
 ;	Add non-linear contour level maps: 12/10/16; SJT
+;	Add labelling offset: 2/5/17; SJT
 ;-
 
 Ids = { graff_ids, $
@@ -66,6 +67,7 @@ Ids = { graff_ids, $
                   c_style: 0l, $
                   c_type: 0l, $
                   c_label: 0l, $
+                  c_label_off: 0l, $
                   c_charsize: 0l, $
                   i_range: lonarr(2), $
                   i_log: 0l, $

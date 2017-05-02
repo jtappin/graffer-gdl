@@ -29,6 +29,7 @@ pro Gr_2dd_plot, pdefs, i, csiz, grey_ps = grey_ps, shaded = shaded
 ;	Handle hidden datasets: 26/1/12; SJT
 ;	Send back flag if axes need redrawing: 20/1/16; SJT
 ;	Add non-linear contour level maps: 12/10/16; SJT
+;	Add labelling offset: 2/5/17; SJT
 ;-
 
   data = (*pdefs.data)[i]
@@ -66,8 +67,7 @@ pro Gr_2dd_plot, pdefs, i, csiz, grey_ps = grey_ps, shaded = shaded
     endelse
      
      if (data.zopts.label ne 0 and n_elements(nl) eq 1) then begin
-        labels = (indgen(nl) - $
-                  data.zopts.label/2) mod data.zopts.label eq 0
+        labels = indgen(nl) mod data.zopts.label eq data.zopts.label_off
      endif else labels = 0
 
      if obj_valid(data.zopts.colours) then begin

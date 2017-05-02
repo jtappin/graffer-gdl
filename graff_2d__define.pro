@@ -22,6 +22,7 @@ pro graff_2d__define
 ;	Add local colour table option: 17/11/11; SJT
 ;	Make colours a list: 7/10/16; SJT
 ;	Add non-linear contour level maps: 12/10/16; SJT
+;	Add labelling offset: 2/5/17; SJT
 ;-
 
 Zopts = {graff_2d, $
@@ -41,6 +42,7 @@ Zopts = {graff_2d, $
          Pxsize:      0., $
          charsize:    0., $
          Label:       0, $
+         Label_off:   0, $
          Ctable:      0, $
          Gamma:       0., $
          Fill:        0b, $

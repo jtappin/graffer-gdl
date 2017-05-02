@@ -17,6 +17,7 @@
 ;	Make contour colours a LIST: 7/10/16; SJT
 ;	Add non-linear contour level maps: 12/10/16; SJT
 ;	Replace graff_enter with cw_enter: 13/10/16; SJT
+;	Add labelling offset: 2/5/17; SJT
 ;-
 
 
@@ -115,8 +116,24 @@ pro Cont_event, event
         zopts.label = labi
         widget_control, pdefs.ids.zopts.c_charsize, sensitive = labi $
                         ne 0
+        widget_control, pdefs.ids.zopts.c_label_off, sensitive = labi $
+                        gt 1
+        if labi gt 0 then $
+           cw_spin_box_set_max, pdefs.ids.zopts.c_label_off, $
+                                (labi-1) > 1
+        if zopts.label_off ge labi then begin
+           widget_control, pdefs.ids.zopts.c_label_off, set_value = 0
+           zopts.label_off = 0
+        endif
      endelse
      
+     'LABEL_OFF': if track_flag then $
+        graff_msg, pdefs.ids.hlptxt, "Set contour labelling offset" $
+     else begin
+        widget_control, event.id, get_value = labo
+        zopts.label_off = labo
+     endelse
+
      'CCSIZE': if (track_flag) then $
         graff_msg, pdefs.ids.hlptxt, 'Set contour labelling character size' $
      else begin
@@ -282,11 +299,8 @@ pro Gr_cont_menus, sb, pdefs
                                       ysize = 4, $
                                       /column, $
                                       label = 'Colours', $
-                                      /all_events, $ $
+                                      /all_events, $ 
                                       set_list = 'gr_cont_col_set', $
-                                      $
-                                      $
-                                      $
                                       get_list = 'gr_cont_col_get')
 
   jby = widget_base(jbx, $
@@ -348,6 +362,23 @@ pro Gr_cont_menus, sb, pdefs
                                         /trans)
 
 
+  pdefs.ids.zopts.c_label_off = cw_spin_box(jby, $
+                                            /int, $
+                                            /track, $
+                                            uvalue = 'LABEL_OFF', $
+                                            value = zopts.label_off, $
+                                            format = "(i0)", $
+                                            xsize = 6, $
+                                            label = 'Offset', $
+                                            /capture, $
+                                            /column, $
+                                            /all_events, $
+                                            min = 0, $
+                                            max = (zopts.label-1) > 1, $
+                                            sensitive = zopts.label gt $
+                                            1, $
+                                            /trans)
+                                            
 
   pdefs.ids.zopts.c_charsize = cw_spin_box(jby, $
                                            /float, $

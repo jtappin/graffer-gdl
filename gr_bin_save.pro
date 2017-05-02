@@ -31,6 +31,7 @@ pro Gr_bin_save, pdefs, auto = auto
 ; 	Add min & max values: 4/3/15; SJT
 ; 	PDF view command: 21/9/16; SJT
 ;	Add non-linear contour level maps: 12/10/16; SJT
+;	Add labelling offset: 2/5/17; SJT
 ;-
 
   if (keyword_set(auto)) then begin
@@ -192,6 +193,7 @@ pro Gr_bin_save, pdefs, auto = auto
         
         graff_put_rec, ilu, 'ZCF', zopts.fill
         graff_put_rec, ilu, 'ZLI', zopts.label
+        graff_put_rec, ilu, 'ZLO', zopts.label_off
         graff_put_rec, ilu, 'ZCS', zopts.charsize
         graff_put_rec, ilu, 'ZCT', zopts.ctable
         graff_put_rec, ilu, 'ZCG', zopts.gamma
