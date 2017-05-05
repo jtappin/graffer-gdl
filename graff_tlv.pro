@@ -373,14 +373,25 @@ function Graff_tlv, pdefs
   if ptr_valid((*pdefs.data)[pdefs.cset].xydata) then begin
      xydata = *(*pdefs.data)[pdefs.cset].xydata
      if n_elements(xydata) ne 0 then begin
-        xtmp = xydata[0, *]
-        ytmp = xydata[1, *]
-        uvs.x = ptr_new(xtmp)
-        uvs.y = ptr_new(ytmp)
-        if (*pdefs.data)[pdefs.cset].type gt 0 then begin
-           errtmp = xydata[2:*, *]
-           uvs.err = ptr_new(errtmp)
-        endif
+        if (*pdefs.data)[pdefs.cset].ndata eq 1 then begin
+           xtmp = xydata[0, 0]
+           ytmp = xydata[1, 0]
+           uvs.x = ptr_new(xtmp)
+           uvs.y = ptr_new(ytmp)
+           if (*pdefs.data)[pdefs.cset].type gt 0 then begin
+              errtmp = xydata[2:*, 0]
+              uvs.err = ptr_new(errtmp)
+           endif
+        endif else begin
+           xtmp = xydata[0, *]
+           ytmp = xydata[1, *]
+           uvs.x = ptr_new(xtmp)
+           uvs.y = ptr_new(ytmp)
+           if (*pdefs.data)[pdefs.cset].type gt 0 then begin
+              errtmp = xydata[2:*, *]
+              uvs.err = ptr_new(errtmp)
+           endif
+        endelse
      endif
   endif
 
