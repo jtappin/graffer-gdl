@@ -46,41 +46,28 @@ function Grf_fit_event, event
         widget_control, uv.upid, /sensitive
      end
      
-     'FITT': uv.type(0) = event.index
-     'FITD': if (event.index ne uv.type(1)) then begin
-        if (uv.type(0) eq 1 or uv.type(0) eq 2) then begin
-           uv.type(0) = uv.type(0) xor 3
-           widget_control, uv.ftype, set_value = uv.type(0)
+     'FITT': uv.type[0] = event.index
+     'FITD': if (event.index ne uv.type[1]) then begin
+        if (uv.type[0] eq 1 or uv.type[0] eq 2) then begin
+           uv.type[0] = uv.type[0] xor 3
+           widget_control, uv.ftype, set_value = uv.type[0]
         endif
-        uv.type(1) = event.index
+        uv.type[1] = event.index
      endif
      'FITN': begin
-        uv.type(2) = event.index
+        uv.type[2] = event.index
         widget_control, uv.degid, sensitive = (event.index eq 0)
      end
      'NAN': uv.nan = event.select
      
-     
+     'DEGREE': uv.type[3] = event.value
+     'NPTS': uv.nid = event.value
+     'SLICE': uv.slice = event.value
+
      'DONT': iexit = -1
-     'DO': begin
-        iexit = 1
-        widget_control, uv.nid, get_value = np
-        uv.np = np
-        widget_control, uv.part, get_value = sl
-        uv.slice = sl
-        widget_control, uv.degid, get_value = dg
-        uv.type(3) = dg
-     end
-     'UPDATE': begin
-        iexit = 2
-        widget_control, uv.nid, get_value = np
-        uv.np = np
-        widget_control, uv.part, get_value = sl
-        uv.slice = sl
-        widget_control, uv.degid, get_value = dg
-        uv.type(3) = dg
-     end
-     
+     'DO': iexit = 1
+     'UPDATE': iexit = 2
+       
   end
 
   widget_control, base, set_uvalue = uv, /no_copy
@@ -192,15 +179,34 @@ function Gr_fit_dset, pdefs
                          title = 'Fit sense', $
                          uvalue = 'FITD')
 
-  degid = cw_enter(jb, /int, value = 1, /no_event, xsize = 3, $
-                   label = $
-                   'Degree:', /capture) 
+  degid = cw_spin_box(jb, $
+                      /int, $
+                      value = 1, $
+                      xsize = 3, $
+                      label = 'Degree:', $
+                      /capture, $
+                      /transp, $
+                      min = 1, $
+                      uvalue = 'DEGREE') 
 
-  npts = cw_enter(jb, /int, value = 25, /no_event, xsize = 3, $
-                  label = $
-                  '# evaluations:', /capture)
-  part = cw_enter(jb, /text, value = '', /no_event, xsize = 15, label $
-                  = 'Slice:', /capture)
+  npts = cw_spin_box(jb, $
+                     /int, $
+                     value = 25, $
+                     xsize = 4, $
+                     label = '# evaluations:', $
+                     /capture, $
+                     min = 2, $
+                     step = 5, $
+                     /transp, $
+                     uvalue = 'NPTS')
+
+  part = cw_enter(jb, $
+                  /text, $
+                  value = '', $
+                  xsize = 15, $
+                  label = 'Slice:', $
+                  /capture, $
+                  uvalue = 'SLICE')
 
   jbb = widget_base(jb, $
                     /nonexclusive)

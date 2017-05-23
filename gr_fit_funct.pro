@@ -40,7 +40,7 @@ function Gr_fit_funct, pdefs, ftype, npt, slice, fset, pr, resid, $
 
   xy = *(*pdefs.data)[fset].xydata
 
-  if (ftype(2) eq 0) then case ((*pdefs.data)[fset].type) of
+  if (ftype[2] eq 0) then case ((*pdefs.data)[fset].type) of
      0:                             ; No errs
      1: wy = transpose(xy(2, *))    ; Y
      2: wy = total(xy(2:3, *), 1)/2. ; +-Y
@@ -105,7 +105,7 @@ function Gr_fit_funct, pdefs, ftype, npt, slice, fset, pr, resid, $
      if n_elements(w) ne 0 then w = w[good]
   endif
 
-  if (ftype(1)) ne 0 then begin
+  if (ftype[1]) ne 0 then begin
      temp = temporary(x)
      x = temporary(y)
      y = temporary(temp)
@@ -118,13 +118,13 @@ function Gr_fit_funct, pdefs, ftype, npt, slice, fset, pr, resid, $
      var = 'x'
   endelse
 
-  if (ftype(0) ne 4) then begin
-     if (ftype(0) and 2) ne 0 then begin
+  if (ftype[0] ne 4) then begin
+     if (ftype[0] and 2) ne 0 then begin
         x = alog(x)
         var = 'alog('+var+')'
      endif
      
-     if (ftype(0) and 1) ne 0 then begin
+     if (ftype[0] and 1) ne 0 then begin
         if (n_elements(w) ne 0) then w = w/y
         y = alog(y)
      endif
@@ -150,15 +150,15 @@ function Gr_fit_funct, pdefs, ftype, npt, slice, fset, pr, resid, $
      return, ''
   endif
 
-  if (ftype(0) eq 4) then fit = gr_pwfit(x, y, w, ftype(3), c2) $
-  else if (ftype(2)) then fit = ladfit(x, y) $
-  else fit = poly_fit(x, y, ftype(3), measure_errors = w, chisq = c2)
-;else fit = svdfit(x, y, ftype(3)+1, weight = w, singular = sing, chisq = c2)
+  if (ftype[0] eq 4) then fit = gr_pwfit(x, y, w, ftype[3], c2) $
+  else if (ftype[2]) then fit = ladfit(x, y) $
+  else fit = poly_fit(x, y, ftype[3], measure_errors = w, chisq = c2)
+;else fit = svdfit(x, y, ftype[3]+1, weight = w, singular = sing, chisq = c2)
 
   catch, /cancel                ; Should only need the Catcher for SVDFIT
 
-  func = gr_str_fun(fit, var, pieces = ftype(0) eq 4)
-  if (ftype(0) and 1) then func = 'exp('+func+')'
+  func = gr_str_fun(fit, var, pieces = ftype[0] eq 4)
+  if (ftype[0] and 1) then func = 'exp('+func+')'
 
 
   xydata = {graff_funct}

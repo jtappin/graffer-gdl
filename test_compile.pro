@@ -72,6 +72,8 @@ print, 'graff_just.pro'
 .r graff_just
 print, 'graff_key__define.pro'
 .r graff_key__define
+print, 'graff_make_dump.pro'
+.r graff_make_dump
 print, 'graff_msg.pro'
 .r graff_msg
 print, 'graff_open.pro'
