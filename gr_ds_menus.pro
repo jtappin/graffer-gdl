@@ -264,7 +264,7 @@ pro Gr_ds_menus, optbb, pdefs
                                 ; Change symbol size
 
   pdefs.ids.symsize = cw_spin_box(jjb, $
-                                  /float, $
+                                  /double, $
                                   /all_events, $
                                   value = '1.0', $
                                   uvalue = 'SSIZE', $
@@ -279,7 +279,7 @@ pro Gr_ds_menus, optbb, pdefs
 
   jjb = widget_base(pdefs.ids.plopts[0], /row)
   pdefs.ids.thick = cw_spin_box(jjb, $
-                                /float, $
+                                /double, $
                                 /all_events, $
                                 format = "(f0.1)", $
                                 xsize = 6, $

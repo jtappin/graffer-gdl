@@ -20,17 +20,19 @@ pro graff_define__define
 ;	Extracted: 30/6/05; SJT
 ;	Add isotropic option: 25/6/08; SJT
 ;	Add support for a second Y-scale: 22/12/11; SJT
+;	Make coordinates double: 24/5/17; SJT
 ;-
+
 pdefs = {graff_define, $
          Version:   intarr(2), $
          Name:      '', $
          Dir:       '', $
          Title:     '', $
          Subtitle:  '', $
-         Charsize:  .0, $
-         Axthick:   0., $
-         Position:  fltarr(4), $
-         Aspect:    fltarr(2), $
+         Charsize:  0.d0, $
+         Axthick:   0.d0, $
+         Position:  dblarr(4), $
+         Aspect:    dblarr(2), $
          Isotropic: 0b, $
          match:     0b, $
          Xrange:    dblarr(2), $
@@ -48,7 +50,7 @@ pdefs = {graff_define, $
          Ysty_r:    {graff_style}, $
          ytransform: replicate({!axis}, 2), $
          Ctable:    0, $
-         Gamma:     .0, $
+         Gamma:     0.d0, $
          Nsets:     0, $
          Cset:      0, $ $
          Data:      ptr_new(), $

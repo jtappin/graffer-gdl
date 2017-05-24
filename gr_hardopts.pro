@@ -393,7 +393,7 @@ function Gr_hardopts, pdefs
         modid: 0l, $
         paperid: 0l, $
         Action: 0l, $
-        Psize: fltarr(2), $
+        Psize: dblarr(2), $
         tname: tname, $
         chflag: 0 $
         }
@@ -464,7 +464,7 @@ function Gr_hardopts, pdefs
 
 ;  jb = widget_base(cl, /column)
   uvs.xsid = cw_spin_box(cl, $
-                         /float, $
+                         /double, $
                          /all, $
                          label = 'X Size (cm):', $
                          value = h.size[0], $
@@ -477,7 +477,7 @@ function Gr_hardopts, pdefs
                          step = 0.5, $
                          /transp)
   uvs.xoffid = cw_spin_box(cl, $
-                           /float, $
+                           /double, $
                            /all, $
                            label = 'X offset:',  $
                            value = h.off[0], $
@@ -490,7 +490,7 @@ function Gr_hardopts, pdefs
                            step = 0.5, $
                            /transp)
   uvs.xleftid = cw_enter(cl, $
-                         /float, $
+                         /double, $
                          /display, $
                          label = 'X remain:', $
                          value = uvs.psize[0]-h.size[0]-h.off[0], $
@@ -499,7 +499,7 @@ function Gr_hardopts, pdefs
 
 ;  jb = widget_base(cl, /column)
   uvs.ysid = cw_spin_box(cl, $
-                         /float, $
+                         /double, $
                          /all, $
                          label = 'Y Size (cm):', $
                          value  = h.size[1], $
@@ -512,7 +512,7 @@ function Gr_hardopts, pdefs
                          step = 0.5, $
                          /transp)
   uvs.yoffid = cw_spin_box(cl, $
-                           /float, $
+                           /double, $
                            /all, $
                            label = 'Y offset:',  $
                            value = h.off[1], $
@@ -525,7 +525,7 @@ function Gr_hardopts, pdefs
                            step = 0.5, $
                            /transp)
   uvs.yleftid = cw_enter(cl, $
-                         /float, $
+                         /double, $
                          /display, $
                          label = 'Y remain:', $
                          value = uvs.psize[1]-h.size[1]-h.off[1], $

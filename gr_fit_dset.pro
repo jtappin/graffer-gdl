@@ -219,7 +219,7 @@ function Gr_fit_dset, pdefs
   jb = widget_base(base, /column, /align_center, /base_align_center)
   resid = cw_enter(jb, /text, value = '', /no_event, /display, $
                    xsize = 40, label = 'Fit', /column)
-  csqid = cw_enter(jb, /float, value = 0., /no_event, /display, $
+  csqid = cw_enter(jb, /double, value = 0., /no_event, /display, $
                    xsize = 14, label = 'Prob chance:')
 
   jb = widget_base(base, /row, /align_center)

@@ -27,9 +27,9 @@ Text_options = {graff_text, $
                 Text:    '', $
                 Colour:  0, $
                 c_vals:  bytarr(3), $
-                Size:    0., $
-                Orient:  0., $
-                Align:   0., $
+                Size:    0.d0, $
+                Orient:  0.d0, $
+                Align:   0.d0, $
                 ffamily: 0, $
                 Font:    0, $
                 Thick:   0., $

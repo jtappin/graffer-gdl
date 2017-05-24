@@ -78,7 +78,7 @@ function Graff_pfunct, pdefs
 
   if ptr_valid((*pdefs.data)[pdefs.cset].xydata) then $
      xydata = *(*pdefs.data)[pdefs.cset].xydata $
-  else xydata = fltarr(2)
+  else xydata = dblarr(2)
 
   if ((*pdefs.data)[pdefs.cset].type eq -3) then begin
      funct = xydata.funct

@@ -18,6 +18,7 @@
 ;	Replace handles with pointers: 28/6/05; SJT
 ;	Add division option: 12/9/16; SJT
 ;	Replace graff_enter with cw_enter: 13/10/16; SJT
+;	Make factors double: 24/5/17; SJT
 ;-
 
 function Rescale_event, event
@@ -132,7 +133,7 @@ function Graff_rescale, pdefs
   wids.boxes[0] = cw_enter(jb, $
                            label = 'X: Scaling:', $
                            value = 1.0, $
-                           /float, $
+                           /double, $
                            xsize = 11, $
                            uvalue = 'XSCALE', $
                            /track, $
@@ -147,7 +148,7 @@ function Graff_rescale, pdefs
   wids.boxes[1] = cw_enter(jb, $
                            label = 'Shift:', $
                            value = 0., $
-                           /float, $
+                           /double, $
                            xsize = 11, $
                            uvalue = 'XSHIFT', $
                            /track, $
@@ -158,7 +159,7 @@ function Graff_rescale, pdefs
   wids.boxes[2] = cw_enter(jb, $
                            label = 'Y: Scaling:', $
                            value = 1.0, $
-                           /float, $
+                           /double, $
                            xsize = 11, $
                            uvalue = 'YSCALE', $
                            /track, $
@@ -173,7 +174,7 @@ function Graff_rescale, pdefs
   wids.boxes[3] = cw_enter(jb, $
                            label = 'Shift:', $
                            value = 0., $
-                           /float, $
+                           /double, $
                            xsize = 11, $
                            uvalue = 'YSHIFT', $
                            /track, $

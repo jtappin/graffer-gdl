@@ -149,7 +149,7 @@ pro Gr_bin_ds, data, nset, ilu, msgid
         end
 
         'ZT': begin
-           data[nset].zopts.thick = ptr_new(float(value))
+           data[nset].zopts.thick = ptr_new(double(value))
            data[nset].zopts.n_thick = nvals
         end
 

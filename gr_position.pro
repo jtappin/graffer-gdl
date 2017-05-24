@@ -18,6 +18,7 @@
 ;	Replace cw_bbselector with widget_droplist: 13/12/11; SJT
 ;	Add support for a second Y-scale: 22/12/11; SJT
 ;	Replace graff_enter with cw_enter: 13/10/16; SJT
+;	Make coordinates double: 24/5/17; SJT
 ;-
 
 function Gr_pos_event, event
@@ -115,22 +116,22 @@ function Gr_position, pdefs
 
   pids = lonarr(4)
   jb = widget_base(pbase, /row, xpad = 0, ypad = 0, space = 0)
-  pids(0) = cw_enter(jb, /all_events, /float, value = $
+  pids(0) = cw_enter(jb, /all_events, /double, value = $
                      pdefs.position(0), $
                      format = "(f6.4)", uvalue = 'PXMIN', label = $
                      'Lower left, X:', xsize = 6, /capture)
-  pids(1) = cw_enter(jb, /all_events, /float, value = $
+  pids(1) = cw_enter(jb, /all_events, /double, value = $
                      pdefs.position(1), $
                      format = "(f6.4)", uvalue = 'PYMIN', label = ' ' + $
                      'Y:', $
                      xsize = 6, /capture)
 
   jb = widget_base(pbase, /row, xpad = 0, ypad = 0, space = 0)
-  pids(2) = cw_enter(jb, /all_events, /float, value = $
+  pids(2) = cw_enter(jb, /all_events, /double, value = $
                      pdefs.position(2), $
                      format = "(f6.4)", uvalue = 'PXMAX', label = $
                      'Upper right, X:', xsize = 6, /capture)
-  pids(3) = cw_enter(jb, /all_events, /float, value = $
+  pids(3) = cw_enter(jb, /all_events, /double, value = $
                      pdefs.position(3), $
                      format = "(f6.4)", uvalue = 'PYMAX', label = ' ' + $
                      'Y:', $
@@ -143,10 +144,10 @@ function Gr_position, pdefs
   rids = lonarr(2)
   jb = widget_base(rbase, /row, xpad = 0, ypad = 0, space = 0)
 
-  rids(0) = cw_enter(jb, /all_events, /float, value = pdefs.aspect(0), $
+  rids(0) = cw_enter(jb, /all_events, /double, value = pdefs.aspect(0), $
                      format = "(f8.4)", uvalue = 'ASPECT', label = $
                      'Aspect ratio:', xsize = 8, /capture)
-  rids(1) = cw_enter(jb, /all_events, /float, value = pdefs.aspect(1), $
+  rids(1) = cw_enter(jb, /all_events, /double, value = pdefs.aspect(1), $
                      format = "(f6.4)", uvalue = 'MARGIN', label = $
                      'Margin:', xsize = 6, /capture)
 

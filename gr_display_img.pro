@@ -159,16 +159,16 @@ pro Gr_display_img, zin, xin, yin, range = range, $
      y = yin(locsy)
      z = ztmp(locsx, *)
      z = z(*, locsy)
-     gr_coord_convert, (findgen(dvxsize)+xcorn[0]) / scfac[0], $
-                       fltarr(dvxsize), xd, junk, /device, /to_data
+     gr_coord_convert, (dindgen(dvxsize)+xcorn[0]) / scfac[0], $
+                       dblarr(dvxsize), xd, junk, /device, /to_data
 
-     gr_coord_convert, fltarr(dvysize),  $
-                       (findgen(dvysize)+ycorn[0]) / scfac[1], $
+     gr_coord_convert, dblarr(dvysize),  $
+                       (dindgen(dvysize)+ycorn[0]) / scfac[1], $
                        junk, yd, /device, /to_data
 
      sz = size(z)
-     xx = interpol(findgen(sz(1)), x, xd)
-     yy = interpol(findgen(sz(2)), y, yd)
+     xx = interpol(dindgen(sz(1)), x, xd)
+     yy = interpol(dindgen(sz(2)), y, yd)
      zz = bilinear(z, xx, yy)
   endelse
 

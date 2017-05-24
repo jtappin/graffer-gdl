@@ -31,6 +31,7 @@ function Graff_hard, pdefs, no_set = no_set, redraw = redraw
 ;	Handle case when current-only is selected: 26/1/12; SJT
 ;	Support PDF output: 21/9/16; SJT
 ;	Add redraw key: 30/11/16; SJT
+;	Make coordinates double: 24/5/17; SJT
 ;-
 
 ; For hard copy we don't normally want to show current DS only.
@@ -82,7 +83,7 @@ function Graff_hard, pdefs, no_set = no_set, redraw = redraw
 
   h = pdefs.hardset
 
-  cpl = float(!D.x_size)/float(!D.x_ch_size)
+  cpl = double(!D.x_size)/double(!D.x_ch_size)
 
   dev = !D.name
   set_plot, 'ps'
@@ -157,7 +158,7 @@ function Graff_hard, pdefs, no_set = no_set, redraw = redraw
      12: device, /symbol
   endcase
 
-  ncpl = float(!D.x_size)/float(!D.x_ch_size)
+  ncpl = double(!D.x_size)/double(!D.x_ch_size)
   csiz = ncpl/cpl
 
   gr_plot_object, pdefs, /no_null, charsize = csiz, /plot_all, $

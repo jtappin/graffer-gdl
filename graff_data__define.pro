@@ -31,11 +31,11 @@ data =  {graff_data, $
          Descript: "", $
          Pline:    0, $
          Psym:     0, $
-         Symsize:  0., $
+         Symsize:  0.d0, $
          Line:     0, $
          Colour:   0, $
          c_vals:   bytarr(3), $
-         Thick:    0., $
+         Thick:    0.d0, $
          min_val:  0.d0, $
          max_val:  0.d0, $
          Zopts:    {graff_2d}, $

@@ -79,7 +79,7 @@ uvs = { $
 if ptr_valid((*pdefs.data)[pdefs.cset].xydata) && $
   n_elements(*((*pdefs.data)[pdefs.cset].xydata)) gt 0 then $
   xydata = *(*pdefs.data)[pdefs.cset].xydata $
-else xydata = fltarr(2)
+else xydata = dblarr(2)
 
 if ((*pdefs.data)[pdefs.cset].type eq -4) then begin
     funct = xydata.funct

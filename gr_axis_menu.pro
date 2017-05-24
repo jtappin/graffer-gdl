@@ -20,6 +20,7 @@
 ;	Add annotation suppression: 12/1/12; SJT
 ;	Advanced axis style settings: 21/8/12; SJT
 ;	Replace cw_pdtsmenu with cw_pdmenu_plus: 28/9/16; SJT
+;	Make coordinates double: 24/5/17; SJT
 ;-
 
 pro Gr_axis_event, event
@@ -630,7 +631,7 @@ pro Gr_axis_menu, axis, base, pdefs
                    space = 0)
 
   amin = cw_enter(jb, $
-                  /float, $
+                  /double, $
                   /all_events, $
                   value = 0., $
                   xsize = 12, $
@@ -643,7 +644,7 @@ pro Gr_axis_menu, axis, base, pdefs
                                 ; Maximum
 
   amax = cw_enter(jb, $
-                  /float, $
+                  /double, $
                   /all_events, $
                   value = 0., $
                   xsize = 12, $

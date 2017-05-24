@@ -152,7 +152,7 @@ pro Gr_img_menus, sb, pdefs
                    space = 0)
 
   pdefs.ids.zopts.i_range[0] = cw_enter(jb, $
-                                        /float, $
+                                        /double, $
                                         value = zopts.range[0], $
                                         format = "(g12.4)", $
                                         xsize = 12, $
@@ -162,7 +162,7 @@ pro Gr_img_menus, sb, pdefs
                                         /track, $
                                         /all_events)
   pdefs.ids.zopts.i_range[1] = cw_enter(jb, $
-                                        /float, $
+                                        /double, $
                                         value = zopts.range[1], $
                                         format = "(g12.4)", $
                                         xsize = 12, $
@@ -220,7 +220,7 @@ pro Gr_img_menus, sb, pdefs
                     ypad = 0, $
                     /column)
   pdefs.ids.zopts.i_pxsz = cw_enter(jbb, $
-                                    /float, $
+                                    /double, $
                                     value = zopts.pxsize, $
                                     format = "(f5.2)", $
                                     xsize = 5, $
@@ -236,7 +236,7 @@ pro Gr_img_menus, sb, pdefs
 
   
   pdefs.ids.zopts.i_gamma = cw_enter(jbb, $
-                                     /float, $
+                                     /double, $
                                      value = gamma, $
                                      format = "(f7.3)", $
                                      xsize = 9, $

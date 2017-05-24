@@ -157,7 +157,7 @@ pro Gr_mk_plmenus, base, pdefs
   pdefs.ids.charsize = cw_spin_box(jb, $
                                    value = 1.0, $
                                    /all_events, $
-                                   /float, $
+                                   /double, $
                                    xsize = 6, $
                                    uvalue = 'CHARSIZE', $
                                    label = 'Charsize:', $
@@ -169,7 +169,7 @@ pro Gr_mk_plmenus, base, pdefs
                                    /trans)
 
   pdefs.ids.axthick = cw_spin_box(jb, $
-                                  /float, $
+                                  /double, $
                                   /all_events, $
                                   format = "(f0.1)", $
                                   value = 1., $

@@ -163,7 +163,7 @@ pro gr_pl_axes, pdefs, csiz, overlay = overlay, secondary = secondary
 
   noerase = (pdefs.y_right and keyword_set(secondary)) or $
             keyword_set(overlay) 
-  plot, /nodata, fltarr(2), title = pdefs.title, subtitle = $
+  plot, /nodata, dblarr(2), title = pdefs.title, subtitle = $
         pdefs.subtitle, xrange = pdefs.xrange, xtitle = $
         pdefs.xtitle, xlog = pdefs.xtype, xsty = xsty, $
         yrange = yrange, ytitle = ytitle, ylog = $

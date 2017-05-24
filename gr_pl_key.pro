@@ -10,7 +10,7 @@ pro Gr_pl_key, pdefs, csiz
 ; Argument:
 ;	pdefs	struct	input	The ubiquitous GRAFFER data & control
 ;				structure
-;	csiz	float	input	The character size to use
+;	csiz	double	input	The character size to use
 ;
 ; History:
 ;	Original: 29/1/97; SJT
@@ -53,7 +53,7 @@ pro Gr_pl_key, pdefs, csiz
      return
   endif else list = list[locs]
   
-  nrows = ceil(float(nkey)/pdefs.key.cols)
+  nrows = ceil(double(nkey)/pdefs.key.cols)
   if (pdefs.key.title ne '') then begin
      lsp = (yn[1]-yn[0])/(nrows+1.2)
      xyouts, total(xn)/2, yn[1]-lsp*.8, $
@@ -73,7 +73,7 @@ pro Gr_pl_key, pdefs, csiz
      tx = .4 * (xn[1]-xn[0])/pdefs.key.cols
      ys = [0, .5*lsp]
   endelse
-  yoff = csize/2. * float(!d.y_ch_size)/float(!d.y_size)
+  yoff = csize/2. * double(!d.y_ch_size)/double(!d.y_size)
 
   for j = 0, nkey-1 do begin
      

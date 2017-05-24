@@ -10,10 +10,10 @@ pro Gr_as_xr, data, yrange, ytype, range, visible = visible
 ; Arguments:
 ;	data	struct	input	The Graffer data structure (extracted
 ;				from PDEFS)
-;	yrange	float	input	The Y- range for functions (x=f(y))
+;	yrange	double	input	The Y- range for functions (x=f(y))
 ;                                      (or data when visible is set)
 ;	ytype	int	input	log or linear Y (ditto)
-;	range	float	in/out	The range to use.
+;	range	double	in/out	The range to use.
 ;
 ; Keyword:
 ; 	/visible	If set, then only consider data values that
@@ -55,9 +55,9 @@ pro Gr_as_xr, data, yrange, ytype, range, visible = visible
            amin = alog10(amin)
            amax = alog10(amax)
            y = 10^(dindgen(data.ndata) * (amax-amin) $
-                   /  float(data.ndata-1) + amin)
+                   /  double(data.ndata-1) + amin)
         endif else y = dindgen(data.ndata) * (amax-amin) $
-                       /  float(data.ndata-1) + amin
+                       /  double(data.ndata-1) + amin
         
         iexe = execute('fv = '+(*data.xydata).funct)
         
@@ -68,7 +68,7 @@ pro Gr_as_xr, data, yrange, ytype, range, visible = visible
      -3: begin                  ; x = f(t), y = f(t)
         t = dindgen(data.ndata) *  $
             ((*data.xydata).range(1)-(*data.xydata).range(0)) $
-            /  float(data.ndata-1) + (*data.xydata).range(0)
+            /  double(data.ndata-1) + (*data.xydata).range(0)
         
         iexe = execute('fv = '+(*data.xydata).funct(0))
         

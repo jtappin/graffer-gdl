@@ -133,7 +133,7 @@ case but of
     'JUST': if (track_flag) then  $
       graff_msg, pdefs.ids.popmsg, 'Select text justification' $
     else if (event.index le 2) then $
-      (*pdefs.text)[itxt].align = float(event.index)/2. $
+      (*pdefs.text)[itxt].align = double(event.index)/2. $
     else (*pdefs.text)[itxt].align = $
       graff_just((*pdefs.text)[itxt].align, group = event.top) 
     
@@ -295,7 +295,7 @@ function Graff_text, pdefs, edit = edit, position = position
                      /capture)
 
   junk = cw_spin_box(jb, $
-                     /float, $
+                     /double, $
                      /all_ev, $
                      xsize = 7, $
                      value = (*pdefs.text)[itxt].size, $
@@ -352,7 +352,7 @@ function Graff_text, pdefs, edit = edit, position = position
 ;; endelse
 
   junk = cw_spin_box(jb, $
-                     /float, $
+                     /double, $
                      format = "(f0.1)", $
                      /all_ev, $
                      xsize = 6, $
@@ -384,7 +384,7 @@ function Graff_text, pdefs, edit = edit, position = position
   widget_control, junk, set_droplist_select = ial
 
   junk = cw_enter(jb, $
-                  /float, $
+                  /double, $
                   /all_event, $
                   xsize = 6, $
                   uvalue = 'ORI', $
@@ -421,7 +421,7 @@ function Graff_text, pdefs, edit = edit, position = position
   pb = widget_base(base, /row)
 
   xpos = cw_enter(pb, $
-                  /float, $
+                  /double, $
                   /all_event, $
                   xsize = 15, $
                   uvalue = 'TX', $
@@ -431,7 +431,7 @@ function Graff_text, pdefs, edit = edit, position = position
                   /track, $
                   /capture) 
   ypos = cw_enter(pb, $
-                  /float, $
+                  /double, $
                   /all_event, $
                   xsize = 15, $
                   uvalue = 'TY', $

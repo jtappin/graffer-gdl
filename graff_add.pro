@@ -44,14 +44,14 @@ pro Graff_add, file, a1, a2, a3, errors = errors, $
 ;
 ; Arguments:
 ;	file	string	input	The graffer file to modify.
-;	z	float	input	The Z values for a 2-D dataset (If
+;	z	double	input	The Z values for a 2-D dataset (If
 ;				only 2 arguments are present, then
 ;				they are treated as X & Y)
-;	x	float	input	The x values to add.
-;	y	float	input	The y values to add.
+;	x	double	input	The x values to add.
+;	y	double	input	The y values to add.
 ;
 ; Keywords:
-;	errors	float	input	Array with errors, 1-d or (m,n).
+;	errors	double	input	Array with errors, 1-d or (m,n).
 ;	errtype string	input	Specify error types as code
 ;				(e.g. "XXY" for asymmetrical errors in
 ;				X and symmetric errors in Y)
@@ -60,7 +60,7 @@ pro Graff_add, file, a1, a2, a3, errors = errors, $
 ;	y_func	string	input	Function specification for y = f(x) or
 ;				y = f(t)
 ;	z_func	string	input	Function specification for z = f(x,y)
-;	frange  float	input	The range of x, y or t over which to
+;	frange  double	input	The range of x, y or t over which to
 ;				plot a function
 ;	polar	int	input	If unset or 0 rectangular, 1 = polar
 ;				in radians, 2 = polar in degrees.
@@ -75,13 +75,13 @@ pro Graff_add, file, a1, a2, a3, errors = errors, $
 ;	join	int	input	The style of joining: 0 - none
 ;					 	      1 - sloping lines
 ;						      2 - histogram
-;	symsize float	input	The size for the symbols (relative to
+;	symsize double	input	The size for the symbols (relative to
 ;				standard)
 ;	colour	int	input	Colour number - standard GRAFFER
 ;                                               colours (which may
 ;                                               well not work on
 ;                                               current device).
-;	thick	float	input	Line thickness.
+;	thick	double	input	Line thickness.
 ;	neval	int	input	The number of times to evaluate a
 ;				function. (2-elements for funcz)
 ;	description str input	A description of the data set.
@@ -102,7 +102,7 @@ pro Graff_add, file, a1, a2, a3, errors = errors, $
 ;				format (0=contour, 1=colour image)
 ;	z_nlevels int	input	For 2D datasets, select number of
 ;				automatic contours
-;	z_levels float	input	For 2D datasets, select levels for
+;	z_levels double	input	For 2D datasets, select levels for
 ;				explicit contours
 ;	z_lmap  int	input	For 2-D datasets, set the mapping of
 ;				automatic contour levels. 0=linear,
@@ -110,13 +110,13 @@ pro Graff_add, file, a1, a2, a3, errors = errors, $
 ;	z_colours int	input	For 2D datasets, select the colours
 ;				for the contours
 ;	z_style	int	input	For 2D datasets, select linestyles for contours
-;	z_thick	float	input	For 2D datasets, select line
+;	z_thick	double	input	For 2D datasets, select line
 ;				thicknesses for contours
 ;	z_label	int	input	Specify the interval of contours for labelling.
 ;	/z_fill		input	If set, then fill the contours.
 ;	z_range	int	input	For 2-D datasets, specify the cutoff
 ;				range for image displays
-;	z_pxsize float	input	For 2D datasets, specify the pixel
+;	z_pxsize double	input	For 2D datasets, specify the pixel
 ;				size to use in images for PS device.
 ;	/z_invert	input	For image display, invert the colour
 ;				table if set.
@@ -127,8 +127,8 @@ pro Graff_add, file, a1, a2, a3, errors = errors, $
 ;	z_file	string	input	A file with a graffer dataset (2-D data).
 ;	func_file string input	A file with a graffer function dataset.
 ;	y_axis	int	input	Specify which Y axis to use. (0 or 1)
-;	z_missing float	input	A missing value to use for warped images.
-;	z_charsize float input	The character size (relative to
+;	z_missing double	input	A missing value to use for warped images.
+;	z_charsize double input	The character size (relative to
 ;				default) for contour labels.
 ;	
 ;
@@ -523,7 +523,7 @@ pro Graff_add, file, a1, a2, a3, errors = errors, $
 
      if keyword_set(z_thick) then begin
         (*pdefs.data)[pdefs.cset].zopts.N_thick = n_elements(z_thick)
-        (*pdefs.data)[pdefs.cset].zopts.thick = ptr_new(float(z_thick))
+        (*pdefs.data)[pdefs.cset].zopts.thick = ptr_new(double(z_thick))
      endif else begin
         (*pdefs.data)[pdefs.cset].zopts.N_thick = 1
         (*pdefs.data)[pdefs.cset].zopts.Thick = ptr_new(1.)

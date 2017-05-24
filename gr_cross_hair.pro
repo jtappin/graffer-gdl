@@ -138,9 +138,9 @@ case pdefs.transient.mode of
     end 
     8: begin                    ; Delete point mode, circle
                                 ; the selected point.
-        th = !pi*findgen(73)/36.
-        dx = sin(th)*10.
-        dy = cos(th)*10.
+        th = !dpi*dindgen(73)/36.
+        dx = sin(th)*10.d
+        dy = cos(th)*10.d
         if (pdefs.transient.opflag) then begin
             plots, /device, pdefs.transient.opos[0]+dx, $
               pdefs.transient.opos[1]+dy 

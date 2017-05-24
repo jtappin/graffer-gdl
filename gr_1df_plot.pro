@@ -10,7 +10,7 @@ pro Gr_1df_plot, pdefs, i, csiz
 ; Argument:
 ;	pdefs	struct	input	The Graffer control structure.
 ;	i	int	input	Which 
-;	csiz	float	input	Charsize scaling (hardcopy only).
+;	csiz	double	input	Charsize scaling (hardcopy only).
 ;
 ; History:
 ;	Farmed out from GR_PLOT_OBJECT: 10/12/96; SJT
@@ -94,9 +94,9 @@ pro Gr_1df_plot, pdefs, i, csiz
      amin = alog10(amin)
      amax = alog10(amax)
      t = 10^(dindgen(data.ndata) * (amax-amin) $
-             /  float(data.ndata-1) + amin)
+             /  double(data.ndata-1) + amin)
   endif else t = dindgen(data.ndata) * (amax-amin) $
-                 /  float(data.ndata-1) + amin
+                 /  double(data.ndata-1) + amin
 
   case (data.type) of
      -1: begin                  ;  y = f(x)

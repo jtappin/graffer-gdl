@@ -10,9 +10,9 @@ pro Gr_as_yr, data, xrange, xtype, range, visible = visible
 ; Arguments:
 ;	data	struct	input	The Graffer data structure (extracted
 ;				from PDEFS)
-;	xrange	float	input	The X- range for functions (y=f(x))
+;	xrange	double	input	The X- range for functions (y=f(x))
 ;	xtype	int	input	log or linear X (ditto)
-;	range	float	in/out	The range to use.
+;	range	double	in/out	The range to use.
 ;
 ; Keyword:
 ; 	/visible	If set, then only consider data values that
@@ -49,9 +49,9 @@ pro Gr_as_yr, data, xrange, xtype, range, visible = visible
            amin = alog10(amin)
            amax = alog10(amax)
            x = 10^(dindgen(data.ndata) * (amax-amin) $
-                   /  float(data.ndata-1) + amin)
+                   /  double(data.ndata-1) + amin)
         endif else x = dindgen(data.ndata) * (amax-amin) $
-                       /  float(data.ndata-1) + amin
+                       /  double(data.ndata-1) + amin
         
         iexe = execute('fv = '+(*data.xydata).funct)
         
@@ -67,7 +67,7 @@ pro Gr_as_yr, data, xrange, xtype, range, visible = visible
      -3: begin                  ; x = f(t), y = f(t)
         t = dindgen(data.ndata) *  $
             ((*data.xydata).range(1)-(*data.xydata).range(0)) $
-            /  float(data.ndata-1) + (*data.xydata).range(0)
+            /  double(data.ndata-1) + (*data.xydata).range(0)
         
         iexe = execute('fv = '+(*data.xydata).funct(1))
         

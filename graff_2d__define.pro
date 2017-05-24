@@ -39,12 +39,12 @@ Zopts = {graff_2d, $
          Thick:       ptr_new(), $
          Range:       dblarr(2), $
          missing:     0.d0, $
-         Pxsize:      0., $
-         charsize:    0., $
+         Pxsize:      0.d0, $
+         charsize:    0.d0, $
          Label:       0, $
          Label_off:   0, $
          Ctable:      0, $
-         Gamma:       0., $
+         Gamma:       0.d0, $
          Fill:        0b, $
          ilog:        0b, $
          invert:      0b $

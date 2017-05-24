@@ -29,7 +29,7 @@ pro Gr_symdef, index, thick = thick
 
   case index of
      8: begin
-        th = findgen(31)*12*!Dtor
+        th = dindgen(31)*12*!Dtor
         x = cos(th)
         y = sin(th)
         ifill = 0
@@ -50,7 +50,7 @@ pro Gr_symdef, index, thick = thick
         ifill = 1
      end
      12: begin
-        th = findgen(30)*12*!Dtor
+        th = dindgen(30)*12*!Dtor
         x = cos(th)
         y = sin(th)
         ifill = 1
@@ -66,13 +66,13 @@ pro Gr_symdef, index, thick = thick
         ifill = 1
      end
      15: begin
-        th = findgen(7) * 60. * !dtor
+        th = dindgen(7) * 60. * !dtor
         x = cos(th)
         y = sin(th)
         ifill = 0
      end
      16: begin
-        th = findgen(6) * 60. * !dtor
+        th = dindgen(6) * 60. * !dtor
         x = cos(th)
         y = sin(th)
         ifill = 1

@@ -310,7 +310,7 @@ pro Gr_cont_menus, sb, pdefs
                     space = 0)
 
   pdefs.ids.zopts.c_thick = cw_enter(jby, $
-                                     /float, $ 
+                                     /double, $ 
                                      format = "(f6.1)", $
                                      /array, $
                                      /track, $
@@ -381,7 +381,7 @@ pro Gr_cont_menus, sb, pdefs
                                             
 
   pdefs.ids.zopts.c_charsize = cw_spin_box(jby, $
-                                           /float, $
+                                           /double, $
                                            /track, $
                                            uvalue = 'CCSIZE', $
                                            value = zopts.charsize, $

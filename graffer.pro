@@ -579,14 +579,14 @@ pro Graffer, file, group = group, xsize = xsize, ysize = ysize, debug $
 
   jb = widget_base(cbase, /row, xpad = 0, ypad = 0, space = 0)
   pdefs.ids.xcp = cw_enter(jb, $
-                           /float, $
+                           /double, $
                            /display, $
                            xsize = 14, $
                            value = 0., $
                            label = 'X:', $
                            format = "(g14.7)") 
   pdefs.ids.ycp = cw_enter(jb, $
-                           /float, $
+                           /double, $
                            /display, $
                            xsize = 14, $
                            value = 0., $

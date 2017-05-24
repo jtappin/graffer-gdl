@@ -28,7 +28,7 @@ n_segs = n_elements(a)/2
 
 breaks = a(indgen(n_segs-1)*2 + 2)
 slopes = a(indgen(n_segs)*2 + 1)
-intercepts = fltarr(n_segs)
+intercepts = dblarr(n_segs)
 
 intercepts(0) = a(0)
 for j = 1, n_segs-1 do begin

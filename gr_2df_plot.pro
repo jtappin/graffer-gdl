@@ -10,7 +10,7 @@ pro Gr_2df_plot, pdefs, i, csiz, grey_ps = grey_ps, shaded = shaded
 ; Argument:
 ;	pdefs	struct	input	The Graffer control structure.
 ;	i	int	input	Which 
-;	csiz	float	input	Charsize scaling (hardcopy only).
+;	csiz	double	input	Charsize scaling (hardcopy only).
 ;
 ; Keyword:
 ;	/grey_ps	input	If set & non-zero, then the plot is to
@@ -66,17 +66,17 @@ pro Gr_2df_plot, pdefs, i, csiz, grey_ps = grey_ps, shaded = shaded
      xmin = alog10(xmin)
      xmax = alog10(xmax)
      x = 10^(dindgen(data.ndata) * (xmax-xmin) $
-             /  float(data.ndata-1) + xmin)
+             /  double(data.ndata-1) + xmin)
   endif else x = dindgen(data.ndata) * (xmax-xmin) $
-                 /  float(data.ndata-1) + xmin
+                 /  double(data.ndata-1) + xmin
 
   if (pdefs.ytype) then begin
      ymin = alog10(ymin)
      ymax = alog10(ymax)
      y = 10^(dindgen(1, data.ndata2) * (ymax-ymin) $
-             /  float(data.ndata2-1) + ymin)
+             /  double(data.ndata2-1) + ymin)
   endif else y = dindgen(1, data.ndata2) * (ymax-ymin) $
-                 /  float(data.ndata2-1) + ymin
+                 /  double(data.ndata2-1) + ymin
 
   xx = x
   yy = y[*]

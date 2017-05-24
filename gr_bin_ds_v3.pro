@@ -82,7 +82,7 @@ pro Gr_bin_ds_v3, data, nset, ilu, msgid, version
         'S': data(nset).symsize = gr_flt_rd(ilu, 1)
         'L': data(nset).line = gr_int_rd(ilu, 1)
         'C': data(nset).colour = gr_int_rd(ilu, 1)
-        'W': data(nset).thick = float(gr_int_rd(ilu, 1))
+        'W': data(nset).thick = double(gr_int_rd(ilu, 1))
         'O': data(nset).sort = gr_byt_rd(ilu, 1)
         'K': data(nset).noclip = gr_byt_rd(ilu, 1)
         'E': data(nset).medit = gr_byt_rd(ilu, 1)
@@ -147,7 +147,7 @@ pro Gr_bin_ds_v3, data, nset, ilu, msgid, version
         
         'ZNT': data(nset).zopts.n_thick = gr_int_rd(ilu, 1)
         'ZT': begin
-           thick = float(gr_int_rd(ilu, data(nset).zopts.n_thick))
+           thick = double(gr_int_rd(ilu, data(nset).zopts.n_thick))
            data(nset).zopts.thick = ptr_new(thick)
         end
         

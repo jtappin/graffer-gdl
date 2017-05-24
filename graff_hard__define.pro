@@ -31,8 +31,8 @@ Hardset = { graff_hard, $
             Font:   {graff_hfont,  $
                      Family: 0, $
                      Wg_sl:  0}, $
-            Size:   fltarr(2), $
-            Off:    fltarr(2), $
+            Size:   dblarr(2), $
+            Off:    dblarr(2), $
             Action: strarr(2), $
             viewer: strarr(2), $
             pdfviewer: strarr(2), $

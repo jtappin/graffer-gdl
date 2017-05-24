@@ -173,23 +173,23 @@ junk = widget_droplist(jb, $
 widget_control, junk, set_droplist_select = pdefs.key.norm
 
 jjb = widget_base(jb, /row)
-bub.xid0 = cw_enter(jjb, /float, xsize = 11, /all_event, label = $
+bub.xid0 = cw_enter(jjb, /double, xsize = 11, /all_event, label = $
                        'Lower left: X:', value = pdefs.key.x(0), $
                        uvalue = 'X0', /capture)
-bub.yid0 = cw_enter(jjb, /float, xsize = 11, /all_event, label = $
+bub.yid0 = cw_enter(jjb, /double, xsize = 11, /all_event, label = $
                        'Y:', value = pdefs.key.y(0), uvalue = 'Y0', $
                        /capture)
 
 jjb = widget_base(jb, /row)
-bub.xid1 = cw_enter(jjb, /float, xsize = 11, /all_event, label = $
+bub.xid1 = cw_enter(jjb, /double, xsize = 11, /all_event, label = $
                        'Upper right: X:', value = pdefs.key.x(1), $
                        uvalue = 'X1', /capture)
-bub.yid1 = cw_enter(jjb, /float, xsize = 11, /all_event, label = $
+bub.yid1 = cw_enter(jjb, /double, xsize = 11, /all_event, label = $
                        'Y:', value = pdefs.key.y(1), uvalue = 'Y1', $
                        /capture)
 jjb = widget_base(jb, /row)
 bub.csid = cw_spin_box(jjb, $
-                       /float, $
+                       /double, $
                        xsize = 8, $
                        /all, $
                        label = 'Character Size:', $
@@ -276,6 +276,3 @@ endif
 return, ev.exited eq 1
 
 end
-
-
-

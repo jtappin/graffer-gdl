@@ -10,9 +10,9 @@ pro Gr_as_ya, data, xrange, yrange, range, visible = visible
 ; Arguments:
 ;	data	struct	input	The Graffer data structure (extracted
 ;				from PDEFS)
-;	xrange	float	input	The x- range of plot for functions th=f(r))
-;	yrange	float	input	The theta- range for functions (r=f(th))
-;	range	float	in/out	The range to use.
+;	xrange	double	input	The x- range of plot for functions th=f(r))
+;	yrange	double	input	The theta- range for functions (r=f(th))
+;	range	double	in/out	The range to use.
 ;
 ; History:
 ;	Extracted from GR_AUTOSCALE: 16/12/96; SJT
@@ -43,7 +43,7 @@ pro Gr_as_ya, data, xrange, yrange, range, visible = visible
         endelse
         
         x = dindgen(data.ndata) * (amax-amin) $
-            /  float(data.ndata-1) + amin
+            /  double(data.ndata-1) + amin
         
         fv = 0.
         iexe = execute('fv = '+(*data.xydata).funct)
@@ -64,7 +64,7 @@ pro Gr_as_ya, data, xrange, yrange, range, visible = visible
         endelse
         
         y = dindgen(data.ndata) * (amax-amin) $
-            /  float(data.ndata-1) + amin
+            /  double(data.ndata-1) + amin
         
         fv = 0.
         iexe = execute('fv = '+(*data.xydata).funct)
@@ -77,7 +77,7 @@ pro Gr_as_ya, data, xrange, yrange, range, visible = visible
      -3: begin                  ; x = f(t), y = f(t)
         t = dindgen(data.ndata) *  $
             ((*data.xydata).range(1)-(*data.xydata).range(0)) $
-            /  float(data.ndata-1) + (*data.xydata).range(0)
+            /  double(data.ndata-1) + (*data.xydata).range(0)
         
         fr = 0.
         ft = 0.

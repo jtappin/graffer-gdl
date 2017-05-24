@@ -23,32 +23,32 @@ function Gr_pwfit, x, y, w, nsg, c2
 ;	Original: 4/2/97; SJT
 ;-
 
-if n_elements(w) eq 0 then w = replicate(1., n_elements(x))
+  if n_elements(w) eq 0 then w = replicate(1., n_elements(x))
 
-minx = min(x, max = maxx)
+  minx = min(x, max = maxx)
 
-bps = dindgen(nsg+2)*(maxx-minx)/(nsg+1.) + minx
-yb0 = fractile(y, dindgen(nsg+2)/(nsg+1))
+  bps = dindgen(nsg+2)*(maxx-minx)/(nsg+1.) + minx
+  yb0 = fractile(y, dindgen(nsg+2)/(nsg+1))
 
-sl0 = (yb0(1:*)-yb0)/(bps(1:*)-bps)
+  sl0 = (yb0(1:*)-yb0)/(bps(1:*)-bps)
 
-y0 = sl0(0) * bps(0) + yb0(0)
+  y0 = sl0(0) * bps(0) + yb0(0)
 
-a = fltarr((nsg+1)*2)
-a(0) = y0
-a(indgen(nsg+1)*2 + 1) = sl0
-a(indgen(nsg)*2 + 2) = bps(1:nsg)
+  a = dblarr((nsg+1)*2)
+  a(0) = y0
+  a(indgen(nsg+1)*2 + 1) = sl0
+  a(indgen(nsg)*2 + 2) = bps(1:nsg)
 
-c2 = 0.
+  c2 = 0.
 
                                 ; Note thet the weights in CURVEFIT
                                 ; are Sigma^2 (c.f. SVDFIT)
 
-junk = curvefit(x, y, w^2, a, chi = c2, funct = 'gr_cf_pieces', /noderiv)
+  junk = curvefit(x, y, w^2, a, chi = c2, funct = 'gr_cf_pieces', /noderiv)
 
-c2 = c2*(n_elements(x)-n_elements(a)) ; Make it the same type of CHI^2
+  c2 = c2*(n_elements(x)-n_elements(a)) ; Make it the same type of CHI^2
                                 ; as in SVDFIT
 
-return, a
+  return, a
 
 end
