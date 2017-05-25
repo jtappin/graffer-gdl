@@ -19,12 +19,15 @@ pro Gr_symdef, index, thick = thick
 ;					14 - filled inverted triangle
 ;					15 - hexagon
 ;					16 - filled hexagon
+;					17 - horizontal bar
+;					18 - vertical bar.
 ;					any other value "?"
 ;
 ; History:
 ;	Original: Jan 97; SJT
 ;	Add hexagon: Oct 16; SJT
 ;	Add thick keyword: 29/11/16; SJT
+;	Add bars: 25/5/17; SJT
 ;-
 
   case index of
@@ -77,6 +80,17 @@ pro Gr_symdef, index, thick = thick
         y = sin(th)
         ifill = 1
      end
+     17: begin
+        x = [-1., 1.]
+        y = [0., 0.]
+        ifill = 0
+     end
+     18: begin
+        x = [0., 0.]
+        y = [-1., 1.]
+        ifill = 0
+     end
+
      Else: begin
         x = [0., 0., .8, .8, .6, -.6, -.8]
         y = [-1., -.2, .2, .7, .9, .9, .7]

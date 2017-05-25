@@ -21,6 +21,7 @@ pro Gr_psym_bitm                ;, ncols
 ;	read the bitmaps from the bitmap files: 20/1/97; SJT
 ;	Add the colour bitmaps as well: 5/7/05; SJT
 ;	Add number of colours: 8/2/12; SJT
+;	Add bars: 25/5/17; SJT
 ;-
 
   common Gr_psym_maps, psym_bm  ;, col_bm
@@ -51,10 +52,13 @@ pro Gr_psym_bitm                ;, ncols
   read_x11_bitmap, bmpath+'ps14.xbm', ps14
   read_x11_bitmap, bmpath+'ps15.xbm', ps15
   read_x11_bitmap, bmpath+'ps16.xbm', ps16
+  read_x11_bitmap, bmpath+'ps17.xbm', ps17
+  read_x11_bitmap, bmpath+'ps18.xbm', ps18
 
   psym_bm = [[[ps0]], [[ps1]], [[ps2]], [[ps3]], [[ps4]], [[ps5]], $
              [[ps6]], [[ps7]], [[ps8]], [[ps9]], [[ps10]], [[ps11]], $
-             [[ps12]], [[ps13]], [[ps14]], [[ps15]], [[ps16]]]
+             [[ps12]], [[ps13]], [[ps14]], [[ps15]], [[ps16]], $
+             [[ps17]], [[ps18]]]
 
 ;; openr, ilu, /get, bmpath+'omit.dat'
 ;; nx = 0
