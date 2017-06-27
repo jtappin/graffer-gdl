@@ -94,6 +94,7 @@ if (ncl ne 0) then begin
 endif else code = ''
 
 locs = where(strlen(dv) gt 0, nact)
+
 if (nact ne 0) then xydata = graff_decode_xy(dv(locs), nt)
 
 if (nt eq 1) then begin         ; Special case of single-column data

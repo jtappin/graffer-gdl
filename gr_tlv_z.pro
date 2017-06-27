@@ -39,6 +39,7 @@ function Grf_tlz_event, event
         iexit = 1
         
         widget_control, uvs.zid, get_value = zvar
+        zvar = strtrim(zvar, 2)
         if (zvar eq '.') then begin
            if ptr_valid(uvs.z) then begin
               z = *uvs.z
@@ -59,6 +60,7 @@ function Grf_tlz_event, event
         endif else z = double(z)
         
         widget_control, uvs.xid, get_value = xvar
+        xvar = strtrim(xvar, 2)
         if (xvar eq '') then begin
            x = dindgen(sz(1))
            nx = sz(1)
@@ -90,6 +92,7 @@ function Grf_tlz_event, event
         endelse
         
         widget_control, uvs.yid, get_value = yvar
+        yvar = strtrim(yvar, 2)
         if (yvar eq '') then begin
            y = dindgen(sz(2))
            ny = sz(2)

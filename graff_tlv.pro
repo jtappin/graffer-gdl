@@ -43,6 +43,7 @@ function Grf_tlv_event, event
         
         y_missing = 0b
         widget_control, uvs.yid, get_value = yvar
+        yvar = strtrim(yvar, 2)
         if (yvar eq '.') then begin
            if ptr_valid(uvs.y) then begin
               y = *uvs.y
@@ -52,6 +53,7 @@ function Grf_tlv_event, event
         else y = grf_tlv_get(yvar, ny)
 
         widget_control, uvs.xid, get_value = xvar
+        xvar = strtrim(xvar, 2)
         if (xvar eq '') then begin
            x = dindgen(ny)
            nx = ny
@@ -131,6 +133,7 @@ function Grf_tlv_event, event
            else nerd = 0
            if (exlm[uvs.type]) then begin
               widget_control, uvs.eloxid, get_value = elvar
+              elvar = strtrim(elvar, 2)
               if (elvar eq '') then begin
                  widget_control, uvs.mid, set_value = 'Requested ' + $
                                  'data type needs a lower X error'
@@ -153,6 +156,7 @@ function Grf_tlv_event, event
            endif
            if (exhm[uvs.type]) then begin
               widget_control, uvs.ehixid, get_value = elvar
+              elvar = strtrim(elvar, 2)
               if (elvar eq '') then begin
                  widget_control, uvs.mid, set_value = 'Requested ' + $
                                  'data type needs a upper X error'
@@ -176,6 +180,7 @@ function Grf_tlv_event, event
            
            if (eylm[uvs.type]) then begin
               widget_control, uvs.eloyid, get_value = elvar
+              elvar = strtrim(elvar, 2)
               if (elvar eq '') then begin
                  widget_control, uvs.mid, set_value = 'Requested ' + $
                                  'data type needs a lower Y error'
@@ -198,6 +203,7 @@ function Grf_tlv_event, event
            endif
            if (eyhm[uvs.type]) then begin
               widget_control, uvs.ehiyid, get_value = elvar
+              elvar = strtrim(elvar, 2)
               if (elvar eq '') then begin
                  widget_control, uvs.mid, set_value = 'Requested ' + $
                                  'data type needs a upper Y error'
