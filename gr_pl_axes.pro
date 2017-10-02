@@ -25,6 +25,7 @@ pro gr_pl_axes, pdefs, csiz, overlay = overlay, secondary = secondary
 ;	Add annotation suppression, tidy origin axis settings and fix
 ;	Y-time labelling: 12/1/12; SJT
 ;	Advanced axis style settings: 21/8/12; SJT
+;	Don't plot annotations if overlay: 2/10/17; SJT
 ;-
 
   lcolor = 0l
@@ -42,7 +43,7 @@ pro gr_pl_axes, pdefs, csiz, overlay = overlay, secondary = secondary
   endif else if keyword_set(secondary) then $
      ytf = pdefs.ysty_r.format $
   else  ytf = pdefs.ysty.format
-     
+  
 
   if (pdefs.xsty.grid ne 0 and ((pdefs.xsty.idl and 12) eq 0)) then begin
      xtickl = 0.5
@@ -110,7 +111,8 @@ pro gr_pl_axes, pdefs, csiz, overlay = overlay, secondary = secondary
   if pdefs.y_right then xmargin = [10, 10] $
   else xmargin = [10, 3]
 
-  if ((pdefs.xsty.idl and 4) ne 0) then xzat = pdefs.xtitle $
+  if ((pdefs.xsty.idl and 4) ne 0) then $
+     xzat = pdefs.xtitle $
   else xzat = ''
 
   if ~pdefs.y_right then begin
@@ -163,9 +165,25 @@ pro gr_pl_axes, pdefs, csiz, overlay = overlay, secondary = secondary
 
   noerase = (pdefs.y_right and keyword_set(secondary)) or $
             keyword_set(overlay) 
-  plot, /nodata, dblarr(2), title = pdefs.title, subtitle = $
-        pdefs.subtitle, xrange = pdefs.xrange, xtitle = $
-        pdefs.xtitle, xlog = pdefs.xtype, xsty = xsty, $
+
+  if keyword_set(overlay) then begin
+     ynames = replicate(' ', 30)
+     xnames = replicate(' ', 30)
+     ytitle = ''
+     xtitle = ''
+     title = ''
+     subtitle = ''
+     xzat = ''
+     yzat = ''
+  endif else begin
+     xtitle = pdefs.xtitle
+     title = pdefs.title
+     subtitle = pdefs.subtitle
+  endelse
+
+  plot, /nodata, dblarr(2), title = title, subtitle = $
+        subtitle, xrange = pdefs.xrange, xtitle = $
+        xtitle, xlog = pdefs.xtype, xsty = xsty, $
         yrange = yrange, ytitle = ytitle, ylog = $
         ytype, ysty = ysty, charsize = $
         pdefs.charsize*csiz, xthick = pdefs.axthick, ythick = $
@@ -173,30 +191,33 @@ pro gr_pl_axes, pdefs, csiz, overlay = overlay, secondary = secondary
         yminor, xtickformat = xtf, xticklen = $
         xtickl, xgridsty = xtickst, yticklen = ytickl, ygridsty = $ 
         ytickst, noerase = noerase, isotropic = isotropic, xmargin = $
-        xmargin, xtickname = xnames, ytickname = ynames, ytickformat = $
-        ytf, xticks = xmajor, yticks = ymajor, xtickv = xtvals, ytickv $
+        xmargin, xtickname = xnames, ytickname = ynames, $
+        ytickformat = ytf, xticks = xmajor, yticks = ymajor, $
+        xtickv = xtvals, ytickv $
         = ytvals, color = lcolour
 
-        if ~keyword_set(secondary) and mflag then $
-           plots, /norm, !p.region[[0, 0, 2, 2, 0]], $
-                  !p.region[[1, 3, 3, 1, 1]], color = lcolour
+  if ~keyword_set(secondary) and mflag then $
+     plots, /norm, !p.region[[0, 0, 2, 2, 0]], $
+            !p.region[[1, 3, 3, 1, 1]], color = lcolour
 
   if pdefs.y_right then begin
      if keyword_set(secondary) then begin
         if (pdefs.ysty_r.idl and 8) eq 0 then $
            axis, yaxis = 1, yminor = yminor, ytitle = ytitle, ylog = $
-                 ytype, ysty = pdefs.ysty_r.idl, ythick = pdefs.axthick, $
-                 yticklen = ytickl, ygridsty = ytickst, yrange = yrange, $
+                 ytype, ysty = pdefs.ysty_r.idl, ythick = $
+                 pdefs.axthick, $
+                 yticklen = ytickl, ygridsty = ytickst, yrange = $
+                 yrange, $
                  ycharsize = pdefs.charsize*csiz, ytickname = ynames, $
                  yticks = ymajor, ytickv = ytvals, ytickformat = ytf, $
                  color = lcolour
-                 
+        
      endif else begin
         if (pdefs.xsty.idl and 4) eq 0 then $
            axis, xaxis = 0, xminor = pdefs.xsty.minor, $
                  xtickformat = xtf, xrange = pdefs.xrange, $
                  xsty = pdefs.xsty.idl, xthick = $
-                 pdefs.axthick, xtitle = pdefs.xtitle, xticklen = $
+                 pdefs.axthick, xtitle = xtitle, xticklen = $
                  xtickl, xgridsty = xtickst, xlog = pdefs.xtype, $
                  xcharsize = pdefs.charsize*csiz, xtickname = xnames, $
                  xticks = xmajor, xtickv = xtvals, $
@@ -205,7 +226,8 @@ pro gr_pl_axes, pdefs, csiz, overlay = overlay, secondary = secondary
            axis, xaxis = 1, xminor = pdefs.xsty.minor, $
                  xtickformat = xtf, xrange = pdefs.xrange, xsty = $
                  pdefs.xsty.idl, xthick = $ 
-                 pdefs.axthick, xticklen = xtickl, xgridsty = xtickst, $
+                 pdefs.axthick, xticklen = xtickl, $
+                 xgridsty = xtickst, $
                  xlog = pdefs.xtype, xtickname = replicate(' ', 30), $
                  xcharsize = pdefs.charsize*csiz, xticks = xmajor, $
                  xtickv = xtvals, $
@@ -213,7 +235,8 @@ pro gr_pl_axes, pdefs, csiz, overlay = overlay, secondary = secondary
         if (pdefs.ysty.idl and 4) eq 0 then $
            axis, yaxis = 0, yminor = yminor, ytitle = ytitle, ylog = $
                  ytype, ysty = pdefs.ysty.idl, ythick = pdefs.axthick, $
-                 yticklen = ytickl, ygridsty = ytickst, yrange = yrange, $
+                 yticklen = ytickl, ygridsty = ytickst, yrange = $
+                 yrange, $
                  ycharsize = pdefs.charsize*csiz, ytickname = ynames, $
                  ytickformat = ytf, yticks = ymajor, ytickv = ytvals, $
                  color = lcolour
@@ -240,7 +263,8 @@ pro gr_pl_axes, pdefs, csiz, overlay = overlay, secondary = secondary
               0., xminor = pdefs.xsty.minor, xtickformat = xtf, $
               xrange = $
               pdefs.xrange, xsty = pdefs.xsty.idl and (not 12), $
-              xthick = pdefs.axthick, xtitle = xzat, xtickname = xnames, $
+              xthick = pdefs.axthick, xtitle = xzat, xtickname = $
+              xnames, $
               xcharsize = pdefs.charsize*csiz, xticks = xmajor, xtickv $
               = xtvals, $
               color = lcolour
