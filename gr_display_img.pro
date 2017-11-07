@@ -196,6 +196,7 @@ pro Gr_display_img, zin, xin, yin, range = range, $
   if keyword_set(ps_grey) then $
      tv, img, cmxll, cmyll, xsize = cmxsize, ysize = cmysize, /centi $
   else begin
+     if n_elements(table) eq 0 then table = 0
      graff_ctable, table, cmap, gamma = gamma
      sz = size(img, /dim)
      img3 = bytarr([sz, 3])
