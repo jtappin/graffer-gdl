@@ -162,6 +162,16 @@ pro Gr_ctl_event, event
         ichange = 0b
         idraw_flag = 0
      end
+     'File.Dump screen.Variable': if track_flag then $
+        graff_msg, pdefs.ids.hlptxt, 'Save to a variable at the ' + $
+                   '$MAIN$ level.' $
+     else begin
+        name = gr_name_wid(event)
+        if name ne '' then $
+           graff_dump, pdefs, variable = name
+        ichange = 0b
+        idraw_flag = 0
+     end
      'File.Dump screen.Choose ...': if track_flag then $
         graff_msg, pdefs.ids.hlptxt, 'Dump to any image format' $
      else begin
@@ -311,6 +321,7 @@ pro Gr_control_menu, base
              {control_opts, 0, 'PNG', 'Ctrl+Alt+P'}, $
              {control_opts, 0, 'Tiff', 'Ctrl+Alt+T'}, $
              {control_opts, 0, 'Nrif', 'Ctrl+Alt+N'}, $
+             {control_opts, 0, 'Variable', 'Ctrl+Alt+V'}, $
              {control_opts, 2, 'Choose ...', ''}, $
              {control_opts, 0, 'Open ...', 'Ctrl+O'}, $
              {control_opts, 0, 'New ...', 'Ctrl+N'}, $

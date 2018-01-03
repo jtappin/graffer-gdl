@@ -1,5 +1,5 @@
 pro graff_dump, pdefs, png = png, tiff = tiff, nrif = nrif, $
-                dialogue = dialogue
+                variable = variable, dialogue = dialogue
 
 ;+
 ; GRAFF_DUMP
@@ -13,10 +13,11 @@ pro graff_dump, pdefs, png = png, tiff = tiff, nrif = nrif, $
 ;				for file and dir)
 ;
 ; Keywords:
-;	png	Save as a PNG (Portable Network Graphics) file
-;	tiff	Save as a TIFF (Tagged image file format?) file
-;	nrif	Save as an NRIF (NCAR raster image format) file
-;	dialogue Select the save file with a dialogue.
+;	/png		Save as a PNG (Portable Network Graphics) file
+;	/tiff		Save as a TIFF (Tagged image file format?) file
+;	/nrif		Save as an NRIF (NCAR raster image format) file
+;	variable string	Save to a variable at the top level
+;	/dialogue 	Select the save file with a dialogue.
 ;
 ; Restrictions:
 ;	Only one keyword may be given, also only default options are
@@ -31,6 +32,7 @@ pro graff_dump, pdefs, png = png, tiff = tiff, nrif = nrif, $
   nkey = (keyword_set(png) + $
           keyword_set(tiff) + $
           keyword_set(nrif) + $
+          keyword_set(variable) + $
           keyword_set(dialogue))
   if (nkey ne 1) then message, "Must give one and only one keyword."
 
@@ -55,6 +57,10 @@ pro graff_dump, pdefs, png = png, tiff = tiff, nrif = nrif, $
      endif else if(keyword_set(nrif)) then begin
         write_nrif, tname+'.nrf', image
         graff_msg, pdefs.ids.message, 'Wrote NRIF to: '+tname+'.nrf'
+
+     endif else if keyword_set(variable) then begin
+        if size(variable, /type) ne 7 then variable = 'grf_image'
+        (scope_varfetch(variable, level = 1, /enter)) =  image
 
      endif else if (keyword_set(dialogue)) then begin
         if widget_info(pdefs.ids.graffer,  /valid) then $
@@ -82,6 +88,10 @@ pro graff_dump, pdefs, png = png, tiff = tiff, nrif = nrif, $
         
      endif else if(keyword_set(nrif)) then begin
         write_nrif, tname+'.nrf', image, r, g, b 
+
+     endif else if keyword_set(variable) then begin
+        if size(variable, /type) ne 7 then variable = 'grf_image'
+        (scope_varfetch(variable, level = 1, /enter)) =  image
 
      endif else if (keyword_set(dialogue)) then begin
         if widget_info(pdefs.ids.graffer,  /valid) then $

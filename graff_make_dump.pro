@@ -1,6 +1,6 @@
 pro graff_make_dump, file, png = png, tiff = tiff, nrif = nrif, $
                      dialogue = dialogue, xsize = xsize, $
-                     ysize = ysize
+                     ysize = ysize, variable = variable
 
 ;+
 ; GRAFF_MAKE_DUMP
@@ -18,6 +18,7 @@ pro graff_make_dump, file, png = png, tiff = tiff, nrif = nrif, $
 ;	/tiff		Save as a TIFF (Tagged image file format?) file
 ;	/nrif		Save as an NRIF (NCAR raster image format) file
 ;	/dialogue	Select the save file with a dialogue.
+;	variable string	Save as a variable at the main level.
 ;	xsize	int	The X dimension of the image
 ;	ysize	int	The Y dimension of the image
 ;
@@ -53,7 +54,7 @@ pro graff_make_dump, file, png = png, tiff = tiff, nrif = nrif, $
   gr_plot_object, pdefs
 
   graff_dump, pdefs, png = png, tiff = tiff, nrif = nrif, $
-              dialogue = dialogue
+              dialogue = dialogue, variable = variable
 
   wdelete
 
