@@ -1,4 +1,4 @@
-pro Graff_props, file, title = title, subtitle = subtitle, $
+pro Graff_props, file, pdefs, title = title, subtitle = subtitle, $
                  charsize = charsize, thick = thick, $
                  corners = corners, $
                  aspect = aspect, comment = comment, xtitle = xtitle, $
@@ -33,7 +33,7 @@ pro Graff_props, file, title = title, subtitle = subtitle, $
 ;	file.
 ;
 ; Usage:
-; pro Graff_props, file, title = title, subtitle = subtitle, $
+; pro Graff_props, file[, pdefs], title = title, subtitle = subtitle, $
 ;                 charsize = charsize, thick = thick, corners = $
 ;                 corners, $
 ;                 aspect = aspect, comment = comment, xtitle = xtitle, $
@@ -63,8 +63,13 @@ pro Graff_props, file, title = title, subtitle = subtitle, $
 ;                 h_cmyk, ctable = ctable, h_print = h_print, h_viewer $
 ;                 = h_viewer, h_file = h_file
 ;
-; Argument:
+; Arguments:
 ;	file	string	input	The graffer file to modify.
+;	pdefs	struct	output	Argument to return the graffer
+;				structure. If this is present and
+;				mutable, then the structure is
+;				returned instead of being saved back
+;				to the file.
 ;
 ; Keywords:
 ; 	title		input	Set the plot title.
@@ -192,13 +197,15 @@ pro Graff_props, file, title = title, subtitle = subtitle, $
 ;	Add some more hardcopy options: 16/2/12; SJT
 ;	Advanced axis style settings: 21/8/12; SJT
 ;	Add PDF keys: 21/9/16; SJT
+;	Add optional return argument: 8/1/18; SJT
 ;-
 
 ;	Check that the necessary inputs are present
 
   on_error, 2                   ; Return to caller on error
 
-  if (n_params() ne 1) then message, "Must specify a GRAFFER file"
+  if n_params() eq 0 || size(file, /type) ne 7 then $
+     message, "Must specify a GRAFFER file"
 
   gr_state, /save
 
@@ -507,6 +514,10 @@ pro Graff_props, file, title = title, subtitle = subtitle, $
      2: pdefs.hardset.pdfviewer = h_pdfviewer[0:1]
   endcase
   if n_elements(h_file) ne 0 then pdefs.hardset.name = h_file
+
+;	If the PDEFS arguement is given then do not save.
+
+  if arg_present(pdefs) then return
 
 ;	Display or enter Graffer?
 

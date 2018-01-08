@@ -8,8 +8,12 @@ pro Gr_state, id, save = save
 ;	gr_state[, id]
 ;
 ; Argument:
-;	id	long	input	Widget ID of the widget invoking
-;				gr_state. 
+;	id	long	Widget ID of the calling widget. Not actually
+;			used, but a KILL_NOTIFY event needs it.
+;
+; Keyword:
+;	/save	If set, then save the current state (prior to
+;		configuring for GRAFFER).
 ;
 ; Notes:
 ;	This routine is intended to operate as a "KILL_NOTIFY"
