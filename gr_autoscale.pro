@@ -25,6 +25,8 @@ pro Gr_autoscale, pdefs, xaxis = xaxis, yaxis = yaxis, $
 ;	Convert handles to pointers: 27/6/05; SJT
 ;	Add support for a second Y-scale: 22/12/11; SJT
 ;	Support "visible region" scaling: 31/5/16; SJT
+;	Pass log setting of scaled axis (for rectangular systems):
+;	12/2/18; SJT
 ;-
 
   widgets = pdefs.ids.graffer ne 0
@@ -57,7 +59,7 @@ pro Gr_autoscale, pdefs, xaxis = xaxis, yaxis = yaxis, $
         if ((*pdefs.data)[i].mode ne 0) then $
            gr_as_xa, (*pdefs.data)[i], pdefs.xrange, yrange, range $ 
         else gr_as_xr, (*pdefs.data)[i], yrange, pdefs.ytype, range, $
-                       visible = visible
+                       visible = visible, positive = pdefs.xtype
         
      endfor
      
@@ -82,7 +84,7 @@ pro Gr_autoscale, pdefs, xaxis = xaxis, yaxis = yaxis, $
         if (*pdefs.data)[i].mode ne 0 then $
            gr_as_ya, (*pdefs.data)[i], pdefs.xrange, pdefs.yrange_r, range $ 
         else gr_as_yr, (*pdefs.data)[i], pdefs.xrange, pdefs.xtype, $
-                       range, visible = visible
+                       range, visible = visible, positive = pdefs.ytype
 
      endfor
      
@@ -106,7 +108,7 @@ pro Gr_autoscale, pdefs, xaxis = xaxis, yaxis = yaxis, $
         if (*pdefs.data)[i].mode ne 0 then $
            gr_as_ya, (*pdefs.data)[i], pdefs.xrange, pdefs.yrange, range $ 
         else gr_as_yr, (*pdefs.data)[i], pdefs.xrange, pdefs.xtype, $
-                       range, visible = visible
+                       range, visible = visible, positive = pdefs.ytype
 
      endfor
      

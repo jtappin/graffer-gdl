@@ -1,4 +1,5 @@
-pro Gr_as_xr, data, yrange, ytype, range, visible = visible
+pro Gr_as_xr, data, yrange, ytype, range, visible = visible, positive $
+              = positive
 
 ;+
 ; GR_AS_XR
@@ -18,12 +19,15 @@ pro Gr_as_xr, data, yrange, ytype, range, visible = visible
 ; Keyword:
 ; 	/visible	If set, then only consider data values that
 ; 			lie within yrange.
+; 	/positive	If set then scale to positive values only (for
+; 			log plots).
 ;
 ; History:
 ;	Extracted from GR_AUTOSCALE: 16/12/96; SJT
 ;	Convert handles to pointers: 27/6/05; SJT
 ;	Add visible key: 31/5/16; SJT
 ;	Ignore undisplayed datasets: 13/10/16; SJT
+;	Add positive keyword: 12/2/18; SJT
 ;-
 
 ; Ignore undisplayed datasets
@@ -61,8 +65,12 @@ pro Gr_as_xr, data, yrange, ytype, range, visible = visible
         
         iexe = execute('fv = '+(*data.xydata).funct)
         
-        range(0) = range(0) < min(fv, max = fvmx)
-        range(1) = range(1) > fvmx
+        if keyword_set(positive) then begin
+           fvmn = gr_min_nz(fv, max = fvmx) 
+           if ~finite(fvmn) ||  fvmn le 0. then return
+           range[0] = range[0] <  fvmn
+        endif else range[0] = range[0] < min(fv, max = fvmx)
+        range[1] = range[1] > fvmx
      end
      
      -3: begin                  ; x = f(t), y = f(t)
@@ -72,19 +80,27 @@ pro Gr_as_xr, data, yrange, ytype, range, visible = visible
         
         iexe = execute('fv = '+(*data.xydata).funct(0))
         
-        range(0) = range(0) < min(fv, max = fvmx)
-        range(1) = range(1) > fvmx
+        if keyword_set(positive) then begin
+           fvmn = gr_min_nz(fv, max = fvmx)
+           if ~finite(fvmn) ||  fvmn le 0. then return
+           range[0] = range[0] < fvmn
+        endif else range[0] = range[0] < min(fv, max = fvmx)
+        range[1] = range[1] > fvmx
      end
      
      -4: if ((*data.xydata).range(0, 0) ne (*data.xydata).range(1, 0)) then $
         begin                   ; z = f(x,y)
-        range(0) = range(0) < (*data.xydata).range(0, 0)
-        range(1) = range(1) > (*data.xydata).range(1, 0)
+        range[0] = range[0] < (*data.xydata).range[0, 0]
+        range[1] = range[1] > (*data.xydata).range[1, 0]
      endif
      
      9: begin                   ; Surface data 
-        range(0) = range(0) < min(*(*data.xydata).x, max = mx)
-        range(1) = range(1) > mx
+        if keyword_set(positive) then begin
+           rgmn = gr_min_nz(*(*data.xydata).x, max = mx)
+           if ~finite(rgmn) || rgmn lt 0. then return
+           range[0] <= rgmn
+        endif else range[0] <= min(*(*data.xydata).x, max = mx)
+        range[1] >= mx
      end
      
      Else: begin                ; XY data, much easier (or it was)
@@ -114,13 +130,23 @@ pro Gr_as_xr, data, yrange, ytype, range, visible = visible
            locs = where(finite(xm) and $
                         yy ge yrange[0] and yy le yrange[1], nf) $
         else locs = where(finite(xm), nf)
-        if (nf gt 0) then range(0) = range(0) < min(xm(locs))
+        if (nf gt 0) then begin
+           if keyword_set(positive) then begin
+              rgmin = gr_min_nz(xm[locs])
+              if finite(rgmin) && rgmin gt 0. then $
+                 range[0] = range[0] < rgmin
+           endif else range[0] = range[0] < min(xm[locs])
+        endif
+
         if keyword_set(visible) then $
            locs = where(finite(xp) and $
                         yy ge yrange[0] and yy le yrange[1], nf) $
         else locs = where(finite(xp), nf)
-        if (nf gt 0) then range(1) = range(1) > max(xp(locs))
-        
+        if (nf gt 0) then begin
+           rgmax = max(xp[locs])
+           if keyword_set(positive) && rgmax le 0. then return
+           range[1] = range[1] > rgmax
+        endif
      end
   endcase
 
