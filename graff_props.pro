@@ -277,11 +277,11 @@ pro Graff_props, file, pdefs, title = title, subtitle = subtitle, $
      else  pdefs.xsty.idl = pdefs.xsty.idl and (not 2)
   endif
   if (n_elements(xaxes) ne 0) then begin
-     if keyword_set(xaxes) then pdefs.xsty.idl = pdefs.xsty.idl or 4 $
+     if ~keyword_set(xaxes) then pdefs.xsty.idl = pdefs.xsty.idl or 4 $
      else  pdefs.xsty.idl = pdefs.xsty.idl and (not 4)
   endif
   if (n_elements(xbox) ne 0) then begin
-     if keyword_set(xbox) then pdefs.xsty.idl = pdefs.xsty.idl or 8 $
+     if ~keyword_set(xbox) then pdefs.xsty.idl = pdefs.xsty.idl or 8 $
      else  pdefs.xsty.idl = pdefs.xsty.idl and (not 8)
   endif
 
@@ -350,11 +350,11 @@ pro Graff_props, file, pdefs, title = title, subtitle = subtitle, $
      else  pdefs.ysty.idl = pdefs.ysty.idl and (not 2)
   endif
   if (n_elements(yaxes) ne 0) then begin
-     if keyword_set(yaxes) then pdefs.ysty.idl = pdefs.ysty.idl or 4 $
+     if ~keyword_set(yaxes) then pdefs.ysty.idl = pdefs.ysty.idl or 4 $
      else  pdefs.ysty.idl = pdefs.ysty.idl and (not 4)
   endif
   if (n_elements(ybox) ne 0) then begin
-     if keyword_set(ybox) then pdefs.ysty.idl = pdefs.ysty.idl or 8 $
+     if ~keyword_set(ybox) then pdefs.ysty.idl = pdefs.ysty.idl or 8 $
      else  pdefs.ysty.idl = pdefs.ysty.idl and (not 8)
   endif
 
@@ -426,7 +426,7 @@ pro Graff_props, file, pdefs, title = title, subtitle = subtitle, $
      else  pdefs.ysty_r.idl = pdefs.ysty_r.idl and (not 2)
   endif
   if (n_elements(yraxes) ne 0) then begin
-     if keyword_set(yraxes) then pdefs.ysty_r.idl = pdefs.ysty_r.idl or 4 $
+     if ~keyword_set(yraxes) then pdefs.ysty_r.idl = pdefs.ysty_r.idl or 4 $
      else  pdefs.ysty_r.idl = pdefs.ysty_r.idl and (not 4)
   endif
 
