@@ -1,5 +1,5 @@
 pro graff_print, file, predraw = predraw, nosave = nosave, $
-                 _extra = _extra
+                 no_spawn = no_spawn, _extra = _extra
 
 ;+
 ; GRAFF_PRINT
@@ -18,6 +18,8 @@ pro graff_print, file, predraw = predraw, nosave = nosave, $
 ; 			first (can be needed to get the scaling right)
 ; 	/nosave		If set, then do not save any changes to the
 ; 			GRAFFER structure.
+; 	/no_spawn	If set, then only generate the file do not
+; 			spawn any spooler or viewer.
 ;	Any keyword used by GRAFF_PROPS may be supplied.
 ;
 ; History:
@@ -25,6 +27,7 @@ pro graff_print, file, predraw = predraw, nosave = nosave, $
 ;	Add PREDRAW keyword: 20/5/09; SJT
 ;	Fix pixmap size to get consistent charsizes: 3/11/15; SJT
 ;	Add NOSAVE key: 8/1/18; SJT
+;	Add NO_SPAWN key: 8/5/18; SJT
 ;-
 
 @graff_version
@@ -61,7 +64,7 @@ if keyword_set(predraw) then begin
     wdelete
 endif
 
-istat = graff_hard(pdefs, /no_set)
+istat = graff_hard(pdefs, /no_set, no_spawn = no_spawn)
 
 graff_clear, pdefs
 gr_state

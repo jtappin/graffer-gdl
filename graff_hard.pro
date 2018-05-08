@@ -1,4 +1,5 @@
-function Graff_hard, pdefs, no_set = no_set, redraw = redraw
+function Graff_hard, pdefs, no_set = no_set, redraw = redraw, $
+                     no_spawn = no_spawn
 
 ;+
 ; GRAFF_HARD
@@ -19,6 +20,9 @@ function Graff_hard, pdefs, no_set = no_set, redraw = redraw
 ;	/redraw	input	If set, then redraw the plot on the
 ;			screen device to ensure that the coordinate
 ;			system is reset properly.
+;	/no_spawn	If set, then do not spawn any viewer or
+;			spooling command for the generated file. This
+;			does not affect the PS->PDF converter calls.
 ;				
 ; History:
 ;	Carved from graffer: 17/8/95; SJT
@@ -32,6 +36,7 @@ function Graff_hard, pdefs, no_set = no_set, redraw = redraw
 ;	Support PDF output: 21/9/16; SJT
 ;	Add redraw key: 30/11/16; SJT
 ;	Make coordinates double: 24/5/17; SJT
+;	Add NO_SPAWN: 8/5/18; SJT
 ;-
 
 ; For hard copy we don't normally want to show current DS only.
@@ -176,12 +181,12 @@ function Graff_hard, pdefs, no_set = no_set, redraw = redraw
 
   case h.eps of
      1: begin
-        if h.viewer[0] ne '' then $
+        if h.viewer[0] ne '' && ~keyword_set(no_spawn) then $
            spawn, h.viewer[0]+' '+h.name+' '+h.viewer[1]
         graff_msg, pdefs.ids.message, 'Output file is: '+h.name
      end
      0: begin
-        if h.action[0] ne '' then begin
+        if h.action[0] ne '' && ~keyword_set(no_spawn) then begin
            spawn, h.action[0]+' '+h.name+' '+h.action[1], cmdout
            graff_msg, pdefs.ids.message, cmdout
         endif else $
@@ -192,7 +197,7 @@ function Graff_hard, pdefs, no_set = no_set, redraw = redraw
         else pssz = ' -sPAPERSIZE=letter '
         spawn, 'gs -q -dBATCH -dNOPAUSE -sDEVICE=pdfwrite '+ $
                '-sOutputFile='+h.name+pssz+psname
-        if h.pdfviewer[0] ne '' then $
+        if h.pdfviewer[0] ne '' && ~keyword_set(no_spawn) then $
            spawn, h.pdfviewer[0]+' '+h.name+' '+h.pdfviewer[1]
         graff_msg, pdefs.ids.message, 'Output file is: '+h.name
         file_delete, psname
@@ -205,7 +210,7 @@ function Graff_hard, pdefs, no_set = no_set, redraw = redraw
                        "' -dDEVICEHEIGHTPOINTS=',i0,' ')")
         spawn, 'gs -q -dBATCH -dNOPAUSE -sDEVICE=pdfwrite '+ $
                '-sOutputFile='+h.name+pssz+psname
-        if h.pdfviewer[0] ne '' then $
+        if h.pdfviewer[0] ne '' && ~keyword_set(no_spawn) then $
            spawn, h.pdfviewer[0]+' '+h.name+' '+h.pdfviewer[1]
         graff_msg, pdefs.ids.message, 'Output file is: '+h.name
         file_delete, psname
