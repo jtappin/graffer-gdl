@@ -51,8 +51,8 @@ pro Gr_display_img, zin, xin, yin, range = range, $
 ;-
 
   if n_elements(logarithmic) ne 0 then graff_msg, 0l, $
-     "The LOGARITHMIC key is obsolete, please use SCALE_MODE instead"
-  if n_elements(colour_range) ne 0 then gragg_msg, 0l, $
+     "The LOGARITHMIC key is obsolete, please use SCALE_MODE=1 instead"
+  if n_elements(colour_range) ne 0 then graff_msg, 0l, $
      "The COLOUR_RANGE key is obsolete and is ignored."
 
   if n_elements(scale_mode) ne 0 then mode = scale_mode $
