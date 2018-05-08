@@ -1,6 +1,6 @@
 pro gr_coord_convert, x, y, xt, yt, data = data, normal = normal, $ 
-                      region = region, frame = frame, device = device, $
-                      $
+                      region = region, frame = frame, x $
+                      device = device, $
                       to_data = to_data, to_normal = to_normal, $
                       to_region = to_region, to_frame = to_frame, $
                       to_device = to_device 
@@ -47,11 +47,11 @@ pro gr_coord_convert, x, y, xt, yt, data = data, normal = normal, $
      "input and one output system"
 
 ; Handle trivial cases
-  if keyword_set(data) and keyword_set(to_data) or $
-     keyword_set(normal) and keyword_set(to_normal) or $
-     keyword_set(region) and keyword_set(to_region) or $
-     keyword_set(frame) and keyword_set(to_frame) or $
-     keyword_set(device) and keyword_set(to_device) then begin
+  if keyword_set(data) && keyword_set(to_data) || $
+     keyword_set(normal) && keyword_set(to_normal) || $
+     keyword_set(region) && keyword_set(to_region) || $
+     keyword_set(frame) && keyword_set(to_frame) || $
+     keyword_set(device) && keyword_set(to_device) then begin
      xt = x
      yt = y
      return
