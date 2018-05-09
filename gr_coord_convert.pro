@@ -1,5 +1,5 @@
 pro gr_coord_convert, x, y, xt, yt, data = data, normal = normal, $ 
-                      region = region, frame = frame, x $
+                      region = region, frame = frame, $
                       device = device, $
                       to_data = to_data, to_normal = to_normal, $
                       to_region = to_region, to_frame = to_frame, $
