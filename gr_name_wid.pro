@@ -1,3 +1,21 @@
+;+
+; GR_NAME_WID
+;	Request a variable name.
+;
+; Usage:
+; 	name = gr_name_wid(event)
+;
+; Returns:
+;	The name of the variable, or an empty string.
+;
+; Argument:
+;	event	struct	The event in the caller.
+;
+; History:
+;	Original: 3/1/18(?); SJT
+;	Document: 3/7/18; SJT
+;-
+
 pro grname_event, event
 
   widget_control, event.top, get_uvalue = state
