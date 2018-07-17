@@ -44,6 +44,7 @@ function Grf_emask, ids, type, text = text
   tl = str_sep(strcompress(strtrim(text(0), 2)), ' ')
   nc = n_elements(tl)
   case nc of
+     1: mask = [1, 0, 0, 0, 0, 0, 0, 0, 0]
      2: mask = [1, 0, 0, 0, 0, 0, 0, 0, 0]
      3: mask = [0, 1, 0, 1, 0, 0, 0, 0, 0]
      4: mask = [0, 0, 1, 0, 1, 1, 0, 0, 0]

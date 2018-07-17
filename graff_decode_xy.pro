@@ -28,7 +28,7 @@ dtxt = strtrim(strcompress(txt), 2)
 junk = strsplit(dtxt[0], ' ',  count = nt)
 nact = n_elements(dtxt)
 
-xy_data = dblarr(nt, nact > 2)
+xy_data = dblarr(nt > 2, nact > 2)
 
 on_ioerror, badfloat
 
@@ -36,10 +36,12 @@ for j = 0l, nact - 1 do begin
     dstxt = strsplit(dtxt[j], ' ',  /extr,  count = nl)
     if nl ne nt then goto, badfloat
 
-    if (strpos(dstxt(0), ':') ne -1) then begin
-        tstxt = str_sep(dstxt(0), ':')
-        xy_data(0, j) = total(double(tstxt)/[1., 60., 3600.])
-        xy_data(1:*, j) = double(dstxt(1:*))
+    if nt eq 1 then begin
+       xy_data[*, j] = [double(j), double(dstxt)]
+    endif else if (strpos(dstxt(0), ':') ne -1) then begin
+       tstxt = str_sep(dstxt(0), ':')
+       xy_data(0, j) = total(double(tstxt)/[1., 60., 3600.])
+       xy_data(1:*, j) = double(dstxt(1:*))
     endif else xy_data(*, j) = double(dstxt)
 endfor  
 
