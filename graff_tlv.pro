@@ -50,8 +50,16 @@ function Grf_tlv_event, event
               ny = n_elements(y)
            endif else ny = 0
         endif else if yvar eq '' then y_missing = 1b $ $
-        else y = grf_tlv_get(yvar, ny)
-
+        else begin
+           y = grf_tlv_get(yvar, ny)
+           if ny eq 0 then begin
+              widget_control, uvs.mid, set_value = 'Y: '+yvar+ $
+                              ' Undefined or non-numeric'
+              iexit = 0
+              goto, donefor
+           endif
+        endelse
+        
         widget_control, uvs.xid, get_value = xvar
         xvar = strtrim(xvar, 2)
         if (xvar eq '') then begin

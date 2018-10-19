@@ -3,7 +3,7 @@
 ;	Simple interactive data plotter.
 ;
 ; Usage:
-;	graffer[, group=group]
+;	graffer[, file]
 ;
 ; Argument:
 ;	file	string	input	The initial filename for the graph
@@ -13,7 +13,14 @@
 ;	group	long	input	The group leader of the widget tree.
 ;	xsize	int	input	The x dimension of the draw widget
 ;	ysize	int	input	The y dimension of the draw widget
+;	/noscroll	input	If set do not make the draw window
+;				scrolling even if it is bigger than
+;				600 pixels.
 ;	debug		input	If set, then run in debugging mode.
+;	/block			If set, then run the widgets in
+;				blocking mode
+;	/recover	input	If set, then attempt to recover from
+;				an autosave file.
 ;
 ; History:
 ;	Original: 27/7/95; SJT
@@ -388,8 +395,8 @@ Miss_case:
 end
 
 
-pro Graffer, file, group = group, xsize = xsize, ysize = ysize, debug $
-             = debug, $
+pro Graffer, file, group = group, xsize = xsize, ysize = ysize, $
+             debug = debug, noscroll = noscroll, $
              recover = recover, block = block, colour_menu = colour_menu
 
   common Gr_psym_maps, psym_bm  ;, col_bm
@@ -450,8 +457,6 @@ pro Graffer, file, group = group, xsize = xsize, ysize = ysize, debug $
   graff_init, pdefs, file, version = version
   if n_elements(colour_menu) ne 0 then $
      print, "The colour_menu keyword is no longer supported"
-  ;;  pdefs.opts.colour_menu = $
-  ;; keyword_set(colour_menu)
 
   igot = graff_get(pdefs, file, /no_set, recover = recover, /no_warn)
   if igot eq 0 then return      ; Note that here it is meaningful to
@@ -607,7 +612,7 @@ pro Graffer, file, group = group, xsize = xsize, ysize = ysize, debug $
   if (not keyword_set(ysize)) then ywsize = 600 $
   else ywsize = ysize > 600
 
-  if ((xwsize >  ywsize) gt 600) then $
+  if ((xwsize >  ywsize) gt 600 && ~keyword_set(noscroll)) then $
      pdefs.ids.draw = widget_draw(cbase, $
                                   xsize = xwsize, $
                                   x_scroll_size = 600, $
