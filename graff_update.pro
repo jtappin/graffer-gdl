@@ -163,6 +163,7 @@ pro graff_update, file, idx, name = name, polar = polar, $
 ;	Add STATUS keyword: 24/2/12; SJT
 ;	Add X & Y shifts and scale: 26/1/16; SJT
 ;	Add non-linear contour level maps: 12/10/16; SJT
+;	Allow long/triple colours: 1/3/19; SJT
 ;-
 
   on_error, 2                   ; Return to caller on error
@@ -248,7 +249,17 @@ pro graff_update, file, idx, name = name, polar = polar, $
   if (n_elements(symsize) ne 0) then  (*pdefs.data)[index].symsize $
      = symsize
   if (n_elements(style) ne 0) then (*pdefs.data)[index].line = style
-  if (n_elements(colour) ne 0) then  (*pdefs.data)[index].colour = colour
+  if (n_elements(colour) ne 0) then  begin
+     if n_elements(colour) eq 3 then begin
+        (*pdefs.data)[index].colour = -2
+        (*pdefs.data)[index].c_vals = colour
+     endif else if colour gt 255 then begin
+        (*pdefs.data)[index].colour = -2
+        (*pdefs.data)[index].c_vals = $
+           graff_colours(colour, /triple)
+     endif else (*pdefs.data)[index].colour = colour
+  endif
+
   if (n_elements(thick) ne 0) then  (*pdefs.data)[index].thick = thick
   if (keyword_set(sort)) then (*pdefs.data)[index].sort = 1
   if (n_elements(description) ne 0) then $
@@ -256,7 +267,7 @@ pro graff_update, file, idx, name = name, polar = polar, $
   if (n_elements(noclip)  ne 0) then (*pdefs.data)[index].noclip = noclip
   if (n_elements(mouse) ne 0) then (*pdefs.data)[index].medit = mouse
   if (n_elements(y_axis) ne 0) then $
-     (*pdefs.data)[pdefs.cset].y_axis = y_axis
+     (*pdefs.data)[index].y_axis = y_axis
 
   if (keyword_set(rescale)) then begin
      gr_autoscale, pdefs, /xaxis, /ignore

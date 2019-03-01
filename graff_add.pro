@@ -159,6 +159,7 @@ pro Graff_add, file, a1, a2, a3, errors = errors, $
 ;	Add min_val, max_val: 2/6/15; SJT
 ;	z_log -> z_mode: 18/11/15: SJT
 ;	Add non-linear contour level maps: 12/10/16; SJT
+;	Allow long/triple colours: 1/3/19; SJT
 ;-
 
 ;	Check that the necessary inputs are present
@@ -456,7 +457,16 @@ pro Graff_add, file, a1, a2, a3, errors = errors, $
   if (n_elements(symsize) ne 0) then  (*pdefs.data)[pdefs.cset].symsize $
      = symsize
   if (n_elements(style) ne 0) then (*pdefs.data)[pdefs.cset].line = style
-  if (n_elements(colour) ne 0) then  (*pdefs.data)[pdefs.cset].colour = colour
+  if (n_elements(colour) ne 0) then begin
+     if n_elements(colour) eq 3 then begin
+        (*pdefs.data)[pdefs.cset].colour = -2
+        (*pdefs.data)[pdefs.cset].c_vals = colour
+     endif else if colour gt 255 then begin
+        (*pdefs.data)[pdefs.cset].colour = -2
+        (*pdefs.data)[pdefs.cset].c_vals = $
+           graff_colours(colour, /triple)
+     endif else (*pdefs.data)[pdefs.cset].colour = colour
+  endif
   if (n_elements(thick) ne 0) then  (*pdefs.data)[pdefs.cset].thick = thick
   if (keyword_set(sort)) then (*pdefs.data)[pdefs.cset].sort = 1
   if (n_elements(description) ne 0) then $

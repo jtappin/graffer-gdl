@@ -25,6 +25,8 @@ function graff_colours, index, triple = triple
 ;	Extend discrete colours: 8/2/12; SJT
 ;	Essentially new routine for decom colours: 17/5/16; SJT
 ;	Add TRIPLE keyword: 23/8/16; SJT
+;	Allow a long to be converted to a triple, not sure if it will
+;	work for big-endian boxes: 1/3/19; SJT
 ;-
 
   if n_elements(index) eq 1 then begin
@@ -41,7 +43,11 @@ function graff_colours, index, triple = triple
      sz = size(cmap, /dim)
      imax = sz[0]
 
-     if index lt 0 || index ge imax then return, 0l
+     if index lt 0 || index ge imax then begin
+        if ~keyword_set(triple) then return, index
+        rgb = byte(index, 0, 3)
+        return, rgb
+     endif
      
      if keyword_set(triple) then return, byte(reform(cmap[index, *])) $
      else return, cmap[index, 0] + $
