@@ -79,6 +79,8 @@ pro graff_update, file, idx, name = name, polar = polar, $
 ;                                               colours (which may
 ;                                               well not work on
 ;                                               current device).
+;				May also be a triple or a long value
+;				with a "packed" colour
 ;	thick	float	input	Line thickness.
 ;	neval	int	input	The number of times to evaluate a
 ;				function. (2-elements for funcz)

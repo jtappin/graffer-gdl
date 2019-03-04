@@ -81,6 +81,8 @@ pro Graff_add, file, a1, a2, a3, errors = errors, $
 ;                                               colours (which may
 ;                                               well not work on
 ;                                               current device).
+;				May also be a triple or a long value
+;				with a "packed" colour
 ;	thick	double	input	Line thickness.
 ;	neval	int	input	The number of times to evaluate a
 ;				function. (2-elements for funcz)
