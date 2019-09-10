@@ -28,6 +28,7 @@ pro Gr_as_yr, data, xrange, xtype, range, visible = visible, positive $
 ;	Add visible key: 31/5/16; SJT
 ;	Ignore undisplayed datasets: 13/10/16; SJT
 ;	Add positive keyword: 12/2/18; SJT
+;	Typos fixed: 10/9/19; SJT
 ;-
 
 ; Ignore undisplayed datasets
@@ -61,7 +62,7 @@ pro Gr_as_yr, data, xrange, xtype, range, visible = visible, positive $
         
         if keyword_set(positive) then begin
            fvmn = gr_min_nz(fv, max = fvmx)
-           if ~finite(fvnm) || fvnm le 0. then return
+           if ~finite(fvmn) || fvmn le 0. then return
            range[0] = range[0] < fvmn
         endif else range[0] = range[0] < min(fv, max = fvmx)
         range[1] = range[1] > fvmx
@@ -82,7 +83,7 @@ pro Gr_as_yr, data, xrange, xtype, range, visible = visible, positive $
         
         if keyword_set(positive) then begin
            fvmn = gr_min_nz(fv, max = fvmx)
-           if ~finite(fvnm) || fvnm le 0. then return
+           if ~finite(fvmn) || fvmn le 0. then return
            range[0] <= fvmn
         endif else range[0] <= min(fv, max = fvmx)
         range[1] >= fvmx
@@ -96,7 +97,7 @@ pro Gr_as_yr, data, xrange, xtype, range, visible = visible, positive $
      
      9: begin                   ; Surface data 
         if keyword_set(positive) then begin
-           fvmn = gr_min_nz(*(*data.xydata).y, max = mx)
+           rgmn = gr_min_nz(*(*data.xydata).y, max = mx)
            if ~finite(rgmn) || rgmn lt 0. then return
            range[0] <= rgmn
         endif else range[0] <= min(*(*data.xydata).y, max = mx)
