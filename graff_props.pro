@@ -198,6 +198,7 @@ pro Graff_props, file, pdefs, title = title, subtitle = subtitle, $
 ;	Advanced axis style settings: 21/8/12; SJT
 ;	Add PDF keys: 21/9/16; SJT
 ;	Add optional return argument: 8/1/18; SJT
+;	Reorder axis settings so autoscale nws about log: 27/9/19; SJT
 ;-
 
 ;	Check that the necessary inputs are present
@@ -260,11 +261,11 @@ pro Graff_props, file, pdefs, title = title, subtitle = subtitle, $
 
 ;	X axis settings
 
-  if (n_elements(xrange) eq 2) then pdefs.xrange = xrange $
-  else if keyword_set(xauto) then  gr_autoscale, pdefs, /xaxis, /ignore
-
   if (n_elements(xtitle) ne 0) then pdefs.xtitle = xtitle
   if (n_elements(xlog) ne 0) then pdefs.xtype = keyword_set(xlog)
+
+  if (n_elements(xrange) eq 2) then pdefs.xrange = xrange $
+  else if keyword_set(xauto) then  gr_autoscale, pdefs, /xaxis, /ignore
 
 ;	Standard IDL style settings
 
@@ -333,11 +334,11 @@ pro Graff_props, file, pdefs, title = title, subtitle = subtitle, $
 
 ;	Y axis settings
 
-  if (n_elements(yrange) eq 2) then pdefs.yrange = yrange $
-  else if keyword_set(yauto) then  gr_autoscale, pdefs, /yaxis, /ignore
-
   if (n_elements(ytitle) ne 0) then pdefs.ytitle = ytitle
   if (n_elements(ylog) ne 0) then pdefs.ytype = keyword_set(ylog)
+
+  if (n_elements(yrange) eq 2) then pdefs.yrange = yrange $
+  else if keyword_set(yauto) then  gr_autoscale, pdefs, /yaxis, /ignore
 
 ;	Standard IDL style settings
 
@@ -409,11 +410,11 @@ pro Graff_props, file, pdefs, title = title, subtitle = subtitle, $
   if (n_elements(yr_enable) ne 0) then pdefs.y_right = $
      keyword_set(yr_enable)
 
-  if (n_elements(yrrange) eq 2) then pdefs.yrange_r = yrrange $
-  else if keyword_set(yrauto) then  gr_autoscale, pdefs, yaxis = 2, /ignore
-
   if (n_elements(yrtitle) ne 0) then pdefs.ytitle_r = yrtitle
   if (n_elements(yrlog) ne 0) then pdefs.ytype_r = keyword_set(yrlog)
+
+  if (n_elements(yrrange) eq 2) then pdefs.yrange_r = yrrange $
+  else if keyword_set(yrauto) then  gr_autoscale, pdefs, yaxis = 2, /ignore
 
 ;	Standard IDL style settings
 
