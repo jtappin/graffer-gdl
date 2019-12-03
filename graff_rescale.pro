@@ -19,6 +19,7 @@
 ;	Add division option: 12/9/16; SJT
 ;	Replace graff_enter with cw_enter: 13/10/16; SJT
 ;	Make factors double: 24/5/17; SJT
+;	Allow scaling of data values in 2-D datasets: 2/12/19; SJT
 ;-
 
 function Rescale_event, event
@@ -46,16 +47,20 @@ function Rescale_event, event
      'DO': if (track_flag) then $
         graff_msg, wids.msg, "Apply scalings and shifts and return" $
      else  begin
-        value = dblarr(4)
-        dflag = bytarr(2)
-        for j = 0, 3 do begin
+        if widget_info(wids.boxes[4], /valid) then naxes = 3 $
+        else naxes = 2
+        value = dblarr(2*naxes)
+        dflag = bytarr(naxes)
+        for j = 0, 2*naxes-1 do begin
            widget_control, wids.boxes[j], get_value = xy
            value[j] = xy
         endfor
-        for j = 0, 1 do dflag[j] = widget_info(wids.toggles[j], $
+        for j = 0, naxes-1 do dflag[j] = widget_info(wids.toggles[j], $
                                                /button_set)
         if dflag[0] then value[0] = 1.d/value[0]
         if dflag[1] then value[2] = 1.d/value[2]
+        if naxes eq 3 && dflag[2] then value[4] = 1.d/value[4]
+
         iexit = 1
      endelse
      
@@ -77,11 +82,23 @@ function Rescale_event, event
                    "Specify shift for Y values (post scaling units)" $
      else cw_enter_focus, wids.boxes[0]
      
+     'ZSCALE': if (track_flag) then $
+        graff_msg, wids.msg, "Specify scaling factor for Z values" $
+     else cw_enter_focus, wids.boxes[4]
+
+     'ZSHIFT': if (track_flag) then $
+        graff_msg, wids.msg, $
+                   "Specify shift for Z values (post scaling units)" $
+     else cw_enter_focus, wids.boxes[5]
+
      'DIVX': if (track_flag) then $
         graff_msg, wids.msg, 'Set to divide by the X scale factor'
 
      'DIVY': if (track_flag) then $
         graff_msg, wids.msg, 'Set to divide by the Y scale factor'
+
+     'DIVZ': if (track_flag) then $
+        graff_msg, wids.msg, 'Set to divide by the Z scale factor'
 
   endcase
 
@@ -124,10 +141,41 @@ function Graff_rescale, pdefs
 
   popper = widget_label(base, value = 'GRAFFER Dataset rescaler')
 
-  wids = {boxes: lonarr(4), $
-          toggles: lonarr(2), $
+  wids = {boxes: lonarr(6), $
+          toggles: lonarr(3), $
           msg: 0l}
 
+  if (*pdefs.data)[pdefs.cset].type eq 9 then begin ; Contour/image
+     jb = widget_base(base, /row, /frame)
+     
+     wids.boxes[4] = cw_enter(jb, $
+                              label = 'Z: Scaling:', $
+                              value = 1.0, $
+                              /double, $
+                              xsize = 11, $
+                              uvalue = 'ZSCALE', $
+                              /track, $
+                              /capture)
+     
+     jbb = widget_base(jb, $
+                       /nonexclusive)
+     wids.toggles[2] = widget_button(jbb, $
+                                     value = 'Divide', $
+                                     uvalue = 'DIVZ')
+
+     wids.boxes[5] = cw_enter(jb, $
+                              label = 'Shift:', $
+                              value = 0., $
+                              /double, $
+                              xsize = 11, $
+                              uvalue = 'ZSHIFT', $
+                              /track, $
+                              /capture)
+  endif else begin
+     wids.boxes[4:5] = 0l
+     wids.toggles[2] = 0l
+  endelse
+  
   jb = widget_base(base, /row, /frame)
 
   wids.boxes[0] = cw_enter(jb, $
@@ -218,6 +266,7 @@ function Graff_rescale, pdefs
      
      *xydata.x = *xydata.x*ev.value[0] + ev.value[1]
      *xydata.y = *xydata.y*ev.value[2] + ev.value[3]
+     *xydata.z = *xydata.z*ev.value[4] + ev.value[5]
      
   endif else begin
      xydata[0, *] = xydata[0, *]*ev.value[0] + ev.value[1]
