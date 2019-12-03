@@ -181,33 +181,8 @@ pro Gr_ctl_event, event
      end
 
      'File.Open ...': if track_flag then $
-        graff_msg, pdefs.ids.hlptxt, 'Select and open an existing file' $
-     else begin
-        if (pdefs.chflag) then begin
-           case dialog_message(/question, dialog_parent = $
-                               pdefs.ids.graffer, /cancel, $
-                               ['The current file has not been ' + $
-                                'saved', $
-                                'since the last changes, do you ' + $
-                                'want', $
-                                'to save it now?']) of
-              'Yes': begin
-                 graff_save, pdefs
-                 ido = 1b
-              end
-              'No': ido = 1b
-              'Cancel': ido = 0b
-           endcase
-        endif else ido = 1b
-        if (ido) then begin
-           igot = graff_get(pdefs, previous_name = pdefs.name)
-           dmflag = 1b
-        endif
-        ichange = 0b
-     end
-     
-     'File.New ...': if track_flag then $
-        graff_msg, pdefs.ids.hlptxt, 'Create a new file' $
+        graff_msg, pdefs.ids.hlptxt, $
+                   'Open a Graffer file or create a new file' $
      else begin
         if (pdefs.chflag) then begin
            case dialog_message(/question, dialog_parent = $
@@ -228,16 +203,21 @@ pro Gr_ctl_event, event
         if (ido) then begin
            if (not pdefs.chflag) then gr_auto_delete, pdefs
            dir = pdefs.dir
-           fc = dialog_pickfile(file = pdefs.name, path = dir, $
-                                get_path = dir, dialog_parent = $
-                                pdefs.ids.graffer, title = 'Graffer ' + $
-                                'file', /overwrite_prompt, filter = $
-                                "*.grf", /write, resource = 'Graffer')
+           fc = dialog_pickfile(file = pdefs.name, $
+                                path = dir, $
+                                get_path = dir, $
+                                dialog_parent = pdefs.ids.graffer, $
+                                title = 'Graffer file', $
+                                filter = "*.grf", $
+                                resource = 'Graffer')
            if (fc eq '') then begin
               graff_msg, pdefs.ids.message, 'New file not given'
-           endif else begin
+           endif else if ~file_test(fc) then begin
               graff_init, pdefs, fc
               graff_set_vals, pdefs
+              dmflag = 1b
+           endif else begin
+              igot = graff_get(pdefs, fc)
               dmflag = 1b
            endelse
         end
@@ -324,7 +304,6 @@ pro Gr_control_menu, base
              {control_opts, 0, 'Variable', 'Ctrl+Alt+V'}, $
              {control_opts, 2, 'Choose ...', ''}, $
              {control_opts, 0, 'Open ...', 'Ctrl+O'}, $
-             {control_opts, 0, 'New ...', 'Ctrl+N'}, $
              {control_opts, 2, 'Exit', 'Ctrl+Q'}, $
              {control_opts, 1, 'Hard Copy', ''}, $
              {control_opts, 0, 'Quick', 'Ctrl+P'}, $
