@@ -25,6 +25,7 @@ pro Graff_set_vals, pdefs, set_only = set_only
 ;	Advanced axis style settings: 21/8/12; SJT
 ; 	Add min & max values: 4/3/15; SJT
 ; 	Replace cw_pdtsmenu with cw_pdmenu_plus: 28/9/16; SJT
+; 	Add font setting: 12/2/20; SJT
 ;-
 
   common Gr_psym_maps, psym_bm  ;, col_bm
@@ -43,6 +44,8 @@ pro Graff_set_vals, pdefs, set_only = set_only
      widget_control, pdefs.ids.subtitle, set_value = pdefs.subtitle
      widget_control, pdefs.ids.charsize, set_value = pdefs.charsize
      widget_control, pdefs.ids.axthick, set_value = pdefs.axthick
+     widget_control, pdefs.ids.fontsel, set_droplist_select = $
+                     pdefs.fontopt
      
      widget_control, pdefs.ids.xtitle, set_value = pdefs.xtitle
      widget_control, pdefs.ids.xmin, set_value = pdefs.xrange(0)

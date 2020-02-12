@@ -21,6 +21,7 @@ pro graff_define__define
 ;	Add isotropic option: 25/6/08; SJT
 ;	Add support for a second Y-scale: 22/12/11; SJT
 ;	Make coordinates double: 24/5/17; SJT
+;	Add fontopt field to allow TT fonts to be used: 11/2/20; SJT
 ;-
 
 pdefs = {graff_define, $
@@ -31,6 +32,7 @@ pdefs = {graff_define, $
          Subtitle:  '', $
          Charsize:  0.d0, $
          Axthick:   0.d0, $
+         fontopt:   0, $
          Position:  dblarr(4), $
          Aspect:    dblarr(2), $
          Isotropic: 0b, $

@@ -266,8 +266,12 @@ print, 'gr_lon_val.pro'
 .r gr_lon_val
 print, 'gr_make_levels.pro'
 .r gr_make_levels
+print, 'gr_min_nz.pro'
+.r gr_min_nz
 print, 'gr_mk_plmenus.pro'
 .r gr_mk_plmenus
+print, 'gr_name_wid.pro'
+.r gr_name_wid
 print, 'gr_new_ds.pro'
 .r gr_new_ds
 print, 'gr_opt_set.pro'

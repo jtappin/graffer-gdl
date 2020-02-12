@@ -37,6 +37,7 @@ function Graff_get, pdefs, f, no_set = no_set, recover = recover, $
 ;	Move initialization until after file has been successfully
 ;	opened: 16/3/12; SJT
 ;	Eliminate obsolete findfile call: 16/4/12; SJT
+;	Handle TT font option: 12/2/20; SJT
 ;-
 
 if (n_params() eq 1) then begin
@@ -137,6 +138,9 @@ endif else begin
       gr_get_bin, pdefs, ilu, no_set = no_set $ 
     else gr_get_bin_v3, pdefs, ilu, fvers, no_set = no_set
 endelse
+
+if pdefs.fontopt eq 1 then !p.font = 1 $
+else !p.font = -1
 
 if icont eq -1 or fvers[0] eq 1 then graff_save, pdefs
 

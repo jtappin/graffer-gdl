@@ -21,6 +21,10 @@
 ;				blocking mode
 ;	/recover	input	If set, then attempt to recover from
 ;				an autosave file.
+;	/ttype		input	If set, then make a new file use
+;				TrueType fonts. (Opening an existing
+;				file will still keep what that one
+;				used).
 ;
 ; History:
 ;	Original: 27/7/95; SJT
@@ -258,7 +262,8 @@
 ;                       custom colours can be used.
 ;                     - Add option for log or sqrt mapping of
 ;                       automatic contours.
-;                     - Convert graff_enter to cw_enter  
+;                     - Convert graff_enter to cw_enter
+;                     - Allow axis labelling etc. to use TT fonts.
 ;-
 
 
@@ -397,7 +402,8 @@ end
 
 pro Graffer, file, group = group, xsize = xsize, ysize = ysize, $
              debug = debug, noscroll = noscroll, $
-             recover = recover, block = block, colour_menu = colour_menu
+             recover = recover, block = block, colour_menu = $
+             colour_menu, ttype = ttype
 
   common Gr_psym_maps, psym_bm  ;, col_bm
 
@@ -425,8 +431,9 @@ pro Graffer, file, group = group, xsize = xsize, ysize = ysize, $
   !P.multi = 0                  ; Clear plot positioning settings.
   !P.region = 0
   !P.position = 0
-  !P.font = -1
-
+  if keyword_set(ttype) then !p.font = 1 $
+  else !P.font = -1
+  
   if (n_elements(file) eq 0) then $
      file = dialog_pickfile(/read, $
                             filter = '*.grf', $
@@ -454,7 +461,9 @@ pro Graffer, file, group = group, xsize = xsize, ysize = ysize, $
 
 ;	Define the data control structure
 
-  graff_init, pdefs, file, version = version
+  graff_init, pdefs, file, version = version, ttype = $
+              keyword_set(ttype)
+  
   if n_elements(colour_menu) ne 0 then $
      print, "The colour_menu keyword is no longer supported"
 

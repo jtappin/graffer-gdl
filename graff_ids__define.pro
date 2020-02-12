@@ -23,6 +23,7 @@ pro graff_ids__define
 ; 	Add min & max values: 4/3/15; SJT
 ;	Add non-linear contour level maps: 12/10/16; SJT
 ;	Add labelling offset: 2/5/17; SJT
+;	Add fontsel field: 12/2/20; SJT
 ;-
 
 Ids = { graff_ids, $
@@ -32,6 +33,7 @@ Ids = { graff_ids, $
         Subtitle:0l, $
         Charsize:0l, $
         Axthick: 0l, $
+        fontsel: 0l, $
         textmode:0l, $
         Mode:    0l, $
         Xtitle:  0l, $

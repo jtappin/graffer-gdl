@@ -32,6 +32,7 @@ pro Gr_bin_save, pdefs, auto = auto
 ; 	PDF view command: 21/9/16; SJT
 ;	Add non-linear contour level maps: 12/10/16; SJT
 ;	Add labelling offset: 2/5/17; SJT
+;	Font option: 11/2/20; SJT
 ;-
 
   if (keyword_set(auto)) then begin
@@ -68,7 +69,8 @@ pro Gr_bin_save, pdefs, auto = auto
   graff_put_rec, ilu, 'GR ', pdefs.aspect
   graff_put_rec, ilu, 'GI ', pdefs.isotropic 
   graff_put_rec, ilu, 'GHA', pdefs.match
-
+  graff_put_rec, ilu, 'GF ', pdefs.fontopt
+  
 ; X-axis information
 
   graff_put_rec, ilu, 'XR ', pdefs.xrange

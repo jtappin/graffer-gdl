@@ -27,6 +27,7 @@ pro gr_get_bin, pdefs, ilu, no_set=no_set
 ;	V4 version: 6/1/12; SJT
 ;	Advanced axis style settings: 21/8/12; SJT
 ;	PDF view command: 21/9/16; SJT
+;	Font option: 11/2/20; SJT
 ;-
 
 
@@ -50,6 +51,7 @@ while (not eof(ilu)) do begin
                                 ; GP - Positions of corners
                                 ; GR - Aspect of plot.
                                 ; GI - Is plot isotropic?
+                                ; GF - Font selection.
 
         'GT ': pdefs.title = value
         'GS ': pdefs.subtitle = value
@@ -59,7 +61,8 @@ while (not eof(ilu)) do begin
         'GR ': pdefs.aspect = value
         'GI ': pdefs.isotropic = value
         'GHA': pdefs.match = value
-
+        'GF ': pdefs.fontopt = value
+        
                                 ; The X, Y and R keys are items relating
                                 ; to the X, Y and right-hand Y axes
                                 ; respectively  

@@ -1,4 +1,4 @@
-pro Graff_init, pdefs, file, version = version
+pro Graff_init, pdefs, file, version = version, ttype = ttype
 
 ;+
 ; GRAFF_INIT
@@ -15,6 +15,9 @@ pro Graff_init, pdefs, file, version = version
 ;	version	int	input	The graffer version 2-elements, major
 ;				& minor version numbers, if pdefs exists,
 ;				then previous version is retained.
+;	/ttype		input	If set then the default annotation
+;				font is TrueType rather than
+;				Hershey/Hardware
 ;
 ; Note:
 ;	If pdefs exists, it is assumed to be a pre-existing pdefs
@@ -33,6 +36,7 @@ pro Graff_init, pdefs, file, version = version
 ;	Replace handles with pointers: 28/6/05; SJT
 ;	Add support for a second Y-scale: 22/12/11; SJT
 ;	Make colour PS the default: 14/2/12; SJT
+;	Set current font option to the initial state: 12/2/20; SJT
 ;-
 
   if (n_elements(pdefs) ne 0) then begin
@@ -64,6 +68,9 @@ pro Graff_init, pdefs, file, version = version
   pdefs.Dir =       dir
   pdefs.Charsize =  1.0
   pdefs.Axthick =   1.
+  if keyword_set(ttype) then pdefs.fontopt = 1 $
+  else pdefs.fontopt = 0
+  
   pdefs.Xrange =    dindgen(2)
   pdefs.Yrange =    dindgen(2)
   pdefs.Yrange_r =  dindgen(2)

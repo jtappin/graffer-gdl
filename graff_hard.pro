@@ -37,6 +37,7 @@ function Graff_hard, pdefs, no_set = no_set, redraw = redraw, $
 ;	Add redraw key: 30/11/16; SJT
 ;	Make coordinates double: 24/5/17; SJT
 ;	Add NO_SPAWN: 8/5/18; SJT
+;	Handle TT fonts: 12/2/20; SJT
 ;-
 
 ; For hard copy we don't normally want to show current DS only.
@@ -94,7 +95,7 @@ function Graff_hard, pdefs, no_set = no_set, redraw = redraw, $
   set_plot, 'ps'
 
 
-  !P.font = 0
+  if pdefs.fontopt eq 0 then !P.font = 0
 
   locs = where(((*pdefs.data).type eq -4 or (*pdefs.data).type eq 9) and $
                ((*pdefs.data).zopts.format eq 1 or $
@@ -217,7 +218,7 @@ function Graff_hard, pdefs, no_set = no_set, redraw = redraw, $
      end
   endcase
 
-  !P.font = -1
+  if pdefs.fontopt eq 0 then !P.font = -1
   !p.color = graff_colours(1)
   !p.background = graff_colours(0)
 

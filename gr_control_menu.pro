@@ -213,7 +213,7 @@ pro Gr_ctl_event, event
            if (fc eq '') then begin
               graff_msg, pdefs.ids.message, 'New file not given'
            endif else if ~file_test(fc) then begin
-              graff_init, pdefs, fc
+              graff_init, pdefs, fc, ttype = !p.font eq 1
               graff_set_vals, pdefs
               dmflag = 1b
            endif else begin

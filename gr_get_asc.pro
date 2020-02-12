@@ -33,6 +33,7 @@ pro Gr_get_asc, pdefs, ilu, no_set = no_set
 ;	Convert to procedure for Graffer V4: 6/1/12; SJT
 ;	Advanced axis style settings: 21/8/12; SJT
 ;	PDF viewer: 21/9/16; SJT
+;	Font option: 11/2/20; SJT
 ;-
 
 
@@ -75,7 +76,8 @@ while (not eof(ilu)) do begin
             'GR': pdefs.aspect = gr_flt_val(tag_val[itag+1], 2)
             'GI': pdefs.isotropic = gr_byt_val(tag_val[itag+1], 1)
             'GHA': pdefs.match = gr_byt_val(tag_val[itag+1], 1)
-
+            'GF': pdefs.fontopt =  gr_int_val(tag_val[itag+1], 1)
+            
                                 ; The X, Y and R keys are items relating
                                 ; to the X, Y and right-hand Y axes
                                 ; respectively  

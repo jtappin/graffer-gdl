@@ -19,6 +19,7 @@
 ;	Add "Comment" key: 1/7/97; SJT
 ;	Use cw_spin_box for line width & charsize: 29/9/16; SJT
 ;	Replace graff_enter with cw_enter: 13/10/16; SJT
+;	Add font option: 12/2/20; SJT
 ;-
 
 pro Gr_pl_event, event
@@ -97,7 +98,14 @@ pro Gr_pl_event, event
         if (ichange) then nch = 5
      endelse
      
-     
+     'FONTS': if track_flag then $
+        graff_msg, pdefs.ids.hlptxt, "Select whether to use " + $
+                   "Hershey/Hardware fonts or TT fonts" $
+     else begin
+        pdefs.fontopt = event.index
+        if pdefs.fontopt eq 0 then !p.font = -1 $
+        else !p.font = 1
+     endelse
   endcase
 
   if (idraw_flag) then gr_plot_object, pdefs
@@ -197,6 +205,12 @@ pro Gr_mk_plmenus, base, pdefs
   junk = widget_button(jb, $
                        value = 'Comment...', $
                        uvalue = 'COMMENT', $
-                       /track) 
+                       /track)
+  pdefs.ids.fontsel = widget_droplist(jb, $
+                                      value = ['Hershey/HW', $
+                                               'TrueType'], $
+                                      uvalue = 'FONTS', $
+                                      title = 'Fonts:', $
+                                      /track)
 
 end
