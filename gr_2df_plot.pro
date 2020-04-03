@@ -123,12 +123,17 @@ pro Gr_2df_plot, pdefs, i, csiz, grey_ps = grey_ps, shaded = shaded
         labels = indgen(nl) mod data.zopts.label eq data.zopts.label_off
      endif else labels = 0
      
-     if obj_valid(data.zopts.colours) then begin
-        colours = data.zopts.colours
-        ncol = n_elements(colours)
+     if ptr_valid(data.zopts.colours) then begin
+        ncol = data.zopts.n_cols
         lcolours = lonarr(ncol)
-        for j = 0, ncol-1 do lcolours[j] = graff_colours(colours[j])
+        for j = 0, ncol-1 do begin
+           if *(data.zopts.colours)[j] eq -2 then $
+              lcolours[j] = $
+              graff_colours(*(data.zopts.raw_colours)[*, j]) $
+           else lcolours[j] = graff_colours(*(data.zopts.colours)[j])
+        endfor
      endif
+
      if ptr_valid(data.zopts.style) then linestyle = $
         *(data.zopts.style) 
      if ptr_valid(data.zopts.thick) then thick = $

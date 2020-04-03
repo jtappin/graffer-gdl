@@ -207,8 +207,11 @@ pro Gr_bin_save, pdefs, auto = auto
            graff_put_rec, ilu, 'ZNL', zopts.n_levels
            graff_put_rec, ilu, 'ZLM', zopts.lmap
         endelse
-        if zopts.n_cols gt 0 then graff_put_rec, ilu, 'ZC ', $
-                                                 zopts.colours
+        if zopts.n_cols gt 0 then begin
+           graff_put_rec, ilu, 'ZC ', *(zopts.colours)
+           if ptr_valid(zopts_raw_colours) then $
+              graff_put_rec, ilu, 'ZCR', *(zopts.raw_colours)
+        endif
         if zopts.n_sty gt 0 then graff_put_rec, ilu, 'ZS ', $
                                                 *(zopts.style)
         if zopts.n_thick gt 0 then graff_put_rec, ilu, 'ZT ', $
@@ -308,6 +311,11 @@ pro Gr_bin_save, pdefs, auto = auto
   graff_put_rec, ilu, 'HWS', pdefs.hardset.font.wg_sl
   graff_put_rec, ilu, 'HFN', pdefs.hardset.name
 
+  graff_put_rec, ilu, 'HPS', pdefs.hardset.psdev
+  graff_put_rec, ilu, 'HEP', pdefs.hardset.epsdev
+  graff_put_rec, ilu, 'HPD', pdefs.hardset.pdfdev
+  graff_put_rec, ilu, 'HSV', pdefs.hardset.svgdev
+  
   free_lun, ilu
 
   if (not keyword_set(auto)) then pdefs.chflag = 0b ; Clear change flag

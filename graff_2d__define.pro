@@ -23,6 +23,8 @@ pro graff_2d__define
 ;	Make colours a list: 7/10/16; SJT
 ;	Add non-linear contour level maps: 12/10/16; SJT
 ;	Add labelling offset: 2/5/17; SJT
+;	Revert colours to a pointer: 1/4/20; SJT
+;	Split indexed & custom colours: 2/4/20; SJT
 ;-
 
 Zopts = {graff_2d, $
@@ -32,7 +34,8 @@ Zopts = {graff_2d, $
          lmap:        0, $ 
          Levels:      ptr_new(), $
          N_cols:      0, $ 
-         Colours:     list(), $
+         Colours:     ptr_new(), $
+         raw_colours: ptr_new(), $
          N_sty:       0, $
          Style:       ptr_new(), $
          N_thick:     0, $

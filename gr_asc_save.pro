@@ -231,26 +231,19 @@ pro Gr_asc_save, pdefs
            endelse
         endif
 
-        if size(zopts.colours, /type) eq 11 && $
-           zopts.n_cols gt 0 then begin
-           colours = zopts.colours
-           nv = intarr(zopts.n_cols)
-           for j = 0, zopts.n_cols-1 do nv[j] = n_elements(colours[j])
-           fmt = string(zopts.n_cols, format = "('(a,',i0,'I2)')")
-           printf, ilu, 'ZCX:', nv, format = fmt
-           for j = 0, zopts.n_cols-1 do begin
-              if nv[j] eq 1 then printf, ilu, colours[j], format = $
-                                         "(i0)" $
-              else printf, ilu, colours[j], format = "(3I4)"
-           endfor
-        endif else if zopts.n_cols gt 20 then begin
+        if zopts.n_cols gt 15 then begin
            printf, ilu, 'ZCL:', format = "(A)"
-           printf, ilu, *(zopts.colours), format = "(20I4)"
+           printf, ilu, *(zopts.colours), format = "(15I5)"
         endif else if zopts.n_cols gt 0 then begin
-           fmt = string(zopts.n_cols, format = "('(a,',i0,'I4)')")
+           fmt = string(zopts.n_cols, format = "('(a,',i0,'I10)')")
            printf, ilu, 'ZC:', *(zopts.colours), format = fmt
         endif
 
+        if ptr_valid(zopts.raw_colours) then begin
+           printf, ilu, 'ZCR:', format = "(A)"
+           printf, ilu, *(zopts.raw_colours), format = "(15i5)"
+        endif
+        
         if zopts.n_sty gt 20 then begin
            printf, ilu, 'ZSL:', format = "(A)"
            printf, ilu, *(zopts.style),  format = "(20I4)"

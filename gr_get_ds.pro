@@ -145,29 +145,46 @@ pro Gr_get_ds, data, nset, ilu, msgid
            end
            'ZC': if (cflag(1)) then begin
               cols = gr_int_val(tag_val(itag+1), data[nset].zopts.n_cols)
-              data[nset].zopts.colours = list(cols, /extr)
+              data[nset].zopts.colours = ptr_new(cols)
            endif else $
               graff_msg, msgid, "** W A R N I N G ** Contour colour " + $
                          "list given without count - ignored"
+           
            'ZCL': if (cflag(1)) then begin
               cols = intarr(data[nset].zopts.n_cols)
               readf, ilu, cols
-              data[nset].zopts.colours = list(cols, /extr)
+              data[nset].zopts.colours = ptr_new(cols)
            endif else $
               graff_msg, msgid, "** W A R N I N G ** Contour colour " + $
+                         "list given without count - ignored"
+           
+           'ZCR': if (cflag(1)) then begin
+              rcols = intarr(3, data[nset].zopts.n_cols)
+              readf, ilu, rcols
+              data[nset].zopts.colours = ptr_new(rcols)
+           endif else $
+              graff_msg, msgid, "** W A R N I N G ** Contour raw colour " + $
                          "list given without count - ignored"
            
            'ZCX': if cflag[1] then begin
               nce = gr_int_val(tag_val(itag+1), $
                                data[nset].zopts.n_cols)
-              cols = list()
+              cols = intarr(data[nset].zopts.n_cols)
+              rcols = intarr(3, data[nset].zopts.n_cols)
+              cc = 0
+              ccr = intarr(3)
               for j = 0, data[nset].zopts.n_cols do begin
-                 if nce[j] eq 1 then cc = 0 $
-                 else cc = bytarr(nce)
-                 readf, ilu, cc
-                 cols.add, cc
+                 if nce[j] eq 1 then begin
+                    readf, ilu, cc
+                    cols[j] = cc
+                 endif else begin
+                    readf, ilu, ccr
+                    rcols[*, j] = ccr
+                    cols[j] = -2
+                 endelse
               endfor
-              data[nset].zopts.colours = cols
+              data[nset].zopts.colours = ptr_new(cols)
+              data[nset].zopts.raw_colours = ptr_new(rcols)
            endif else $
               graff_msg, msgid, "** W A R N I N G ** Contour colour " + $
                          "list given without count - ignored"

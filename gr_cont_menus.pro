@@ -86,8 +86,11 @@ pro Cont_event, event
         graff_msg, pdefs.ids.hlptxt, 'Set contour colours' $
      else begin
         widget_control, event.id, get_value = col
-        if obj_valid(zopts.colours) then obj_destroy, zopts.colours
-        zopts.colours = col
+        gr_cont_col_get, col, icol, rcol
+        if ptr_valid(zopts.colours) then ptr_free, zopts.colours
+        if ptr_valid(zopts.raw_colours) then ptr_free, zopts.raw_colours
+        zopts.colours = ptr_new(icol)
+        zopts.raw_colours = ptr_new(rcol)
         zopts.n_cols = n_elements(col)
      endelse
      
@@ -290,18 +293,19 @@ pro Gr_cont_menus, sb, pdefs
   widget_control, pdefs.ids.zopts.c_type, set_droplist_select = zopts.fill
 
   pdefs.ids.zopts.c_colour = cw_enter(jbx, $
-                                      /list, $
+                                      /text, $
+                                      /array, $
                                       /track, $
                                       uvalue = 'COLOUR', $
                                       /capture, $
-                                      value = zopts.colours, $
+                                      value = $
+                                      gr_cont_col_set(zopts.colours, $
+                                                      zopts.raw_colours), $
                                       xsize = 16, $
                                       ysize = 4, $
                                       /column, $
                                       label = 'Colours', $
-                                      /all_events, $ 
-                                      set_list = 'gr_cont_col_set', $
-                                      get_list = 'gr_cont_col_get')
+                                      /all_events)
 
   jby = widget_base(jbx, $
                     /row, $

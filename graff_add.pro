@@ -501,21 +501,39 @@ pro Graff_add, file, a1, a2, a3, errors = errors, $
      if keyword_set(z_lmap) then (*pdefs.data)[pdefs.cset].zopts.lmap $
         = z_lmap
 
-     if n_elements(z_colours) gt 0 then begin
-        (*pdefs.data)[pdefs.cset].zopts.N_cols = n_elements(z_colours)
-        case size(z_colours, /type) of
-           11: (*pdefs.data)[pdefs.cset].zopts.Colours = z_colours
+     ncolss = n_elements(z_colours)
+     if ncolss gt 0 then begin
+        (*pdefs.data)[pdefs.cset].zopts.N_cols = ncolss
+       case size(z_colours, /type) of
+           11: begin
+              (*pdefs.data)[pdefs.cset].zopts.colours = $
+                 ptr_new(intarr(ncolss))
+              (*pdefs.data)[pdefs.cset].zopts.raw_colours = $
+                 ptr_new(intarr(3, ncolss))
+              for j = 0, ncolss-1 do begin
+                 if n_elements(z_colours[j]) eq 1 then begin
+                    (*(*pdefs.data)[pdefs.cset].zopts.colours)[j] = $
+                       z_colours[j]
+                    (*(*pdefs.data)[pdefs.cset].zopts.raw_colours)[*, $
+                                                                   j] $
+                       = 0
+                 endif else begin
+                    (*(*pdefs.data)[pdefs.cset].zopts.colours)[j] = $
+                       -2
+                    (*(*pdefs.data)[pdefs.cset].zopts.raw_colours)[*, $
+                                                                   j] $
+                       = graff_colours(z_colours[j])
+                 endelse
+              endfor
+           end
            7: begin
-              clist = gr_cont_col_get(z_colours)
-              if size(clist, /type) eq 7 then $
-                 (*pdefs.data)[pdefs.cset].zopts.Colours = clist $
-              else begin
-                 (*pdefs.data)[pdefs.cset].zopts.N_cols = 1
-                 (*pdefs.data)[pdefs.cset].zopts.Colours = list(1)
-              endelse
+              gr_cont_col_get, z_colours, icol, rcol
+              (*pdefs.data)[pdefs.cset].zopts.N_cols = n_elements(icol)
+              (*pdefs.data)[pdefs.cset].zopts.Colours = ptr_new(icol)
+              (*pdefs.data)[pdefs.cset].zopts.raw_colours = ptr_new(rcol)
            end
            else: (*pdefs.data)[pdefs.cset].zopts.Colours = $
-              list(z_colours,  /extr)
+              ptr_new(fix(z_colours))
         endcase
      endif else begin
         (*pdefs.data)[pdefs.cset].zopts.N_cols = 1

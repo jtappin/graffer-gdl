@@ -28,6 +28,7 @@ pro gr_get_bin, pdefs, ilu, no_set=no_set
 ;	Advanced axis style settings: 21/8/12; SJT
 ;	PDF view command: 21/9/16; SJT
 ;	Font option: 11/2/20; SJT
+;	Accept Fortran-only tags: 31/3/20; SJT
 ;-
 
 
@@ -268,6 +269,14 @@ while (not eof(ilu)) do begin
         'HWS': pdefs.hardset.font.wg_sl = value
         'HFN': pdefs.hardset.name = value
 
+                                ; These values are only used in the
+                                ; Fortran version.
+        
+        'HPS': pdefs.hardset.psdev = value
+        'HEP': pdefs.hardset.epsdev = value
+        'HPD': pdefs.hardset.pdfdev = value
+        'HSV': pdefs.hardset.svgdev = value
+           
                                 ; The K tags relate to the plotting of
                                 ; a key on the plot.
                                 ; KU - Plot a key

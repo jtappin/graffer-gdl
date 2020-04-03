@@ -8,4 +8,4 @@ foreach f (`ls *.pro | grep -v graff_version`)
 end
 echo "exit" >> test_compile.pro
 
-idl ./test_compile.pro
+gdl ./test_compile.pro

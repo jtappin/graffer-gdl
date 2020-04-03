@@ -134,11 +134,31 @@ pro Gr_bin_ds, data, nset, ilu, msgid
         end
 
         'ZC': begin
-           if tcode eq 11 then data[nset].zopts.colours = value $
-           else data[nset].zopts.colours = list(fix(value), /extract)
+           if tcode eq 11 then begin
+              cols = intarr(nvals)
+              rcols = intarr(3, nvals)
+              for j = 0, nvals-1 do begin
+                 if n_elements(value[j]) eq 1 then $
+                    cols[j] = fix(value[j]) $
+                 else begin
+                    rcols[*, j] = fix(value)
+                    cols[j] = -2
+                 endelse
+              endfor
+              data[nset].zopts.colours = ptr_new(cols)
+              data[nset].zopts.raw_colours = ptr_new(rcols)
+           endif else if tcode eq 7 then $
+              data[nset].zopts.colours = ptr_new(value) $
+           else data[nset].zopts.colours = ptr_new(fix(value))
            data[nset].zopts.n_cols = nvals
         end
-
+        'ZCR': begin
+           if data[nset].zopts.n_cols eq 0 then $
+              graff_msg, msgid, $
+                         "Raw colours found before indexed list."
+           data[nset].zopts.raw_colours = ptr_new(fix(value))
+        end
+        
         'ZCT': data[nset].zopts.ctable = value
 
         'ZCG': data[nset].zopts.gamma = value

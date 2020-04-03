@@ -19,6 +19,7 @@ pro graff_hard__define
 ; MODIFICATION HISTORY:
 ;	Extracted: 30/6/05; SJT
 ;	Add PDF viewer: 21/9/16; SJT
+;	Add Fortran-only device names: 31/3/20; SJT
 ;-
 
 Hardset = { graff_hard, $
@@ -36,7 +37,11 @@ Hardset = { graff_hard, $
             Action: strarr(2), $
             viewer: strarr(2), $
             pdfviewer: strarr(2), $
-            name: '' $
+            name: '', $ $
+            psdev: '', $        ; These are ignored in the IDL version 
+            epsdev: '', $       ; but preserved for the Fortran version.
+            pdfdev: '', $
+            svgdev: '' $
           }
 
 end
