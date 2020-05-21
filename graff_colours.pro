@@ -43,16 +43,16 @@ function graff_colours, index, triple = triple
      sz = size(cmap, /dim)
      imax = sz[0]
 
-     if  index ge imax then begin
+     if index lt 0 || index ge imax then begin
         if ~keyword_set(triple) then return, index
         rgb = byte(index, 0, 3)
         return, rgb
      endif 
      
-     if keyword_set(triple) then return, byte(reform(cmap[abs(index), *])) $
-     else return, cmap[abs(index), 0] + $
-                  cmap[abs(index), 1]*256l + $
-                  cmap[abs(index), 2]*256l^2
+     if keyword_set(triple) then return, byte(reform(cmap[index, *])) $
+     else return, cmap[index, 0] + $
+                  cmap[index, 1]*256l + $
+                  cmap[index, 2]*256l^2
   endif else if n_elements(index) eq 3 then begin
      if keyword_set(triple) then return, byte(index)
      sindex = long(byte(index))

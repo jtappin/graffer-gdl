@@ -26,8 +26,9 @@ pro Graff_clear, pdefs
      ptr_free, (*pdefs.data)[j].xydata
      ptr_free, (*pdefs.data)[j].zopts.levels, $
                (*pdefs.data)[j].zopts.style, $
-               (*pdefs.data)[j].zopts.thick
-     obj_destroy, (*pdefs.data)[j].zopts.colours
+               (*pdefs.data)[j].zopts.thick, $
+               (*pdefs.data)[j].zopts.colours, $
+               (*pdefs.data)[j].zopts.raw_colours
 
   endfor
 
