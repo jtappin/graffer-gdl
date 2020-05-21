@@ -263,7 +263,7 @@ pro Gr_asc_save, pdefs
         printf, ilu, 'ZR:', zopts.range, ':ZP:', $
                 zopts.pxsize, ':ZIL:', $
                 zopts.ilog, ':ZIN:', zopts.invert, ':ZM:', $
-                zopts.mising, format = $ 
+                zopts.missing, format = $ 
                 "(a,2g19.12,a,f7.3,a,I1,a,I1,a,g19.12)"
 
      endif
@@ -325,11 +325,11 @@ pro Gr_asc_save, pdefs
           pdefs.key.csize, format =  "(3(a,2g19.12))"
   printf, ilu, 'KT:', pdefs.key.title, format = "(2a)"
 
-  if ptr_valid(pdefs.key.list) then printf, ilu, 'KLN:', $
-                                            n_elements(*pdefs.key.list), $ 
-                                            ':KL:', *pdefs.key.list, format = "(a,i5,a," + $
-                                            string(n_elements(*pdefs.key.list), format $ 
-                                                   = "(I0)") + "I5)"
+  if ptr_valid(pdefs.key.list) then $
+     printf, ilu, 'KLN:', n_elements(*pdefs.key.list), $  $
+             ':KL:', *pdefs.key.list, format = "(a,i5,a," + $
+             string(n_elements(*pdefs.key.list), $
+                    format = "(I0)") + "I5)"
 
 ;	Any remarks associated with the file.
 
@@ -358,6 +358,10 @@ pro Gr_asc_save, pdefs
           pdefs.hardset.font.wg_sl, format = "(a,i3,a,i2)"
   printf, ilu, 'HFN:', pdefs.hardset.name, format = "(2a)"
 
+  printf, ilu, 'HPS:', pdefs.hardset.psdev, $
+          'HEP:', pdefs.hardset.epsdev, 'HPD:', pdefs.hardset.pdfdev, $
+          'HSV:', pdefs.hardset.svgdev
+          
   free_lun, ilu
 
   pdefs.chflag = 0b             ; Clear change flag

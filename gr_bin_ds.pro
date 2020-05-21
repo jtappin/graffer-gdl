@@ -147,9 +147,7 @@ pro Gr_bin_ds, data, nset, ilu, msgid
               endfor
               data[nset].zopts.colours = ptr_new(cols)
               data[nset].zopts.raw_colours = ptr_new(rcols)
-           endif else if tcode eq 7 then $
-              data[nset].zopts.colours = ptr_new(value) $
-           else data[nset].zopts.colours = ptr_new(fix(value))
+           endif else data[nset].zopts.colours = ptr_new(fix(value))
            data[nset].zopts.n_cols = nvals
         end
         'ZCR': begin
@@ -183,6 +181,8 @@ pro Gr_bin_ds, data, nset, ilu, msgid
         
         'ZIL': data[nset].zopts.ilog = value
         'ZIN': data[nset].zopts.invert = value
+        'ZSM': data[nset].zopts.smooth = value
+        'ZSN': data[nset].zopts.shade_levels = value
         'ZM': data[nset].zopts.missing = value
 
         'R': xydata.range = value
