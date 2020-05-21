@@ -1,5 +1,5 @@
 ; Set the graffer version number.
 
-version = [4, 9]
+version = [4, 10]
 revision = ''
 vstring = string(version, revision, format = "(I0,'.',I2.2,a)")

@@ -17,26 +17,26 @@
 
 function Grf_ch_event, event
 
-base = widget_info(event.top, /child)
-widget_control, base, get_uvalue = uv, /no_copy
-widget_control, event.id, get_uvalue = but
+  base = widget_info(event.top, /child)
+  widget_control, base, get_uvalue = uv, /no_copy
+  widget_control, event.id, get_uvalue = but
 
-iexit = 0
-case (but) of
-    'CHOOSE': begin
+  iexit = 0
+  case (but) of
+     'CHOOSE': begin
         uv.select = event.index
         iexit = 1
-    end
-    
-    'DONT': iexit = -1
-end
+     end
+     
+     'DONT': iexit = -1
+  end
 
-widget_control, base, set_uvalue = uv, /no_copy
+  widget_control, base, set_uvalue = uv, /no_copy
 
-return, {id:event.handler, $
-         top:event.top, $
-         handler:event.handler, $
-         Exit:iexit}
+  return, {id:event.handler, $
+           top:event.top, $
+           handler:event.handler, $
+           Exit:iexit}
 end
 
 
