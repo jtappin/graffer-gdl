@@ -28,7 +28,6 @@ function Gr_opt_event, event
      'TIME': opts.auto_delay = event.value > 10 ; Safety valve of 10
                                 ; seconds.
      'MOUSE': opts.mouse = event.index
-     ;; 'COLOUR': opts.colour_menu = event.index
 
      'PDF':   begin
         opts.pdfviewer = event.str
@@ -62,7 +61,6 @@ function Gr_opt_event, event
      printf, ilu, 'Autosave: ', opts.auto_delay
      printf, ilu, 'Supp2D: ', opts.s2d
      printf, ilu, 'MouseEdit:', opts.mouse
-     ;; printf, ilu, 'ColourMenu:', opts.colour_menu
 
      if opts.pdfviewer ne '' then printf, ilu, 'PDFView:', $
                                           opts.pdfviewer
