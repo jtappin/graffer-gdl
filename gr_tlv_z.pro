@@ -325,9 +325,10 @@ function Gr_tlv_z, pdefs
 
   if (*pdefs.data)[pdefs.cset].zopts.n_levels  eq 0 then $
      (*pdefs.data)[pdefs.cset].zopts.n_levels = 6
-  if ~obj_valid((*pdefs.data)[pdefs.cset].zopts.colours) then begin
+  if ~ptr_valid((*pdefs.data)[pdefs.cset].zopts.colours) then begin
      (*pdefs.data)[pdefs.cset].zopts.n_cols = 1
-     (*pdefs.data)[pdefs.cset].zopts.colours = list(1)
+     (*pdefs.data)[pdefs.cset].zopts.colours = ptr_new(1)
+     (*pdefs.data)[pdefs.cset].zopts.raw_colours = ptr_new(intarr(3))
   endif
   if ~ptr_valid((*pdefs.data)[pdefs.cset].zopts.style) then begin
      (*pdefs.data)[pdefs.cset].zopts.n_sty =   1

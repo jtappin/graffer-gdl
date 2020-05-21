@@ -23,10 +23,9 @@ pro graff_put_rec, ilu, tag, value
   sz = size(value)
   tcode = sz[sz[0]+1]
 
-  if tcode eq 8 || tcode eq 10 || $
-     (tcode eq 11 && typename(value) ne 'LIST') then begin
-     message, /continue, "GRAFF_PUT_REC cannot write structures, " + $
-              "pointers or objects (other than lists)"
+  if tcode eq 8 || tcode eq 10 || tcode eq 11 then begin
+     message, /continue, "GRAFF_PUT_RECORD cannot write structures, " + $
+              "pointers or objects"
      return
   endif
 
@@ -43,24 +42,7 @@ pro graff_put_rec, ilu, tag, value
   endcase
 
   writeu, ilu, wtag, tcode, sz[0:sz[0]]
-
-  if tcode eq 7 then writeu, ilu, strlen(value) 
-  if tcode eq 11 then begin
-     for j = 0, sz[1]-1 do begin
-        tmp = value[j]
-        se = size(tmp)
-        tcode_e = se[se[0]+1]
-        if tcode_e eq 8 || tcode_e eq 10 || tcode_e eq 11 then begin
-           message, /continue, "GRAFF_PUT_REC cannot write " + $
-                    "structures, pointers or objects as elements of " + $
-                    "lists" 
-           tcode_e = 0l
-           se = 0l
-        endif
-        writeu, ilu, tcode_e, se[0:se[0]]
-        if tcode_e eq 7 then writeu, ilu, strlen(tmp)
-        if tcode_e ne 0 then writeu, ilu, tmp
-     endfor
-  endif else if tcode ne 0 then writeu, ilu, value
+  if tcode eq 7 then writeu, ilu, strlen(value)
+  if tcode ne 0 then writeu, ilu, value
 
 end

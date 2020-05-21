@@ -46,8 +46,9 @@ pro Graff_dsdel, pdefs
 
   ptr_free, (*pdefs.data)[pdefs.cset].zopts.levels, $
             (*pdefs.data)[pdefs.cset].zopts.style, $
-            (*pdefs.data)[pdefs.cset].zopts.thick
-  obj_destroy, (*pdefs.data)[pdefs.cset].zopts.colours
+            (*pdefs.data)[pdefs.cset].zopts.thick, $
+            (*pdefs.data)[pdefs.cset].zopts.colours, $
+            (*pdefs.data)[pdefs.cset].zopts.raw_colours
 
   if ptr_valid(pdefs.key.list) then list = *pdefs.key.list
   ikey = bytarr(n_elements((*pdefs.data)))

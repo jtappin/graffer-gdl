@@ -35,7 +35,8 @@ function gr_new_ds, pdefs, nds
   ds[*].zopts.n_levels = 6
   ds[*].zopts.lmap = 0
   ds[*].zopts.n_cols =  1
-  ds[*].zopts.colours = list(1)
+  ds[*].zopts.colours = ptr_new(1)
+  ds[*].zopts.raw_colours = ptr_new(intarr(3))
   ds[*].zopts.n_sty = 1
   ds[*].zopts.style = ptr_new(0)
   ds[*].zopts.n_thick =  1
