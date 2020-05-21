@@ -537,7 +537,7 @@ pro Graff_add, file, a1, a2, a3, errors = errors, $
         endcase
      endif else begin
         (*pdefs.data)[pdefs.cset].zopts.N_cols = 1
-        (*pdefs.data)[pdefs.cset].zopts.Colours = list(1)
+        (*pdefs.data)[pdefs.cset].zopts.Colours = ptr_new(1)
      endelse
 
      if n_elements(z_ctable) ne 0 then $
