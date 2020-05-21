@@ -106,7 +106,8 @@ pro Graff_init, pdefs, file, version = version, ttype = ttype
 ; Set the defaults for those hardcopy settings that we probably
 ; don't want to inherit these to a new file
 
-  pdefs.hardset.font.Family = 1
+  pdefs.hardset.font.family = 1
+  pdefs.hardset.font.wg_sl = 1
   pdefs.hardset.colour = 1
   pdefs.hardset.name = ''
 
