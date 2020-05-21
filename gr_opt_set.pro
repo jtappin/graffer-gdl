@@ -13,6 +13,7 @@
 ;	Add mouse-editing default option: 13/8/97; SJT
 ;	Replace cw_bbselector with widget_droplist: 13/12/11; SJT
 ;	Replace graff_enter with cw_enter: 13/10/16; SJT
+;	Move top level options out of PDEFS: 21/5/20; SJT
 ;-
 
 function Gr_opt_event, event
@@ -80,7 +81,8 @@ end
 pro Gr_opt_set, pdefs
 
   common gr_docs_common, pdfutil, docpath
-
+  common graffer_options, optblock
+  
   widget_control, pdefs.ids.graffer, sensitive = 0
 
   base = widget_base(resource = 'Graffer', title = 'Graffer Options', $
@@ -92,23 +94,17 @@ pro Gr_opt_set, pdefs
                          value = ['Display', 'Suppress'],  $
                          title = 'Show 2-D data?', $
                          uvalue = 'SH2D')
-  widget_control, junk, set_droplist_select = pdefs.opts.s2d
+  widget_control, junk, set_droplist_select = optblock.s2d
 
 
   junk = widget_droplist(base, $
                          value = ['Disabled', 'Enabled'], $
                          title = 'Default mouse editing', $
                          uvalue = 'MOUSE')
-  widget_control, junk, set_droplist_select = pdefs.opts.mouse
-
-;; junk = widget_droplist(base, $
-;;                        value = ['Text', 'Colours'], $
-;;                        title = 'Colour selector:', $
-;;                        uvalue = 'COLOUR')
-;; widget_control, junk, set_droplist_select = pdefs.opts.colour_menu
+  widget_control, junk, set_droplist_select = optblock.mouse
 
   junk = cw_enter(base, label = 'Autosave interval:', value = $
-                  pdefs.opts.auto_delay, /float, /all_events, $
+                  optblock.auto_delay, /float, /all_events, $
                   /capture, format = "(F6.1)", xsize = 7, uvalue = $
                   'TIME')
   jb = widget_base(base, $
@@ -116,9 +112,9 @@ pro Gr_opt_set, pdefs
 
   pdfapps = gr_find_viewer(/pdf, /all, count = napp)
 
-  locs = where(pdfapps eq pdefs.opts.pdfviewer, npdf)
-  if npdf eq 0 and pdefs.opts.pdfviewer ne '' then begin
-     pdfapps = [pdfapps, pdefs.opts.pdfviewer]
+  locs = where(pdfapps eq optblock.pdfviewer, npdf)
+  if npdf eq 0 and optblock.pdfviewer ne '' then begin
+     pdfapps = [pdfapps, optblock.pdfviewer]
      locs = n_elements(pdfapps)-1
      npdf = 1
   endif
@@ -130,8 +126,6 @@ pro Gr_opt_set, pdefs
                      /all_events, $
                      uvalue = 'MPDF', $
                      title = "PDF viewer")
-;  junk = widget_label(jb, $
-;                      value = "No PDF Viewer found") $
   endif else begin
      junk = widget_label(jb, $
                          value = "PDF Viewer:")
@@ -164,7 +158,7 @@ pro Gr_opt_set, pdefs
                        uvalue = 'SDO')
 
   widget_control, base, /real, event_fun = 'gr_opt_event', set_uvalue = $
-                  pdefs.opts
+                  optblock
 
   repeat begin
      ev = widget_event(base)
@@ -172,9 +166,7 @@ pro Gr_opt_set, pdefs
 
   if (ev.exited eq 1) then begin
      widget_control, base, get_uvalue = opts, /no_copy
-     ;; opts.colour_menu = pdefs.opts.colour_menu ; Can't change this on
-     ;;                             ; the fly
-     pdefs.opts = opts
+     optblock = opts
      if opts.pdfviewer ne '' then pdfutil = opts.pdfviewer
   endif
 

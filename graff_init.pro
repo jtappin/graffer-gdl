@@ -37,8 +37,11 @@ pro Graff_init, pdefs, file, version = version, ttype = ttype
 ;	Add support for a second Y-scale: 22/12/11; SJT
 ;	Make colour PS the default: 14/2/12; SJT
 ;	Set current font option to the initial state: 12/2/20; SJT
+;	Move top level options out of PDEFS: 21/5/20; SJT
 ;-
 
+  common graffer_options, optblock
+  
   if (n_elements(pdefs) ne 0) then begin
      version = pdefs.version
      idblock = pdefs.ids
@@ -46,10 +49,10 @@ pro Graff_init, pdefs, file, version = version, ttype = ttype
      topid = pdefs.ids.graffer
      dir = pdefs.dir
      ds_dir = pdefs.ds_dir
-     optblock = pdefs.opts
      graff_clear, pdefs
 
-  endif else gr_rc_get, optblock
+  endif
+  if n_elements(optblock) eq 0 then gr_rc_get, optblock
 
   if (n_elements(file) eq 0) then begin
      fc = ''
@@ -88,21 +91,17 @@ pro Graff_init, pdefs, file, version = version, ttype = ttype
   pdefs.transient.Imove =   -1l
   pdefs.transient.hairs = 1b
 
-  pdefs.opts.Auto_delay = 300.
-
-  pdefs.Ds_dir =       ds_dir
+  pdefs.ds_dir =       ds_dir
 
 ; Set defaults for these hardcopy actions, but they will be
 ; overwritten if an old file existed.
 
   pdefs.hardset.action = ['lp ', '']
-; pdefs.hardset.viewer = [gr_find_viewer(/ps), ' &']
   pdefs.hardset.Size = [23., 18.]
   pdefs.hardset.Off = [3.35, 1.5]
 
   if (n_elements(idblock) ne 0) then pdefs.ids = idblock
   if (n_elements(hblock) ne 0) then pdefs.hardset = hblock
-  if (n_elements(optblock) ne 0) then pdefs.opts = optblock
 
 ; Set the defaults for those hardcopy settings that we probably
 ; don't want to inherit these to a new file

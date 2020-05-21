@@ -5,10 +5,12 @@ function gr_new_ds, pdefs, nds
 ;	Create a new properly initialized graffer dataset.
 ;
 ; Usage:
-;	ds = gr_new_ds(pdefs)
+;	ds = gr_new_ds(pdefs[, nds])
 ;
 ; Argument:
 ;	pdefs	struct	input	The graffer control structure.
+;	nds	int	input	The number of datasets to add (1 if
+;				not present)
 ;
 ; Returns:
 ;	A {graff_data} structure with proper initializations.
@@ -17,8 +19,11 @@ function gr_new_ds, pdefs, nds
 ; 	Original: 10/1/12; SJT
 ; 	Add min & max values: 4/3/15; SJT
 ;	Add non-linear contour level maps: 12/10/16; SJT
+;	Move top level options out of PDEFS: 21/5/20; SJT
 ;-
 
+  common graffer_options, optblock
+  
   if n_params() eq 2 then $
      ds = replicate({graff_data}, nds) $
   else ds = {graff_data}
@@ -37,7 +42,7 @@ function gr_new_ds, pdefs, nds
   ds[*].zopts.thick = ptr_new(1.)
   ds[*].zopts.pxsize =  0.5
 
-  ds[*].medit = pdefs.opts.mouse
+  ds[*].medit = optblock.mouse
 
   ds[*].max_val = !values.d_nan
   ds[*].min_val = !values.d_nan

@@ -29,14 +29,16 @@
 ;
 ; MODIFICATION HISTORY:
 ;	Original (after SMEI_DOC): 5/7/05; SJT
+;	Move top level options out of PDEFS: 21/5/20; SJT
 ;-
  
 pro graff_docs, pdefs, file_format = file_format
 
 common gr_docs_common, pdfutil, docpath
+common graffer_options, optblock
 
 if n_elements(pdfutil) eq 0 then begin
-    if pdefs.opts.pdfviewer ne '' then pdfutil = pdefs.opts.pdfviewer $
+    if optblock.pdfviewer ne '' then pdfutil = optblock.pdfviewer $
     else begin
         pdfutil = gr_find_viewer(/pdf)
 

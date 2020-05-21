@@ -162,12 +162,15 @@ pro Graff_add, file, a1, a2, a3, errors = errors, $
 ;	z_log -> z_mode: 18/11/15: SJT
 ;	Add non-linear contour level maps: 12/10/16; SJT
 ;	Allow long/triple colours: 1/3/19; SJT
+;	Move top level options out of PDEFS: 21/5/20; SJT
 ;-
 
 ;	Check that the necessary inputs are present
 
   on_error, 2                   ; Return to caller on error
 
+  common graffer_options, optblock
+  
   gr_state, /save
 
   if keyword_set(funcx) then begin 
@@ -280,7 +283,7 @@ pro Graff_add, file, a1, a2, a3, errors = errors, $
      (*pdefs.data)[pdefs.nsets].Symsize =  1.
      (*pdefs.data)[pdefs.nsets].Colour =   1
      (*pdefs.data)[pdefs.nsets].Thick =    1.
-     (*pdefs.data)[pdefs.nsets].Medit =    pdefs.opts.mouse
+     (*pdefs.data)[pdefs.nsets].Medit =    optblock.mouse
      pdefs.nsets = pdefs.nsets+1
   endif
 

@@ -264,12 +264,15 @@
 ;                       automatic contours.
 ;                     - Convert graff_enter to cw_enter
 ;                     - Allow axis labelling etc. to use TT fonts.
+;		Version 4.10:
+;		      - Move general options out of pdefs (21/5/20)
 ;-
 
 
 pro Graff_event, event
 
-
+  common graffer_options, optblock
+  
   base = widget_info(/child, event.top)
   widget_control, base, get_uvalue = pdefs
 
@@ -349,7 +352,7 @@ pro Graff_event, event
         gr_bin_save, pdefs, /auto
         ichange = 0b
         idraw_flag = 0
-        widget_control, event.id, timer = pdefs.opts.auto_delay
+        widget_control, event.id, timer = optblock.auto_delay
      end
      
      'TABS': if (track_flag) then $
@@ -406,7 +409,8 @@ pro Graffer, file, group = group, xsize = xsize, ysize = ysize, $
              colour_menu, ttype = ttype
 
   common Gr_psym_maps, psym_bm  ;, col_bm
-
+  common graffer_options, optblock
+  
   gwid = gr_present()
   if (gwid gt 0) then begin
      junk = dialog_message(['There is already a GRAFFER window', $
@@ -423,6 +427,10 @@ pro Graffer, file, group = group, xsize = xsize, ysize = ysize, $
 ; Get the version number.
 @graff_version
 
+; Read the resource file.
+  
+  gr_rc_get, optblock
+  
   if (keyword_set(debug)) then begin
      !Quiet = 0 
      on_error, 0                ; stop at error
@@ -697,7 +705,7 @@ pro Graffer, file, group = group, xsize = xsize, ysize = ysize, $
 
   tmid = pdefs.ids.message
 
-  auto_delay = pdefs.opts.auto_delay
+  auto_delay = optblock.auto_delay
 
   widget_control, base, set_uvalue = pdefs, /no_copy
 

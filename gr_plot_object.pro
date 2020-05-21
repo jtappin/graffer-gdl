@@ -43,8 +43,11 @@ pro Gr_plot_object, pdefs, no_null = no_null, charsize = charsize, $
 ;	Add support for a second Y-scale: 22/12/11; SJT
 ;	Add "current only" options: 26/1/12; SJT
 ;	Handle redrawn axes here: 20/1/16; SJT
+;	Move top level options out of PDEFS: 21/5/20; SJT
 ;-
 
+  common graffer_options, optblock
+  
   if (pdefs.xtype and min(pdefs.xrange) le 0) then begin
      graff_msg, pdefs.ids.message, ['WARNING: zero or negative limit in ' + $
                                     'log plot', $ 
@@ -114,7 +117,7 @@ pro Gr_plot_object, pdefs, no_null = no_null, charsize = charsize, $
   ndata = (*pdefs.data).ndata
   type = (*pdefs.data).type
 
-  plot2 = keyword_set(plot_all) or (not pdefs.opts.s2d)
+  plot2 = keyword_set(plot_all) or (not optblock.s2d)
 
   reaxis = 0b
   for i = 0, pdefs.nsets-1 do begin
