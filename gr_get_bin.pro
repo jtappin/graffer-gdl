@@ -1,4 +1,4 @@
-pro gr_get_bin, pdefs, ilu, no_set=no_set
+pro gr_get_bin, pdefs, ilu, no_set = no_set
 
 ;+
 ; GR_GET_BIN
@@ -32,17 +32,17 @@ pro gr_get_bin, pdefs, ilu, no_set=no_set
 ;-
 
 
-dflag = 0b
-tflag = 0b
+  dflag = 0b
+  tflag = 0b
 
-tag = '   '
-ctflag = 0b
+  tag = '   '
+  ctflag = 0b
 
-while (not eof(ilu)) do begin
-    
-    graff_get_rec, ilu, tag, value, tcode
+  while (not eof(ilu)) do begin
+     
+     graff_get_rec, ilu, tag, value, tcode
 
-    case (tag) of
+     case (tag) of
         
                                 ; The G keys are general graffer keys
                                 ; GT - plot title
@@ -86,7 +86,7 @@ while (not eof(ilu)) do begin
            pdefs.xsty.extra = value
            if (pdefs.xsty.extra and 1) then begin
               pdefs.xsty.minor = 1
-              pdefs.xsty.extra or= (not 1)
+              pdefs.xsty.extra and= (not 1)
            endif
         end
         'XMN': pdefs.xsty.minor = value
@@ -110,7 +110,7 @@ while (not eof(ilu)) do begin
            pdefs.ysty.extra = value
            if (pdefs.ysty.extra and 1) then begin
               pdefs.ysty.minor = 1
-              pdefs.ysty.extra or= (not 1)
+              pdefs.ysty.extra and= (not 1)
            endif
         end
         'YMN': pdefs.ysty.minor = value
@@ -134,7 +134,7 @@ while (not eof(ilu)) do begin
            pdefs.ysty_r.extra = value
            if (pdefs.ysty_r.extra and 1) then begin
               pdefs.ysty_r.minor = 1
-              pdefs.ysty_r.extra or= (not 1)
+              pdefs.ysty_r.extra and= (not 1)
            endif
         end
         'RMN': pdefs.ysty_r.minor = value
@@ -156,8 +156,8 @@ while (not eof(ilu)) do begin
                                 ; ZG - The gamma value for same.
         
         'ZT ': begin
-            pdefs.ctable = value
-            ctflag = 1b
+           pdefs.ctable = value
+           ctflag = 1b
         end
         'ZG ': pdefs.gamma = value
         
@@ -171,10 +171,10 @@ while (not eof(ilu)) do begin
                                 ;      ONE-based)
         
         'DN ': begin
-            pdefs.nsets = value
-            nds = pdefs.nsets > 1
-            data = gr_new_ds(pdefs, nds) ;replicate({graff_data}, nds)
-            dflag = 1b
+           pdefs.nsets = value
+           nds = pdefs.nsets > 1
+           data = gr_new_ds(pdefs, nds) ;replicate({graff_data}, nds)
+           dflag = 1b
         end
         'DC ': pdefs.cset = value
         
@@ -184,18 +184,18 @@ while (not eof(ilu)) do begin
                                 ;      actually defined.
         
         'TN ': begin
-            pdefs.ntext = value
-            ntext = pdefs.ntext > 1
-            text = replicate({graff_text}, ntext)
-            tflag = 1b
+           pdefs.ntext = value
+           ntext = pdefs.ntext > 1
+           text = replicate({graff_text}, ntext)
+           tflag = 1b
         end
         
                                 ; DS - Start the definition of a
                                 ;      dataset.
         
         'DS ': begin
-            rset = value
-            gr_bin_ds, data, rset, ilu, pdefs.ids.message
+           rset = value
+           gr_bin_ds, data, rset, ilu, pdefs.ids.message
         end
         
                                 ; TS - start the definition of a text
@@ -205,14 +205,14 @@ while (not eof(ilu)) do begin
                                 ;       text options).
         
         'TS ': begin
-            tset = value
-            gr_bin_txt, text, tset, ilu, pdefs.ids.message
+           tset = value
+           gr_bin_txt, text, tset, ilu, pdefs.ids.message
         end
         
         'TTS': begin
-            topts = {graff_text}
-            gr_bin_txt, topts, 0, ilu, pdefs.ids.message, /template
-            pdefs.text_options = topts
+           topts = {graff_text}
+           gr_bin_txt, topts, 0, ilu, pdefs.ids.message, /template
+           pdefs.text_options = topts
         end
         
                                 ; The H options refer to the options
@@ -264,7 +264,7 @@ while (not eof(ilu)) do begin
         'HVA': pdefs.hardset.viewer[1] = value
         'HPB': pdefs.hardset.pdfviewer[0] = value
         'HPA': pdefs.hardset.pdfviewer[1] = value
- 
+        
         'HF ': pdefs.hardset.font.family = value
         'HWS': pdefs.hardset.font.wg_sl = value
         'HFN': pdefs.hardset.name = value
@@ -276,7 +276,7 @@ while (not eof(ilu)) do begin
         'HEP': pdefs.hardset.epsdev = value
         'HPD': pdefs.hardset.pdfdev = value
         'HSV': pdefs.hardset.svgdev = value
-           
+        
                                 ; The K tags relate to the plotting of
                                 ; a key on the plot.
                                 ; KU - Plot a key
@@ -303,44 +303,44 @@ while (not eof(ilu)) do begin
         'KP ': pdefs.key.one_point = value
         'KT ': pdefs.key.title = value
         'KL ': begin
-            list = long(value)  ; Make sure the type is right
-            pdefs.key.list = ptr_new(list)
+           list = long(value)   ; Make sure the type is right
+           pdefs.key.list = ptr_new(list)
         end
         
                                 ; REM - Remarks attached to the file
         
         'REM': begin
-            remarks = string(value) ; Make sure the type is right
-            pdefs.remarks = ptr_new(remarks)
+           remarks = string(value) ; Make sure the type is right
+           pdefs.remarks = ptr_new(remarks)
         end
         
                                 ; This probably means that the file is
                                 ; corrupted. 
         
         Else: begin
-            graff_msg, pdefs.ids.message, "Unknown tag: " + $
-              tag + "Ignoring."
+           graff_msg, pdefs.ids.message, "Unknown tag: " + $
+                      tag + "Ignoring."
         end
-    endcase
-    
+     endcase
+     
 New_line:
-    
-endwhile
+     
+  endwhile
 
-ptr_free, pdefs.data, pdefs.text
+  ptr_free, pdefs.data, pdefs.text
 
-pdefs.data = ptr_new(data)
-pdefs.text = ptr_new(text)
-pdefs.is_ascii = 0b
+  pdefs.data = ptr_new(data)
+  pdefs.text = ptr_new(text)
+  pdefs.is_ascii = 0b
 
 
-free_lun, ilu
+  free_lun, ilu
 
-pdefs.chflag = 0                ; Clear changes flag
+  pdefs.chflag = 0              ; Clear changes flag
 
-if (not keyword_set(no_set)) then begin
-    graff_set_vals, pdefs
-endif
+  if (not keyword_set(no_set)) then begin
+     graff_set_vals, pdefs
+  endif
 
 
 end

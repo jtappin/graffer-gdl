@@ -100,7 +100,7 @@ while (not eof(ilu)) do begin
                pdefs.xsty.extra = gr_int_val(tag_val[itag+1], 1)
                if (pdefs.xsty.extra and 1) then begin
                   pdefs.xsty.minor = 1
-                  pdefs.xsty.extra or= (not 1)
+                  pdefs.xsty.extra and= (not 1)
                endif
             end
             'XMJ': pdefs.xsty.major = gr_int_val(tag_val[itag+1], 1)
@@ -134,7 +134,7 @@ while (not eof(ilu)) do begin
                pdefs.ysty.extra = gr_int_val(tag_val[itag+1], 1)
                if (pdefs.ysty.extra and 1) then begin
                   pdefs.ysty.minor = 1
-                  pdefs.ysty.extra or= (not 1)
+                  pdefs.ysty.extra and= (not 1)
                endif
             end
             'YMJ': pdefs.ysty.major = gr_int_val(tag_val[itag+1], 1)
@@ -167,7 +167,7 @@ while (not eof(ilu)) do begin
                pdefs.ysty_r.extra = gr_int_val(tag_val[itag+1], 1) 
                if (pdefs.ysty_r.extra and 1) then begin
                   pdefs.ysty_r.minor = 1
-                  pdefs.ysty_r.extra or= (not 1)
+                  pdefs.ysty_r.extra and= (not 1)
                endif
             end
             'RMJ': pdefs.ysty_r.major = gr_int_val(tag_val[itag+1], 1)

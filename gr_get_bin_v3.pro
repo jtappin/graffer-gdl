@@ -82,7 +82,7 @@ while (not eof(ilu)) do begin
         'XSE': begin
            pdefs.xsty.extra = gr_int_rd(ilu, 1)
            pdefs.xsty.minor = pdefs.xsty.extra and 1
-           pdefs.xsty.extra or= (not 1)
+           pdefs.xsty.extra and= (not 1)
         end
         'XSG': pdefs.xsty.grid = gr_int_rd(ilu, 1)
         'XST': pdefs.xsty.time = gr_int_rd(ilu, 1)
@@ -95,7 +95,7 @@ while (not eof(ilu)) do begin
         'YSE': begin
            pdefs.ysty.extra = gr_int_rd(ilu, 1)
            pdefs.ysty.minor = pdefs.ysty.extra and 1
-           pdefs.ysty.extra or= (not 1)
+           pdefs.ysty.extra and= (not 1)
         end
         'YSG': pdefs.ysty.grid = gr_int_rd(ilu, 1)
         'YST': pdefs.ysty.time = gr_int_rd(ilu, 1)
@@ -109,7 +109,7 @@ while (not eof(ilu)) do begin
         'RSE': begin
            pdefs.ysty_r.extra = gr_int_rd(ilu, 1)
            pdefs.ysty_r.minor = pdefs.ysty_r.extra and 1
-           pdefs.ysty_r.extra or= (not 1)
+           pdefs.ysty_r.extra and= (not 1)
         end
         'RSG': pdefs.ysty_r.grid = gr_int_rd(ilu, 1)
         'RST': pdefs.ysty_r.time = gr_int_rd(ilu, 1)
