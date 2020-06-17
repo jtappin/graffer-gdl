@@ -16,9 +16,11 @@ function Fractile, x, frac, nan = nan, dimension = dimension
 ;	frac	float	input	The fractile(s) to return.
 ;
 ; Keywords:
-;	/nan		If set, then treat IEEE NaN values as missing
-;			data, it is inadvisable to use fractile on
-;			data containing NaN values without this keyword.
+;	/nan		If set on not specified, then treat IEEE NaN
+;			values as missing data, it is inadvisable to
+;			use fractile on data containing NaN values
+;			without this keyword. (Now need to set it
+;			explicitly to zero to obtain old behaviour).
 ;	dimension int	If set, then make the fractile calculation
 ;			along the specified dimension only.
 ;
@@ -35,14 +37,16 @@ function Fractile, x, frac, nan = nan, dimension = dimension
 ;	Original: 26/9/95; SJT
 ;	Modify to interpolate: 4/2/97; SJT
 ;	Added DIMENSION keyword: 21/9/07; SJT
+;	Make ignoring NaN values default: 8/8/15; SJT
 ;-
 
 if (n_params() ne 2) then message, 'Incorrect number of arguments'
+enan = n_elements(nan) eq 0 || keyword_set(nan)
 
 sx = size(x)
 
 if ~keyword_set(dimension) or sx[0] le 1 then begin
-    if keyword_set(nan) then n = long(total(finite(x)))-1 $
+    if enan then n = long(total(finite(x)))-1 $
     else n = n_elements(x)-1
 
     i = sort(x)

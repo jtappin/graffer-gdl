@@ -266,6 +266,7 @@
 ;                     - Allow axis labelling etc. to use TT fonts.
 ;		Version 4.10:
 ;		      - Move general options out of pdefs (21/5/20)
+;		      - Harmonization of IDL & Fortran versions
 ;-
 
 
