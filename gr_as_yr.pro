@@ -29,6 +29,7 @@ pro Gr_as_yr, data, xrange, xtype, range, visible = visible, positive $
 ;	Ignore undisplayed datasets: 13/10/16; SJT
 ;	Add positive keyword: 12/2/18; SJT
 ;	Typos fixed: 10/9/19; SJT
+;	Work around apparent GDL segfault bug: 24/11/20; SJT
 ;-
 
 ; Ignore undisplayed datasets
@@ -43,13 +44,17 @@ pro Gr_as_yr, data, xrange, xtype, range, visible = visible, positive $
 
   case (data.type) of
      -1: begin                  ; y = f(x)
-        if ((*data.xydata).range(0) ne (*data.xydata).range(1)) then begin
-           amin = xrange(0) > (*data.xydata).range(0)
-           amax = xrange(1) < (*data.xydata).range(1)
+        tmp_r = (*data.xydata).range ; Work around apparent GDL bug
+        ;; if ((*data.xydata).range[0] ne (*data.xydata).range[1]) then $
+        ;;    begin
+        if tmp_r[0] ne tmp_r[1] then begin
+           amin = xrange[0] > tmp_r[0] ;(*data.xydata).range[0]
+           amax = xrange[1] < tmp_r[1] ;(*data.xydata).range[1]
         endif else begin
-           amin = xrange(0)
-           amax = xrange(1)
+           amin = xrange[0]
+           amax = xrange[1]
         endelse
+        
         if (xtype) then begin
            amin = alog10(amin)
            amax = alog10(amax)
@@ -63,23 +68,26 @@ pro Gr_as_yr, data, xrange, xtype, range, visible = visible, positive $
         if keyword_set(positive) then begin
            fvmn = gr_min_nz(fv, max = fvmx)
            if ~finite(fvmn) || fvmn le 0. then return
-           range[0] = range[0] < fvmn
+           range[0] <= fvmn
         endif else range[0] = range[0] < min(fv, max = fvmx)
-        range[1] = range[1] > fvmx
+        range[1] >= fvmx
      end
      
-     -2: if ((*data.xydata).range(0) ne $
-             (*data.xydata).range(1)) then begin ;x = F(y)
-        range(0) = range(0) < (*data.xydata).range(0)
-        range(1) = range(1) > (*data.xydata).range(1)
-     endif
+     -2: begin
+        tmp_r = (*data.xydata).range ; Work around apparent GDL bug
+        if tmp_r[0] ne tmp_r[1] then begin ;x = F(y)
+           range[0] <= tmp_r[0]
+           range[1] >= tmp_r[1]
+        endif
+     end
      
      -3: begin                  ; x = f(t), y = f(t)
+        tmp_r = (*data.xydata).range ; Work around apparent GDL bug
         t = dindgen(data.ndata) *  $
-            ((*data.xydata).range(1)-(*data.xydata).range(0)) $
-            /  double(data.ndata-1) + (*data.xydata).range(0)
+            (tmp_r[1]-tmp_r[0]) $
+            /  double(data.ndata-1) + tmp_r[0]
         
-        iexe = execute('fv = '+(*data.xydata).funct(1))
+        iexe = execute('fv = '+(*data.xydata).funct[1])
         
         if keyword_set(positive) then begin
            fvmn = gr_min_nz(fv, max = fvmx)
@@ -89,11 +97,14 @@ pro Gr_as_yr, data, xrange, xtype, range, visible = visible, positive $
         range[1] >= fvmx
      end
      
-     -4: if ((*data.xydata).range(0, 1) ne (*data.xydata).range(1, 1)) then $
-        begin                   ; z = f(x,y)
-        range(0) = range(0) < (*data.xydata).range(0, 1)
-        range(1) = range(1) > (*data.xydata).range(1, 1)
-     endif
+     -4: begin
+        tmp_r = (*data.xydata).range ; Work around apparent GDL bug
+
+        if tmp_r[0, 1] ne tmp_r[1, 1] then begin ; z = f(x,y)
+           range[0] <= tmp_r[0, 1]
+           range[1] >= tmp_r[1, 1]
+        endif
+     end
      
      9: begin                   ; Surface data 
         if keyword_set(positive) then begin
@@ -101,7 +112,7 @@ pro Gr_as_yr, data, xrange, xtype, range, visible = visible, positive $
            if ~finite(rgmn) || rgmn lt 0. then return
            range[0] <= rgmn
         endif else range[0] <= min(*(*data.xydata).y, max = mx)
-        range(1) >= mx
+        range[1] >= mx
      end
      
      Else: begin

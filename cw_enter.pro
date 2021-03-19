@@ -173,6 +173,7 @@
 ;	Add support for list-valued entries: 6/10/16; SJT
 ;	Merge graff_enter and cw_ffield, and store value in the state
 ;	structure: 13/10/16; SJT
+;	Modify sensitive handling for GDL: 6/10/20; SJT
 ;-
 
 
@@ -644,6 +645,10 @@ function cw_enter, parent, label = label, value = value, $
 
   widget_control, base, set_uvalue = state
 
+; In GDL sensitive = null is equivalent to sensitive=0.
+  
+  if n_elements(sensitive) eq 0 then sensitive = 1
+  
   widget_control, tlb, event_func = 'cw_enter_event', $
                   func_get_value = 'cw_enter_get', $
                   pro_set_value = 'cw_enter_set', $
