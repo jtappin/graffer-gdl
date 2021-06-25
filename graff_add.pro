@@ -163,6 +163,7 @@ pro Graff_add, file, a1, a2, a3, errors = errors, $
 ;	Add non-linear contour level maps: 12/10/16; SJT
 ;	Allow long/triple colours: 1/3/19; SJT
 ;	Move top level options out of PDEFS: 21/5/20; SJT
+;	Treat single 1×n array as 1-D: 8/5/21; SJT
 ;-
 
 ;	Check that the necessary inputs are present
@@ -238,7 +239,10 @@ pro Graff_add, file, a1, a2, a3, errors = errors, $
      2: begin
         sx = size(a1)
         if sx[0] eq 2 then begin
-           if sx[1] eq 2 then begin
+           if sx[1] eq 1 then begin
+              y = reform(double(a1))
+              x = dindgen(sx[2])
+           endif else if sx[1] eq 2 then begin
               x = double(reform(a1[0, *]))
               y = double(reform(a1[1, *]))
            endif else if sx[2] eq 2 then begin

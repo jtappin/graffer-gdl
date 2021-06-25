@@ -29,6 +29,7 @@ pro gr_get_bin, pdefs, ilu, no_set = no_set
 ;	PDF view command: 21/9/16; SJT
 ;	Font option: 11/2/20; SJT
 ;	Accept Fortran-only tags: 31/3/20; SJT
+;	Add log_band values: 24/6/21; SJT
 ;-
 
 
@@ -92,7 +93,8 @@ pro gr_get_bin, pdefs, ilu, no_set = no_set
         'XMN': pdefs.xsty.minor = value
         'XMJ': pdefs.xsty.major = value
         'XFM': pdefs.xsty.format = value
-
+        'XLL': pdefs.xsty.log_bands = value
+        
         'XVL': begin
            if ptr_valid(pdefs.xsty.values) then $
               ptr_free, pdefs.xsty.values 
@@ -116,6 +118,8 @@ pro gr_get_bin, pdefs, ilu, no_set = no_set
         'YMN': pdefs.ysty.minor = value
         'YMJ': pdefs.ysty.major = value
         'YFM': pdefs.ysty.format = value
+        'YLL': pdefs.ysty.log_bands = value
+
         'YVL': begin
            if ptr_valid(pdefs.ysty.values) then $
               ptr_free, pdefs.ysty.values 
@@ -140,6 +144,8 @@ pro gr_get_bin, pdefs, ilu, no_set = no_set
         'RMN': pdefs.ysty_r.minor = value
         'RMJ': pdefs.ysty_r.major = value
         'RFM': pdefs.ysty_r.format = value
+        'RLL': pdefs.ysty_r.log_bands = value
+        
         'RVL': begin
            if ptr_valid(pdefs.ysty_r.values) then $
               ptr_free, pdefs.ysty_r.values 

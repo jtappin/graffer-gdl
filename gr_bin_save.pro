@@ -33,6 +33,7 @@ pro Gr_bin_save, pdefs, auto = auto
 ;	Add non-linear contour level maps: 12/10/16; SJT
 ;	Add labelling offset: 2/5/17; SJT
 ;	Font option: 11/2/20; SJT
+;	Add log_bands values: 24/6/21; SJT
 ;-
 
   if (keyword_set(auto)) then begin
@@ -86,7 +87,8 @@ pro Gr_bin_save, pdefs, auto = auto
   if ptr_valid(pdefs.xsty.values) then $
      graff_put_rec, ilu, 'XVL', *pdefs.xsty.values
   graff_put_rec, ilu, 'XT ', pdefs.xtitle
-
+  graff_put_rec, ilu, 'XLL', pdefs.xsty.log_bands
+  
 ; Y-axis information
 
   graff_put_rec, ilu, 'YIR', pdefs.y_right
@@ -103,7 +105,8 @@ pro Gr_bin_save, pdefs, auto = auto
   if ptr_valid(pdefs.ysty.values) then $
      graff_put_rec, ilu, 'YVL', *pdefs.ysty.values
   graff_put_rec, ilu, 'YT ', pdefs.ytitle
-
+  graff_put_rec, ilu, 'YLL', pdefs.ysty.log_bands
+  
 ; Secondary Y-axis information
 
   graff_put_rec, ilu, 'RR ', pdefs.yrange_r
@@ -119,6 +122,7 @@ pro Gr_bin_save, pdefs, auto = auto
   if ptr_valid(pdefs.ysty_r.values) then $
      graff_put_rec.ilu, 'RVL', *pdefs.ysty_r.values
   graff_put_rec, ilu, 'RT ', pdefs.ytitle_r
+  graff_put_rec, ilu, 'RLL', pdefs.ysty_r.log_bands
 
 ; Colour table for displayed Z data
   graff_put_rec, ilu, 'ZT ', pdefs.ctable
@@ -212,6 +216,7 @@ pro Gr_bin_save, pdefs, auto = auto
            if ptr_valid(zopts_raw_colours) then $
               graff_put_rec, ilu, 'ZCR', *(zopts.raw_colours)
         endif
+
         if zopts.n_sty gt 0 then graff_put_rec, ilu, 'ZS ', $
                                                 *(zopts.style)
         if zopts.n_thick gt 0 then graff_put_rec, ilu, 'ZT ', $
