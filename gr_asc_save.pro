@@ -311,12 +311,13 @@ pro Gr_asc_save, pdefs
 ;	must be the null string, only included to simplify coding)
 
   printf, ilu, 'TTS:', format = "(a)"
-  printf, ilu, 'C:', pdefs.text_options.colour, ':S:', $
-          pdefs.text_options.size, ':O:', pdefs.text_options.orient, $
-          ':A:', $
-          pdefs.text_options.align, ':F:', pdefs.text_options.font, $
-          ':W:', $
-          pdefs.text_options.thick, ':N:', pdefs.text_options.norm, $
+  printf, ilu, 'C:', pdefs.text_options.colour, $
+          ':S:', pdefs.text_options.size, $
+          ':O:', pdefs.text_options.orient, $
+          ':A:', pdefs.text_options.align, $
+          ':F:', pdefs.text_options.font, $
+          ':W:', pdefs.text_options.thick, $
+          ':N:', pdefs.text_options.norm, $
           format = $
           "(a,i3,a,f8.3,a,f9.4,a,f8.5,a,i3,a,f7.3,a,i2)"
   if pdefs.text_options.colour eq -2 then $
@@ -329,7 +330,8 @@ pro Gr_asc_save, pdefs
 
   printf, ilu, 'KU:', pdefs.key.use, ':KN:', pdefs.key.norm, ':KC:', $
           pdefs.key.cols, ':KF:', pdefs.key.frame, ':KP:', $
-          pdefs.key.one_point, format = "(a,i2,a,i2,a,i3,2(a,i2))"
+          pdefs.key.one_point, ':KR:', pdefs.key.reverse, $
+          format = "(a,i2,a,i2,a,i3,3(a,i2))"
   printf, ilu, 'KX:', pdefs.key.x, ':KY:', pdefs.key.y, ':KS:', $
           pdefs.key.csize, format =  "(3(a,2g19.12))"
   printf, ilu, 'KT:', pdefs.key.title, format = "(2a)"

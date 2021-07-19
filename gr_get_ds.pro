@@ -11,7 +11,7 @@ pro Gr_get_ds, data, nset, ilu, msgid
 ;	ilu	int	input	File unit number to read
 ;	msgid	long	input	ID of message window (if created).
 ;
-; History:
+; History: 
 ;	Original: 5/11/96; SJT
 ;	Shorten name: 25/11/96; SJT
 ;	Add version argument: 14/5/99; SJT
@@ -248,8 +248,8 @@ pro Gr_get_ds, data, nset, ilu, msgid
               gr_byt_val(tag_val(itag+1), 1)
            'ZSM': data[nset].zopts.smooth = $
               gr_byt_val(tag_val(itag+1), 1)
-           'ZSN': data[nset].zopts.shade_levels =  
-           gr_lob_val(tag_val(itag+1), 1)
+           'ZSN': data[nset].zopts.shade_levels = $ 
+              gr_lob_val(tag_val(itag+1), 1)
 
            'ZM': data[nset].zopts.missing = $
               gr_dbl_val(tag_val[itag+1], 1)

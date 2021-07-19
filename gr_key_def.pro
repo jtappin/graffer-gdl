@@ -22,6 +22,7 @@
 ;	Add support for a second Y-scale: 22/12/11; SJT
 ;	Use cw_spin_box for columns & charsize: 29/9/16; SJT
 ;	Replace graff_enter with cw_enter: 13/10/16; SJT
+;	Allow reversed listing: 19/7/21; SJT
 ;-
 
 function Gr_key_event, event
@@ -96,6 +97,8 @@ case but of
     end
     
     'FRAME': uv.key.frame = event.index
+    'REVERSE': uv.key.reverse = event.index
+    
     'POINT': uv.key.one_point = event.index
     'SIDE': uv.key.side = event.select
 
@@ -229,11 +232,17 @@ junk = widget_droplist(jjb, $
                        uvalue = 'POINT')
 widget_control, junk, set_droplist_select = pdefs.key.one_point
 
+jjb = widget_base(jb, /row)
 junk = widget_droplist(jb, $
                      value = ['No', 'Yes'], $
                      title = 'Draw a frame round the key?:', $
                      uvalue = 'FRAME')
 widget_control, junk, set_droplist_select = pdefs.key.frame
+junk = widget_droplist(jb, $
+                     value = ['Forward', 'Reverse'], $
+                     title = 'Order for key items?:', $
+                     uvalue = 'REVERSE')
+widget_control, junk, set_droplist_select = pdefs.key.reverse
 
 bub.tid = cw_enter(jb, value = pdefs.key.title, /text, /all_event, $
                       label = 'Key title:', xsize = 20, uvalue = $

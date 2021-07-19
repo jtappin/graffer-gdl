@@ -2,6 +2,8 @@ print, 'aspect.pro'
 .r aspect
 print, 'cw_enter.pro'
 .r cw_enter
+print, 'cw_pdmenu_plus_g.pro'
+.r cw_pdmenu_plus_g
 print, 'cw_pdmenu_plus.pro'
 .r cw_pdmenu_plus
 print, 'cw_spin_box.pro'
@@ -28,6 +30,8 @@ print, 'graff_clear.pro'
 .r graff_clear
 print, 'graff_colours.pro'
 .r graff_colours
+print, 'graff_convert.pro'
+.r graff_convert
 print, 'graff_ctable.pro'
 .r graff_ctable
 print, 'graff_data__define.pro'

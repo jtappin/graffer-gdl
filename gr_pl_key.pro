@@ -20,6 +20,7 @@ pro Gr_pl_key, pdefs, csiz
 ;	Replace handles with pointers: 28/6/05; SJT
 ;	Add char size: 29/4/09; SJT
 ;	Add support for a second Y-scale: 22/12/11; SJT
+;	Allow reversed listing: 19/7/21; SJT
 ;-
 
 ;		Although the key MAY be specified in data coordinates,
@@ -76,9 +77,13 @@ pro Gr_pl_key, pdefs, csiz
   yoff = csize/2. * double(!d.y_ch_size)/double(!d.y_size)
 
   for j = 0, nkey-1 do begin
-     
-     i = list[j]
 
+     if pdefs.key.reverse then begin
+        i = list[nkey-j-1]
+     endif else begin
+        i = list[j]
+     endelse
+     
      irow = (nrows - (j mod nrows))-1
      icol = j/nrows
      if (*pdefs.data)[i].colour eq -2 then $
