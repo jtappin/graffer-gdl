@@ -29,6 +29,8 @@
 
 pro Gr_dsp_event, event
 
+  defsysv, '!gdl', exist = is_gdl
+
   widget_control, event.id, get_uvalue = object
 
   base = widget_info(/child, event.top)
@@ -52,7 +54,9 @@ pro Gr_dsp_event, event
      'PSYM': if (track_flag) then $
         graff_msg, pdefs.ids.hlptxt, 'Select plotting symbol for current ' + $
                    'data set' $
+     else if is_gdl then (*pdefs.data)[pdefs.cset].psym = event.index $
      else (*pdefs.data)[pdefs.cset].psym = event.value
+        
      
      'PLINE': if (track_flag) then $
         graff_msg, pdefs.ids.hlptxt, 'Select joining style for current ' + $
@@ -167,6 +171,8 @@ pro Gr_ds_menus, optbb, pdefs
 
   common Gr_psym_maps, psym_bm  ;, col_bm
 
+  defsysv, '!gdl', exist = is_gdl
+
   if (n_elements(psym_bm) eq 0) then gr_psym_bitm
                                 ;, pdefs.transient.colmin
 
@@ -248,19 +254,33 @@ pro Gr_ds_menus, optbb, pdefs
 
   jjb = widget_base(pdefs.ids.plopts[0], /row)
 
-  junk = widget_label(jjb, $
-                      value = 'Symbol:')
-
   sz = size(psym_bm, /dim)
-  bmstruct = replicate({bitmap: psym_bm[*, *, 0]}, sz[2])
-  for j = 0, sz[2]-1 do bmstruct[j].bitmap = psym_bm[*, *, j]
+  if is_gdl then begin
+     symlist = ['No symbol', 'Plus', 'Asterisk', 'Dot', 'Diamond', $
+                'Triangle', 'Square', 'Cross', 'Circle', 'Filled ' + $
+                'Diamond', 'Filled Triangle', 'Filled Square', $
+                'Filled Circle', 'Down Triangle', $
+                'Filled Down Triangle', 'Hexagon', 'Filled Hexagon', $
+                'Horizontal', 'Vertical']
+     pdefs.ids.psym = widget_droplist(jjb, $
+                                      value = symlist, $
+                                      /track, $
+                                      title = 'Symbol:', $
+                                      uvalue = 'PSYM')
+  endif else begin
+     junk = widget_label(jjb, $
+                         value = 'Symbol:')
 
-  pdefs.ids.psym = cw_pdmenu_plus(jjb, $
-                                  bmstruct, $
-                                  uvalue = 'PSYM', $
-                                  /selector, $
-                                  /track) 
+      
+     bmstruct = replicate({bitmap: psym_bm[*, *, 0]}, sz[2])
+     for j = 0, sz[2]-1 do bmstruct[j].bitmap = psym_bm[*, *, j]
 
+     pdefs.ids.psym = cw_pdmenu_plus(jjb, $
+                                     bmstruct, $
+                                     uvalue = 'PSYM', $
+                                     /selector, $
+                                     /track) 
+  endelse
                                 ; Change symbol size
 
   pdefs.ids.symsize = cw_spin_box(jjb, $

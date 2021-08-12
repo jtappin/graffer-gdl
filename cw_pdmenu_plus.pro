@@ -190,6 +190,8 @@ pro cw_pdmenu_plus_set_exclusive, id, parent
      until widget_info(parent, /type) eq 0
   endif
 
+  defsysv, '!gdl', exist = is_gdl
+  
   idlist = widget_info(parent, /all_children)
   for j = 0, n_elements(idlist)-1 do begin
      if idlist[j] eq id then continue
@@ -199,8 +201,12 @@ pro cw_pdmenu_plus_set_exclusive, id, parent
         widget_control, idlist[j], get_uvalue = uvg
         if uvg.group eq group then begin
            uvg.state = 0
-           widget_control, idlist[j], set_button = 0, $
-                           set_uvalue = uvg
+           if is_gdl then $
+              widget_control, idlist[j], set_value = uvg.bg+' [ ]', $
+                              set_uvalue = uvg $
+           else $
+              widget_control, idlist[j], set_button = 0, $
+                              set_uvalue = uvg
         endif
      endelse
   endfor
@@ -208,6 +214,8 @@ end
 
 pro cw_pdmenu_plus_set, id, state, index = index
 
+  defsysv, '!gdl', exist = is_gdl
+  
   if n_elements(index) eq 1 then begin
      if n_params() eq 1 then state = 1b
      if widget_info(id, /type) eq 0 then $
@@ -231,7 +239,14 @@ pro cw_pdmenu_plus_set, id, state, index = index
      widget_control, id, get_uvalue = uvalue
      if uvalue.state eq state then return
      uvalue.state = state
-     widget_control, id, set_uvalue = uvalue, set_button = state
+     help,  /str,  uvalue
+     if is_gdl then begin
+        if state then bvs = uvalue.label+' [*]' $
+        else bvs = uvalue.label+' [ ]'
+        widget_control, id, set_uvalue = uvalue, set_value = bvs
+     endif else $
+        widget_control, id, set_uvalue = uvalue, set_button = state
+     
      if state && uvalue.group ne 0 then cw_pdmenu_plus_set_exclusive, $
         id
   endelse
@@ -243,6 +258,8 @@ end
 
 function cw_pdmenu_plus_event, event
 
+  defsysv, '!gdl', exist = is_gdl
+  
   widget_control, event.id, get_uvalue = uvalue
 
   if tag_names(event, /struct) eq 'WIDGET_TRACKING' then begin
@@ -263,8 +280,14 @@ function cw_pdmenu_plus_event, event
   endif else begin
      if uvalue.check then begin
         uvalue.state = ~uvalue.state
-        widget_control, event.id, set_button = uvalue.state, $
-                        set_uvalue = uvalue
+        if is_gdl then begin
+           if uvalue.state then bvs = uvalue.label+' [*]' $
+           else bvs = uvalue.label+' [ ]' 
+           widget_control, event.id, set_value = bvs, set_uvalue = $
+                           uvalue 
+        endif else $
+           widget_control, event.id, set_button = uvalue.state, $
+                           set_uvalue = uvalue
         if uvalue.state && uvalue.group ne 0 then $
            cw_pdmenu_plus_set_exclusive, event.id, event.handler
      endif
@@ -295,6 +318,8 @@ pro cw_pdmenu_plus_build, parent, desc, idx, nbuttons, etype, is_mb, $
                           prefix = prefix, selector = selector, $
                           _extra = _extra
 
+  defsysv, '!gdl', exist = is_gdl
+  
   base_parent = widget_info(parent, /type) eq 0
 
   while idx lt nbuttons do begin
@@ -307,7 +332,7 @@ pro cw_pdmenu_plus_build, parent, desc, idx, nbuttons, etype, is_mb, $
      if check && (base_parent || menu ne 0) then $
         message, "Cannot create a checked menu at the top level " + $
                  "or with children"
-        
+     
      emenu = (desc[idx].flag and 2b) ne 0
 
      if idx eq 0 and keyword_set(selector) then begin
@@ -319,15 +344,38 @@ pro cw_pdmenu_plus_build, parent, desc, idx, nbuttons, etype, is_mb, $
         endelse
      endif else if isbitmap then bv = *(desc[idx].bitmap) $
      else bv = desc[idx].label
-     but = widget_button(parent, $
-                         value = bv, $
-                         menu = menu, $
-                         checked_menu = check, $
-                         tracking_events = tracking_events, $
-                         sensitive = desc[idx].sensitive, $
-                         uname = desc[idx].uname, $
-                         accel = desc[idx].accelerator, $
-                         _extra = _extra)
+     
+     if is_gdl then begin
+        if check then begin
+           if desc[idx].state then bvs = bv +' [*]' $
+           else bvs = bv+' [ ]'
+        endif else bvs = bv
+        
+        ; Bit maps and selector don't work in GDL.
+        if isbitmap then begin
+           help, bv, bvs
+           stop
+        endif
+        
+        but = widget_button(parent, $
+                            value = bvs, $
+                            menu = menu, $
+                            tracking_events = tracking_events, $
+                            sensitive = desc[idx].sensitive, $
+                            uname = desc[idx].uname, $
+                            accel = desc[idx].accelerator, $
+                            _extra = _extra)
+
+     endif else $
+        but = widget_button(parent, $
+                            value = bv, $
+                            menu = menu, $
+                            checked_menu = check, $
+                            tracking_events = tracking_events, $
+                            sensitive = desc[idx].sensitive, $
+                            uname = desc[idx].uname, $
+                            accel = desc[idx].accelerator, $
+                            _extra = _extra)
 
      if keyword_set(selector) then vv = idx-1 $
      else case etype of
@@ -353,10 +401,13 @@ pro cw_pdmenu_plus_build, parent, desc, idx, nbuttons, etype, is_mb, $
      else uv = {val: vv, $
                 check: check, $
                 state: desc[idx].state, $
-                group: desc[idx].group $
+                group: desc[idx].group, $
+                label: bv $
                }
 
-     if check then widget_control, but, set_button = desc[idx].state
+     if check && ~is_gdl then $
+        widget_control, but, set_button = desc[idx].state
+     
      widget_control, but, set_uvalue = uv 
      if desc[idx].handler ne '' then widget_control, $
         but, event_pro = desc[idx].handler
@@ -391,6 +442,8 @@ function cw_pdmenu_plus, parent, udesc, column = column, row = row, $
                          initial_selection = initial_selection, $
                          _extra = _extra
 
+  defsysv, '!gdl', exist = is_gdl
+  
   if n_params() ne 2 then message, "Must give a parent and a menu " + $
                                    "descriptor"
   
@@ -415,6 +468,9 @@ function cw_pdmenu_plus, parent, udesc, column = column, row = row, $
      message, "Either the LABEL field or the BITMAP field is required " + $
               "in the descriptor"
 
+  if have_fields[1] && is_gdl then $
+     message, /continue, "BITMAP buttons are not tested in GDL."
+  
   if have_fields[0] && have_fields[1] then $
      message, "Only one of the LABEL and BITMAP fields may be given"
 
@@ -478,7 +534,6 @@ function cw_pdmenu_plus, parent, udesc, column = column, row = row, $
      'index': etype = 1
      'name': etype = 2
      'full_name': etype = 3
-     'full name': etype = 3
      'uname': etype = 4
      else: message, "Invalid return event type "+return_type
   endcase

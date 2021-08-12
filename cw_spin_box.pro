@@ -134,21 +134,21 @@ pro cw_spin_box_mk_bitmap, bup, bdown, xextra, $
   down[*, 4] = 255b
   up = reverse(down, 2)
 
-  if keyword_set(transparent) then begin
-     bdown = bytarr([size(down, /dim), 4])
-     bup = bytarr([size(up, /dim), 4])
-     for j =  0, 2 do begin
-        bdown[*, *, j] = not down
-        bup[*, *, j] = not up
-     endfor
-     bdown[*, *, 3] = down
-     bup[*, *, 3] = up
-     xextra = 0
-  endif else begin
-     bdown = cvttobm(down)
-     bup = cvttobm(up)
-     xextra = 7
-  endelse
+  ;; if keyword_set(transparent) then begin
+  ;;    bdown = bytarr([size(down, /dim), 4])
+  ;;    bup = bytarr([size(up, /dim), 4])
+  ;;    for j =  0, 2 do begin
+  ;;       bdown[*, *, j] = not down
+  ;;       bup[*, *, j] = not up
+  ;;    endfor
+  ;;    bdown[*, *, 3] = down
+  ;;    bup[*, *, 3] = up
+  ;;    xextra = 0
+  ;; endif else begin
+  bdown = down                  ;cvttobm(down)
+  bup = up                      ;cvttobm(up)
+  xextra = 7
+  ;; endelse
 end
 
 pro cw_spin_box_focus_enter, id
@@ -644,16 +644,18 @@ function cw_spin_box, parent, row = row, column = column, $
                       xpad = 0, $
                       ypad = 0, $
                       space = 0)
+
+  
   cstruct.upid = widget_button(sbase, $
                                value = bup, $
                                x_bitmap_extra = xextra, $
-                               uvalue = 'UP', $
-                               flat = flat)
+                               uvalue = 'UP') ;, $
+;                               flat = flat)
   cstruct.dnid = widget_button(sbase, $
                                value = bdown, $
                                x_bitmap_extra = xextra, $
-                               uvalue = 'DOWN', $
-                               flat = flat)
+                               uvalue = 'DOWN') ;, $
+;                               flat = flat)
 
   widget_control, cstruct.dnid, sensitive = $
                   cstruct.rolls || ~cstruct.ismin || $

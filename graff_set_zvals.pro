@@ -65,7 +65,7 @@ pro graff_set_zvals, pdefs
   widget_control, zids.c_map, set_droplist_select = zopts.lmap
 
   widget_control, zids.c_colour, set_value = $
-                  gr_cont_col_set(zopts.colours, zopts.raw_colours)
+                  gr_cont_col_set(*zopts.colours, *zopts.raw_colours)
   
   widget_control, zids.c_thick, set_value = *(zopts.thick)
   widget_control, zids.c_style, set_value = *(zopts.style)

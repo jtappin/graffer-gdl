@@ -300,8 +300,8 @@ pro Gr_cont_menus, sb, pdefs
                                       uvalue = 'COLOUR', $
                                       /capture, $
                                       value = $
-                                      gr_cont_col_set(zopts.colours, $
-                                                      zopts.raw_colours), $
+                                      gr_cont_col_set(*zopts.colours, $
+                                                      *zopts.raw_colours), $
                                       xsize = 16, $
                                       ysize = 4, $
                                       /column, $

@@ -29,10 +29,12 @@ function gr_cont_col_set, clist, rawc
 
   rv = strarr(ncols)
 
+  help, clist
   if isa(clist, 'LIST') then begin
      
      for j = 0, ncols-1 do begin
         tmp = clist[j]
+        help, j, tmp
         case n_elements(tmp) of
            0: rv[j] = ''
            1: rv[j] = string(tmp, format = "(i0)")
