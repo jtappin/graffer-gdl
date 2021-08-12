@@ -239,7 +239,7 @@ pro cw_pdmenu_plus_set, id, state, index = index
      widget_control, id, get_uvalue = uvalue
      if uvalue.state eq state then return
      uvalue.state = state
-     help,  /str,  uvalue
+
      if is_gdl then begin
         if state then bvs = uvalue.label+' [*]' $
         else bvs = uvalue.label+' [ ]'
@@ -347,16 +347,16 @@ pro cw_pdmenu_plus_build, parent, desc, idx, nbuttons, etype, is_mb, $
      
      if is_gdl then begin
         if check then begin
+                                ; Bit maps and selector don't work in GDL.
+           if isbitmap then begin
+              print, "GDL doesn't (yet) support selector bitmaps"
+              return
+           endif
            if desc[idx].state then bvs = bv +' [*]' $
            else bvs = bv+' [ ]'
         endif else bvs = bv
         
-        ; Bit maps and selector don't work in GDL.
-        if isbitmap then begin
-           help, bv, bvs
-           stop
-        endif
-        
+       
         but = widget_button(parent, $
                             value = bvs, $
                             menu = menu, $
