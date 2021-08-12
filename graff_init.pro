@@ -53,7 +53,7 @@ pro Graff_init, pdefs, file, version = version, ttype = ttype
 
   endif
   if n_elements(optblock) eq 0 then gr_rc_get, optblock
-
+  
   if (n_elements(file) eq 0) then begin
      fc = ''
      if (n_elements(dir) eq 0) then cd, curr = dir
@@ -93,6 +93,10 @@ pro Graff_init, pdefs, file, version = version, ttype = ttype
 
   pdefs.ds_dir =       ds_dir
 
+  pdefs.xsty.log_bands = [6, 15, 30]
+  pdefs.ysty.log_bands = [6, 15, 30]
+  pdefs.ysty_r.log_bands = [6, 15, 30]
+  
 ; Set defaults for these hardcopy actions, but they will be
 ; overwritten if an old file existed.
 
