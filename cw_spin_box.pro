@@ -145,8 +145,8 @@ pro cw_spin_box_mk_bitmap, bup, bdown, xextra, $
   ;;    bup[*, *, 3] = up
   ;;    xextra = 0
   ;; endif else begin
-  bdown = down                  ;cvttobm(down)
-  bup = up                      ;cvttobm(up)
+  bdown = cvttobm(down)
+  bup = cvttobm(up)
   xextra = 7
   ;; endelse
 end
@@ -537,7 +537,8 @@ function cw_spin_box, parent, row = row, column = column, $
   else tt = 0
 
   tcode = size(tt, /type)
-
+  print, tcode
+  
   if (tcode eq 4 || tcode eq 5) && keyword_set(unsigned) then $
      message, /continue, "UNSIGNED Key not applicable to FP types, " + $
               "ignoring"
@@ -627,6 +628,7 @@ function cw_spin_box, parent, row = row, column = column, $
 
   ibase = widget_base(base, $
                       /row)
+  print, cstruct.format, cstruct.value
   cstruct.boxid = widget_text(ibase, $
                               xsize = xsize, $
                               ysize = 1, $
@@ -672,12 +674,15 @@ function cw_spin_box, parent, row = row, column = column, $
 
   widget_control, uid, set_uvalue = cstruct
 
+  if n_elements(sensitive) eq 0 then iss = 1b $
+  else iss = keyword_set(sensitive)
+  
   widget_control, base, pro_set_value = 'cw_spin_box_set', $
                   func_get_value = 'cw_spin_box_get', $
                   event_func = 'cw_spin_box_event', $
                   set_uvalue = uvalue, set_uname = uname, $
                   tracking_events = tracking_events, $
-                  sensitive = sensitive
+                  sensitive = iss
 
   return, base
 

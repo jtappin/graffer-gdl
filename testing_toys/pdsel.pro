@@ -1,6 +1,8 @@
 pro pdsel_event, event
-  widget_control, event.id, get_uvalue = object
 
+  if strpos(tag_names(event, /struct), 'TRACK') ne -1  then return
+  
+  widget_control, event.id, get_uvalue = object
   case object of
      'QUIT': widget_control, event.top, /destroy
      else: help, /str, event
@@ -39,12 +41,25 @@ pro pdsel
              {axmenu_opts, 2, 'Visible Only', 0b, 0, 1b}, $
              {axmenu_opts, 2, 'Advanced ...', 0b, 0, 1b}]
 
-  clist = [{clrlist, label: 'Black', sensitive:1b}, $
-           {clrlist, 'Red', 1b}, $
-           {clrlist, 'Green', 1b}, $
-           {clrlist, 'Blue', 1b}, $
-           {clrlist, 'White', 1b}]
-      
+  clist = [{clrlist, label: 'Black'}, $
+           {clrlist, 'Red'}, $
+           {clrlist, 'Green'}, $
+           {clrlist, 'Blue'}, $
+           {clrlist, 'White'}]
+
+  dsops = [{ds_pd_opts, flag:0, label:'Next'}, $
+           {ds_pd_opts, 0, 'Previous'}, $
+           {ds_pd_opts, 0, 'New'}, $
+           {ds_pd_opts, 3, 'Other'}, $
+           {ds_pd_opts, 0, 'Select...'}, $
+           {ds_pd_opts, 0, 'Merge...'},  $
+           {ds_pd_opts, 0, 'Sort...'},  $
+           {ds_pd_opts, 0, 'Erase'}, $
+           {ds_pd_opts, 0, 'Delete'}, $
+           {ds_pd_opts, 0, 'Write...'}, $
+           {ds_pd_opts, 0, 'Copy'}, $
+           {ds_pd_opts, 2, 'Export'}]
+    
   jb = widget_base(base, $
                    /row)
   junk = widget_label(jb, $
@@ -54,7 +69,7 @@ pro pdsel
                         stydesc, $
                         return_type = 'full_name', $
                         uvalue = 'STY', $
-                        /track, $
+;                        /track, $
                         delimiter = '/', $
                         ids = buts)
 ;;  widget_control, junk, /sensitive
@@ -68,16 +83,24 @@ pro pdsel
                         clist, $
                         return_type = 'index', $
                         uvalue = 'COLOUR', $
-                        /track, $
+;                        /track, $
                         ids = butc, $
                         /select, $
                         initial = 2)
+  
+
+  junk = cw_pdmenu_plus(base, $
+                      dsops, $
+                      return_type = 'full_name', $
+                      uvalue = 'OPTS', $
+;                      /track, $
+                      ids = buto, $
+                      /row)
   
   junk = widget_button(base, $
                        value = 'QUIT', $
                        uvalue = 'QUIT')
 
-  
   widget_control, base, /real
 
   xmanager, 'pdsel', base
