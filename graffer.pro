@@ -25,6 +25,10 @@
 ;				TrueType fonts. (Opening an existing
 ;				file will still keep what that one
 ;				used).
+;	/tracking_events	Set explicitly to zero to prevent
+;				widget tracking events when running in
+;				IDL. (Always disabled in GDL as
+;				they don't work).
 ;
 ; History:
 ;	Original: 27/7/95; SJT
@@ -267,6 +271,8 @@
 ;		Version 4.10:
 ;		      - Move general options out of pdefs (21/5/20)
 ;		      - Harmonization of IDL & Fortran versions
+;		Version 5.00:
+;		      - Mods to allow it to work in GDL as well as IDL.
 ;-
 
 
@@ -407,7 +413,7 @@ end
 pro Graffer, file, group = group, xsize = xsize, ysize = ysize, $
              debug = debug, noscroll = noscroll, $
              recover = recover, block = block, colour_menu = $
-             colour_menu, ttype = ttype
+             colour_menu, ttype = ttype, tracking_events = tracking_events
 
   common Gr_psym_maps, psym_bm  ;, col_bm
   common graffer_options, optblock
@@ -431,6 +437,13 @@ pro Graffer, file, group = group, xsize = xsize, ysize = ysize, $
 ; Read the resource file.
   
   gr_rc_get, optblock
+
+  if n_elements(tracking_events) ne 0 then begin
+     if is_gdl() then message, /continue, $
+                               "TRACKING_EVENTS are not supported by " + $
+                               "GDL." $
+     else optblock.track = keyword_set(tracking_events)
+  endif
   
   if (keyword_set(debug)) then begin
      !Quiet = 0 
@@ -526,7 +539,7 @@ pro Graffer, file, group = group, xsize = xsize, ysize = ysize, $
 
   tbase = widget_tab(cbase, $
                      uvalue = 'TABS', $
-                     /track)
+                     track = optblock.track)
 
   cbase1 = widget_base(tbase, $
                        title = 'Global', $
@@ -553,12 +566,12 @@ pro Graffer, file, group = group, xsize = xsize, ysize = ysize, $
   pdefs.ids.y_right = widget_button(jb, $
                                     value = "Enable secondary Y-axis?", $
                                     uvalue = 'YRIGHT', $
-                                    /track)
+                                    track = optblock.track)
   widget_control, pdefs.ids.y_right, set_button = pdefs.y_right
 
   ytabs = widget_tab(yybase, $
                      uvalue = 'YTABS', $
-                     /track)
+                     track = optblock.track)
   jb = widget_base(ytabs, $
                    title = 'Main')
   gr_axis_menu, 'Y', jb, pdefs
@@ -587,13 +600,13 @@ pro Graffer, file, group = group, xsize = xsize, ysize = ysize, $
                                        value = ['Draw', 'Text'], $
                                        uvalue = 'TEXT', $
                                        title = 'Draw/Text Mode:', $
-                                       /track)
+                                       track = optblock.track)
   jbb = widget_base(jb, $
                     /nonexclusive)
   junk = widget_button(jbb, $
                        value = 'Cross Hairs', $
                        uvalue = 'CROSS', $
-                       /track)
+                       track = optblock.track)
   widget_control, junk, set_button = 1
 
 
@@ -639,7 +652,7 @@ pro Graffer, file, group = group, xsize = xsize, ysize = ysize, $
                                   uvalue = 'DRAW', $
                                   /button_event, $
                                   /motion_event, $
-                                  /track, $
+                                  track = optblock.track, $
                                   /frame) $
   else $
      pdefs.ids.draw = widget_draw(cbase, $
@@ -648,7 +661,7 @@ pro Graffer, file, group = group, xsize = xsize, ysize = ysize, $
                                   uvalue = 'DRAW', $
                                   /button_event, $
                                   /motion_event, $
-                                  /track, $
+                                  track = optblock.track, $
                                   /frame)
 
 
@@ -666,7 +679,7 @@ pro Graffer, file, group = group, xsize = xsize, ysize = ysize, $
                                value = '', $
                                label = 'Messages:', $
                                uvalue = 'AUTOSAVE', $
-                               /track, $
+                               track = optblock.track, $
                                /array)
 
   pdefs.ids.hlptxt = pdefs.ids.message
@@ -685,7 +698,7 @@ pro Graffer, file, group = group, xsize = xsize, ysize = ysize, $
   junk = widget_button(pdefs.ids.chtick, $
                        value = cbm, $
                        uvalue = 'QSAVE', $
-                       /track)
+                       track = optblock.track)
   widget_control, pdefs.ids.graffer, /real
   if (keyword_set(group)) then $
      widget_control, pdefs.ids.graffer, group = group
