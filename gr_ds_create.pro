@@ -223,6 +223,8 @@ end
 
 pro Gr_ds_create, base, pdefs
 
+  common graffer_options, optblock
+
   datopts = [{ds_create_opts, flag:1, label:'XY data'}, $
              {ds_create_opts, 0, 'From file ...'}, $
              {ds_create_opts, 0, 'Edit values ...'}, $
@@ -254,7 +256,7 @@ pro Gr_ds_create, base, pdefs
                         datopts, $
                         return_type = 'full_name', $
                         uvalue = 'EDITOR', $
-                        /track)
+                        track = optblock.track)
 
   pdefs.ids.y_axis = widget_droplist(jb, $
                                      value = ['Main', $
@@ -262,7 +264,7 @@ pro Gr_ds_create, base, pdefs
                                      uvalue = 'YAXIS', $
                                      sensitive = pdefs.y_right, $
                                      title = 'Y-axis:', $
-                                     /track)
+                                     track = optblock.track)
 
   if ptr_valid((*pdefs.data)[pdefs.cset]) then $
      widget_control, pdefs.ids.y_axis, set_droplist_select = $

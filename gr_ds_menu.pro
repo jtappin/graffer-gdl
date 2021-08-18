@@ -71,6 +71,8 @@ end
 
 pro gr_ds_menu, base, pdefs
 
+  common graffer_options, optblock
+
   tjb = widget_base(base, $
                     /column, $
                     /frame, $
@@ -83,13 +85,23 @@ pro gr_ds_menu, base, pdefs
 
   jb = widget_base(tjb, /row, xpad = 0, ypad = 0, space = 0)
 
-  pdefs.ids.descr = cw_enter(jb, /all, xsize = 15, value = $
-                             '', format = $
-                             "(A)", label = 'DS Name:', $
-                             uvalue = 'DESC', /track, /capture)
+  pdefs.ids.descr = cw_enter(jb, $
+                             /all, $
+                             xsize = 15, $
+                             value = '', $
+                             format = "(A)", $
+                             label = 'DS Name:', $
+                             uvalue = 'DESC', $
+                             track = optblock.track, $
+                             /capture)
 
-  pdefs.ids.cset = cw_enter(jb, /int, /display, xsize = 3, value = 0, $
-                            format = '(I0)', label = '#:')
+  pdefs.ids.cset = cw_enter(jb, $
+                            /int, $
+                            /display, $
+                            xsize = 3, $
+                            value = 0, $
+                            format = '(I0)', $
+                            label = '#:')
 
   jb = widget_base(tjb, $
                    /row, $
@@ -98,6 +110,6 @@ pro gr_ds_menu, base, pdefs
   pdefs.ids.current = widget_button(jb, $
                                     value = "Only show current DS", $
                                     uvalue = 'CURRENT_ONLY', $
-                                    /track)
+                                    track = optblock.track)
 
 end

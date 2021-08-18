@@ -129,6 +129,8 @@ end
 
 function Gr_xy_wid, pdefs, line = line
 
+    common graffer_options, optblock
+
 ;	First extract the data
 
   if ptr_valid((*pdefs.data)[pdefs.cset].xydata) && $
@@ -166,19 +168,28 @@ function Gr_xy_wid, pdefs, line = line
   widget_control, pdefs.ids.graffer, sensitive = 0
 
   tlb = widget_base(title = 'Graffer Data Input',  $
-                    group_leader = pdefs.ids.graffer, resource = $
-                    'Graffer')
-  base = widget_base(tlb, /column)
+                    group_leader = pdefs.ids.graffer, $
+                    resource = 'Graffer')
+  base = widget_base(tlb, $
+                     /column)
 
                                 ; The actual data definition
 
-  junk = widget_label(base, value = 'Enter x y pairs')
-  xyl = widget_label(base, value = '1 pair per line')
+  junk = widget_label(base, $
+                      value = 'Enter x y pairs')
+  xyl = widget_label(base, $
+                     value = '1 pair per line')
 
 
-  xyid = widget_text(base, /edit, xsize = 30 > max(strlen(txt)), ysize $
-                     = $
-                     30, uvalue = 'FUN', value = txt, /scroll, /track)
+  xyid = widget_text(base, $
+                     /edit, $
+                     xsize = 30 > max(strlen(txt)), $
+                     ysize = 30, $
+                     uvalue = 'FUN', $
+                     value = txt, $
+                     /scroll, $
+                     track = optblock.track)
+  
   widget_control, xyid, set_text_select = char0
 
   case (*pdefs.data)[pdefs.cset].type > 0 of
@@ -224,7 +235,7 @@ function Gr_xy_wid, pdefs, line = line
                          /selector, $
                          initial = (*pdefs.data)[pdefs.cset].type > 0, $
                          uvalue = 'ERRS', $
-                         /track)
+                         track = optblock.track)
 
   for j = 0, n_elements(errids)-1 do  $
      widget_control, errids(j), sensitive = mask(j)

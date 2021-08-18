@@ -19,58 +19,59 @@
 
 pro Gr_z_event, event
 
-base = widget_info(/child, event.top)
-widget_control, base, get_uvalue = pdefs, /no_copy
+  base = widget_info(/child, event.top)
+  widget_control, base, get_uvalue = pdefs, /no_copy
 
-track_flag = strpos(tag_names(event, /struct), 'TRACK') ne -1
+  track_flag = strpos(tag_names(event, /struct), 'TRACK') ne -1
 
-if (track_flag) then begin      ; All this is much simplified as
+  if (track_flag) then begin    ; All this is much simplified as
                                 ; there's only 1 object in this
                                 ; handler's domain
-    if (event.enter eq 0) then $
-      graff_msg, pdefs.ids.hlptxt, '' $
-    else graff_msg, pdefs.ids.hlptxt, 'Select contoured or ' + $
-      '"image" display format'
-    
-endif else begin
-    (*pdefs.data)[pdefs.cset].zopts.format = event.index
-    widget_control, pdefs.ids.zopts.bases[0], map = event.index eq 0
-    widget_control, pdefs.ids.zopts.bases[1], map = event.index eq 1
+     if (event.enter eq 0) then $
+        graff_msg, pdefs.ids.hlptxt, '' $
+     else graff_msg, pdefs.ids.hlptxt, 'Select contoured or ' + $
+                     '"image" display format'
+     
+  endif else begin
+     (*pdefs.data)[pdefs.cset].zopts.format = event.index
+     widget_control, pdefs.ids.zopts.bases[0], map = event.index eq 0
+     widget_control, pdefs.ids.zopts.bases[1], map = event.index eq 1
 
-    gr_plot_object, pdefs
-    pdefs.chflag = 1b
-    gr_bin_save, pdefs, /auto
-    widget_control, pdefs.ids.chtick, map = pdefs.chflag
-endelse
+     gr_plot_object, pdefs
+     pdefs.chflag = 1b
+     gr_bin_save, pdefs, /auto
+     widget_control, pdefs.ids.chtick, map = pdefs.chflag
+  endelse
 
-widget_control, base, set_uvalue = pdefs, /no_copy
+  widget_control, base, set_uvalue = pdefs, /no_copy
 
 end
 
 
 pro Gr_z_menus, optbb, pdefs
 
+  common graffer_options, optblock
 
-pdefs.ids.plopts[1] = widget_base(optbb, /row, xpad = 0, ypad = 0, $
-                                  space = 0, event_pro = 'gr_z_event')
+  pdefs.ids.plopts[1] = widget_base(optbb, /row, xpad = 0, ypad = 0, $
+                                    space = 0, event_pro = 'gr_z_event')
 
 
-jb = widget_base(pdefs.ids.plopts(1), $
-                 /column)
+  jb = widget_base(pdefs.ids.plopts[1], $
+                   /column)
 
-pdefs.ids.zmode = widget_droplist(jb, $
-                                  value = ['Contoured...', $
-                                           'Colour/Grey...', $
-                                           'Hidden'], $ 
-                                  uvalue = 'CONCOL', $  
-                                  title = 'Select display format', $
-                                  /track)
-widget_control, pdefs.ids.zmode, set_droplist_select = $
-  (*pdefs.data)[pdefs.cset].zopts.format
+  pdefs.ids.zmode = widget_droplist(jb, $
+                                    value = ['Contoured...', $
+                                             'Colour/Grey...', $
+                                             'Hidden'], $ 
+                                    uvalue = 'CONCOL', $  
+                                    title = 'Select display format', $
+                                    track = optblock.track)
+  widget_control, pdefs.ids.zmode, set_droplist_select = $
+                  (*pdefs.data)[pdefs.cset].zopts.format
 
-sb = widget_base(jb)
+  sb = widget_base(jb)
 
-gr_cont_menus, sb, pdefs
-gr_img_menus, sb, pdefs
+  gr_cont_menus, sb, pdefs
+  gr_img_menus, sb, pdefs
 
 end

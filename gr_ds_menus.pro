@@ -168,6 +168,7 @@ end
 pro Gr_ds_menus, optbb, pdefs
 
   common Gr_psym_maps, psym_bm  ;, col_bm
+  common graffer_options, optblock
 
   if (n_elements(psym_bm) eq 0) then gr_psym_bitm
                                 ;, pdefs.transient.colmin
@@ -214,7 +215,7 @@ pro Gr_ds_menus, optbb, pdefs
                                      value = col_list, $
                                      uvalue = 'COLOUR', $
                                      title = 'Colour:', $
-                                     /track)
+                                     track = optblock.track)
   widget_control, pdefs.ids.colour, set_droplist_select = 1
 
   pdefs.ids.dscolour_base = widget_base(jjb, $
@@ -235,7 +236,7 @@ pro Gr_ds_menus, optbb, pdefs
                                              'Histo'], $
                                     uvalue = 'PLINE', $
                                     title = 'Join:', $
-                                    /track)
+                                    track = optblock.track)
 
   pdefs.ids.line = widget_droplist(jjb, $
                                    value = ['____',  $
@@ -246,7 +247,7 @@ pro Gr_ds_menus, optbb, pdefs
                                             '__  '], $
                                    uvalue = 'STYLE', $
                                    title = 'Style:', $
-                                   /track)
+                                   track = optblock.track)
 
   jjb = widget_base(pdefs.ids.plopts[0], /row)
 
@@ -260,7 +261,7 @@ pro Gr_ds_menus, optbb, pdefs
                 'Horizontal', 'Vertical']
      pdefs.ids.psym = widget_droplist(jjb, $
                                       value = symlist, $
-                                      /track, $
+                                      track = optblock.track, $
                                       title = 'Symbol:', $
                                       uvalue = 'PSYM')
   endif else begin
@@ -275,7 +276,7 @@ pro Gr_ds_menus, optbb, pdefs
                                      bmstruct, $
                                      uvalue = 'PSYM', $
                                      /selector, $
-                                     /track) 
+                                     track = optblock.track) 
   endelse
                                 ; Change symbol size
 
@@ -287,7 +288,7 @@ pro Gr_ds_menus, optbb, pdefs
                                   xsize = 7, $
                                   label = 'Size:', $
                                   format = "(f0.2)", $
-                                  /track, $
+                                  track = optblock.track, $
                                   /capture, $
                                   min = 0., $
                                   step = 0.1, $
@@ -302,7 +303,7 @@ pro Gr_ds_menus, optbb, pdefs
                                 value = 1., $
                                 uvalue = 'THICK', $
                                 label = 'Thickness:', $
-                                /track, $
+                                track = optblock.track, $
                                 /capture, $
                                 min = 0., $
                                 step = 1., $
@@ -316,7 +317,7 @@ pro Gr_ds_menus, optbb, pdefs
                                    value = ['Rect', 'Polar', $
                                             'Polar (°)'], $
                                    uvalue = 'POLAR', $
-                                   /track, $
+                                   track = optblock.track, $
                                    title = 'Coords:')
 
   xtras = [{CW_PDSMENU_S, flag:3, label:'Extras', state:0b}, $
@@ -329,7 +330,7 @@ pro Gr_ds_menus, optbb, pdefs
                         xtras, $
                         return_type = 'full_name', $
                         uvalue = 'XTRA', $
-                        /track, $
+                        track = optblock.track, $
                         ids = buts)
 
   pdefs.ids.dsxtra = buts[1:*]
@@ -343,7 +344,7 @@ pro Gr_ds_menus, optbb, pdefs
                               xsize = 13, $
                               uvalue = 'MINVAL', $
                               label = 'Min Value:', $
-                              /track, $
+                              track = optblock.track, $
                               /capture, $
                               /empty_nan)
   pdefs.ids.maxval = cw_enter(pdefs.ids.minmaxbase, $
@@ -353,7 +354,7 @@ pro Gr_ds_menus, optbb, pdefs
                               xsize = 13, $
                               uvalue = 'MAXVAL', $
                               label = 'Max Value:', $
-                              /track, $
+                              track = optblock.track, $
                               /capture, $
                               /empty_nan)
 

@@ -15,17 +15,21 @@ pro Gr_td_mode, value, pdefs
 ;	Original (extracted from GRAFFER): 27/1/97; SJT
 ;-
 
+  common graffer_options, optblock
 
-gr_cross_hair, pdefs            ; Erase any existing cross hairs.
 
-if (value) then begin
-    widget_control, pdefs.ids.draw, set_uvalue = 'WRITE', $
-      /draw_button_events, /track
-endif else begin
-    widget_control, pdefs.ids.draw, set_uvalue = 'DRAW', $
-      draw_button_events = (*pdefs.data)[pdefs.cset].medit, track = $
-      (*pdefs.data)[pdefs.cset].medit 
-endelse
-pdefs.transient.mode = value
+  gr_cross_hair, pdefs          ; Erase any existing cross hairs.
+
+  if (value) then begin
+     widget_control, pdefs.ids.draw, set_uvalue = 'WRITE', $
+                     /draw_button_events, track = optblock.track
+  endif else begin
+     widget_control, pdefs.ids.draw, set_uvalue = 'DRAW', $
+                     draw_button_events = $
+                     (*pdefs.data)[pdefs.cset].medit, $
+                     track = $
+                     (*pdefs.data)[pdefs.cset].medit && optblock.track
+  endelse
+  pdefs.transient.mode = value
 
 end

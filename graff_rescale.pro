@@ -116,6 +116,8 @@ end
 
 function Graff_rescale, pdefs
 
+  common graffer_options, optblock
+
 ; Extract the datasets
 
   if ((*pdefs.data)[pdefs.cset].type lt 0) then begin ; This a function -- can't
@@ -154,7 +156,7 @@ function Graff_rescale, pdefs
                               /double, $
                               xsize = 11, $
                               uvalue = 'ZSCALE', $
-                              /track, $
+                              track = optblock.track, $
                               /capture)
      
      jbb = widget_base(jb, $
@@ -169,7 +171,7 @@ function Graff_rescale, pdefs
                               /double, $
                               xsize = 11, $
                               uvalue = 'ZSHIFT', $
-                              /track, $
+                              track = optblock.track, $
                               /capture)
   endif else begin
      wids.boxes[4:5] = 0l
@@ -184,7 +186,7 @@ function Graff_rescale, pdefs
                            /double, $
                            xsize = 11, $
                            uvalue = 'XSCALE', $
-                           /track, $
+                           track = optblock.track, $
                            /capture)
 
   jbb = widget_base(jb, $
@@ -199,7 +201,7 @@ function Graff_rescale, pdefs
                            /double, $
                            xsize = 11, $
                            uvalue = 'XSHIFT', $
-                           /track, $
+                           track = optblock.track, $
                            /capture)
 
   jb = widget_base(base, /row, /frame)
@@ -210,7 +212,7 @@ function Graff_rescale, pdefs
                            /double, $
                            xsize = 11, $
                            uvalue = 'YSCALE', $
-                           /track, $
+                           track = optblock.track, $
                            /capture)
 
   jbb = widget_base(jb, $
@@ -225,7 +227,7 @@ function Graff_rescale, pdefs
                            /double, $
                            xsize = 11, $
                            uvalue = 'YSHIFT', $
-                           /track, $
+                           track = optblock.track, $
                            /capture)
 
   wids.msg = widget_text(base, value = '')
@@ -235,11 +237,11 @@ function Graff_rescale, pdefs
   junk = widget_button(jb, $
                        value = '     Cancel    ', $
                        uvalue = 'CANCEL', $
-                       /track)
+                       track = optblock.track)
   junk = widget_button(jb, $
                        value = '     Do  it    ', $
                        uvalue = 'DO', $
-                       /track)
+                       track = optblock.track)
 
 
 ;	Realise the widgets and use a DIY widget handling procedure

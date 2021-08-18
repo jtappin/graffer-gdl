@@ -292,6 +292,8 @@ end
     
 pro Gr_control_menu, base
 
+  common graffer_options, optblock
+
   ctlmenu = [{control_opts, flag:1, label:'File', accelerator:''}, $
              {control_opts, 0, 'Save', 'Ctrl+S'}, $
              {control_opts, 1, 'Save as', ''}, $
@@ -325,6 +327,6 @@ pro Gr_control_menu, base
                         ctlmenu, $
                         return_type = 'full_name', $
                         uvalue = 'CONTROL', $
-                        /track)
+                        track = optblock.track)
 
 end

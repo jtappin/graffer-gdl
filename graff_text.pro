@@ -236,6 +236,7 @@ end
 function Graff_text, pdefs, edit = edit, position = position
 
   common Gr_psym_maps, psym_bm  ;, col_bm
+  common graffer_options, optblock
 
   opy = !y
   if (pdefs.y_right) then $
@@ -276,7 +277,7 @@ function Graff_text, pdefs, edit = edit, position = position
                      value = (*pdefs.text)[itxt].text, $ 
                      uvalue = 'TEXT', $
                      label = 'Text:', $
-                     /track, $
+                     track = optblock.track, $
                      /capture, $
                      /graphics)
 
@@ -291,7 +292,7 @@ function Graff_text, pdefs, edit = edit, position = position
                      value = (*pdefs.text)[itxt].id, $
                      uvalue = 'ID', $
                      label = 'ID:', $
-                     /track, $
+                     track = optblock.track, $
                      /capture)
 
   junk = cw_spin_box(jb, $
@@ -302,7 +303,7 @@ function Graff_text, pdefs, edit = edit, position = position
                      format = "(f0.2)", $
                      uvalue = 'CHS', $
                      label = 'Charsize:', $
-                     /track, $
+                     track = optblock.track, $
                      /capture, $
                      min = 0., $
                      step = 0.1, $
@@ -344,7 +345,7 @@ function Graff_text, pdefs, edit = edit, position = position
                          value = col_list, $
                          uvalue = 'COL', $
                          title = 'Colour:', $
-                         /track)
+                         track = optblock.track)
   if (*pdefs.text)[itxt].colour eq -2 then ci = $
      n_elements(col_list)-1 $
   else ci = (*pdefs.text)[itxt].colour
@@ -359,7 +360,7 @@ function Graff_text, pdefs, edit = edit, position = position
                      value = (*pdefs.text)[itxt].thick, $
                      uvalue = 'THI', $
                      label = 'Thickness:', $
-                     /track, $
+                     track = optblock.track, $
                      /capture, $
                      min = 0., $
                      step = 1., $
@@ -380,7 +381,7 @@ function Graff_text, pdefs, edit = edit, position = position
                                   'Right', 'Other ...'], $
                          uvalue = 'JUST', $
                          title = 'Justification:', $
-                         /track)
+                         track = optblock.track)
   widget_control, junk, set_droplist_select = ial
 
   junk = cw_enter(jb, $
@@ -391,7 +392,7 @@ function Graff_text, pdefs, edit = edit, position = position
                   value = (*pdefs.text)[itxt].orient, $
                   format = "(f6.1)",  $
                   label = 'Orientation (°):', $
-                  /track, $
+                  track = optblock.track, $
                   /capture)
 
                                 ; Position
@@ -404,7 +405,7 @@ function Graff_text, pdefs, edit = edit, position = position
                          value = ['Data', 'Normal', '"Frame"'], $
                          uvalue = 'TNORM', $
                          title = 'Coordinates:', $
-                         /track)
+                         track = optblock.track)
   widget_control, junk, set_droplist_select = (*pdefs.text)[itxt].norm
 
   if (pdefs.y_right ne 0) then begin
@@ -412,7 +413,7 @@ function Graff_text, pdefs, edit = edit, position = position
                             value = ["Main", "Secondary"], $
                             uvalue = "AXIS", $
                             title = "Y-axis:", $
-                            /track, $
+                            track = optblock.track, $
                             sensitive = (*pdefs.text)[itxt].norm eq 0)
      
      widget_control, junk, set_droplist_select = (*pdefs.text)[itxt].axis
@@ -428,7 +429,7 @@ function Graff_text, pdefs, edit = edit, position = position
                   value = (*pdefs.text)[itxt].x, $
                   format = "(g15.8)", $
                   label = 'Position:  X:', $
-                  /track, $
+                  track = optblock.track, $
                   /capture) 
   ypos = cw_enter(pb, $
                   /double, $
@@ -438,7 +439,7 @@ function Graff_text, pdefs, edit = edit, position = position
                   value = (*pdefs.text)[itxt].y, $
                   format = "(g15.8)", $
                   label = 'Y:', $
-                  /track, $
+                  track = optblock.track, $
                   /capture)
 
   widget_control, cdbase, set_uvalue = [xpos, ypos]
@@ -460,7 +461,7 @@ function Graff_text, pdefs, edit = edit, position = position
                                   'TrueType'], $
                          uvalue = 'FAMILY', $
                          title = 'Font:', $
-                         /track)  
+                         track = optblock.track)  
   widget_control, junk, set_droplist_select = $
                   (*pdefs.text)[itxt].ffamily+1
 
@@ -468,7 +469,7 @@ function Graff_text, pdefs, edit = edit, position = position
                                        value = font_list, $
                                        uvalue = 'FONT', $
                                        title = ':', $
-                                       /track)  
+                                       track = optblock.track)  
   widget_control, pdefs.ids.fontmenu, set_droplist_select = idx
 
                                 ; Messages (what does what)
@@ -477,10 +478,21 @@ function Graff_text, pdefs, edit = edit, position = position
 
                                 ; Done
 
-  jb = widget_base(base, /row)
-  junk = widget_button(jb, value = '  Done  ', uvalue = 'DONE', /track)
-  junk = widget_button(jb, value = ' Cancel ', uvalue = 'CANCEL', /track)
-  junk = widget_button(jb, value = ' Update ', uvalue = 'UPDATE', /track)
+  jb = widget_base(base, $
+                   /row, $
+                   /grid)
+  junk = widget_button(jb, $
+                       value = '  Done  ', $
+                       uvalue = 'DONE', $
+                       track = optblock.track)
+  junk = widget_button(jb, $
+                       value = ' Cancel ', $
+                       uvalue = 'CANCEL', $
+                       track = optblock.track)
+  junk = widget_button(jb, $
+                       value = ' Update ', $
+                       uvalue = 'UPDATE', $
+                       track = optblock.track)
 
   txtemp = (*pdefs.text)[itxt]
 

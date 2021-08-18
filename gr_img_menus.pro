@@ -105,6 +105,8 @@ end
 
 pro Gr_img_menus, sb, pdefs
 
+  common graffer_options, optblock
+
   i = pdefs.cset
   zopts = (*pdefs.data)[i].zopts
 
@@ -159,7 +161,7 @@ pro Gr_img_menus, sb, pdefs
                                         uvalue = 'R1', $
                                         label = 'Min:', $
                                         /capture, $
-                                        /track, $
+                                        track = optblock.track, $
                                         /all_events)
   pdefs.ids.zopts.i_range[1] = cw_enter(jb, $
                                         /double, $
@@ -169,11 +171,9 @@ pro Gr_img_menus, sb, pdefs
                                         uvalue = 'R2', $
                                         label = 'Max:', $
                                         /capture, $
-                                        /track, $
+                                        track = optblock.track, $
                                         /all_events)
   
-;junk = widget_label(jb, value = ' ')
-
   jb = widget_base(obase, $
                    /row, $
                    xpad = 0, $
@@ -189,7 +189,7 @@ pro Gr_img_menus, sb, pdefs
                                       xsize = 8, $
                                       uvalue = 'MISS', $
                                       label = "Missing:", $ $
-                                      /track, $
+                                      track = optblock.track, $
                                       /capture, $
                                       /all)
 
@@ -201,7 +201,7 @@ pro Gr_img_menus, sb, pdefs
                      $
                      $
                      uvalue = 'LOG', $
-                     /track)
+                     track = optblock.track)
   widget_control, pdefs.ids.zopts.i_log, $
                   set_droplist_select = zopts.ilog
   
@@ -211,7 +211,7 @@ pro Gr_img_menus, sb, pdefs
   pdefs.ids.zopts.i_invert = widget_button(jbb, $ $
                                            value = 'Invert colours?', $
                                            uvalue = 'INVERT', $
-                                           /track)
+                                           track = optblock.track)
   widget_control, pdefs.ids.zopts.i_invert, set_button = zopts.invert
   
   jbb = widget_base(jb, $
@@ -226,14 +226,9 @@ pro Gr_img_menus, sb, pdefs
                                     xsize = 5, $
                                     uvalue = 'PX', $
                                     label = 'Pixel Size:', $
-                                    /track, $
+                                    track = optblock.track, $
                                     /capture, $
                                     /all)
-  
-                                ;    jb = widget_base(obase, $
-;                      /column, $
-;                      space = 0)
-
   
   pdefs.ids.zopts.i_gamma = cw_enter(jbb, $
                                      /double, $
@@ -242,7 +237,7 @@ pro Gr_img_menus, sb, pdefs
                                      xsize = 9, $
                                      uvalue = 'GAM', $
                                      label = 'Gamma:', $
-                                     /track, $
+                                     track = optblock.track, $
                                      /capture, $
                                      /all_events)
   

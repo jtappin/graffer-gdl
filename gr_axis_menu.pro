@@ -546,6 +546,8 @@ end
 
 pro Gr_axis_menu, axis, base, pdefs
 
+  common graffer_options, optblock
+
   tjb = widget_base(base, /column, /frame, xpad = 0, ypad = 0, $
                     space = 0, event_pro = 'gr_axis_event')
   junk = widget_label(tjb, value = axis+'-Axis')
@@ -558,7 +560,7 @@ pro Gr_axis_menu, axis, base, pdefs
                    xsize = 25, $
                    uvalue = axis+'LAB', $
                    label = axis+' Label:', $
-                   /track, $
+                   track = optblock.track, $
                    /capture, $
                    /graphics)
 
@@ -570,7 +572,7 @@ pro Gr_axis_menu, axis, base, pdefs
                         value = ['Linear', 'Log'], $
                         uvalue = axis+'LOG', $
                         title = axis+' Log/Lin:', $
-                        /track)
+                        track = optblock.track)
 
                                 ; Exact or rounded axis range
 
@@ -611,7 +613,7 @@ pro Gr_axis_menu, axis, base, pdefs
                         stydesc, $
                         return_type = 'full_name', $
                         uvalue = axis+'STY', $
-                        /track, $
+                        track = optblock.track, $
                         delimiter = '/', $
                         ids = buts)
 
@@ -638,7 +640,7 @@ pro Gr_axis_menu, axis, base, pdefs
                   uvalue = axis+'MIN', $
                   label = axis+' Min:', $
                   format = "(g14.7)", $
-                  /track, $
+                  track = optblock.track, $
                   /capture)
 
                                 ; Maximum
@@ -651,7 +653,7 @@ pro Gr_axis_menu, axis, base, pdefs
                   uvalue = axis+'MAX', $
                   label = 'Max:', $
                   format = "(g14.7)", $
-                  /track, $
+                  track = optblock.track, $
                   /capture)
 
   if (axis eq 'X') then begin

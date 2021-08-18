@@ -126,6 +126,8 @@ end
 
 pro Gr_mk_plmenus, base, pdefs
 
+  common graffer_options, optblock
+
   tjb = widget_base(base, $
                     /column, $
                     /frame, $
@@ -143,7 +145,7 @@ pro Gr_mk_plmenus, base, pdefs
                              xsize = 30, $
                              uvalue = 'TITLE', $
                              label = 'Title:', $
-                             /track, $
+                             track = optblock.track, $
                              /capture, $
                              /graphics) 
 
@@ -153,7 +155,7 @@ pro Gr_mk_plmenus, base, pdefs
                                 xsize = 30, $
                                 uvalue = 'SUBTITLE', $
                                 label = 'Subtitle:', $
-                                /track, $
+                                track = optblock.track, $
                                 /capture, $
                                 /graphics)
 
@@ -171,7 +173,7 @@ pro Gr_mk_plmenus, base, pdefs
                                    label = 'Charsize:', $
                                    format = "(F0.2)", $
                                    step = 0.1, $
-                                   /track, $
+                                   track = optblock.track, $
                                    /capture, $
                                    minval = 0., $
                                    /trans)
@@ -184,7 +186,7 @@ pro Gr_mk_plmenus, base, pdefs
                                   xsize = 5, $
                                   uvalue = 'AXTHICK', $
                                   label = 'Line width:', $
-                                  /track, $
+                                  track = optblock.track, $
                                   /capture, $
                                   step = 1., $
                                   minval = 0.0, $
@@ -199,18 +201,20 @@ pro Gr_mk_plmenus, base, pdefs
   junk = widget_button(jb, $
                        value = 'Corners...', $
                        uvalue = 'POSITION', $
-                       /track)
-  junk = widget_button(jb, value = 'Key ...', uvalue = $
-                       'KEY', /track)
+                       track = optblock.track)
+  junk = widget_button(jb, $
+                       value = 'Key ...', $
+                       uvalue = 'KEY', $
+                       track = optblock.track)
   junk = widget_button(jb, $
                        value = 'Comment...', $
                        uvalue = 'COMMENT', $
-                       /track)
+                       track = optblock.track)
   pdefs.ids.fontsel = widget_droplist(jb, $
                                       value = ['Hershey/HW', $
                                                'TrueType'], $
                                       uvalue = 'FONTS', $
                                       title = 'Fonts:', $
-                                      /track)
+                                      track = optblock.track)
 
 end

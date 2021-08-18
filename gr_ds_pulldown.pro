@@ -205,7 +205,9 @@ end
 
 
 pro Gr_ds_pulldown, base, pdefs
-  
+
+  common graffer_options, optblock
+
   dsops = [{ds_pd_opts, flag:0, label:'Next'}, $
            {ds_pd_opts, 0, 'Previous'}, $
            {ds_pd_opts, 0, 'New'}, $
@@ -228,7 +230,7 @@ pro Gr_ds_pulldown, base, pdefs
   junk = cw_pdmenu_plus(jb, $
                         dsops, $
                         uvalue = 'DSOPS', $
-                        /track, $
+                        track = optblock.track, $
                         return_type = 'full_name', $
                         delimiter = '/', $
                         /row, $

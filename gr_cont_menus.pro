@@ -171,6 +171,8 @@ end
 
 pro Gr_cont_menus, sb, pdefs
 
+  common graffer_options, optblock
+
   i = pdefs.cset
   fflag = 0b
   zopts = (*pdefs.data)[i].zopts
@@ -219,7 +221,7 @@ pro Gr_cont_menus, sb, pdefs
                                            value = ['Automatic', $
                                                     'Explicit'], $
                                            uvalue = 'CMODE', $
-                                           /track)
+                                           track = optblock.track)
   widget_control, pdefs.ids.zopts.c_auto, set_droplist_select = iexpl
 
   if (iexpl and ptr_valid(zopts.levels)) then l0 = *(zopts.levels)  $
@@ -232,7 +234,7 @@ pro Gr_cont_menus, sb, pdefs
                                            map = ~iexpl)
   pdefs.ids.zopts.c_nlevels = cw_spin_box(pdefs.ids.zopts.cl_base[0], $
                                           /int, $
-                                          /track, $
+                                          track = optblock.track, $
                                           uvalue = 'NLEVEL', $
                                           value = zopts.n_levels, $
                                           xsize = 8, $
@@ -256,7 +258,7 @@ pro Gr_cont_menus, sb, pdefs
                               'Logarithmic', $
                               'Square Root'], $
                      uvalue = 'CL_MAP', $
-                     /track)
+                     track = optblock.track)
   widget_control, pdefs.ids.zopts.c_map, $
                   set_droplist_select = zopts.lmap
 
@@ -267,7 +269,7 @@ pro Gr_cont_menus, sb, pdefs
   pdefs.ids.zopts.c_levels = cw_enter(pdefs.ids.zopts.cl_base[1], $
                                       /double, $
                                       /array, $
-                                      /track, $
+                                      track = optblock.track, $
                                       uvalue = 'LEVEL', $
                                       value = l0, $
                                       format = "(g11.4)", $
@@ -290,13 +292,13 @@ pro Gr_cont_menus, sb, pdefs
                                                     'Filled', $
                                                     'Downhill'], $
                                            uvalue = 'FILL', $
-                                           /track)
+                                           track = optblock.track)
   widget_control, pdefs.ids.zopts.c_type, set_droplist_select = zopts.fill
 
   pdefs.ids.zopts.c_colour = cw_enter(jbx, $
                                       /text, $
                                       /array, $
-                                      /track, $
+                                      track = optblock.track, $
                                       uvalue = 'COLOUR', $
                                       /capture, $
                                       value = $
@@ -318,7 +320,7 @@ pro Gr_cont_menus, sb, pdefs
                                      /double, $ 
                                      format = "(f6.1)", $
                                      /array, $
-                                     /track, $
+                                     track = optblock.track, $
                                      uvalue = 'THICK', $
                                      /capture, $
                                      value = *(zopts.thick), $ 
@@ -331,7 +333,7 @@ pro Gr_cont_menus, sb, pdefs
   pdefs.ids.zopts.c_style = cw_enter(jby, $
                                      /int, $
                                      /array, $
-                                     /track, $
+                                     track = optblock.track, $
                                      uvalue = 'STYLE', $
                                      /capture, $
                                      value = *(zopts.style), $
@@ -354,7 +356,7 @@ pro Gr_cont_menus, sb, pdefs
 
   pdefs.ids.zopts.c_label = cw_spin_box(jby, $
                                         /int, $
-                                        /track, $
+                                        track = optblock.track, $
                                         uvalue = 'LABEL',  $
                                         value = zopts.label, $
                                         format = '(I0)', $
@@ -369,7 +371,7 @@ pro Gr_cont_menus, sb, pdefs
 
   pdefs.ids.zopts.c_label_off = cw_spin_box(jby, $
                                             /int, $
-                                            /track, $
+                                            track = optblock.track, $
                                             uvalue = 'LABEL_OFF', $
                                             value = zopts.label_off, $
                                             format = "(i0)", $
@@ -387,7 +389,7 @@ pro Gr_cont_menus, sb, pdefs
 
   pdefs.ids.zopts.c_charsize = cw_spin_box(jby, $
                                            /double, $
-                                           /track, $
+                                           track = optblock.track, $
                                            uvalue = 'CCSIZE', $
                                            value = zopts.charsize, $
                                            format = "(F0.2)", $

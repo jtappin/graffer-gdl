@@ -362,6 +362,8 @@ end
 
 function Gr_hardopts, pdefs
 
+  common graffer_options, optblock
+
   h = pdefs.hardset
 
   output_types = ['Normal', 'Encapsulated', $
@@ -413,25 +415,25 @@ function Gr_hardopts, pdefs
   junk = widget_droplist(jb, $
                          value = ['Monochrome', 'Colour'], $
                          uvalue = 'COL', $
-                         /track)
+                         track = optblock.track)
   widget_control, junk, set_droplist_select = h.colour
 
   junk = widget_droplist(jb, $
                          value = output_types, $
                          uvalue = 'EPS', $
-                         /track)
+                         track = optblock.track)
   widget_control, junk, set_droplist_select = h.eps
 
   junk = widget_droplist(jb, $
                          value = ['Landscape', 'Portrait'], $
                          uvalue = 'ORI', $
-                         /track)
+                         track = optblock.track)
   widget_control, junk, set_droplist_select = h.orient
 
   uvs.modid = widget_droplist(jb, $
                               value = ['RGB', 'CMYK'], $
                               uvalue = 'CMYK', $
-                              /track)
+                              track = optblock.track)
   widget_control, uvs.modid, set_droplist_select = h.cmyk
 
   widget_control, uvs.modid, sensitive = h.colour
@@ -447,19 +449,19 @@ function Gr_hardopts, pdefs
                                 value = ['A4', 'Letter'], $
                                 title = 'Paper size:', $
                                 uvalue = 'PSIZE', $
-                                /track)
+                                track = optblock.track)
   widget_control, uvs.paperid, set_droplist_select = h.psize
 
   uvs.ctrid = widget_button(cl, $
                             value = 'Centre on page', $
                             uvalue = 'CENTRE', $
-                            /track, $
+                            track = optblock.track, $
                             sensitive = ~(h.eps and 1))
   junk = widget_droplist(cl, $
                          value = ['Off', 'On'], $
                          title = "Plot timestamp", $
                          uvalue = 'TIMEST', $
-                         /track)
+                         track = optblock.track)
   widget_control, junk, set_droplist_select = h.timestamp
 
 ;  jb = widget_base(cl, /column)
@@ -471,7 +473,7 @@ function Gr_hardopts, pdefs
                          uvalue = 'XSI', $
                          format = "(F5.2)", $
                          xsize = 5, $
-                         /track, $
+                         track = optblock.track, $
                          /capture, $
                          min = 0., $
                          step = 0.5, $
@@ -484,7 +486,7 @@ function Gr_hardopts, pdefs
                            uvalue = 'XOFF', $
                            format = "(F5.2)", $
                            xsize = 5, $
-                           /track, $
+                           track = optblock.track, $
                            /capture, $
                            min = 0., $
                            step = 0.5, $
@@ -506,7 +508,7 @@ function Gr_hardopts, pdefs
                          uvalue = 'YSI', $
                          format = "(F5.2)", $
                          xsize = 5, $
-                         /track, $
+                         track = optblock.track, $
                          /capture, $
                          min = 0., $
                          step = 0.5, $
@@ -519,7 +521,7 @@ function Gr_hardopts, pdefs
                            uvalue = 'YOFF', $
                            format = "(F5.2)", $
                            xsize = 5, $
-                           /track, $
+                           track = optblock.track, $
                            /capture, $
                            min = 0., $
                            step = 0.5, $
@@ -549,7 +551,7 @@ function Gr_hardopts, pdefs
                                   'Symbol'], $
                          title = 'Font: Family:', $
                          uvalue = 'FFAMILY', $
-                         /track)
+                         track = optblock.track)
   widget_control, junk, set_droplist_select = h.font.family
 
   junk = widget_label(jb, $
@@ -566,7 +568,7 @@ function Gr_hardopts, pdefs
                             initial = h.font.wg_sl, $
                             uvalue = 'FWS', $
                             ids = bids, $
-                            /track)
+                            track = optblock.track)
   uvs.wsids = bids
   widget_control, uvs.wsid, sensitive = h.font.family le 9
   for j = 1, 3, 2 do widget_control, uvs.wsids(j), sensitive = $
@@ -580,17 +582,17 @@ function Gr_hardopts, pdefs
                         value = h.name, $
                         xsize = 40, $
                         uvalue = 'FILE', $
-                        /track, $
+                        track = optblock.track, $
                         /capture, $
                         /all_events)
   junk = widget_button(jb, $
                        value = 'Pick ...', $
                        uvalue = 'PFILE', $
-                       /track)
+                       track = optblock.track)
   junk = widget_button(jb, $
                        value = 'Default', $
                        uvalue = 'DFILE', $
-                       /track)
+                       track = optblock.track)
 
                                 ; Spool command
 
@@ -620,7 +622,7 @@ function Gr_hardopts, pdefs
                          value = ccmd, $
                          uvalue = 'CMD', $
                          xsize = 12, $
-                         /track, $
+                         track = optblock.track, $
                          /capture)
 
   uvs.cmid(1) = cw_enter(uvs.spbase, $
@@ -628,7 +630,7 @@ function Gr_hardopts, pdefs
                          uvalue = 'SFX', $
                          xsize = 8, $
                          label = file_basename(h.name), $
-                         /track, $
+                         track = optblock.track, $
                          /capture)
 
   junk = widget_button(uvs.spbase, $
@@ -658,11 +660,11 @@ function Gr_hardopts, pdefs
   junk = widget_button(jb, $
                        value = '   Cancel   ', $
                        uvalue = 'CANCEL', $
-                       /track)
+                       track = optblock.track)
   junk = widget_button(jb, $
                        value = '    Do it    ', $
                        uvalue = 'DO', $
-                       /track)
+                       track = optblock.track)
 
   widget_control, base, set_uvalue = uvs, /no_copy
 
