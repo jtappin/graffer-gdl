@@ -24,6 +24,8 @@
 
 function cvttobm, bytemap, threshold = threshold
 
+  on_error, 2
+  
   sz = size(bytemap)
 
   if sz[-2] ne 1 then message, "CVTTOBM can only convert byte arrays."

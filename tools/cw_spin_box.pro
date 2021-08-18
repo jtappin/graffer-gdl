@@ -130,7 +130,6 @@ pro cw_spin_box_mk_bitmap, bup, bdown, xextra, $
   down[3:5, 1] = 255b
   down[2:6, 2] = 255b
   down[1:7, 3] = 255b
-;  down[1:9, 4] = 255b
   down[*, 4] = 255b
   up = reverse(down, 2)
 

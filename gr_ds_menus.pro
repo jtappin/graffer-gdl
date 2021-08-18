@@ -29,8 +29,6 @@
 
 pro Gr_dsp_event, event
 
-  defsysv, '!gdl', exist = is_gdl
-
   widget_control, event.id, get_uvalue = object
 
   base = widget_info(/child, event.top)
@@ -54,7 +52,7 @@ pro Gr_dsp_event, event
      'PSYM': if (track_flag) then $
         graff_msg, pdefs.ids.hlptxt, 'Select plotting symbol for current ' + $
                    'data set' $
-     else if is_gdl then (*pdefs.data)[pdefs.cset].psym = event.index $
+     else if is_gdl() then (*pdefs.data)[pdefs.cset].psym = event.index $
      else (*pdefs.data)[pdefs.cset].psym = event.value
         
      
@@ -171,8 +169,6 @@ pro Gr_ds_menus, optbb, pdefs
 
   common Gr_psym_maps, psym_bm  ;, col_bm
 
-  defsysv, '!gdl', exist = is_gdl
-
   if (n_elements(psym_bm) eq 0) then gr_psym_bitm
                                 ;, pdefs.transient.colmin
 
@@ -255,7 +251,7 @@ pro Gr_ds_menus, optbb, pdefs
   jjb = widget_base(pdefs.ids.plopts[0], /row)
 
   sz = size(psym_bm, /dim)
-  if is_gdl then begin
+  if is_gdl() then begin
      symlist = ['No symbol', 'Plus', 'Asterisk', 'Dot', 'Diamond', $
                 'Triangle', 'Square', 'Cross', 'Circle', 'Filled ' + $
                 'Diamond', 'Filled Triangle', 'Filled Square', $

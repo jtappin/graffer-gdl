@@ -25,6 +25,24 @@ pro sbox_test
                      value = 2., $
                      format = "(f0.1)")
 
+  junk = cw_spin_box(base, $
+                     label = 'Integer value', $
+                     uvalue = 'INTT', $
+                     /int, $
+                     value = 2, $
+                     minval = 0, $
+                     /track)
+
+  junk = cw_spin_box(base, $
+                     label = 'Float value', $
+                     uvalue = 'FLTT', $
+                     /float, $
+                     value = 2., $
+                     minval = -5., $
+                     maxval = 5., $
+                     format = "(f0.1)", $
+                     /track)
+  
   junk = widget_button(base, $
                        value = 'Quit', $
                        uvalue = 'QUIT')

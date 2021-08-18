@@ -30,8 +30,6 @@ pro Graff_set_vals, pdefs, set_only = set_only
 
   common Gr_psym_maps, psym_bm  ;, col_bm
 
-  defsysv, '!gdl', exist = is_gdl
-
   if (not keyword_set(set_only)) then begin
      widget_control, pdefs.ids.graffer, tlb_set_title =  $
                      string(pdefs.version, pdefs.dir, pdefs.name,  $
@@ -124,7 +122,7 @@ pro Graff_set_vals, pdefs, set_only = set_only
 ;	The remainder depend on pdefs.cset and handles must be extracted
 
   data = (*pdefs.data)[pdefs.cset]
-  if (is_gdl) then  widget_control, pdefs.ids.psym, $
+  if is_gdl() then  widget_control, pdefs.ids.psym, $
                                     set_droplist_select = data.psym $
   else widget_control, pdefs.ids.psym, set_value = data.psym
 ;  cw_pdmenu_plus_set, pdefs.ids.psym, index = data.psym
