@@ -54,8 +54,18 @@
 ;				button, for non-exclusive groups, it
 ;				is an array of flags indicating the
 ;				state of the buttons.
+;	/scroll			If set, then the button base will be
+;				scrollable. 
+;	x_scroll_size	long	Specify the X-size of the view port
+;				into the scrollable base.
+;	y_scroll_size	long	Specify the Y-size of the view port
+;				into the scrollable base.
 ;	Other keys are passed directly to the base widget that
 ;	contains the hierarchy base.
+;
+; Notes:
+;	Some options (e.g. PUSHBUTTON_EVENTS) that are not supported
+;	but GDL will get silently passed to the base and ignored.
 ;
 ; History:
 ;	First cut: 18/8/21; SJT
@@ -141,7 +151,10 @@ function cw_bgroup, parent, labels, $
                     ids = ids, no_release = no_release, $
                     map = map, event_funct = event_funct, $
                     sensitive = sensitive, $
-                    set_value = set_value, $
+                    set_value = set_value, scroll = scroll, $
+                    x_scroll_size = x_scroll_size, $
+                    y_scroll_size = y_scroll_size, $
+                    font = font, $
                     _extra = _extra
 
 ; GDL doesn't handle undefined keys very well.
@@ -176,14 +189,18 @@ function cw_bgroup, parent, labels, $
                      row = row, $
                      exclusive = exclusive, $
                      event_func = 'cw_bgroup_event', $
-                     nonexclusive = nonexclusive)
+                     nonexclusive = nonexclusive, $
+                     scroll = keyword_set(scroll), $
+                     x_scroll_size = x_scroll_size, $
+                     y_scroll_size = y_scroll_size)
   
   nbuts = n_elements(labels)
 
   ids = lonarr(nbuts)
   for j = 0, nbuts-1 do $
      ids[j] = widget_button(base, $
-                           value = labels[j])
+                            value = labels[j], $
+                            font = font)
 
   if keyword_set(button_uvalue) then $
      for j = 0, nbuts-1 do widget_control, ids[j], $
@@ -198,7 +215,6 @@ function cw_bgroup, parent, labels, $
   else $
      for j = 0, nbuts-1 do widget_control, ids[j], $
                                            set_uvalue = j
-
 
   if keyword_set(exclusive) then type = 2 $ 
   else if keyword_set(nonexclusive) then type = 1 $
@@ -216,4 +232,6 @@ function cw_bgroup, parent, labels, $
   if keyword_set(set_value) &&  type ne 0 then $
      widget_control, b0, set_value = set_value
 
+  return, b0
+  
 end
