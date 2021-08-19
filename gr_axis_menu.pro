@@ -62,7 +62,7 @@ pro Gr_axis_event, event
      else pdefs.xtype = event.index
      
      'XSTY': begin
-        val = str_sep(event.value, '/')
+        val = strsplit(event.value, '/', /extr)
         if (n_elements(val) eq 1) then $
            graff_msg, pdefs.ids.hlptxt, $
                       'Select X-axis style options' $
@@ -223,7 +223,7 @@ pro Gr_axis_event, event
      else pdefs.ytype = event.index
      
      'YSTY': begin
-        val = str_sep(event.value, '/')
+        val = strsplit(event.value, '/', /extr)
         if (n_elements(val) eq 1) then $
            graff_msg, pdefs.ids.hlptxt, $
                       'Select Y-axis style options' $
@@ -390,7 +390,7 @@ pro Gr_axis_event, event
      else pdefs.ytype_r = event.index
      
      'YrSTY': begin
-        val = str_sep(event.value, '/')
+        val = strsplit(event.value, '/', /extr)
         if n_elements(val) eq 1 then $
            graff_msg, pdefs.ids.hlptxt, $
                       'Select Y(r)-axis style options' $

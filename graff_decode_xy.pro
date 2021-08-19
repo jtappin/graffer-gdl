@@ -38,11 +38,11 @@ for j = 0l, nact - 1 do begin
 
     if nt eq 1 then begin
        xy_data[*, j] = [double(j), double(dstxt)]
-    endif else if (strpos(dstxt(0), ':') ne -1) then begin
-       tstxt = str_sep(dstxt(0), ':')
-       xy_data(0, j) = total(double(tstxt)/[1., 60., 3600.])
-       xy_data(1:*, j) = double(dstxt(1:*))
-    endif else xy_data(*, j) = double(dstxt)
+    endif else if (strpos(dstxt[0], ':') ne -1) then begin
+       tstxt = strsplit(dstxt[0], ':', /extr)
+       xy_data[0, j] = total(double(tstxt)/[1., 60., 3600.])
+       xy_data[1:*, j] = double(dstxt(1:*))
+    endif else xy_data[*, j] = double(dstxt)
 endfor  
 
 return, xy_data

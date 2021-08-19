@@ -114,7 +114,7 @@ pro Gr_dsp_event, event
      else (*pdefs.data)[pdefs.cset].max_val = event.value
 
      'XTRA': begin
-        val = str_sep(event.value, '.')
+        val = strsplit(event.value, '.', /extr)
         if (n_elements(val) eq 1) then graff_msg, pdefs.ids.hlptxt, $
                                                   'Set other dataset options' $
         else case val[1] of

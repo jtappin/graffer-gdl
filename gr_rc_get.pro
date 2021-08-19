@@ -35,7 +35,7 @@ pro Gr_rc_get, optblock
   inln = ''
   while not eof(ilu) do begin
      readf, ilu, inln
-     kv = str_sep(inln, ':')
+     kv = strsplit(inln, ':', /extr)
      case strupcase(kv(0)) of
         'AUTOSAVE': optblock.auto_delay = float(kv(1))
         'SUPP2D': optblock.s2d = fix(kv(1))
