@@ -202,10 +202,7 @@ pro cw_pdmenu_plus_set_exclusive, id, parent
      until widget_info(parent, /type) eq 0
   endif
 
-  defsysv, '!gdl', exist = is_gdl
-  
   idlist = widget_info(parent, /all_children)
-;  print,  idlist
   
   for j = 0, n_elements(idlist)-1 do begin
      if idlist[j] eq id then continue
@@ -215,7 +212,7 @@ pro cw_pdmenu_plus_set_exclusive, id, parent
         widget_control, idlist[j], get_uvalue = uvg
         if uvg.group eq group then begin
            uvg.state = 0
-           if is_gdl then begin
+           if is_gdl() then begin
               if ~uvg.select then $
                  widget_control, idlist[j], set_value = $
                                  uvg.label+' [ ]', $
@@ -230,8 +227,6 @@ end
 
 pro cw_pdmenu_plus_set, id, state, index = index
 
-  defsysv, '!gdl', exist = is_gdl
-  
   if n_elements(index) eq 1 then begin
      if n_params() eq 1 then state = 1b
      if widget_info(id, /type) eq 0 then $
@@ -256,7 +251,7 @@ pro cw_pdmenu_plus_set, id, state, index = index
      if uvalue.state eq state then return
      uvalue.state = state
 
-     if is_gdl then begin
+     if is_gdl() then begin
         if ~uvalue.select then begin
            if state then bvs = uvalue.label+' [*]' $
            else bvs = uvalue.label+' [ ]'
@@ -276,10 +271,7 @@ end
 
 function cw_pdmenu_plus_event, event
 
-  defsysv, '!gdl', exist = is_gdl
-  
   widget_control, event.id, get_uvalue = uvalue
-  help, /str, event, uvalue
 
   if tag_names(event, /struct) eq 'WIDGET_TRACKING' then begin
      if size(uvalue.val, /type) eq 7 then $
@@ -300,7 +292,7 @@ function cw_pdmenu_plus_event, event
   
      if uvalue.check then begin
         uvalue.state = ~uvalue.state
-        if is_gdl then begin
+        if is_gdl() then begin
            if ~uvalue.select then begin
               if uvalue.state then bvs = uvalue.label+' [*]' $
               else bvs = uvalue.label+' [ ]'
@@ -339,15 +331,13 @@ pro cw_pdmenu_plus_build, parent, desc, idx, nbuttons, etype, is_mb, $
                           prefix = prefix, selector = selector, $
                           _extra = _extra
 
-  defsysv, '!gdl', exist = is_gdl
-  
   base_parent = widget_info(parent, /type) eq 0
 
   while idx lt nbuttons do begin
      menu = (desc[idx].flag and 1b) ne 0
      if menu && idx ne 0 && keyword_set(selector) then $
         message, "A selector menu cannot have submenus"
-     if ~is_gdl && menu && ~is_mb then menu = 2
+     if ~is_gdl() && menu && ~is_mb then menu = 2
 
      check = (desc[idx].flag and 4b) ne 0
 
@@ -367,7 +357,7 @@ pro cw_pdmenu_plus_build, parent, desc, idx, nbuttons, etype, is_mb, $
      endif else if isbitmap then bv = *(desc[idx].bitmap) $
      else bv = desc[idx].label
 
-      if is_gdl then begin
+      if is_gdl() then begin
         if check then begin
                                 ; Bit maps and selector don't work in GDL.
            if isbitmap then begin
@@ -380,7 +370,6 @@ pro cw_pdmenu_plus_build, parent, desc, idx, nbuttons, etype, is_mb, $
            endif else bvs = bv
         endif else bvs = bv
         
-        print, bvs, menu, parent
         but = widget_button(parent, $
                             value = bvs, $
                             menu = menu, $
@@ -423,7 +412,7 @@ pro cw_pdmenu_plus_build, parent, desc, idx, nbuttons, etype, is_mb, $
            label: bv $
           } 
 
-     if check && ~is_gdl then $
+     if check && ~is_gdl() then $
         widget_control, but, set_button = desc[idx].state
      
      widget_control, but, set_uvalue = uv 
@@ -460,8 +449,6 @@ function cw_pdmenu_plus, parent, udesc, column = column, row = row, $
                          initial_selection = initial_selection, $
                          _extra = _extra
 
-  defsysv, '!gdl', exist = is_gdl
-  
   if n_params() ne 2 then message, "Must give a parent and a menu " + $
                                    "descriptor"
   
@@ -486,8 +473,8 @@ function cw_pdmenu_plus, parent, udesc, column = column, row = row, $
      message, "Either the LABEL field or the BITMAP field is required " + $
               "in the descriptor"
 
-  if have_fields[1] && is_gdl then $
-     message, /continue, "BITMAP buttons are not tested in GDL."
+  if have_fields[1] && is_gdl() then $
+     message, /continue, "BITMAP buttons are not well-tested in GDL."
   
   if have_fields[0] && have_fields[1] then $
      message, "Only one of the LABEL and BITMAP fields may be given"
