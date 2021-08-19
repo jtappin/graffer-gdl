@@ -5,7 +5,14 @@ pro pdsel_event, event
   widget_control, event.id, get_uvalue = object
   case object of
      'QUIT': widget_control, event.top, /destroy
-     else: help, /str, event
+     else: begin
+        help, /str, event
+        widget_control, event.top, get_uvalue = ids
+        widget_control, ids.cid, get_value = cc
+;        lss = cw_pdmenu_plus_get(ids.sid, 2)
+        print, 'colour', cc
+;        print, 'style', lss
+     end
   endcase
 end
 
@@ -65,7 +72,7 @@ pro pdsel
   junk = widget_label(jb, $
                       value = 'Style:')
 
-  junk = cw_pdmenu_plus(jb, $
+  sid = cw_pdmenu_plus(jb, $
                         stydesc, $
                         return_type = 'full_name', $
                         uvalue = 'STY', $
@@ -79,7 +86,7 @@ pro pdsel
   junk = widget_label(jb, $
                       value = 'Colour:')
 
-  junk = cw_pdmenu_plus(jb, $
+  cid = cw_pdmenu_plus(jb, $
                         clist, $
                         return_type = 'index', $
                         uvalue = 'COLOUR', $
@@ -101,7 +108,7 @@ pro pdsel
                        value = 'QUIT', $
                        uvalue = 'QUIT')
 
-  widget_control, base, /real
+  widget_control, base, /real, set_uvalue = {cid: cid, sid: sid}
 
   xmanager, 'pdsel', base
 

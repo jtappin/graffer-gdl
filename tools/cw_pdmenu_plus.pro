@@ -156,11 +156,13 @@ function cw_pdmenu_plus_get, wid, group, id = id
      idb = widget_info(idb, /child)
 
   id = 0l
-  nc = widget_info(idb, /n_children)
-  if nc eq 0 then return, -1
+  ;; nc = widget_info(idb, /n_children)
+  ;; if nc eq 0 then return, -1
 
   if n_params() eq 1 then group = 1
   ids = widget_info(idb, /all_children)
+  if ~widget_info(ids[0], /valid) then return, -1
+  nc = n_elements(ids)
   
   idx = -1l
   for j = 0, nc-1 do begin
@@ -215,8 +217,8 @@ pro cw_pdmenu_plus_set_exclusive, id, parent
            if is_gdl() then begin
               if ~uvg.select then $
                  widget_control, idlist[j], set_value = $
-                                 uvg.label+' [ ]', $
-                                 set_uvalue = uvg 
+                                 uvg.label+' [ ]'
+              widget_control, idlist[j], set_uvalue = uvg
            endif else $
               widget_control, idlist[j], set_button = 0, $
                               set_uvalue = uvg
@@ -255,8 +257,9 @@ pro cw_pdmenu_plus_set, id, state, index = index
         if ~uvalue.select then begin
            if state then bvs = uvalue.label+' [*]' $
            else bvs = uvalue.label+' [ ]'
-           widget_control, id, set_uvalue = uvalue, set_value = bvs
+           widget_control, id, set_value = bvs
         endif
+        widget_control, id, set_uvalue = uvalue
      endif else $
         widget_control, id, set_uvalue = uvalue, set_button = state
      
@@ -289,16 +292,16 @@ function cw_pdmenu_plus_event, event
                  enter: event.enter, $
                  value: long(uvalue.val)}
   endif else begin
-  
+     
      if uvalue.check then begin
         uvalue.state = ~uvalue.state
         if is_gdl() then begin
            if ~uvalue.select then begin
               if uvalue.state then bvs = uvalue.label+' [*]' $
               else bvs = uvalue.label+' [ ]'
-              widget_control, event.id, set_value = bvs, set_uvalue = $
-                              uvalue
+              widget_control, event.id, set_value = bvs
            endif
+              widget_control, event.id, set_uvalue = uvalue
         endif else $
            widget_control, event.id, set_button = uvalue.state, $
                            set_uvalue = uvalue

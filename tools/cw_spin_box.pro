@@ -536,7 +536,6 @@ function cw_spin_box, parent, row = row, column = column, $
   else tt = 0
 
   tcode = size(tt, /type)
-  print, tcode
   
   if (tcode eq 4 || tcode eq 5) && keyword_set(unsigned) then $
      message, /continue, "UNSIGNED Key not applicable to FP types, " + $
@@ -627,7 +626,7 @@ function cw_spin_box, parent, row = row, column = column, $
 
   ibase = widget_base(base, $
                       /row)
-  print, cstruct.format, cstruct.value
+
   cstruct.boxid = widget_text(ibase, $
                               xsize = xsize, $
                               ysize = 1, $

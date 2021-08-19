@@ -33,7 +33,13 @@
 
 function Grf_emask, ids, type, text = text
 
-  widget_control, ids.xyid, get_value = text
+  if is_gdl() then begin
+     widget_control, ids.xyid, get_value = text0
+     text = strsplit(text0, string([10b, 13b]), /extr) ; Should catch
+                                ; LF, CR and CRLF terminated lines
+  endif else $
+     widget_control, ids.xyid, get_value = text
+
   tpr = where(strlen(strtrim(text)) ne 0, nv)
   if (nv ne 0) then text = text(tpr) $
   else begin
@@ -41,8 +47,7 @@ function Grf_emask, ids, type, text = text
      return, -1
   endelse
   
-  tl = str_sep(strcompress(strtrim(text(0), 2)), ' ')
-  nc = n_elements(tl)
+  tl = strsplit(text[0], count = nc, /extr)
   case nc of
      1: mask = [1, 0, 0, 0, 0, 0, 0, 0, 0]
      2: mask = [1, 0, 0, 0, 0, 0, 0, 0, 0]
@@ -54,14 +59,14 @@ function Grf_emask, ids, type, text = text
   endcase
 
   for j = 0, n_elements(ids.errids)-1 do  $
-     widget_control, ids.errids(j), sensitive = mask(j)
+     widget_control, ids.errids[j], sensitive = mask[j]
 
   widget_control, ids.errid, get_value = type
 
-  if (not mask(type)) then begin
-     l = where(mask)
-     widget_control, ids.errid, set_value = l[0]
-  endif
+  ;; if (not mask(type)) then begin
+  ;;    l = where(mask)
+  ;;    widget_control, ids.errid, set_value = l[0]
+  ;; endif
 
   return, mask
 
@@ -77,6 +82,8 @@ function Xyw_event, event
   txt = ''                      ; Dummy values for text & type.
   type = 0
 
+  help, /str, event
+  
   case but of
      'ACTION': begin
         if (event.value eq -1) then begin
@@ -85,17 +92,18 @@ function Xyw_event, event
         endif else begin
            
            mask = grf_emask(ids, type, text = txt)
-           if (mask(0) lt 0) then goto, bailout
+           if (mask[0] lt 0) then goto, bailout
            
-           
-           if (not mask(type)) then begin
-              widget_control, ids.xyid, set_value =  $
-                              ["Error bar settings",  $
-                               "do not match available", + $
-                               "data. Please reselect the",  $
-                               "errors option."]
-              wait, 5
-              widget_control, ids.xyid, set_value = txt
+           print, type, mask[type], ~mask[type]
+           if ~mask[type] then begin
+              l = where(mask)
+              widget_control, ids.errid, set_value = l[0]
+              junk = dialog_message(["Error bar settings",  $
+                                     "do not match available", + $
+                                     "data. Please reselect the",  $
+                                     "errors option."], $
+                                    dialog_parent = event.top)
+              type = l[0]
               iexit = 0
            endif else iexit = event.value
         endelse
@@ -107,7 +115,7 @@ function Xyw_event, event
         if (event.enter) then widget_control, event.id, /input_focus
      endif else begin
         mask = grf_emask(ids, type)
-        if (mask(0) lt 0) then goto, bailout
+        if (mask[0] lt 0) then goto, bailout
      endelse
      
      'ERRS': if (tag_names(event, /struct) eq 'WIDGET_TRACKING') then $
@@ -119,7 +127,7 @@ Bailout:
 
   return, {id:event.id, $
            top:event.top, $
-           handler:event.handler, $
+           handler:0l, $
            Exited:iexit, $
            value:txt, $
            type:type}
@@ -257,6 +265,7 @@ function Gr_xy_wid, pdefs, line = line
 
   repeat begin
      ev = widget_event(base)
+     help, /str, ev
   endrep until (ev.exited ne 0)
 
   widget_control, tlb, /destroy
