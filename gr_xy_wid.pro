@@ -82,8 +82,6 @@ function Xyw_event, event
   txt = ''                      ; Dummy values for text & type.
   type = 0
 
-  help, /str, event
-  
   case but of
      'ACTION': begin
         if (event.value eq -1) then begin
@@ -94,7 +92,6 @@ function Xyw_event, event
            mask = grf_emask(ids, type, text = txt)
            if (mask[0] lt 0) then goto, bailout
            
-           print, type, mask[type], ~mask[type]
            if ~mask[type] then begin
               l = where(mask)
               widget_control, ids.errid, set_value = l[0]
@@ -114,6 +111,16 @@ function Xyw_event, event
                        'TRACK') ne -1) then begin
         if (event.enter) then widget_control, event.id, /input_focus
      endif else begin
+        if is_gdl() && event.type eq 0 && event.ch eq 10 then begin
+                                ; Carriage return is not correctly
+                                ; inserted by editable test widgets in
+                                ; GDL.
+           widget_control, event.id, get_value = txt
+           txtr = strmid(txt, 0, event.offset) + string(10b) + $
+                  strmid(txt, event.offset)
+           widget_control, event.id, set_value = txtr, $
+                           set_text_select = event.offset+1
+        endif
         mask = grf_emask(ids, type)
         if (mask[0] lt 0) then goto, bailout
      endelse
@@ -265,7 +272,6 @@ function Gr_xy_wid, pdefs, line = line
 
   repeat begin
      ev = widget_event(base)
-     help, /str, ev
   endrep until (ev.exited ne 0)
 
   widget_control, tlb, /destroy

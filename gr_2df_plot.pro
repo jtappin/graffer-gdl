@@ -127,7 +127,6 @@ pro Gr_2df_plot, pdefs, i, csiz, grey_ps = grey_ps, shaded = shaded
         ncol = data.zopts.n_cols
         lcolours = lonarr(ncol)
         for j = 0, ncol-1 do begin
-           help, (*data.zopts.colours)[j]
            if (*data.zopts.colours)[j] eq -2 then $
               lcolours[j] = $
               graff_colours(*(data.zopts.raw_colours)[*, j]) $
