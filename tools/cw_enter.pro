@@ -188,7 +188,6 @@ pro cw_enter_focus, id
 
 end
 
-
 pro cw_enter_set, id, value
                                 ; Set the value of a cw_enter
                                 ; widget
@@ -196,8 +195,13 @@ pro cw_enter_set, id, value
   base = widget_info(id, /child)
   widget_control, base, get_uvalue = state
 
-  on_ioerror, no_set
-
+  ;; catch, an_error
+  ;; if an_error ne 0 then begin
+  ;;    message, /continue, "Could not convert value to appropriate type."
+  ;;    catch, /cancel
+  ;;    return
+  ;; endif
+  
   if ~state.array then v1 = value[0]  $
   else v1 = value
 
@@ -243,19 +247,20 @@ pro cw_enter_set, id, value
         endif
      end
      else: begin
-        if state.empty_nan && ~finite(vv) then vs = '' $
-        else vs = string(vv, format = state.format)
+        vs = string(vv, format = state.format)
+        if state.empty_nan then begin
+           locs = where(~finite(vv), ni)
+           if ni ne 0 then vs[locs] = ''
+        endif
      end
   endcase
+  
+  if is_gdl() && n_elements(vs) gt 1 && state.array then $
+     vs = strjoin(vs, string(10b))
+
   widget_control, state.text, set_value = vs
 
   widget_control, base, set_uvalue = state
-
-  return
-
-No_set:
-
-  message, /continue, "Could not convert value to appropriate type."
 
 end
 
@@ -281,9 +286,12 @@ function cw_enter_read, id
   widget_control, base, get_uvalue = state
 
   widget_control, state.text, get_value = txt
-  if (not state.array) then txt = txt(0)
+  if  ~state.array then txt = txt[0] $
+  else if is_gdl() then $
+     txt = strsplit(txt, string([10b, 13b]), /extr)
 
-  ivv = bytarr((nv0 = n_elements(txt)))
+  nv0 = n_elements(txt)
+  ivv = bytarr(nv0)
 
   case state.type of
      4: begin                   ; Float
@@ -338,23 +346,27 @@ function cw_enter_read, id
 ; Note that list types will have returned by we get here
 
   if state.type ne 7 then begin
-     on_ioerror, badval
      for j = 0, nv0-1 do begin
-        if state.empty_nan && txt[j] eq '' then begin
-           val[j] = !values.f_nan
-           ivv[j] = 1b
+        if txt[j] eq '' then begin
+           if state.empty_nan then begin
+              val[j] = !values.f_nan
+              ivv[j] = 1b
+           endif else begin
+              ivv[j] = 0b
+           endelse
         endif else begin
+           catch, an_error
+           if an_error ne 0 then begin
+              ivv[j] = 0b
+              catch, /cancel
+              continue
+           endif
            reads, txt[j], v0
            val[j] = v0
-           ivv[j] = 1b
+           ivv[j] = ivf
+           catch, /cancel
         endelse
-
-        continue
-
-badval:
-        ivv[j] = 0b
      endfor
-     on_ioerror, null
   endif
 
 ;	Only return "valid" values. If there are no valid values then
@@ -652,8 +664,8 @@ function cw_enter, parent, label = label, value = value, $
   widget_control, tlb, event_func = 'cw_enter_event', $
                   func_get_value = 'cw_enter_get', $
                   pro_set_value = 'cw_enter_set', $
-                  set_value = value, $
                   sensitive = sensitive
+  widget_control, tlb, set_value = value
 
   return, tlb
 

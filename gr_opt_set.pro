@@ -64,6 +64,7 @@ function Gr_opt_event, event
 
      if opts.pdfviewer ne '' then printf, ilu, 'PDFView:', $
                                           opts.pdfviewer
+     printf, ilu, 'Track:', opts.track
      free_lun, ilu
   endif
 

@@ -130,24 +130,25 @@ pro cw_spin_box_mk_bitmap, bup, bdown, xextra, $
   down[3:5, 1] = 255b
   down[2:6, 2] = 255b
   down[1:7, 3] = 255b
-  down[*, 4] = 255b
+  doqwn[*, 4] = 255b
+
   up = reverse(down, 2)
 
-  ;; if keyword_set(transparent) then begin
-  ;;    bdown = bytarr([size(down, /dim), 4])
-  ;;    bup = bytarr([size(up, /dim), 4])
-  ;;    for j =  0, 2 do begin
-  ;;       bdown[*, *, j] = not down
-  ;;       bup[*, *, j] = not up
-  ;;    endfor
-  ;;    bdown[*, *, 3] = down
-  ;;    bup[*, *, 3] = up
-  ;;    xextra = 0
-  ;; endif else begin
-  bdown = cvttobm(down)
-  bup = cvttobm(up)
-  xextra = 7
-  ;; endelse
+  if keyword_set(transparent) then begin
+     bdown = bytarr([size(down, /dim), 4])
+     bup = bytarr([size(up, /dim), 4])
+     for j =  0, 2 do begin
+        bdown[*, *, j] = not down
+        bup[*, *, j] = not up
+     endfor
+     bdown[*, *, 3] = down
+     bup[*, *, 3] = up
+     xextra = 0
+  endif else begin
+     bdown = cvttobm(down)
+     bup = cvttobm(up)
+     xextra = 7
+  endelse
 end
 
 pro cw_spin_box_focus_enter, id
@@ -190,11 +191,18 @@ function cw_spin_box_event, event
 
         if event.type ne 3 then cstruct.eflag = 1b
 
-        on_ioerror, invalid
+        catch, an_error
+        if an_error ne 0 then begin
+           catch, /cancel
+           return, 0l
+        endif
+        
         value = cstruct.value   ; Ensure correct type
         widget_control, event.id, get_value = inln
         reads, inln, value
 
+        catch, /cancel
+        
         if cstruct.ismin &&  value lt cstruct.minval then begin
            if ~cr then begin
               widget_control, id2, set_uvalue = cstruct
@@ -256,9 +264,6 @@ function cw_spin_box_event, event
            value: cstruct.value, $
            roll: roll, $
            cr: cr}
-
-invalid:
-  return, 0l                    ; Non-structure should be a non-event.
 
 end
 
@@ -642,8 +647,8 @@ function cw_spin_box, parent, row = row, column = column, $
   sbase = widget_base(ibase, $
                       /column, $
                       xpad = 0, $
-                      ypad = 0, $
-                      space = 0)
+                      ypad = 1, $
+                      space = 1)
 
   
   cstruct.upid = widget_button(sbase, $

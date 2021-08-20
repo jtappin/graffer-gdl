@@ -31,7 +31,8 @@ pro sbox_test
                      /int, $
                      value = 2, $
                      minval = 0, $
-                     /track)
+                     /track, $
+                     /trans)
 
   junk = cw_spin_box(base, $
                      label = 'Float value', $
@@ -41,7 +42,8 @@ pro sbox_test
                      minval = -5., $
                      maxval = 5., $
                      format = "(f0.1)", $
-                     /track)
+                     /track, $
+                     /trans)
   
   junk = widget_button(base, $
                        value = 'Quit', $
