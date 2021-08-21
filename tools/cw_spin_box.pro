@@ -130,19 +130,26 @@ pro cw_spin_box_mk_bitmap, bup, bdown, xextra, $
   down[3:5, 1] = 255b
   down[2:6, 2] = 255b
   down[1:7, 3] = 255b
-  doqwn[*, 4] = 255b
+  down[*, 4] = 255b
 
   up = reverse(down, 2)
 
-  if keyword_set(transparent) then begin
+  if keyword_set(transparent)  then begin
      bdown = bytarr([size(down, /dim), 4])
      bup = bytarr([size(up, /dim), 4])
      for j =  0, 2 do begin
         bdown[*, *, j] = not down
         bup[*, *, j] = not up
      endfor
-     bdown[*, *, 3] = down
-     bup[*, *, 3] = up
+     if is_gdl() then begin     ; For some reason bitmaps with
+                                ; transparency aren't handled
+                                ; quite right yet.
+        bdown[*, *, 3] = up
+        bup[*, *, 3] = down
+     endif else begin
+        bdown[*, *, 3] = down
+        bup[*, *, 3] = up
+     endelse
      xextra = 0
   endif else begin
      bdown = cvttobm(down)

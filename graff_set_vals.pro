@@ -132,8 +132,7 @@ pro Graff_set_vals, pdefs, set_only = set_only
   widget_control, pdefs.ids.line, set_droplist_select = data.line, $
                   sensitive = data.pline ne 0
   if data.colour eq -2 then begin
-     ncmax = widget_info(pdefs.ids.colour, /droplist_number)
-     ci = ncmax-1
+     ci = pdefs.transient.ncmax-1
   endif else ci = data.colour+1
   widget_control, pdefs.ids.colour, set_droplist_select = ci
   gr_show_colour, pdefs

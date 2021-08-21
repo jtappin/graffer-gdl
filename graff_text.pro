@@ -112,8 +112,7 @@ case but of
     'COL': if (track_flag) then  $
       graff_msg, pdefs.ids.popmsg, 'Select the text colour' $
     else begin
-       ncmax = widget_info(event.id, /droplist_number)
-       if event.index eq ncmax-1 then begin
+       if event.index eq pdefs.transient.ncmax-1 then begin
           ci = (*pdefs.text)[itxt].colour
           if ci eq -2 then $
              cc = gr_custom_colour((*pdefs.text)[itxt].c_vals, $

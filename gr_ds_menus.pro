@@ -73,8 +73,7 @@ pro Gr_dsp_event, event
      'COLOUR': if (track_flag) then $
         graff_msg, pdefs.ids.hlptxt, 'Select colour for current data set' $
      else begin
-        ncmax = widget_info(event.id, /droplist_number)
-        if event.index eq ncmax-1 then begin
+        if event.index eq pdefs.transient.ncmax-1 then begin ; Custom colour
            ci = (*pdefs.data)[pdefs.cset].colour
            if ci eq -2 then $
               cc = gr_custom_colour((*pdefs.data)[pdefs.cset].c_vals, $
@@ -171,7 +170,6 @@ pro Gr_ds_menus, optbb, pdefs
   common graffer_options, optblock
 
   if (n_elements(psym_bm) eq 0) then gr_psym_bitm
-                                ;, pdefs.transient.colmin
 
   pdefs.ids.plopts[0] = widget_base(optbb, $
                                     /column, $
@@ -216,8 +214,9 @@ pro Gr_ds_menus, optbb, pdefs
                                      uvalue = 'COLOUR', $
                                      title = 'Colour:', $
                                      track = optblock.track)
-  widget_control, pdefs.ids.colour, set_droplist_select = 1
-
+  widget_control, pdefs.ids.colour, set_droplist_select = 2
+  pdefs.transient.ncmax = n_elements(col_list)
+  
   pdefs.ids.dscolour_base = widget_base(jjb, $
                                         /frame)
   pdefs.ids.dscolour_show = widget_draw(pdefs.ids.dscolour_base, $

@@ -27,11 +27,11 @@ Transient = { graff_trans, $
               Imove:    0l, $
               mode:     0, $
               Changes:  0, $
-              colmin:   0, $
               hairs:    0b, $
               Opflag:   0b, $
               backup:   0b, $
-              current_only: 0b $
+              current_only: 0b, $
+              ncmax:    0l $
             }
 
 end
