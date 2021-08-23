@@ -79,9 +79,12 @@ pro Graff_ch_dset, pdefs
   base = widget_base(tlb, /column)
 
   curr = widget_label(base, value = 'Data Sets')
-  junk = widget_list(base, value = dlist, uvalue = 'CHOOSE',  $
+  junk = widget_list(base, $
+                     value = dlist, $
+                     uvalue = 'CHOOSE',  $
                      ysize = (12 < n_elements(dlist)))
-
+  widget_control, junk, set_list_select = pdefs.cset
+  
   junk = widget_button(base, value = 'Cancel', uvalue = 'DONT')
 
   widget_control, base, set_uvalue = {dlist:dlist,  $
@@ -92,7 +95,9 @@ pro Graff_ch_dset, pdefs
 
 ;			DIY widget management here
 
-  repeat ev = widget_event(base) until ev.exit ne 0
+  repeat begin
+     ev = widget_event(base)
+  endrep until ev.exit ne 0
 
   widget_control, base, get_uvalue = uv, /no_copy
   widget_control, tlb, /destroy
