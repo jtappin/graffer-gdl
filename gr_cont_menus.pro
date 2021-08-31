@@ -312,7 +312,8 @@ pro Gr_cont_menus, sb, pdefs
                                       ysize = 4, $
                                       /column, $
                                       label = 'Colours', $
-                                      /all_events)
+                                      /all_events, $
+                                      /ignore_empty)
 
   jby = widget_base(jbx, $
                     /row, $

@@ -65,6 +65,12 @@
 ;	/empty_nan	input	If set and this is a scalar float or
 ;				double box, then return a NaN value
 ;				for an empty box.
+;	/ignore_empty	input	If set, and this is a text box, then
+;				ignore blank lines (unless all lines
+;				are blank when a single blank is
+;				returned as the value). For numeric
+;				types this is always the case unless
+;				/empty_nan is set.
 ;	uname	string	input	A user-defined name for the widget.
 ;	set_list string	input	A user defined function to specify how
 ;				to convert the list to a string array.
@@ -347,7 +353,7 @@ function cw_enter_read, id
 
   if state.type ne 7 then begin
      for j = 0, nv0-1 do begin
-        if txt[j] eq '' then begin
+        if strtrim(txt[j], 2) eq '' then begin
            if state.empty_nan then begin
               val[j] = !values.f_nan
               ivv[j] = 1b
@@ -367,6 +373,12 @@ function cw_enter_read, id
            catch, /cancel
         endelse
      endfor
+  endif else if state.ignore_empty then begin
+     locs = where(txt eq '', nv, ncomp = nf)
+     if nv ne 0 then begin
+        if nf ne 0 then ivv[locs] = 0b $
+        else ivv[1:*] = 0
+     endif
   endif
 
 ;	Only return "valid" values. If there are no valid values then
@@ -376,6 +388,7 @@ function cw_enter_read, id
 ;	For Lists, excluding invalid lines is the job of the decoder.
 
   locs = where(ivv, nv)
+
   if (nv gt 0) then val = val[locs] $
   else if (state.type eq 7) then val = 0 $
   else val = ''
@@ -489,6 +502,7 @@ function cw_enter, parent, label = label, value = value, $
                    array_valued = array_valued, scroll = scroll, $
                    capture_focus = capture_focus, $
                    graphics = graphics, empty_nan = empty_nan, $
+                   ignore_empty = ignore_empty, $
                    list_object = list_object, set_list = set_list, $
                    get_list = get_list, sensitive = sensitive, $
                    uname = uname, font=font, $
@@ -649,6 +663,7 @@ function cw_enter, parent, label = label, value = value, $
           array:  keyword_set(array_valued) || vtype eq 11, $
           graph:  keyword_set(graphics) && (vtype eq 7), $
           empty_nan: return_nan, $
+          ignore_empty: keyword_set(ignore_empty), $
           set_list: sl, $
           get_list: gl, $
           value: ptr_new(value), $
