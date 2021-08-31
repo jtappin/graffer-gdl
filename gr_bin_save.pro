@@ -213,7 +213,7 @@ pro Gr_bin_save, pdefs, auto = auto
         endelse
         if zopts.n_cols gt 0 then begin
            graff_put_rec, ilu, 'ZC ', *(zopts.colours)
-           if ptr_valid(zopts_raw_colours) then $
+           if ptr_valid(zopts.raw_colours) then $
               graff_put_rec, ilu, 'ZCR', *(zopts.raw_colours)
         endif
 
