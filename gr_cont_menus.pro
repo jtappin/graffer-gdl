@@ -86,12 +86,16 @@ pro Cont_event, event
         graff_msg, pdefs.ids.hlptxt, 'Set contour colours' $
      else begin
         widget_control, event.id, get_value = col
-        gr_cont_col_get, col, icol, rcol
-        if ptr_valid(zopts.colours) then ptr_free, zopts.colours
-        if ptr_valid(zopts.raw_colours) then ptr_free, zopts.raw_colours
-        zopts.colours = ptr_new(icol)
-        zopts.raw_colours = ptr_new(rcol)
-        zopts.n_cols = n_elements(col)
+        gr_cont_col_get, col, icol, rcol, $
+                         max_index = pdefs.transient.ncmax, $
+                         status = is_valid
+        if is_valid then begin
+           if ptr_valid(zopts.colours) then ptr_free, zopts.colours
+           if ptr_valid(zopts.raw_colours) then ptr_free, zopts.raw_colours
+           zopts.colours = ptr_new(icol)
+           zopts.raw_colours = ptr_new(rcol)
+           zopts.n_cols = n_elements(col)
+        endif
      endelse
      
      'THICK': if (track_flag) then $

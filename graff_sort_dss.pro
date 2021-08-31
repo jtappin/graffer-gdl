@@ -16,48 +16,50 @@
 
 function Grf_sort_event, event
 
-base = widget_info(event.top, /child)
-widget_control, base, get_uvalue = uv, /no_copy
-widget_control, event.id, get_uvalue = but
+  base = widget_info(event.top, /child)
+  widget_control, base, get_uvalue = uv, /no_copy
+  widget_control, event.id, get_uvalue = but
 
-iexit = 0
-case (but) of
-    'CHOOSE': begin
+  iexit = 0
+  case (but) of
+     'CHOOSE': begin
         if (uv.moving eq -1) then begin
-            uv.moving = (*uv.list)(event.index)
-            if (event.index eq 0) then (*uv.list) = (*uv.list)(1:*) $
-            else if (event.index eq n_elements((*uv.list))-1) then $
-              (*uv.list) = (*uv.list)(0:n_elements((*uv.list))-2) $
-            else (*uv.list) = [(*uv.list)(0:event.index-1), $
-                            (*uv.list)(event.index+1:*)]
-            widget_control, event.id, set_value = ['<start>', $
-                                                   uv.dlist((*uv.list))]
-            widget_control, uv.label, set_value = 'Place it after'
-            widget_control, uv.dobut, sensitive = 0
+           if ~uv.iflag then begin
+              uv.moving = (*uv.list)(event.index)
+              if (event.index eq 0) then (*uv.list) = (*uv.list)(1:*) $
+              else if (event.index eq n_elements((*uv.list))-1) then $
+                 (*uv.list) = (*uv.list)(0:n_elements((*uv.list))-2) $
+              else (*uv.list) = [(*uv.list)(0:event.index-1), $
+                                 (*uv.list)(event.index+1:*)]
+              widget_control, event.id, set_value = ['<start>', $
+                                                     uv.dlist((*uv.list))]
+              widget_control, uv.label, set_value = 'Place it after'
+              widget_control, uv.dobut, sensitive = 0
+           endif else uv.iflag = 0b
         endif else begin
-            if (event.index eq 0) then (*uv.list) = [uv.moving, (*uv.list)] $
-            else if (event.index eq n_elements((*uv.list))) then $
-              (*uv.list) = [(*uv.list), uv.moving] $
-              else (*uv.list) = [(*uv.list)(0:event.index-1), uv.moving, $
+           if (event.index eq 0) then (*uv.list) = [uv.moving, (*uv.list)] $
+           else if (event.index eq n_elements((*uv.list))) then $
+              (*uv.list) = [(*uv.list), uv.moving] $ $
+           else (*uv.list) = [(*uv.list)(0:event.index-1), uv.moving, $
                               (*uv.list)(event.index:*)]
-            uv.moving = -1
-            widget_control, event.id, set_value = [uv.dlist((*uv.list))]
-            widget_control, uv.label, set_value = 'Data set to move'
-            widget_control, uv.dobut, sensitive = 1
+           uv.moving = -1
+           widget_control, event.id, set_value = [uv.dlist((*uv.list))]
+           widget_control, uv.label, set_value = 'Data set to move'
+           widget_control, uv.dobut, sensitive = 1
         endelse
-    end
-    
-    'DO': iexit = 1
-    
-    'DONT': iexit = -1
-end
+     end
+     
+     'DO': iexit = 1
+     
+     'DONT': iexit = -1
+  end
 
-widget_control, base, set_uvalue = uv, /no_copy
+  widget_control, base, set_uvalue = uv, /no_copy
 
-return, {id:event.handler, $
-         top:event.top, $
-         handler:event.handler, $
-         Exit:iexit}
+  return, {id:event.handler, $
+           top:event.top, $
+           handler:event.handler, $
+           Exit:iexit}
 end
 
 pro Graff_sort_dss, pdefs
@@ -85,9 +87,13 @@ tlb = widget_base(title = 'Graffer data set sort', group = $
                   pdefs.ids.graffer, resource = 'Graffer')
 base = widget_base(tlb, /column)
 
-curr = widget_label(base, value = 'Data set to move')
-junk = widget_list(base, value = dlist, uvalue = 'CHOOSE',  $
+curr = widget_label(base, $
+                    value = 'Data set to move')
+junk = widget_list(base, $
+                   value = dlist, $
+                   uvalue = 'CHOOSE',  $
                    ysize = (12 < n_elements(dlist)))
+widget_control, junk, set_list_select = -1 ;pdefs.cset
 
 jb = widget_base(base, /row)
 junk = widget_button(jb, value = 'Cancel', uvalue = 'DONT')
@@ -100,12 +106,15 @@ uv = {dlist:dlist, $
       Label: curr, $
       List:ptr_new(indlist), $
       dobut: dobut, $
-      Moving: -1}
+      Moving: -1, $ 
+      iflag: is_gdl()}          ; GDL sends a spurious select event
+                                ; that needs to be swallowed.
+
+widget_control, tlb, /real
 
 widget_control, base, set_uvalue = uv, $
   event_func = 'grf_sort_event'
 
-widget_control, tlb, /real
 
 ;			DIY widget management here
 

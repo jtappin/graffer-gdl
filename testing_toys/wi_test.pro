@@ -4,11 +4,12 @@ pro wi_event, event
 
   help, /str, event
   pp = widget_info(event.id, /parent)
-  print, uv, event.id,  pp
+  print, uv, event.id,  ' Parent', pp
 
-  print, widget_info(pp, /n_children), widget_info(pp, /child), $
-         widget_info(pp, /type)
-  print, widget_info(pp, /all_children)
+  print, 'NCH', widget_info(pp, /n_children), ' First C', $
+         widget_info(pp, /child), $
+         ' type', widget_info(pp, /type)
+  print, 'All C', widget_info(pp, /all_children)
   
   if uv eq 'QUIT' then widget_control, event.top, /destroy
   

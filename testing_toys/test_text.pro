@@ -36,7 +36,7 @@ pro test_text
 
   tw1 = widget_text(base, $
                     /edit, $
-                    xsize = 30, $
+                    xsize = 80, $
                     ysize = 15, $
                     value = text, $
                     uvalue = 'EDIT')
@@ -45,7 +45,7 @@ pro test_text
   tw2 = widget_text(base, $
                     /edit, $
                     /all_events, $
-                    xsize = 30, $
+                    xsize = 80, $
                     ysize = 15, $
                     value = text, $
                     uvalue = 'EDITALL')

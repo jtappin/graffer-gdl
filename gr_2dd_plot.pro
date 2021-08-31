@@ -74,9 +74,9 @@ pro Gr_2dd_plot, pdefs, i, csiz, grey_ps = grey_ps, shaded = shaded
         ncol = data.zopts.n_cols
         lcolours = lonarr(ncol)
         for j = 0, ncol-1 do begin
-           if *(data.zopts.colours)[j] eq -2 then $
+           if (*data.zopts.colours)[j] eq -2 then $
               lcolours[j] = $
-              graff_colours(*(data.zopts.raw_colours)[*, j]) $
+              graff_colours((*data.zopts.raw_colours)[*, j]) $
            else lcolours[j] = graff_colours(*(data.zopts.colours)[j])
         endfor
      endif

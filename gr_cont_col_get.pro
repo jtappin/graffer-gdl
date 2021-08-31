@@ -26,7 +26,9 @@
 ;	colour array: 3/4/20; SJT
 ;-
 
-pro gr_cont_col_get, cstr, cindex, rawc, status = status
+pro gr_cont_col_get, cstr, cindex, rawc, status = status, $
+                     max_index = max_index
+  
   ncols = n_elements(cstr)
 
   cindex = intarr(ncols)
@@ -40,7 +42,11 @@ pro gr_cont_col_get, cstr, cindex, rawc, status = status
      tmp = strsplit(cstr[j], '	 ,', /extr, count = nn)
      case nn of
         0:                      ; Skip blank lines
-        1: cindex[j] = fix(tmp[0])
+        1: begin
+           cindex[j] = fix(tmp[0])
+           if keyword_set(max_index) then status = status && $
+              (cindex[j] lt max_index)
+        end
         3: begin
            rawc[*, j] = fix(tmp)
            cindex[j] = -2
