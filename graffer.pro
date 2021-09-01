@@ -573,12 +573,15 @@ pro Graffer, file, group = group, xsize = xsize, ysize = ysize, $
                      uvalue = 'YTABS', $
                      track = optblock.track)
   jb = widget_base(ytabs, $
-                   title = 'Main')
+                   title = 'Main', $
+                   /column)
+  
   gr_axis_menu, 'Y', jb, pdefs
 
   pdefs.ids.ybase_r = widget_base(ytabs, $
                                   title = 'Secondary', $
-                                  sensitive = pdefs.y_right)
+                                  sensitive = pdefs.y_right, $
+                                  /column)
   gr_axis_menu, 'Yr', pdefs.ids.ybase_r, pdefs
 
                                 ; Setting the properties for the
@@ -613,7 +616,12 @@ pro Graffer, file, group = group, xsize = xsize, ysize = ysize, $
                                 ; Current cursor position
 
 
-  jb = widget_base(cbase, /row, xpad = 0, ypad = 0, space = 0)
+  jb = widget_base(cbase, $
+                   /row, $
+                   xpad = 0, $
+                   ypad = 0, $
+                   space = 0)
+  
   pdefs.ids.xcp = cw_enter(jb, $
                            /double, $
                            /display, $
@@ -637,18 +645,18 @@ pro Graffer, file, group = group, xsize = xsize, ysize = ysize, $
   cbase = widget_base(cdbase, $
                       /column)
 
-  if (not keyword_set(xsize)) then xwsize = 600 $
-  else xwsize = xsize > 600
+  if (not keyword_set(xsize)) then xwsize = 800 $
+  else xwsize = xsize > 800
 
-  if (not keyword_set(ysize)) then ywsize = 600 $
-  else ywsize = ysize > 600
+  if (not keyword_set(ysize)) then ywsize = 800 $
+  else ywsize = ysize > 800
 
-  if ((xwsize >  ywsize) gt 600 && ~keyword_set(noscroll)) then $
+  if ((xwsize >  ywsize) gt 800 && ~keyword_set(noscroll)) then $
      pdefs.ids.draw = widget_draw(cbase, $
                                   xsize = xwsize, $
-                                  x_scroll_size = 600, $
+                                  x_scroll_size = 800, $
                                   ysize = ywsize, $
-                                  y_scroll_size = 600, $
+                                  y_scroll_size = 800, $
                                   uvalue = 'DRAW', $
                                   /button_event, $
                                   /motion_event, $

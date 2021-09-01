@@ -548,8 +548,14 @@ pro Gr_axis_menu, axis, base, pdefs
 
   common graffer_options, optblock
 
-  tjb = widget_base(base, /column, /frame, xpad = 0, ypad = 0, $
-                    space = 0, event_pro = 'gr_axis_event')
+  tjb = widget_base(base, $
+                    /column, $
+                    /frame, $
+                    xpad = 0, $
+                    ypad = 0, $
+                    space = 0, $
+                    event_pro = 'gr_axis_event')
+  
   junk = widget_label(tjb, value = axis+'-Axis')
 
                                 ; Title
@@ -567,7 +573,10 @@ pro Gr_axis_menu, axis, base, pdefs
 
                                 ; Log/linear
 
-  jb = widget_base(tjb, /row, xpad = 0, ypad = 0, space = 0)
+  jb = widget_base(tjb, /row, $
+                   xpad = 0, $
+                   ypad = 0, $
+                   space = 0)
   log = widget_droplist(jb, $
                         value = ['Linear', 'Log'], $
                         uvalue = axis+'LOG', $
@@ -631,6 +640,7 @@ pro Gr_axis_menu, axis, base, pdefs
                    xpad = 0, $
                    ypad = 0, $
                    space = 0)
+  
 
   amin = cw_enter(jb, $
                   /double, $

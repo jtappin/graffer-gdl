@@ -29,6 +29,8 @@ pro Cont_event, event
   zopts = (*pdefs.data)[pdefs.cset].zopts
   widget_control, event.id, get_uvalue = but
 
+  print, but
+  
   track_flag = strpos(tag_names(event, /struct), 'TRACK') ne -1
   if (track_flag) then begin
      if (event.enter eq 0) then begin
@@ -102,6 +104,7 @@ pro Cont_event, event
         graff_msg, pdefs.ids.hlptxt, 'Set contour thicknesses' $
      else begin
         widget_control, event.id, get_value = thk
+        print, 'Thicknesses', thk
         if ptr_valid(zopts.thick) then ptr_free, zopts.thick
         zopts.thick = ptr_new(thk)
         zopts.n_thick = n_elements(thk)
@@ -111,6 +114,7 @@ pro Cont_event, event
         graff_msg, pdefs.ids.hlptxt, 'Set contour line styles' $
      else begin
         widget_control, event.id, get_value = sty
+        print, 'Styles', sty
         if ptr_valid(zopts.style) then ptr_free, zopts.style
         zopts.style = ptr_new(sty)
         zopts.n_sty = n_elements(sty)
@@ -325,7 +329,7 @@ pro Gr_cont_menus, sb, pdefs
                                      /double, $ 
                                      format = "(f6.1)", $
                                      /array, $
-                                     track = optblock.track, $
+                                     ;; track = optblock.track, $
                                      uvalue = 'THICK', $
                                      /capture, $
                                      value = *(zopts.thick), $ 
