@@ -33,15 +33,10 @@
 
 function Grf_emask, ids, type, text = text
 
-  if is_gdl() then begin
-     widget_control, ids.xyid, get_value = text0
-     text = strsplit(text0, string([10b, 13b]), /extr) ; Should catch
-                                ; LF, CR and CRLF terminated lines
-  endif else $
-     widget_control, ids.xyid, get_value = text
+  widget_control, ids.xyid, get_value = text
 
   tpr = where(strlen(strtrim(text)) ne 0, nv)
-  if (nv ne 0) then text = text(tpr) $
+  if (nv ne 0) then text = text[tpr] $
   else begin
      iexit = 0
      return, -1
@@ -222,22 +217,22 @@ function Gr_xy_wid, pdefs, line = line
 
   if ((*pdefs.data)[pdefs.cset].mode eq 0) then $
      emds = [{label: 'None', sensitive: mask[0]}, $ $
-             {label: '±Y', sensitive: mask[1]}, $
+             {label: '+/-Y', sensitive: mask[1]}, $
              {label: '-Y +Y', sensitive: mask[2]}, $
-             {label: '±X', sensitive: mask[3]}, $
+             {label: '+/-X', sensitive: mask[3]}, $
              {label: '-X +X', sensitive: mask[4]}, $
-             {label: '±X ±Y', sensitive: mask[5]}, $
-             {label: '±X -Y +Y', sensitive: mask[6]}, $
-             {label: '-X +X ±Y', sensitive: mask[7]}, $
+             {label: '+/-X +/-Y', sensitive: mask[5]}, $
+             {label: '+/-X -Y +Y', sensitive: mask[6]}, $
+             {label: '-X +X +/-Y', sensitive: mask[7]}, $
              {label: '-X +X -Y +Y', sensitive: mask[8]}] $
   else emds = [{label: 'None', sensitive: mask[0]}, $
-               {label: '±Theta', sensitive: mask[1]}, $
+               {label: '+/-Theta', sensitive: mask[1]}, $
                {label: '-Theta +Theta', sensitive: mask[2]}, $
-               {label: '±R', sensitive: mask[3]}, $
+               {label: '+/-R', sensitive: mask[3]}, $
                {label: '-R +R', sensitive: mask[4]}, $
-               {label: '±R ±Theta', sensitive: mask[5]}, $
-               {label: '±R -Theta +Theta', sensitive: mask[6]}, $
-               {label: '-R +R ±Theta', sensitive: mask[7]}, $
+               {label: '+/-R +/-Theta', sensitive: mask[5]}, $
+               {label: '+/-R -Theta +Theta', sensitive: mask[6]}, $
+               {label: '-R +R +/-Theta', sensitive: mask[7]}, $
                {label: '-R +R -Theta +Theta', sensitive: mask[8]}]
 
   jb = widget_base(base, $
