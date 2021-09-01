@@ -297,7 +297,7 @@ function cw_enter_read, id
   ;;    txt = strsplit(txt, string([10b, 13b]), /extr)
 
   nv0 = n_elements(txt)
-  ivv = bytarr(nv0)
+  ivv = replicate(1b, nv0)
 
   case state.type of
      4: begin                   ; Float
@@ -369,7 +369,6 @@ function cw_enter_read, id
            endif
            reads, txt[j], v0
            val[j] = v0
-           ivv[j] = ivf
            catch, /cancel
         endelse
      endfor
