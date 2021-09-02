@@ -290,8 +290,6 @@ function cw_enter_read, id
 
   widget_control, state.text, get_value = txt
   if  ~state.array then txt = txt[0] ;$
-  ;; else if is_gdl() then $
-  ;;    txt = strsplit(txt, string([10b, 13b]), /extr)
 
   nv0 = n_elements(txt)
   ivv = replicate(1b, nv0)
