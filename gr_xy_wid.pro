@@ -58,10 +58,10 @@ function Grf_emask, ids, type, text = text
 
   widget_control, ids.errid, get_value = type
 
-  ;; if (not mask(type)) then begin
-  ;;    l = where(mask)
-  ;;    widget_control, ids.errid, set_value = l[0]
-  ;; endif
+  if (not mask(type)) then begin
+     l = where(mask)
+     widget_control, ids.errid, set_value = l[0]
+  endif
 
   return, mask
 
@@ -106,16 +106,16 @@ function Xyw_event, event
                        'TRACK') ne -1) then begin
         if (event.enter) then widget_control, event.id, /input_focus
      endif else begin
-        if is_gdl() && event.type eq 0 && event.ch eq 10 then begin
-                                ; Carriage return is not correctly
-                                ; inserted by editable test widgets in
-                                ; GDL.
-           widget_control, event.id, get_value = txt
-           txtr = strmid(txt, 0, event.offset) + string(10b) + $
-                  strmid(txt, event.offset)
-           widget_control, event.id, set_value = txtr, $
-                           set_text_select = event.offset+1
-        endif
+        ;; if is_gdl() && event.type eq 0 && event.ch eq 10 then begin
+        ;;                         ; Carriage return is not correctly
+        ;;                         ; inserted by editable text widgets in
+        ;;                         ; GDL.
+        ;;    widget_control, event.id, get_value = txt
+        ;;    txtr = strmid(txt, 0, event.offset) + string(10b) + $
+        ;;           strmid(txt, event.offset)
+        ;;    widget_control, event.id, set_value = txtr, $
+        ;;                    set_text_select = event.offset+1
+        ;; endif
         mask = grf_emask(ids, type)
         if (mask[0] lt 0) then goto, bailout
      endelse
@@ -179,16 +179,17 @@ function Gr_xy_wid, pdefs, line = line
 
   tlb = widget_base(title = 'Graffer Data Input',  $
                     group_leader = pdefs.ids.graffer, $
-                    resource = 'Graffer')
+                    resource = 'Graffer', $
+                    /column)
   base = widget_base(tlb, $
                      /column)
 
                                 ; The actual data definition
 
   junk = widget_label(base, $
-                      value = 'Enter x y pairs')
-  xyl = widget_label(base, $
-                     value = '1 pair per line')
+                      value = 'Enter x y values and optionally errors')
+  junk = widget_label(base, $
+                      value = '1 data point per line')
 
 
   xyid = widget_text(base, $
