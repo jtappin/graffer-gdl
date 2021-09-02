@@ -103,11 +103,21 @@ pro gr_ds_menu, base, pdefs
                             format = '(I0)', $
                             label = '#:')
 
-  jb = widget_base(tjb, $
+
+  
+  pdefs.ids.type = cw_enter(tjb, $
+                            /display, $
+                            /text, $
+                            xsize = 34, $
+                            format = "(a)", $
+                            value = '', $
+                            label = 'Type:')
+  
+  jbb = widget_base(tjb, $
                    /row, $
                    /nonexclusive)
 
-  pdefs.ids.current = widget_button(jb, $
+  pdefs.ids.current = widget_button(jbb, $
                                     value = "Only show current DS", $
                                     uvalue = 'CURRENT_ONLY', $
                                     track = optblock.track)

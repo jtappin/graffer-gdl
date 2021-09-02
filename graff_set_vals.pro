@@ -154,6 +154,25 @@ pro Graff_set_vals, pdefs, set_only = set_only
   widget_control, pdefs.ids.mode, set_droplist_select = data.mode
   widget_control, pdefs.ids.descr, set_value = data.descript
   widget_control, pdefs.ids.cset, set_value = pdefs.cset+1
+
+  typedescs = ["Function z = f(x,y)", $
+               "Function: x = f(t), y = g(t)", $
+               "Function: x = f(y)", $
+               "Function: y = f(x)", $
+               "Data: X, Y", $
+               "Data: X, Y, errors: ±Y", $
+               "Data: X, Y, errors: -Y, +Y", $
+               "Data: X, Y, errors: ±X", $
+               "Data: X, Y, errors: -X, +X", $
+               "Data: X, Y, errors: ±X, ±Y", $
+               "Data: X, Y, errors: ±X, -Y, +Y", $
+               "Data: X, Y, errors: -X, +X, ±Y", $
+               "Data: X, Y, errors: -X, +X, -Y, +Y", $
+               "Data: Z, X, Y"]
+  if data.ndata eq 0 then widget_control, pdefs.ids.type, $
+                                          set_value = 'Undefined' $
+  else widget_control, pdefs.ids.type, set_value = typedescs[data.type+4]
+ 
   widget_control, pdefs.ids.zmode, set_droplist_select = $
                   data.zopts.format
 

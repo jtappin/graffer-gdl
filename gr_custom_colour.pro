@@ -148,7 +148,8 @@ function gr_custom_colour, index, w0, group = group
   tlb = widget_base(title = "Graffer: Custom colour", $
                     group = group, $
                     resource = 'Graffer', $
-                    modal = keyword_set(group))
+                    modal = keyword_set(group), $
+                    /column)
 
   base = widget_base(tlb, $
                      /column)
@@ -173,7 +174,7 @@ function gr_custom_colour, index, w0, group = group
                       /column, $
                       format = "(I3)", $
                       /capture, $
-                      xsize = 3, $
+                      xsize = 4, $
                       /int, $
                       value = bcolour[0], $
                       uvalue = 'RED_E', $
@@ -199,7 +200,7 @@ function gr_custom_colour, index, w0, group = group
                       /column, $
                       format = "(I3)", $
                       /capture, $
-                      xsize = 3, $
+                      xsize = 4, $
                       /int, $
                       value = bcolour[1], $
                       uvalue = 'GRN_E', $
@@ -226,7 +227,7 @@ function gr_custom_colour, index, w0, group = group
                       /column, $
                       format = "(I3)", $
                       /capture, $
-                      xsize = 3, $
+                      xsize = 4, $
                       /int, $
                       value = bcolour[2], $
                       uvalue = 'BLU_E', $

@@ -81,6 +81,7 @@ Ids = { graff_ids, $
         export:  0l, $
         Cset:    0l, $
         Descr:   0l, $
+        type:    0l, $
         Pline:   0l, $
         Psym:    0l, $
         Symsize: 0l, $
