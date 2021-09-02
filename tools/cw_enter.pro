@@ -261,9 +261,6 @@ pro cw_enter_set, id, value
      end
   endcase
 
-  if is_gdl() && n_elements(vs) gt 1 && state.array then $
-     vs = strjoin(vs, string(10b))
-
   widget_control, state.text, set_value = vs
 
   widget_control, base, set_uvalue = state
