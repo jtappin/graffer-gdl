@@ -256,7 +256,8 @@ pro Gr_ctl_event, event
      else begin
         msg = ['GRAFFER Version '+string(pdefs.version, format = $
                                          "(I0,'.',I2.2)"), $
-               'Copyright: James Tappin 1995-2016']
+               'Copyright: James Tappin 1995-2021', $
+               'Running in '+(is_gdl() ? 'GDL' : 'IDL')]
         junk = dialog_message(msg, $
                               /inform, $
                               dialog_parent = pdefs.ids.graffer, $
@@ -294,27 +295,49 @@ pro Gr_control_menu, base
 
   common graffer_options, optblock
 
-  ctlmenu = [{control_opts, flag:1, label:'File', accelerator:''}, $
-             {control_opts, 0, 'Save', 'Ctrl+S'}, $
-             {control_opts, 1, 'Save as', ''}, $
-             {control_opts, 0, 'Save binary as ...', 'Ctrl+Shift+S'}, $
-             {control_opts, 2, 'Save ascii as ...', 'Ctrl+Alt+S'}, $
-             {control_opts, 1, 'Dump screen', ''}, $
-             {control_opts, 0, 'PNG', 'Ctrl+Alt+P'}, $
-             {control_opts, 0, 'Tiff', 'Ctrl+Alt+T'}, $
-             {control_opts, 0, 'Nrif', 'Ctrl+Alt+N'}, $
-             {control_opts, 0, 'Variable', 'Ctrl+Alt+V'}, $
-             {control_opts, 2, 'Choose ...', ''}, $
-             {control_opts, 0, 'Open ...', 'Ctrl+O'}, $
-             {control_opts, 2, 'Exit', 'Ctrl+Q'}, $
-             {control_opts, 1, 'Hard Copy', ''}, $
-             {control_opts, 0, 'Quick', 'Ctrl+P'}, $
-             {control_opts, 2, 'Set up ...', 'Ctrl+Shift+P'}, $
-             {control_opts, 0, 'Options...', ''}, $
-             {control_opts, 3, 'Help', ''}, $
-             {control_opts, 0, 'User Guide...', 'Ctrl+H'}, $
-             {control_opts, 0, 'File Format...', ''}, $
-             {control_opts, 2, 'About...', ''}]
+  if is_gdl() then $
+     ctlmenu = [{control_opts, flag:1, label:'File', accelerator:''}, $
+                {control_opts, 0, 'Save', 'Ctrl+S'}, $
+                {control_opts, 1, 'Save as', ''}, $
+                {control_opts, 0, 'Save binary as ...', 'Ctrl+Shift+S'}, $
+                {control_opts, 2, 'Save ascii as ...', 'Ctrl+Alt+S'}, $
+                {control_opts, 1, 'Dump screen', ''}, $
+                {control_opts, 0, 'PNG', 'Ctrl+Alt+P'}, $
+                {control_opts, 0, 'Tiff', 'Ctrl+Alt+T'}, $
+                {control_opts, 0, 'Nrif', 'Ctrl+Alt+N'}, $
+                {control_opts, 2, 'Variable', 'Ctrl+Alt+V'}, $
+                {control_opts, 0, 'Open ...', 'Ctrl+O'}, $
+                {control_opts, 2, 'Exit', 'Ctrl+Q'}, $
+                {control_opts, 1, 'Hard Copy', ''}, $
+                {control_opts, 0, 'Quick', 'Ctrl+P'}, $
+                {control_opts, 2, 'Set up ...', 'Ctrl+Shift+P'}, $
+                {control_opts, 0, 'Options...', ''}, $
+                {control_opts, 3, 'Help', ''}, $
+                {control_opts, 0, 'User Guide...', 'Ctrl+H'}, $
+                {control_opts, 0, 'File Format...', ''}, $
+                {control_opts, 2, 'About...', ''}] $
+  else $
+     ctlmenu = [{control_opts, flag:1, label:'File', accelerator:''}, $
+                {control_opts, 0, 'Save', 'Ctrl+S'}, $
+                {control_opts, 1, 'Save as', ''}, $
+                {control_opts, 0, 'Save binary as ...', 'Ctrl+Shift+S'}, $
+                {control_opts, 2, 'Save ascii as ...', 'Ctrl+Alt+S'}, $
+                {control_opts, 1, 'Dump screen', ''}, $
+                {control_opts, 0, 'PNG', 'Ctrl+Alt+P'}, $
+                {control_opts, 0, 'Tiff', 'Ctrl+Alt+T'}, $
+                {control_opts, 0, 'Nrif', 'Ctrl+Alt+N'}, $
+                {control_opts, 0, 'Variable', 'Ctrl+Alt+V'}, $
+                {control_opts, 2, 'Choose ...', ''}, $
+                {control_opts, 0, 'Open ...', 'Ctrl+O'}, $
+                {control_opts, 2, 'Exit', 'Ctrl+Q'}, $
+                {control_opts, 1, 'Hard Copy', ''}, $
+                {control_opts, 0, 'Quick', 'Ctrl+P'}, $
+                {control_opts, 2, 'Set up ...', 'Ctrl+Shift+P'}, $
+                {control_opts, 0, 'Options...', ''}, $
+                {control_opts, 3, 'Help', ''}, $
+                {control_opts, 0, 'User Guide...', 'Ctrl+H'}, $
+                {control_opts, 0, 'File Format...', ''}, $
+                {control_opts, 2, 'About...', ''}]
 
   jb = widget_base(base, $
                    /row, $

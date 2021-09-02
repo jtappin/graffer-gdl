@@ -62,16 +62,21 @@ pro graff_dump, pdefs, png = png, tiff = tiff, nrif = nrif, $
         if size(variable, /type) ne 7 then variable = 'grf_image'
         (scope_varfetch(variable, level = 1, /enter)) =  image
 
-     endif else if (keyword_set(dialogue)) then begin
-        if widget_info(pdefs.ids.graffer,  /valid) then $
-           parent = pdefs.ids.graffer
-
-        junk = dialog_write_image(image, $
-                                  dialog_parent = parent, $
-                                  file = tname+'.png', $
-                                  type = 'PNG', $
-                                  /warn_exist, $
-                                  title = 'Dump Graffer screen')
+     endif else if keyword_set(dialogue) then begin
+        if is_gdl() then graff_msg, pdefs.ids.message, $
+                                    "Image dialogue not " + $
+                                    "implemented in GDL." $
+        else begin
+           if widget_info(pdefs.ids.graffer,  /valid) then $
+              parent = pdefs.ids.graffer
+           
+           junk = dialog_write_image(image, $
+                                     dialog_parent = parent, $
+                                     file = tname+'.png', $
+                                     type = 'PNG', $
+                                     /warn_exist, $
+                                     title = 'Dump Graffer screen')
+        endelse
      endif
   endif else begin              ; 8-bit display--False colour only
      tvlct, /get, r, g, b
@@ -94,15 +99,20 @@ pro graff_dump, pdefs, png = png, tiff = tiff, nrif = nrif, $
         (scope_varfetch(variable, level = 1, /enter)) =  image
 
      endif else if (keyword_set(dialogue)) then begin
-        if widget_info(pdefs.ids.graffer,  /valid) then $
-           parent = pdefs.ids.graffer
+        if is_gdl() then graff_msg, pdefs.ids.message, $
+                                    "Image dialogue not " + $
+                                    "implemented in GDL." $
+        else begin
+           if widget_info(pdefs.ids.graffer,  /valid) then $
+              parent = pdefs.ids.graffer
 
-        junk = dialog_write_image(image, r, g, b, $
-                                  dialog_parent = parent, $
-                                  file = tname+'.png', $
-                                  type = 'PNG', $
-                                  /warn_exist, $
-                                  title = 'Dump Graffer screen')
+           junk = dialog_write_image(image, r, g, b, $
+                                     dialog_parent = parent, $
+                                     file = tname+'.png', $
+                                     type = 'PNG', $
+                                     /warn_exist, $
+                                     title = 'Dump Graffer screen')
+        endelse
      endif
   endelse
 end
