@@ -518,22 +518,22 @@ function Graff_tlv, pdefs
                   eyhm((*pdefs.data)[pdefs.cset].type > 0) 
 
   if ((*pdefs.data)[pdefs.cset].mode eq 0) then emds = ['None', $
-                                                        '±Y', $
+                                                        '+/-Y', $
                                                         '-Y +Y', $
-                                                        '±X', $
+                                                        '+/-X', $
                                                         '-X +X', $
-                                                        '±X ±Y', $
-                                                        '±X -Y +Y', $
-                                                        '-X +X ±Y', $
+                                                        '+/-X +/-Y', $
+                                                        '+/-X -Y +Y', $
+                                                        '-X +X +/-Y', $
                                                         '-X +X -Y +Y'] $
   else emds = ['None', $
-               '±Theta', $
+               '+/-Theta', $
                '-Theta +Theta', $
-               '±R', $
+               '+/-R', $
                '-R +R', $
-               '±R ±Theta', $
-               '±R -Theta +Theta', $
-               '-R +R ±Theta', $
+               '+/-R +/-Theta', $
+               '+/-R -Theta +Theta', $
+               '-R +R +/-Theta', $
                '-R +R -Theta +Theta']
 
   errid = widget_droplist(base, $

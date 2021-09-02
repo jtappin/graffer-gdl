@@ -109,7 +109,7 @@ pro Gr_1dd_plot, pdefs, i, csiz
                      xydata(1, *), xydata(2, *), $
                      width = data.symsize*0.01 > 0, color = $
                      lcolour, thick = $
-                     data.thick, noclip = data.nocli, $
+                     data.thick, noclip = data.noclip, $
                      min_value = minv, max_value = maxvp 
            gr_err_y, xydata(0, 0:data.ndata-1), $
                      xydata(1, *), xydata(3, *), $
