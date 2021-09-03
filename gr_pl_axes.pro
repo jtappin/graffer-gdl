@@ -36,15 +36,20 @@ pro gr_pl_axes, pdefs, csiz, overlay = overlay, secondary = secondary
                         pdefs.xsty)
   endif else xtf = pdefs.xsty.format
 
-  if ((pdefs.ysty.time) and 1) then begin
-     ytf = 'gr_time_fmt'
-     junk = gr_time_fmt(1, range = pdefs.yrange, options = $
-                        pdefs.ysty)
-  endif else if keyword_set(secondary) then $
-     ytf = pdefs.ysty_r.format $
-  else  ytf = pdefs.ysty.format
+  if keyword_set(secondary) then begin
+     if ((pdefs.ysty_r.time) and 1) then begin
+        ytf = 'gr_time_fmt'
+        junk = gr_time_fmt(1, range = pdefs.yrange_r, options = $
+                           pdefs.ysty_r)
+     endif else ytf = pdefs.ysty_r.format
+  endif else begin
+     if ((pdefs.ysty.time) and 1) then begin
+        ytf = 'gr_time_fmt'
+        junk = gr_time_fmt(1, range = pdefs.yrange, options = $
+                           pdefs.ysty)
+     endif else  ytf = pdefs.ysty.format
+  endelse
   
-
   if (pdefs.xsty.grid ne 0 and ((pdefs.xsty.idl and 12) eq 0)) then begin
      xtickl = 0.5
      xtickst = pdefs.xsty.grid-1

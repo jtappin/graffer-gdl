@@ -1,4 +1,4 @@
-function Gr_time_fmt, axis, index, value, options=options, range=range
+function Gr_time_fmt, axis_s, index, value, options = options, range = range
 
 ;+
 ; GR_TIME_FMT
@@ -31,101 +31,104 @@ function Gr_time_fmt, axis, index, value, options=options, range=range
 ;	Renamed as GR_TIME_FMT (was time_format): 18/9/96
 ;-
 
-common Graff_time_options, xopt, xr, xz, yopt, yr, yz, top_last
+  common Graff_time_options, xopt, xr, xz, yopt, yr, yz, top_last
 
-if (n_elements(options) ne 0) then begin ; Setting up
-    if (axis eq 0) then begin
+                                ; Temporary kludge here
+  axis = axis_s-is_gdl()
+  
+  if (n_elements(options) ne 0) then begin ; Setting up
+     if (axis eq 0) then begin
         xopt = options.time
         xz = options.tzero
         xr = range
-    endif else if (axis eq 1) then begin
+     endif else if (axis eq 1) then begin
         yopt = options.time
         yz = options.tzero
         yr = range
-    endif
-    
-    vs = ''
-    
-    top_last = !Pi              ; Any non integer will do actually!
-    
-endif else begin
-    if (axis eq 0) then begin
+     endif
+     
+     vs = ''
+     
+     top_last = !Pi             ; Any non integer will do actually!
+     
+  endif else begin
+     if (axis eq 0) then begin
         unit = (xopt/2) and 3
         munit = (xopt/8) and 3
         ar = xr
         zero = xz
-    endif else if (axis eq 1) then begin
+     endif else if (axis eq 1) then begin
         unit = (yopt/2) and 3
         munit = (yopt/8) and 3
         ar = yr
         zero = yz
-    endif
-    
-    ucf = [1./3600., 1./60., 1.0, 24.]
-    cf = ucf(unit)/ucf(munit)
-    t = value*cf
-    
-    case munit of
+     endif
+     
+     ucf = [1./3600., 1./60., 1.0, 24.]
+     cf = ucf(unit)/ucf(munit)
+     t = value*cf
+     
+     case munit of
         0: begin
-            if (ar(1)-ar(0))*ucf(unit)*3600. gt 5. then  $
+           if (ar(1)-ar(0))*ucf(unit)*3600. gt 5. then  $
               vs = string(t+zero, format = "(I0)") $
-            else vs = strtrim(string(t+zero, format = "(F4.1)"), 2)
+           else vs = strtrim(string(t+zero, format = "(F4.1)"), 2)
         end
         1: begin
-            m = floor(t)
-            s = round(60*(t-m))
-            if (index eq 0 or m ne top_last) then  $
+           m = floor(t)
+           s = round(60*(t-m))
+           if (index eq 0 or m ne top_last) then  $
               vs = string(m+zero, s, format = "(I0.2,':',I2.2)") $
-            else vs = string(s, format = "(I2.2)")
-            top_last = m
+           else vs = string(s, format = "(I2.2)")
+           top_last = m
         end
         2: begin
-            h = floor(t)
-            m = 60.*(t-h)
-            if (index eq 0 or h ne top_last) then begin
-                if (ar(1)-ar(0))*ucf(unit) gt 1. then $
-                  vs = string(h+zero, round(m), format = "(I0.2,':',I2.2)") $
-                else begin
-                    s = 60*(m-fix(m))
-                    vs = string(h+zero, fix(m), round(s), $
-                                format = "(I0.2,':',I2.2,':',I2.2)")
-                endelse
-            endif else begin
-                if (ar(1)-ar(0))*ucf(unit) gt 1. then $
-                  vs = string(round(m), format = "(I2.2)") $
-                else begin
-                    s = 60*(m-fix(m))
-                    vs = string(fix(m), round(s), $
-                                format = "(I2.2,':',I2.2)")
-                endelse
-            endelse
-            top_last = h
+           h = floor(t)
+           m = 60.*(t-h)
+           if (index eq 0 or h ne top_last) then begin
+              if (ar(1)-ar(0))*ucf(unit) gt 1. then $
+                 vs = string(h+zero, round(m), format = "(I0.2,':',I2.2)") $
+              else begin
+                 s = 60*(m-fix(m))
+                 vs = string(h+zero, fix(m), round(s), $
+                             format = "(I0.2,':',I2.2,':',I2.2)")
+              endelse
+           endif else begin
+              if (ar(1)-ar(0))*ucf(unit) gt 1. then $
+                 vs = string(round(m), format = "(I2.2)") $
+              else begin
+                 s = 60*(m-fix(m))
+                 vs = string(fix(m), round(s), $
+                             format = "(I2.2,':',I2.2)")
+              endelse
+           endelse
+           top_last = h
         end
         3: begin
-            d = floor(t)
-            h = 24.*(t-d)
-            if (index eq 0 or d ne top_last) then begin
-                if (ar(1)-ar(0))*ucf(unit)/24. gt 1. then $
-                  vs = string(d+zero, round(h), format = "(I0,'/',I2.2)") $
-                else begin
-                    m = 60.*(h-fix(h))
-                    vs = string(d+zero, fix(h), round(m), $
-                                format = "(I0,'/',I2.2,':',I2.2)")
-                endelse
-            endif else begin
-                if (ar(1)-ar(0))*ucf(unit)/24. gt 1. then $
-                  vs = string(round(h), format = "(I2.2)") $
-                else begin
-                    m = 60.*(h-fix(h))
-                    vs = string(fix(h), round(m), $
-                                format = "(I2.2,':',I2.2)")
-                endelse
-            endelse
-            top_last = d
+           d = floor(t)
+           h = 24.*(t-d)
+           if (index eq 0 or d ne top_last) then begin
+              if (ar(1)-ar(0))*ucf(unit)/24. gt 1. then $
+                 vs = string(d+zero, round(h), format = "(I0,'/',I2.2)") $
+              else begin
+                 m = 60.*(h-fix(h))
+                 vs = string(d+zero, fix(h), round(m), $
+                             format = "(I0,'/',I2.2,':',I2.2)")
+              endelse
+           endif else begin
+              if (ar(1)-ar(0))*ucf(unit)/24. gt 1. then $
+                 vs = string(round(h), format = "(I2.2)") $
+              else begin
+                 m = 60.*(h-fix(h))
+                 vs = string(fix(h), round(m), $
+                             format = "(I2.2,':',I2.2)")
+              endelse
+           endelse
+           top_last = d
         end
-    endcase
-endelse
+     endcase
+  endelse
 
-return, vs
+  return, vs
 
 end

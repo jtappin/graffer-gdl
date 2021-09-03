@@ -140,7 +140,7 @@ pro Gr_app_w, pdefs
                    set_value = res0, $
                    uvalue = 'APPEND')
   sst = gr_app_is_ok(res0, dtypes, dcount)
-  help, res0, dtypes, dcount, sst
+
   for j = 0, n_elements(apids)-1 do $
      widget_control, apids[j], sensitive = sst[j]
   
