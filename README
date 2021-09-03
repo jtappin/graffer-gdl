@@ -1,0 +1,27 @@
+GRAFFER
+=======
+
+Graffer is an interactive tool for generating plots of data and/or
+functions. 
+
+This is the original IDL/GDL version. The code was originally developed
+in IDL, but recent improvements in the widgets on GDL mean that it is
+now possible to use it in GDL as well.
+
+The main capabilities:
+Plotting X vs. Y data with optional error bars.
+Plotting X vs. Y functions (including parametric functions).
+Contour or colour displays of 2-D datasets and functions.
+
+IMPORTANT: If you are using GDL you MUST use a recent GIT snapshot as
+some critical widget bugs have been fixed since the 1.0.0 release.
+
+There is also a Fortran version of the core tool that was originally
+written to stress-test Gtk-Fortran.
+
+Useful Links:
+GDL (GNU Data Language): https://github.com/gnudatalanguage/gdl
+Fortran Graffer: https://github.com/jtappin/graffer
+
+You may copy, distribute and modify GRAFFER under the terms of the GNU
+GENERAL PUBLIC LICENSE Version 2, or any later version.
