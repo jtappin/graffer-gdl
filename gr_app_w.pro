@@ -83,6 +83,7 @@ pro Gr_app_w, pdefs
   endif
 
   res0 = where(xydi eq pdefs.cset) > 0
+  res0 = res0[0]                ; Force to scalar
   
   dlist = data[xydi].descript
   dtypes = data[xydi].type
@@ -108,12 +109,18 @@ pro Gr_app_w, pdefs
   tlb = widget_base(title = 'Graffer data set merge', $
                     group = pdefs.ids.graffer, $
                     resource = 'Graffer')
+
   base = widget_base(tlb, $
                      /column)
 
-  pbase = widget_base(base, $
-                      /row)
-
+  if pdefs.nsets gt 25 then begin
+     device, get_screen_size = sxy
+     pbase = widget_base(base, $
+                         /row, $
+                         /scroll, $
+                         y_scroll_size = sxy[1]/2)
+  endif else pbase = widget_base(base, $
+                                 /row)
   exid = cw_bgroup(pbase, $
                    dlist, $
                    /column, $
@@ -133,6 +140,7 @@ pro Gr_app_w, pdefs
                    set_value = res0, $
                    uvalue = 'APPEND')
   sst = gr_app_is_ok(res0, dtypes, dcount)
+  help, res0, dtypes, dcount, sst
   for j = 0, n_elements(apids)-1 do $
      widget_control, apids[j], sensitive = sst[j]
   

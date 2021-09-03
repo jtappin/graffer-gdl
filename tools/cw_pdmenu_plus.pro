@@ -244,7 +244,7 @@ pro cw_pdmenu_plus_set, id, state, index = index
      cw_pdmenu_plus_set, idlist[index], state
      widget_control, idlist[index], get_uvalue = uvalue
      locs = where(tag_names(uvalue) eq 'LABEL')
-     if locs[0] ge 0 then $
+     if locs[0] ge 0 && uvalue.select then $
         widget_control, idb, $
                         set_value = uvalue.label
 
@@ -350,7 +350,7 @@ pro cw_pdmenu_plus_build, parent, desc, idx, nbuttons, etype, is_mb, $
      
      emenu = (desc[idx].flag and 2b) ne 0
 
-     if idx eq 0 and keyword_set(selector) then begin
+     if idx eq 0 && keyword_set(selector) then begin
         if isbitmap then bv = bytarr(size(*(desc[1].bitmap), /dim)) $
         else begin
            lmax = max(strlen(desc[1:*].label), mpos)
@@ -360,7 +360,7 @@ pro cw_pdmenu_plus_build, parent, desc, idx, nbuttons, etype, is_mb, $
      endif else if isbitmap then bv = *(desc[idx].bitmap) $
      else bv = desc[idx].label
 
-      if is_gdl() then begin
+     if is_gdl() then begin
         if check then begin
                                 ; Bit maps and selector don't work in GDL.
            if isbitmap then begin

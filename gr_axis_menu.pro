@@ -632,7 +632,7 @@ pro Gr_axis_menu, axis, base, pdefs
   if axis eq 'X' then pdefs.ids.x_origin = buts[8]
 
   asty_pos = [1, 2, 3, 4,  5,  6,  7,  8,  12]
-
+  
                                 ; Minimum
 
   jb = widget_base(tjb, $

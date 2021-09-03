@@ -100,7 +100,7 @@ uses pointers and possibly some relatively recent routines. You will
 need a workstation or terminal which supports one of the IDL widget
 devices\footnote{N.B. I've not tested it on Windows or MacOs as I
   don't have access to IDL on these systems.} with the X-windows Motif
-widgets, the graffer main window needs about 900x700 pixels on the
+widgets, the graffer main window needs about 1200x850 pixels on the
 screen.
 
 For full functionality you will need a 3-button mouse or something that
@@ -109,6 +109,10 @@ looks like one to IDL.
 In principle GRAFFER ought to run on any system with a reasonably
 recent version of IDL and widgets, the current version is tested on IDL
 6.4 on Solaris and Linux.
+
+As of Version 5.0 it will also run under GDL (GNU Data Language)
+\url{https://github.com/gnudatalanguage/gdl}, but requires a recent GIT
+version, as a number of fixes made since version 1.0.0 are required. 
 
 \subsection{Copyright etc.}
 
@@ -355,6 +359,18 @@ Version 3.09 adds support for a secondary Y-axis.
 
 \section{Getting Started}
 
+\subsection{Downloading}
+\label{sec:download}
+
+GRAFFER is now hosted at Github,
+\url{https://github.com/jtappin/graffer-idl}.
+So if you want to download it to \texttt{/contrib/idl/graffer-idl},
+then:
+\begin{verbatim}
+$ cd /contrib/idl/
+$ git clone https://github.com/jtappin/graffer-idl.git
+\end{verbatim}
+There is no need for any make or install.
 
 \subsection{Making sure it's there}
 
@@ -362,7 +378,7 @@ In order to be able to run GRAFFER, the directory containing the
 GRAFFER routines must be in your IDL search path\footnote{I suppose you
   could write a batch file to compile them all by explicit path, but I
   don't recommend such things.}. For the purposes of this section I
-will assume that the GRAFFER directory is \texttt{/contrib/idl/graffer}
+will assume that the GRAFFER directory is \texttt{/contrib/idl/graffer-idl}
 but you should substitute the real path name. Note also that the
 examples given here are for Unix systems and other systems will be
 somewhat different but as I don't have any other systems I'm not going
@@ -374,7 +390,7 @@ The extension can be done in one of two ways:
 \item [Modifying~\texttt{!PATH}~explicitly:]This is probably the safer
   method, but has to be redone each time you invoke IDL.
 \begin{verbatim}
-  IDL> !PATH = '/contrib/idl/graffer:' + !PATH
+  IDL> !PATH = expand_path('+/contrib/idl/graffer-idl')+':' + !PATH
   IDL> graffer
 \end{verbatim}
 
@@ -389,11 +405,11 @@ The extension can be done in one of two ways:
   \begin{itemize}
   \item When you already have \texttt{IDL\_PATH} defined:
     \begin{verbatim}
-      $ setenv IDL_PATH /contrib/idl/graffer/:${IDL_PATH}
+      $ setenv IDL_PATH +/contrib/idl/graffer-idl/:${IDL_PATH}
     \end{verbatim}
   \item When \texttt{IDL\_PATH} is undefined:
     \begin{verbatim}
-      $ setenv IDL_PATH /contrib/idl/graffer/:+/usr/local/lib/idl
+      $ setenv IDL_PATH +/contrib/idl/graffer-idl/:+/usr/local/lib/idl
     \end{verbatim}
   \end{itemize}
   This has the advantage that you only need to run the command once.
