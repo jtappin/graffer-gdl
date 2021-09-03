@@ -218,22 +218,22 @@ function Gr_xy_wid, pdefs, line = line
 
   if ((*pdefs.data)[pdefs.cset].mode eq 0) then $
      emds = [{label: 'None', sensitive: mask[0]}, $ $
-             {label: '+/-Y', sensitive: mask[1]}, $
+             {label: '±Y', sensitive: mask[1]}, $
              {label: '-Y +Y', sensitive: mask[2]}, $
-             {label: '+/-X', sensitive: mask[3]}, $
+             {label: '±X', sensitive: mask[3]}, $
              {label: '-X +X', sensitive: mask[4]}, $
-             {label: '+/-X +/-Y', sensitive: mask[5]}, $
-             {label: '+/-X -Y +Y', sensitive: mask[6]}, $
-             {label: '-X +X +/-Y', sensitive: mask[7]}, $
+             {label: '±X ±Y', sensitive: mask[5]}, $
+             {label: '±X -Y +Y', sensitive: mask[6]}, $
+             {label: '-X +X ±Y', sensitive: mask[7]}, $
              {label: '-X +X -Y +Y', sensitive: mask[8]}] $
   else emds = [{label: 'None', sensitive: mask[0]}, $
-               {label: '+/-Theta', sensitive: mask[1]}, $
+               {label: '±Theta', sensitive: mask[1]}, $
                {label: '-Theta +Theta', sensitive: mask[2]}, $
-               {label: '+/-R', sensitive: mask[3]}, $
+               {label: '±R', sensitive: mask[3]}, $
                {label: '-R +R', sensitive: mask[4]}, $
-               {label: '+/-R +/-Theta', sensitive: mask[5]}, $
-               {label: '+/-R -Theta +Theta', sensitive: mask[6]}, $
-               {label: '-R +R +/-Theta', sensitive: mask[7]}, $
+               {label: '±R ±Theta', sensitive: mask[5]}, $
+               {label: '±R -Theta +Theta', sensitive: mask[6]}, $
+               {label: '-R +R ±Theta', sensitive: mask[7]}, $
                {label: '-R +R -Theta +Theta', sensitive: mask[8]}]
 
   jb = widget_base(base, $
