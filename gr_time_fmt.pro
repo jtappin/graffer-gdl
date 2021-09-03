@@ -1,4 +1,4 @@
-function Gr_time_fmt, axis_s, index, value, options = options, range = range
+function Gr_time_fmt, axis, index, value, options = options, range = range
 
 ;+
 ; GR_TIME_FMT
@@ -32,9 +32,6 @@ function Gr_time_fmt, axis_s, index, value, options = options, range = range
 ;-
 
   common Graff_time_options, xopt, xr, xz, yopt, yr, yz, top_last
-
-                                ; Temporary kludge here
-  axis = axis_s-is_gdl()
   
   if (n_elements(options) ne 0) then begin ; Setting up
      if (axis eq 0) then begin
