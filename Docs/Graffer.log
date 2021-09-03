@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2021/Arch Linux) (preloaded format=pdflatex 2021.6.8)  3 SEP 2021 08:54
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2021/Arch Linux) (preloaded format=pdflatex 2021.6.8)  3 SEP 2021 12:09
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -401,42 +401,45 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <5> on input line 91.
 LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 1
-24.
+27.
  (/usr/share/texmf-dist/tex/latex/psnfss/ts1ptm.fd
 File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
 ) [4] [5] [6]
 [7] [8] [9]
-Overfull \hbox (26.54681pt too wide) in paragraph at lines 395--395
+Overfull \hbox (26.54681pt too wide) in paragraph at lines 373--373
  []  \T1/pcr/m/n/10.95 IDL> !PATH = expand_path('+/contrib/idl/graffer-idl')+':
 ' + !PATH[] 
  []
 
 
-Overfull \hbox (17.78688pt too wide) in paragraph at lines 409--409
+Overfull \hbox (17.78688pt too wide) in paragraph at lines 387--387
  []      \T1/pcr/m/n/10.95 $ setenv IDL_PATH +/contrib/idl/graffer-idl/:${IDL_P
 ATH}[] 
  []
 
-[10]
-Overfull \hbox (70.34682pt too wide) in paragraph at lines 413--413
+
+Overfull \hbox (70.34682pt too wide) in paragraph at lines 391--391
  []      \T1/pcr/m/n/10.95 $ setenv IDL_PATH +/contrib/idl/graffer-idl/:+/usr/l
 ocal/lib/idl[] 
  []
 
-[11]
-<main.png, id=626, 978.65625pt x 541.27219pt>
+[10]
+<main.png, id=621, 978.65625pt x 541.27219pt>
 File: main.png Graphic file (type png)
 <use main.png>
-Package pdftex.def Info: main.png  used on input line 465.
+Package pdftex.def Info: main.png  used on input line 443.
 (pdftex.def)             Requested size: 441.01772pt x 243.91711pt.
+ [11]
+Underfull \vbox (badness 1205) has occurred while \output is active []
+
  [12 <./main.png>] [13] [14] [15] [16] [17]
-Overfull \hbox (4.9164pt too wide) in paragraph at lines 779--782
+Overfull \hbox (4.9164pt too wide) in paragraph at lines 757--760
 \T1/ptm/m/n/10.95 Therefore there are only three ways to en-ter 2-D data, all o
 f which are reached via the \T1/pcr/m/n/10.95 2-d datasets
  []
 
 [18] [19]
-Overfull \hbox (79.10675pt too wide) in paragraph at lines 900--900
+Overfull \hbox (79.10675pt too wide) in paragraph at lines 878--878
  []  \T1/pcr/m/n/10.95 -1./sqrt(((x+.5)^2+y^2)>1e-6) - .5/sqrt(((x-1)^2+y^2)>1e
 -6) - (x^2 + y^2)[] 
  []
@@ -445,12 +448,12 @@ Overfull \hbox (79.10675pt too wide) in paragraph at lines 900--900
 <main_ds_cn.png, id=713, 251.43938pt x 285.31593pt>
 File: main_ds_cn.png Graphic file (type png)
 <use main_ds_cn.png>
-Package pdftex.def Info: main_ds_cn.png  used on input line 1246.
+Package pdftex.def Info: main_ds_cn.png  used on input line 1224.
 (pdftex.def)             Requested size: 176.40439pt x 200.1682pt.
 <main_ds_cl.png, id=714, 251.43938pt x 285.31593pt>
 File: main_ds_cl.png Graphic file (type png)
 <use main_ds_cl.png>
-Package pdftex.def Info: main_ds_cl.png  used on input line 1246.
+Package pdftex.def Info: main_ds_cl.png  used on input line 1224.
 (pdftex.def)             Requested size: 176.40439pt x 200.1682pt.
  [26] [27 <./main_ds_cn.png> <./main_ds_cl.png>]
 Underfull \vbox (badness 1231) has occurred while \output is active []
@@ -460,46 +463,46 @@ Underfull \vbox (badness 1231) has occurred while \output is active []
 <key.png, id=749, 516.93124pt x 425.59pt>
 File: key.png Graphic file (type png)
 <use key.png>
-Package pdftex.def Info: key.png  used on input line 1467.
+Package pdftex.def Info: key.png  used on input line 1445.
 (pdftex.def)             Requested size: 284.52756pt x 234.25703pt.
  [31 <./key.png>] [32] [33] [34]
 <axis_adv.png, id=773, 180.675pt x 339.11308pt>
 File: axis_adv.png Graphic file (type png)
 <use axis_adv.png>
-Package pdftex.def Info: axis_adv.png  used on input line 1652.
+Package pdftex.def Info: axis_adv.png  used on input line 1630.
 (pdftex.def)             Requested size: 180.67455pt x 339.11224pt.
  [35 <./axis_adv.png>]
 <text.png, id=780, 281.55188pt x 346.29375pt>
 File: text.png Graphic file (type png)
 <use text.png>
-Package pdftex.def Info: text.png  used on input line 1699.
+Package pdftex.def Info: text.png  used on input line 1677.
 (pdftex.def)             Requested size: 341.43306pt x 419.97313pt.
  [36] [37]
 <hardopts_ps.png, id=794, 368.41989pt x 304.16934pt>
 File: hardopts_ps.png Graphic file (type png)
 <use hardopts_ps.png>
-Package pdftex.def Info: hardopts_ps.png  used on input line 1792.
+Package pdftex.def Info: hardopts_ps.png  used on input line 1770.
 (pdftex.def)             Requested size: 284.52756pt x 234.91194pt.
 <hardopts_eps.png, id=795, 368.41989pt x 304.16934pt>
 File: hardopts_eps.png Graphic file (type png)
 <use hardopts_eps.png>
-Package pdftex.def Info: hardopts_eps.png  used on input line 1793.
+Package pdftex.def Info: hardopts_eps.png  used on input line 1771.
 (pdftex.def)             Requested size: 284.52756pt x 234.91194pt.
 
 [38] [39] [40]
 <options.png, id=817, 278.03876pt x 281.05pt>
 File: options.png Graphic file (type png)
 <use options.png>
-Package pdftex.def Info: options.png  used on input line 1961.
+Package pdftex.def Info: options.png  used on input line 1939.
 (pdftex.def)             Requested size: 220.50885pt x 222.9019pt.
  [41] [42] [43] [44] [45] [46] [47] [48]
-Overfull \hbox (25.45172pt too wide) in paragraph at lines 2397--2397
+Overfull \hbox (25.45172pt too wide) in paragraph at lines 2375--2375
 []\T1/pcr/m/n/10.95 graff_update, file, idx, name=name, polar = polar, rescale 
 = rescale, $[] 
  []
 
 
-Overfull \hbox (5.74174pt too wide) in paragraph at lines 2397--2397
+Overfull \hbox (5.74174pt too wide) in paragraph at lines 2375--2375
 []            \T1/pcr/m/n/10.95 z_nlevels, z_levels = z_levels, z_colours = z_c
 olours, $[] 
  []
@@ -509,7 +512,7 @@ Underfull \vbox (badness 4531) has occurred while \output is active []
 
  [55]
 [56] [57] [58]
-Overfull \hbox (7.30334pt too wide) in paragraph at lines 2850--2854
+Overfull \hbox (7.30334pt too wide) in paragraph at lines 2828--2832
 []\T1/ptm/m/n/10.95 The pro-gram to use to view the PDF help files. (searches f
 or the first of \T1/pcr/m/n/10.95 acroread\T1/ptm/m/n/10.95 ,
  []
@@ -522,7 +525,7 @@ Package rerunfilecheck Info: File `Graffer.out' has not changed.
 Here is how much of TeX's memory you used:
  10049 strings out of 478994
  144745 string characters out of 5864752
- 454912 words of memory out of 5000000
+ 454910 words of memory out of 5000000
  27184 multiletter control sequences out of 15000+600000
  464017 words of font info for 93 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -540,7 +543,7 @@ exmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/share/texmf-dist/fonts/type
 fb></usr/share/texmf-dist/fonts/type1/urw/times/utmbi8a.pfb></usr/share/texmf-d
 ist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texmf-dist/fonts/type1/urw/tim
 es/utmr8a.pfb></usr/share/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on Graffer.pdf (63 pages, 614423 bytes).
+Output written on Graffer.pdf (63 pages, 613709 bytes).
 PDF statistics:
  1031 PDF objects out of 1200 (max. 8388607)
  922 compressed objects within 10 object streams

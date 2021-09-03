@@ -13,6 +13,9 @@ Plotting X vs. Y data with optional error bars.
 Plotting X vs. Y functions (including parametric functions).
 Contour or colour displays of 2-D datasets and functions.
 
+Testing and development has been on various Linux flavours. If you want
+to try to use it on other systems, be prepared to do the porting work.
+
 IMPORTANT: If you are using GDL you MUST use a recent GIT snapshot as
 some critical widget bugs have been fixed since the 1.0.0 release.
 
