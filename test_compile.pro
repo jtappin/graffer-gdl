@@ -1,15 +1,3 @@
-print, 'aspect.pro'
-.r aspect
-print, 'cw_enter.pro'
-.r cw_enter
-print, 'cw_pdmenu_plus_g.pro'
-.r cw_pdmenu_plus_g
-print, 'cw_pdmenu_plus.pro'
-.r cw_pdmenu_plus
-print, 'cw_spin_box.pro'
-.r cw_spin_box
-print, 'fractile.pro'
-.r fractile
 print, 'gr_1dd_plot.pro'
 .r gr_1dd_plot
 print, 'gr_1df_plot.pro'
@@ -350,6 +338,18 @@ print, 'gr_z_menus.pro'
 .r gr_z_menus
 print, 'gr_z_read.pro'
 .r gr_z_read
-print, 'match_in.pro'
-.r match_in
+print, 'tools/aspect.pro'
+.r tools/aspect
+print, 'tools/cw_enter.pro'
+.r tools/cw_enter
+print, 'tools/cw_pdmenu_plus.pro'
+.r tools/cw_pdmenu_plus
+print, 'tools/cw_spin_box.pro'
+.r tools/cw_spin_box
+print, 'tools/fractile.pro'
+.r tools/fractile
+print, 'tools/is_gdl.pro'
+.r tools/is_gdl
+print, 'tools/match_in.pro'
+.r tools/match_in
 exit

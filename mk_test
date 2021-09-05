@@ -6,6 +6,11 @@ foreach f (`ls *.pro | grep -v graff_version`)
     echo "print, '$f'" >> test_compile.pro
     echo ".r ${f:r}" >> test_compile.pro
 end
+foreach f (`ls tools/*.pro`)
+    echo "print, '$f'" >> test_compile.pro
+    echo ".r ${f:r}" >> test_compile.pro
+end
+
 echo "exit" >> test_compile.pro
 
 gdl ./test_compile.pro
