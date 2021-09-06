@@ -41,7 +41,21 @@ pro Gr_2dd_plot, pdefs, i, csiz, grey_ps = grey_ps, shaded = shaded
   x = *xydata.x
   y = *xydata.y
 
+  
   if (data.zopts.format eq 0) then begin
+                                ; Work around as currently contour
+                                ; with different dimensions for the
+                                ; coordinates fails. gr_display_img
+                                ; already does this.
+     if is_gdl() then begin
+        sx = size(x)
+        sy = size(y)
+        if sx[0] eq 1 && sy[0] eq 2 then $
+           x = x[*, intarr(sy[2])] $
+        else if sx[0] eq 2 && sy[0] eq 1 then $
+           y = transpose(y[*, intarr(sx[1])])
+     endif
+     
      if (data.zopts.set_levels) then begin
         levels = *(data.zopts.levels) 
         nl = n_elements(levels)
@@ -64,7 +78,7 @@ pro Gr_2dd_plot, pdefs, i, csiz, grey_ps = grey_ps, shaded = shaded
         endif
 
         levels = gr_make_levels(mn, mx, nl, data.zopts.lmap)
-    endelse
+     endelse
      
      if (data.zopts.label ne 0 and n_elements(nl) eq 1) then begin
         labels = indgen(nl) mod data.zopts.label eq data.zopts.label_off
@@ -77,7 +91,7 @@ pro Gr_2dd_plot, pdefs, i, csiz, grey_ps = grey_ps, shaded = shaded
            if (*data.zopts.colours)[j] eq -2 then $
               lcolours[j] = $
               graff_colours((*data.zopts.raw_colours)[*, j]) $
-           else lcolours[j] = graff_colours(*(data.zopts.colours)[j])
+           else lcolours[j] = graff_colours((*data.zopts.colours)[j])
         endfor
      endif
      if ptr_valid(data.zopts.style) then linestyle = $
