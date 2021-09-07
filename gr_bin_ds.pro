@@ -163,7 +163,15 @@ pro Gr_bin_ds, data, nset, ilu, msgid
            data[nset].zopts.n_thick = nvals
         end
 
-        'ZCF': data[nset].zopts.fill = value
+        'ZCF': begin
+           data[nset].zopts.fill = value
+           if data[nset].zopts.fill gt 1 then begin
+              graff_msg, msgid, $
+                         "Downhill tick contours no longer " + $
+                         "supported, using standard."
+              data[nset].zopts.fill = 0
+           endif
+        end
         'ZLI': data[nset].zopts.label = value
         'ZLO': data[nset].zopts.label_off = value
         'ZCS': data[nset].zopts.charsize = value

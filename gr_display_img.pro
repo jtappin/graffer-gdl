@@ -76,6 +76,7 @@ pro Gr_display_img, zin, xin, yin, range = range, $
      if sx[0] eq 1 then x = xin[*, intarr(sz[2])] $
      else x = xin
      if sy[0] eq 1 then y = transpose(yin[*, intarr(sz[1])]) $
+     else if sy[1] eq 1 then y = yin[intarr(sz[1]), *] $
      else y = yin
   endif
 

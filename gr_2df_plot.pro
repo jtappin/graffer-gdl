@@ -144,9 +144,8 @@ pro Gr_2df_plot, pdefs, i, csiz, grey_ps = grey_ps, shaded = shaded
      contour, z, xx, yy, /overplot, /follow, $
               levels = levels, c_linestyle = linestyle, $
               c_colors = lcolours, c_thick = thick, $
-              fill = data.zopts.fill eq 1b, downhill = $
-              data.zopts.fill eq 2b, c_labels = labels, c_charsize $
-              = ccsize
+              fill = data.zopts.fill eq 1b,  c_labels = labels, $
+              c_charsize = ccsize
      if data.zopts.fill eq 1b then shaded = 1b
   endif else begin
      if (~keyword_set(grey_ps)) then begin

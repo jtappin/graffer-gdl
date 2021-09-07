@@ -293,8 +293,7 @@ pro Gr_cont_menus, sb, pdefs
 
   pdefs.ids.zopts.c_type = widget_droplist(jbx, $
                                            value = ['Outline', $
-                                                    'Filled', $
-                                                    'Downhill'], $
+                                                    'Filled'], $
                                            uvalue = 'FILL', $
                                            track = optblock.track)
   widget_control, pdefs.ids.zopts.c_type, set_droplist_select = zopts.fill

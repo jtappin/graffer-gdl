@@ -52,10 +52,14 @@ pro Gr_2dd_plot, pdefs, i, csiz, grey_ps = grey_ps, shaded = shaded
         sy = size(y)
         if sx[0] eq 1 && sy[0] eq 2 then $
            x = x[*, intarr(sy[2])] $
-        else if sx[0] eq 2 && sy[0] eq 1 then $
-           y = transpose(y[*, intarr(sx[1])])
+        else if sx[0] eq 2 then begin
+           if sy[0] eq 1 then $
+              y = transpose(y[*, intarr(sx[1])]) $
+           else if sy[1] eq 1 then $ ; 1×n Y array
+              y = y[intarr(sx[1]), *]
+        endif
      endif
-     
+
      if (data.zopts.set_levels) then begin
         levels = *(data.zopts.levels) 
         nl = n_elements(levels)
@@ -104,9 +108,8 @@ pro Gr_2dd_plot, pdefs, i, csiz, grey_ps = grey_ps, shaded = shaded
      contour, z, x, y, /overplot, /follow, $
               levels = levels, c_linestyle = linestyle, $
               c_colors = lcolours, c_thick = thick,  $
-              fill = data.zopts.fill eq 1b, downhill = $
-              data.zopts.fill eq 2b, c_labels = labels, c_charsize $
-              = ccsize
+              fill = data.zopts.fill eq 1b, c_labels = labels, $
+              c_charsize = ccsize
      if data.zopts.fill eq 1b then shaded = 1b ; Don't clear it.
   endif else if (data.zopts.format eq 1) then begin
      if (~keyword_set(grey_ps)) then begin

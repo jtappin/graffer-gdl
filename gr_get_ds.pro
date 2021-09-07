@@ -231,7 +231,15 @@ pro Gr_get_ds, data, nset, ilu, msgid
               graff_msg, msgid, "** W A R N I N G ** Contour thickness " + $
                          "list given without count - ignored"
            
-           'ZCF': data[nset].zopts.fill = gr_int_val(tag_val(itag+1), 1)
+           'ZCF': begin
+              data[nset].zopts.fill = gr_int_val(tag_val(itag+1), 1)
+              if data[nset].zopts.fill gt 1 then begin
+                 graff_msg, msgid, $
+                            "Downhill tick contours no longer " + $
+                            "supported, using standard."
+                 data[nset].zopts.fill = 0
+              endif
+           end
            'ZLI': data[nset].zopts.label = $
               gr_int_val(tag_val(itag+1), 1)
            'ZLO': data[nset].zopts.label_off = $
