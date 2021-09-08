@@ -1,16 +1,33 @@
-#!/bin/csh
+#!/bin/sh
 
-rm test_compile.pro
+# MK_TEST
+#   Make a test compilation program for GRAFFER and run it.
+#
+# Usage:
+#	mk_test [-i]
+#
+# By default GDL is used, if the '-i' option is given, then use IDL
+#   instead.
 
-foreach f (`ls *.pro | grep -v graff_version`)
-    echo "print, '$f'" >> test_compile.pro
-    echo ".r ${f:r}" >> test_compile.pro
-end
-foreach f (`ls tools/*.pro`)
-    echo "print, '$f'" >> test_compile.pro
-    echo ".r ${f:r}" >> test_compile.pro
-end
+if [ -f test_compile.pro ]
+then
+    rm test_compile.pro
+fi
+
+for dir in definitions lib tools utils gui ;
+do
+    for file in ${dir}/*.pro ;
+    do
+	echo "print, '$file'" >> test_compile.pro
+	echo ".r ${file%.pro}" >> test_compile.pro
+    done
+done
 
 echo "exit" >> test_compile.pro
 
-gdl ./test_compile.pro
+if [ "$1" == "-i" ]
+then
+   idl ./test_compile.pro
+else
+    gdl ./test_compile.pro
+fi
