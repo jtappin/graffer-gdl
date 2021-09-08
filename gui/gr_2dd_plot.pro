@@ -1,3 +1,10 @@
+; LICENCE:
+; Copyright (C) 1995-2021: SJT
+; This program is free software; you can redistribute it and/or modify  
+; it under the terms of the GNU General Public License as published by  
+; the Free Software Foundation; either version 2 of the License, or     
+; (at your option) any later version.                                   
+
 pro Gr_2dd_plot, pdefs, i, csiz, grey_ps = grey_ps, shaded = shaded
 
 ;+
