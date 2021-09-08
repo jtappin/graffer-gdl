@@ -331,7 +331,9 @@ Version 3.09 adds support for a secondary Y-axis.
 \label{sec:v500}
 
 \begin{itemize}
-\item Modifications to allow GRAFFER to work under GDL (GnuDataLanguage).
+\item Modifications to allow GRAFFER to work under GDL
+  (GnuDataLanguage).
+\item Split code into subdirectories.
 \end{itemize}
 
 
@@ -341,12 +343,12 @@ Version 3.09 adds support for a secondary Y-axis.
 \label{sec:download}
 
 GRAFFER is now hosted at Github,
-\url{https://github.com/jtappin/graffer-idl}.
-So if you want to download it to \texttt{/contrib/idl/graffer-idl},
+\url{https://github.com/jtappin/graffer-gdl}.
+So if you want to download it to \texttt{/contrib/idl/graffer-gdl},
 then:
 \begin{verbatim}
 $ cd /contrib/idl/
-$ git clone https://github.com/jtappin/graffer-idl.git
+$ git clone https://github.com/jtappin/graffer-gdl.git
 \end{verbatim}
 There is no need for any make or install.
 
@@ -372,25 +374,39 @@ The extension can be done in one of two ways:
   IDL> graffer
 \end{verbatim}
 
-\item [Via~the~\texttt{IDL\_PATH}~environment~variable:]If you know
+\item [Via~the~\texttt{IDL\_PATH}~or\texttt{GDL\_PATH}~environment~variable:]If you know
   what you are doing this is probably better but you need to be aware
   that \texttt{IDL\_PATH} must include the default IDL libraries as
   well as the GRAFFER libraries.
 
 
-  These examples are in C-shell or TC-shell code:
+  These examples are in C-shell or TC-shell code for IDL:
 
   \begin{itemize}
   \item When you already have \texttt{IDL\_PATH} defined:
-    \begin{verbatim}
-      $ setenv IDL_PATH +/contrib/idl/graffer-idl/:${IDL_PATH}
-    \end{verbatim}
-  \item When \texttt{IDL\_PATH} is undefined:
-    \begin{verbatim}
-      $ setenv IDL_PATH +/contrib/idl/graffer-idl/:+/usr/local/lib/idl
-    \end{verbatim}
+\begin{verbatim}
+$ setenv IDL_PATH +/contrib/idl/graffer-idl/:${IDL_PATH}
+\end{verbatim}
+  \item When \texttt{IDL\_PATH} is undefined, IDL installed in
+    \texttt{/usr/local/lib/idl}: 
+\begin{verbatim}
+$ setenv IDL_PATH +/contrib/idl/graffer-idl/:+/usr/local/lib/idl
+\end{verbatim}
   \end{itemize}
-  This has the advantage that you only need to run the command once.
+
+  And these in bash for GDL:
+  \begin{itemize}
+  \item When you already have \texttt{GDL\_PATH} defined:
+\begin{verbatim}
+$ export GDL_PATH=+/contrib/idl/graffer-idl/:${IDL_PATH}
+\end{verbatim}
+  \item When \texttt{GDL\_PATH} is undefined, GDL installed in
+    \texttt{/usr/local/share/gnudatalanguage}:
+\begin{verbatim}
+$ export GDL_PATH=+/contrib/idl/graffer-idl/:+/usr/local/share/gnudatalanguage
+\end{verbatim}
+  \end{itemize}
+  These have the advantage that you only need to run the command once.
 
 \end{description}
 
@@ -416,7 +432,7 @@ GRAFFER can accept a number of keywords to control its operation:
 \begin{description}
 
 \item [\texttt{XSIZE}~\&~\texttt{YSIZE}:]These specify the dimensions
-  of the drawing window. By default it is 600 pixels square. If you
+  of the drawing window. By default it is 800 pixels square. If you
   specify a larger size then a scrolled draw widget will be used.
 
 \item [\texttt{GROUP}:]This is only really useful if you are writing an
@@ -429,7 +445,7 @@ GRAFFER can accept a number of keywords to control its operation:
   not return to the caller so you can check out the values of the
   offending variables.
 \item[\texttt{BLOCK}:] Start the \texttt{xmanager} in blocking mode (so
-  there is no \texttt{IDL>} prompt while GRAFFER is running). On
+  there is no \texttt{IDL>} prompt while GRAFFER is running). One
   possible use for this is if GRAFFER is called from another procedure
   and you want to be able to get variables from that procedure
   (although \texttt{GRAFF\_ADD} is usually preferred in such cases).

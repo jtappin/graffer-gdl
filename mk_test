@@ -27,7 +27,7 @@ echo "exit" >> test_compile.pro
 
 if [ "$1" == "-i" ]
 then
-   idl ./test_compile.pro
+    idl ./test_compile.pro
 else
     gdl ./test_compile.pro
 fi
