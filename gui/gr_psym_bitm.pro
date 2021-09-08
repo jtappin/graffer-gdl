@@ -33,15 +33,11 @@ pro Gr_psym_bitm                ;, ncols
 
   common Gr_psym_maps, psym_bm  ;, col_bm
 
-  help, calls = cstack
-  ltpos = strpos(cstack(0), '<')+1
-  rtpos = strpos(cstack(0), 'gr_psym_bitm.pro')
-  len = rtpos - ltpos
-  case !version.os_family of
-     'unix': bmpath = strmid(cstack(0), ltpos, len) + 'bitmaps/'
-     else: bmpath = strmid(cstack(0), ltpos, len) + 'bitmaps\' 
-  endcase
+  cstack = scope_traceback(/struct)
+  bmpath = file_dirname(cstack[-1].filename, /mark) + $
+           path_sep(/parent) + path_sep() + 'bitmaps' + path_sep()
 
+  print, bmpath
   read_x11_bitmap, bmpath+'ps0.xbm', ps0
   read_x11_bitmap, bmpath+'ps1.xbm', ps1
   read_x11_bitmap, bmpath+'ps2.xbm', ps2

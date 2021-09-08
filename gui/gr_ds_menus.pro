@@ -176,7 +176,7 @@ pro Gr_ds_menus, optbb, pdefs
   common Gr_psym_maps, psym_bm  ;, col_bm
   common graffer_options, optblock
 
-  if (n_elements(psym_bm) eq 0) then gr_psym_bitm
+  if ~is_gdl() && n_elements(psym_bm) eq 0 then gr_psym_bitm
 
   pdefs.ids.plopts[0] = widget_base(optbb, $
                                     /column, $
