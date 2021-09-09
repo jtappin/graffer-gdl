@@ -347,7 +347,8 @@ pro cw_pdmenu_plus_build, parent, desc, idx, nbuttons, etype, is_mb, $
      menu = (desc[idx].flag and 1b) ne 0
      if menu && idx ne 0 && keyword_set(selector) then $
         message, "A selector menu cannot have submenus"
-     if ~is_gdl() && menu && ~is_mb then menu = 2
+
+     if  menu && ~is_mb then menu = 2
 
      check = (desc[idx].flag and 4b) ne 0
 
@@ -369,12 +370,12 @@ pro cw_pdmenu_plus_build, parent, desc, idx, nbuttons, etype, is_mb, $
 
      if is_gdl() then begin
         if check then begin
-                                ; Bit maps and selector don't work in GDL.
-           if isbitmap then begin
-              print, "GDL doesn't (yet) support selector bitmaps"
-              return
-           endif
+                                ; Bit maps and check buttons don't work in GDL.
            if ~keyword_set(selector) then begin
+              if isbitmap then begin
+                 print, "GDL doesn't (yet) support checkable bitmaps"
+                 return
+              endif
               if desc[idx].state then bvs = bv +' [*]' $
               else bvs = bv+' [ ]'
            endif else bvs = bv
