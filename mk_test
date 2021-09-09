@@ -9,6 +9,36 @@
 # By default GDL is used, if the '-i' option is given, then use IDL
 #   instead.
 
+function usage {
+    echo "$(basename $0): Generates and runs a script to test that"
+    echo 'all of the routines in Graffer compile correctly.'
+    echo
+    echo 'Usage:'
+    echo "$(basename $0) [-idh]"
+    echo '      -i  Uses IDL rather than GDL for the compilations.'
+    echo '      -d  Deletes the test_compile.pro script after running.'
+    echo '      -h  Prints this help info.'
+}
+
+
+ccmd='gdl'
+del=''
+options=":idh"
+
+while getopts ${options} thisopt
+do
+    case ${thisopt} in
+	i) ccmd='idl' ;;
+	d) del='yes' ;;
+	h) usage
+	   exit ;;
+	?) usage
+	exit 1 ;;
+    esac
+done
+
+# Must delete any existing script as it will be appended
+
 if [ -f test_compile.pro ]
 then
     rm test_compile.pro
@@ -25,9 +55,10 @@ done
 
 echo "exit" >> test_compile.pro
 
-if [ "$1" == "-i" ]
+${ccmd} ./test_compile.pro
+
+if [ "${del}" == "yes" ]
 then
-    idl ./test_compile.pro
-else
-    gdl ./test_compile.pro
+    rm ./test_compile.pro
 fi
+
