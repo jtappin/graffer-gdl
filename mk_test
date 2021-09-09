@@ -30,9 +30,13 @@ do
     case ${thisopt} in
 	i) ccmd='idl' ;;
 	d) del='yes' ;;
-	h) usage
-	   exit ;;
-	?) usage
+	h)
+	    usage
+	    exit ;;
+	?)
+	echo "Invalid option: -${OPTARG}"
+	echo
+	usage
 	exit 1 ;;
     esac
 done
