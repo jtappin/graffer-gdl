@@ -71,7 +71,13 @@ function Gr_opt_event, event
 
      if opts.pdfviewer ne '' then printf, ilu, 'PDFView:', $
                                           opts.pdfviewer
+     
+; These are not settable in the GUI as they only apply at the creation
+; of the top-level Graffer GUI.
+     
      printf, ilu, 'Track:', opts.track
+     printf, ilu, 'Bitmap:', opts.bitmaps
+     
      free_lun, ilu
   endif
 

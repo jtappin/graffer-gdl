@@ -35,7 +35,9 @@
 ;	/tracking_events	Set explicitly to zero to prevent
 ;				widget tracking events when running in
 ;				IDL. (Always disabled in GDL as
-;				they don't work).
+;				they don't work properly).
+;	/bitmaps	input	If set, then the plot symbol menu uses
+;				bitmaps rather than descriptions.
 ;
 ; History:
 ;	Original: 27/7/95; SJT
@@ -280,6 +282,7 @@
 ;		      - Harmonization of IDL & Fortran versions
 ;		Version 5.00:
 ;		      - Mods to allow it to work in GDL as well as IDL.
+;		      - Add subirectory structure.
 ;-
 
 
@@ -419,8 +422,8 @@ end
 
 pro Graffer, file, group = group, xsize = xsize, ysize = ysize, $
              debug = debug, noscroll = noscroll, $
-             recover = recover, block = block, colour_menu = $
-             colour_menu, ttype = ttype, tracking_events = tracking_events
+             recover = recover, block = block, ttype = ttype, $
+             tracking_events = tracking_events, bitmaps = bitmaps
 
   common Gr_psym_maps, psym_bm  ;, col_bm
   common graffer_options, optblock
@@ -451,6 +454,9 @@ pro Graffer, file, group = group, xsize = xsize, ysize = ysize, $
                                "GDL." $
      else optblock.track = keyword_set(tracking_events)
   endif
+
+  if n_elements(bitmaps) ne 0 then $
+     optblock.bitmaps = keyword_set(bitmaps)
   
   if (keyword_set(debug)) then begin
      !Quiet = 0 
@@ -493,9 +499,6 @@ pro Graffer, file, group = group, xsize = xsize, ysize = ysize, $
   graff_init, pdefs, file, version = version, ttype = $
               keyword_set(ttype)
   
-  if n_elements(colour_menu) ne 0 then $
-     print, "The colour_menu keyword is no longer supported"
-
   igot = graff_get(pdefs, file, /no_set, recover = recover, /no_warn)
   if igot eq 0 then return      ; Note that here it is meaningful to
                                 ; continue if the file doesn't exist.

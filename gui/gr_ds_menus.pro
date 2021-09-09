@@ -258,7 +258,7 @@ pro Gr_ds_menus, optbb, pdefs
   jjb = widget_base(pdefs.ids.plopts[0], /row)
 
   sz = size(psym_bm, /dim)
-  if is_gdl() then begin
+  if is_gdl() || ~optblock.bitmaps then begin
      symlist = ['No symbol', 'Plus', 'Asterisk', 'Dot', 'Diamond', $
                 'Triangle', 'Square', 'Cross', 'Circle', 'Filled ' + $
                 'Diamond', 'Filled Triangle', 'Filled Square', $

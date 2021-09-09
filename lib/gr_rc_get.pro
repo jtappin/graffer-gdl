@@ -35,6 +35,7 @@ pro Gr_rc_get, optblock
   optblock.Auto_delay = 300.
   optblock.Mouse = 0b
   optblock.track = ~is_gdl()
+  optblock.bitmaps = 0b
   
   if ~file_test(rcfile) then return
 
@@ -44,12 +45,13 @@ pro Gr_rc_get, optblock
      readf, ilu, inln
      kv = strsplit(inln, ':', /extr)
      case strupcase(kv(0)) of
-        'AUTOSAVE': optblock.auto_delay = float(kv(1))
-        'SUPP2D': optblock.s2d = fix(kv(1))
-        'MOUSEEDIT': optblock.mouse = fix(kv(1))
+        'AUTOSAVE': optblock.auto_delay = float(kv[1])
+        'SUPP2D': optblock.s2d = truth(kv[1])
+        'MOUSEEDIT': optblock.mouse = truth(kv[1])
         'PDFVIEW': optblock.pdfviewer = kv[1]
         'TRACK': if ~is_gdl() then  optblock.track = fix(kv[1]) $
         else print, "Warning: Tracking events don't work under GDL."
+        'BITMAP': optblock.bitmaps = truth(kv[1])
         Else: print, "Warning: Unknown item in resource file."
      endcase
   endwhile

@@ -34,6 +34,7 @@ pro graff_opts__define
               S2d:         0b, $
               Mouse:       0b, $
               track:       0b, $
+              bitmaps:     0b, $
               pdfviewer:   '' $
              }
 
