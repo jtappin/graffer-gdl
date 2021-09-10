@@ -5,7 +5,7 @@
 ; the Free Software Foundation; either version 2 of the License, or     
 ; (at your option) any later version.                                   
 
-function graff_colours, index, triple = triple
+function graff_colours, index, triple = triple, max_index = max_index
 
 ;+
 ; GRAFF_COLOURS
@@ -24,6 +24,8 @@ function graff_colours, index, triple = triple
 ; Keyword:
 ;	/triple		If set, then return a colour triplet for use
 ;			in image display.
+;	/max_index	If set, then return the highest recognized
+;			colour index
 ;
 ; History:
 ;	Original: 2/8/95; SJT
@@ -36,33 +38,41 @@ function graff_colours, index, triple = triple
 ;	work for big-endian boxes: 1/3/19; SJT
 ;-
 
-  if n_elements(index) eq 1 then begin
-     cmap =  [[255l, 0l, 255l, 0l, 0l, 0l, 255l, 255l, 255l, 127l, $
-               0l, 0l, 127l, 255l, 85l, 170l, 170l, 255l, 0l, 85l, $
-               0l, 85l, 0l, 85l, 170l, 255l, 170l, 255l], $ ; Red 
-              [255l, 0l, 0l, 255l, 0l, 255l, 0l, 255l, 127l, 255l, $
-               255l, 127l, 0l, 0l, 85l, 170l, 0l, 85l, 170l, 255l, 0l, $
-               85l, 170l, 255l, 0l, 85l, 170l, 255l], $ ; Green
-              [255l, 0l, 0l, 0l, 255l, 255l, 255l, 0l, 0l, 0l, 127l, $
-               255l, 255l, 127l, 85l, 170l, 0l, 85l, 0l, 85l, 170l, $
-               255l, 170l, 255l, 170l, 255l, 0l, 85l]] ; Blue
+  cmap =  [[255l, 0l, 255l, 0l, 0l, 0l, 255l, 255l, 255l, 127l, $
+            0l, 0l, 127l, 255l, 85l, 170l, 170l, 255l, 0l, 85l, $
+            0l, 85l, 0l, 85l, 170l, 255l, 170l, 255l], $ ; Red 
+           [255l, 0l, 0l, 255l, 0l, 255l, 0l, 255l, 127l, 255l, $ $
+            255l, 127l, 0l, 0l, 85l, 170l, 0l, 85l, 170l, 255l, 0l, $
+            85l, 170l, 255l, 0l, 85l, 170l, 255l], $ ; Green
+           [255l, 0l, 0l, 0l, 255l, 255l, 255l, 0l, 0l, 0l, 127l, $
+            255l, 255l, 127l, 85l, 170l, 0l, 85l, 0l, 85l, 170l, $
+            255l, 170l, 255l, 170l, 255l, 0l, 85l]] ; Blue
 
-     sz = size(cmap, /dim)
-     imax = sz[0]
+  sz = size(cmap, /dim)
+  imax = sz[0]
 
-     if index lt 0 || index ge imax then begin
-        if ~keyword_set(triple) then return, index
+  if keyword_set(max_index) then return, imax-1
+  
+  if n_elements(index) eq 1  then begin
+     
+     if size(index, /type) eq 13 && keyword_set(triple) then begin
         rgb = byte(index, 0, 3)
         return, rgb
      endif 
+
+     if index lt 0 || index ge imax then begin
+        if ~keyword_set(triple) then return, index
+;        rgb = byte(index, 0, 3)
+        return, 0ul
+     endif 
      
      if keyword_set(triple) then return, byte(reform(cmap[index, *])) $
-     else return, cmap[index, 0] + $
-                  cmap[index, 1]*256l + $
-                  cmap[index, 2]*256l^2
+     else return, ulong(cmap[index, 0]) + $
+                  cmap[index, 1]*256ul + $
+                  cmap[index, 2]*256ul^2
   endif else if n_elements(index) eq 3 then begin
      if keyword_set(triple) then return, byte(index)
-     sindex = long(byte(index))
-     return, sindex[0] + sindex[1]*256l + sindex[2]*256l^2
-  endif else return, 0l
+     sindex = ulong(byte(index))
+     return, sindex[0] + sindex[1]*256ul + sindex[2]*256ul^2
+  endif else return, 0ul
 end
