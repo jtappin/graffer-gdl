@@ -37,26 +37,47 @@ pro Gr_psym_bitm                ;, ncols
   bmpath = file_dirname(cstack[-1].filename, /mark) + $
            path_sep(/parent) + path_sep() + 'bitmaps' + path_sep()
 
-  print, bmpath
-  read_x11_bitmap, bmpath+'ps0.xbm', ps0
-  read_x11_bitmap, bmpath+'ps1.xbm', ps1
-  read_x11_bitmap, bmpath+'ps2.xbm', ps2
-  read_x11_bitmap, bmpath+'ps3.xbm', ps3
-  read_x11_bitmap, bmpath+'ps4.xbm', ps4
-  read_x11_bitmap, bmpath+'ps5.xbm', ps5
-  read_x11_bitmap, bmpath+'ps6.xbm', ps6
-  read_x11_bitmap, bmpath+'ps7.xbm', ps7
-  read_x11_bitmap, bmpath+'ps8.xbm', ps8
-  read_x11_bitmap, bmpath+'ps9.xbm', ps9
-  read_x11_bitmap, bmpath+'ps10.xbm', ps10
-  read_x11_bitmap, bmpath+'ps11.xbm', ps11
-  read_x11_bitmap, bmpath+'ps12.xbm', ps12
-  read_x11_bitmap, bmpath+'ps13.xbm', ps13
-  read_x11_bitmap, bmpath+'ps14.xbm', ps14
-  read_x11_bitmap, bmpath+'ps15.xbm', ps15
-  read_x11_bitmap, bmpath+'ps16.xbm', ps16
-  read_x11_bitmap, bmpath+'ps17.xbm', ps17
-  read_x11_bitmap, bmpath+'ps18.xbm', ps18
+  if is_gdl() then begin
+     gr_read_x11_bm, bmpath+'ps0.xbm', ps0
+     gr_read_x11_bm, bmpath+'ps1.xbm', ps1
+     gr_read_x11_bm, bmpath+'ps2.xbm', ps2
+     gr_read_x11_bm, bmpath+'ps3.xbm', ps3
+     gr_read_x11_bm, bmpath+'ps4.xbm', ps4
+     gr_read_x11_bm, bmpath+'ps5.xbm', ps5
+     gr_read_x11_bm, bmpath+'ps6.xbm', ps6
+     gr_read_x11_bm, bmpath+'ps7.xbm', ps7
+     gr_read_x11_bm, bmpath+'ps8.xbm', ps8
+     gr_read_x11_bm, bmpath+'ps9.xbm', ps9
+     gr_read_x11_bm, bmpath+'ps10.xbm', ps10
+     gr_read_x11_bm, bmpath+'ps11.xbm', ps11
+     gr_read_x11_bm, bmpath+'ps12.xbm', ps12
+     gr_read_x11_bm, bmpath+'ps13.xbm', ps13
+     gr_read_x11_bm, bmpath+'ps14.xbm', ps14
+     gr_read_x11_bm, bmpath+'ps15.xbm', ps15
+     gr_read_x11_bm, bmpath+'ps16.xbm', ps16
+     gr_read_x11_bm, bmpath+'ps17.xbm', ps17
+     gr_read_x11_bm, bmpath+'ps18.xbm', ps18
+  endif else begin
+     read_x11_bitmap, bmpath+'ps0.xbm', ps0
+     read_x11_bitmap, bmpath+'ps1.xbm', ps1
+     read_x11_bitmap, bmpath+'ps2.xbm', ps2
+     read_x11_bitmap, bmpath+'ps3.xbm', ps3
+     read_x11_bitmap, bmpath+'ps4.xbm', ps4
+     read_x11_bitmap, bmpath+'ps5.xbm', ps5
+     read_x11_bitmap, bmpath+'ps6.xbm', ps6
+     read_x11_bitmap, bmpath+'ps7.xbm', ps7
+     read_x11_bitmap, bmpath+'ps8.xbm', ps8
+     read_x11_bitmap, bmpath+'ps9.xbm', ps9
+     read_x11_bitmap, bmpath+'ps10.xbm', ps10
+     read_x11_bitmap, bmpath+'ps11.xbm', ps11
+     read_x11_bitmap, bmpath+'ps12.xbm', ps12
+     read_x11_bitmap, bmpath+'ps13.xbm', ps13
+     read_x11_bitmap, bmpath+'ps14.xbm', ps14
+     read_x11_bitmap, bmpath+'ps15.xbm', ps15
+     read_x11_bitmap, bmpath+'ps16.xbm', ps16
+     read_x11_bitmap, bmpath+'ps17.xbm', ps17
+     read_x11_bitmap, bmpath+'ps18.xbm', ps18
+  endelse
 
   psym_bm = [[[ps0]], [[ps1]], [[ps2]], [[ps3]], [[ps4]], [[ps5]], $
              [[ps6]], [[ps7]], [[ps8]], [[ps9]], [[ps10]], [[ps11]], $

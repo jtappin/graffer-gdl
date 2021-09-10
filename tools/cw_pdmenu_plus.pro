@@ -346,9 +346,8 @@ pro cw_pdmenu_plus_build, parent, desc, idx, nbuttons, etype, is_mb, $
   while idx lt nbuttons do begin
      menu = (desc[idx].flag and 1b) ne 0
      if menu && idx ne 0 && keyword_set(selector) then $
-        message, "A selector menu cannot have submenus"
-
-     if  menu && ~is_mb then menu = 2
+        message, "A selector menu cannot have submenus" 
+     if ~is_gdl() && menu && ~is_mb then menu = 2
 
      check = (desc[idx].flag and 4b) ne 0
 
