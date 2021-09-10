@@ -176,7 +176,7 @@ pro Gr_ds_menus, optbb, pdefs
   common Gr_psym_maps, psym_bm  ;, col_bm
   common graffer_options, optblock
 
-  if ~is_gdl() && n_elements(psym_bm) eq 0 then gr_psym_bitm
+  if  optblock.bitmaps && n_elements(psym_bm) eq 0 then gr_psym_bitm
 
   pdefs.ids.plopts[0] = widget_base(optbb, $
                                     /column, $
@@ -258,7 +258,7 @@ pro Gr_ds_menus, optbb, pdefs
   jjb = widget_base(pdefs.ids.plopts[0], /row)
 
   sz = size(psym_bm, /dim)
-  if is_gdl() || ~optblock.bitmaps then begin
+  if ~optblock.bitmaps then begin
      symlist = ['No symbol', 'Plus', 'Asterisk', 'Dot', 'Diamond', $
                 'Triangle', 'Square', 'Cross', 'Circle', 'Filled ' + $
                 'Diamond', 'Filled Triangle', 'Filled Square', $
@@ -274,7 +274,7 @@ pro Gr_ds_menus, optbb, pdefs
      junk = widget_label(jjb, $
                          value = 'Symbol:')
 
-      
+     
      bmstruct = replicate({bitmap: psym_bm[*, *, 0]}, sz[2])
      for j = 0, sz[2]-1 do bmstruct[j].bitmap = psym_bm[*, *, j]
 

@@ -82,14 +82,17 @@
 ;		sensitive - Whether a button is initially sensitive or
 ;                           not. 
 ;
-;               Exactly one of the label and bitmap tags is
-;               required.
+;               At least one of the label and bitmap tags is
+;               required. If both are present, then the bitmap tag
+;               MUST be a pointer, which MUST be null if a text label
+;               is to be used.
 ;               If the flag tag is absent, then the first element has
 ;               a flag of 1, the last has 2 and the rest 0.
 ;               For a selector menu, the group settings are
 ;               ignored (with a warning) and set to 1 and flag is
 ;               implicitly or'ed with 4. A return type of index
-;               is also implied.
+;               is also implied. Selectors may not mix bitmap and text
+;               labels. 
 ;
 ;	The event returned may either be a standard tracking event or
 ;	has the structure:
@@ -481,45 +484,57 @@ function cw_pdmenu_plus, parent, udesc, column = column, row = row, $
                  where(dtags eq 'GROUP')] ne -1
   if ~have_fields[0] && ~have_fields[1] then $
      message, "Either the LABEL field or the BITMAP field is required " + $
-              "in the descriptor"
+              "in the descriptor."
 
   if have_fields[1] && is_gdl() then $
      message, /continue, "BITMAP buttons are not well-tested in GDL."
   
-  if have_fields[0] && have_fields[1] then $
-     message, "Only one of the LABEL and BITMAP fields may be given"
+  if have_fields[0] && have_fields[1] && keyword_set(selector) then $
+     message, "Only one of the LABEL and BITMAP fields may be " + $
+              "given for selector menus."
 
   isbitmap = have_fields[1]
   ioff = keyword_set(selector)
 
   nbuttons = n_elements(udesc) + ioff
-  if isbitmap then begin
-     descr = replicate({cw_pdmenu_plus_descr_bm, $
-                        bitmap: ptr_new(), $
-                        flag: 0b, $
-                        accelerator: '', $
-                        handler: '', $
-                        uname: '', $
-                        state: 0b, $
-                        group: 0, $
-                        sensitive: 0b},  nbuttons)
-     if size(udesc[0].bitmap, /type) eq 10 then $
-        for j = ioff, nbuttons-1 do *(descr[j].bitmap) = $
-        *(udesc[j-ioff].bitmap) $
-     else  for j = ioff, nbuttons-1 do descr[j].bitmap = $
-        ptr_new(udesc[j-ioff].bitmap) 
+
+  descr = replicate({cw_pdmenu_plus_descr, $
+                     bitmap: ptr_new(), $
+                     label: '', $
+                     ltype: 0b, $
+                     flag: 0b, $
+                     accelerator: '', $
+                     handler: '', $
+                     uname: '', $
+                     state: 0b, $
+                     group: 0, $
+                     sensitive: 0b},  nbuttons)
+  if ~isbitmap then descr[ioff:*].label = udesc.label $
+  else if size(udesc[0].bitmap, /type) eq 10 then begin
+     if keyword_set(selector) then  descr[0].ltype = 1b
+     for j = ioff, nbuttons-1 do begin
+        if ptr_valid(udesc[j-ioff].bitmap) then begin
+           *(descr[j].bitmap) = *(udesc[j-ioff].bitmap)
+           descr[j].ltype = 1b
+        endif else descr[j].label = udesc[j-ioff].label
+     endfor
   endif else begin
-     descr = replicate({cw_pdmenu_plus_descr, $
-                        label: '', $
-                        flag: 0b, $
-                        accelerator: '', $
-                        handler: '', $
-                        uname: '', $
-                        state: 0b, $
-                        group: 0, $
-                        sensitive: 0b},  nbuttons)
-     descr[ioff:*].label = udesc.label
+     for j = ioff, nbuttons-1 do descr[j].bitmap = $
+        ptr_new(udesc[j-ioff].bitmap)
+     descr.ltype = 1
   endelse
+  ;; endif else begin
+  ;;    descr = replicate({cw_pdmenu_plus_descr, $
+  ;;                       label: '', $
+  ;;                       flag: 0b, $
+  ;;                       accelerator: '', $
+  ;;                       handler: '', $
+  ;;                       uname: '', $
+  ;;                       state: 0b, $
+  ;;                       group: 0, $
+  ;;                       sensitive: 0b},  nbuttons)
+  ;;    descr[ioff:*].label = udesc.label
+  ;; endelse
   
   if keyword_set(selector) then descr[0].flag = 1b
   if have_fields[2] then descr[ioff:*].flag = udesc.flag $
