@@ -543,6 +543,7 @@ function cw_pdmenu_plus, parent, udesc, column = column, row = row, $
         if keyword_set(initial_selection) then $
            ibm = initial_selection+1 $
         else ibm = 1
+        bm = *descr[ibm].bitmap
         descr[0].bitmap = ptr_new(*descr[ibm].bitmap)
      endif else begin
         nchar = max(strlen(descr.label))
