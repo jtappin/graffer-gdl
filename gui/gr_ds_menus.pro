@@ -36,6 +36,8 @@
 
 pro Gr_dsp_event, event
 
+  common graffer_options, optblock
+
   widget_control, event.id, get_uvalue = object
 
   base = widget_info(/child, event.top)
@@ -59,7 +61,8 @@ pro Gr_dsp_event, event
      'PSYM': if (track_flag) then $
         graff_msg, pdefs.ids.hlptxt, 'Select plotting symbol for current ' + $
                    'data set' $
-     else if is_gdl() then (*pdefs.data)[pdefs.cset].psym = event.index $
+     else if ~optblock.bitmaps then $
+        (*pdefs.data)[pdefs.cset].psym = event.index $
      else (*pdefs.data)[pdefs.cset].psym = event.value
         
      

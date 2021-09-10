@@ -36,6 +36,7 @@ pro Graff_set_vals, pdefs, set_only = set_only
 ;-
 
   common Gr_psym_maps, psym_bm  ;, col_bm
+  common graffer_options, optblock
 
   if (not keyword_set(set_only)) then begin
      widget_control, pdefs.ids.graffer, tlb_set_title =  $
@@ -129,8 +130,8 @@ pro Graff_set_vals, pdefs, set_only = set_only
 ;	The remainder depend on pdefs.cset and handles must be extracted
 
   data = (*pdefs.data)[pdefs.cset]
-  if is_gdl() then  widget_control, pdefs.ids.psym, $
-                                    set_droplist_select = data.psym $
+  if ~optblock.bitmaps then  widget_control, pdefs.ids.psym, $
+     set_droplist_select = data.psym $
   else widget_control, pdefs.ids.psym, set_value = data.psym
 ;  cw_pdmenu_plus_set, pdefs.ids.psym, index = data.psym
   widget_control, pdefs.ids.pline, set_droplist_select = data.pline
