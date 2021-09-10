@@ -27,7 +27,10 @@
 ;	row	int	Make the top-level arrange the buttons in
 ;			row(s)
 ;	/mbar		If set and the parent is a menu bar base to
-;			generate a menu bar
+;			generate a menu bar. N.B. Owing to (a) the
+;			limitations of menu bar bases and (b) the need
+;			to assign an event function, CW_MENU_PLUS must
+;			provide the whole menu system.
 ;	/help		If /mbar is set, then differentiate any help
 ;			button.
 ;	return_type str	Specify the type of value to return in the
@@ -194,11 +197,9 @@ end
 function cw_pdmenu_has_kids, id
                                 ; Return 1 if the widget has
                                 ; children, 0 if it
-                                ; doesn't. Needed because at
-                                ; present /child and
-                                ; /n_children don't work in GDL
-  k1 = widget_info(id, /all_children)
-  return, k1[0] ne 0
+                                ; doesn't. 
+  k1 = widget_info(id, /child)
+  return, k1 ne 0
 end
 
 pro cw_pdmenu_plus_set_exclusive, id, parent
@@ -225,7 +226,7 @@ pro cw_pdmenu_plus_set_exclusive, id, parent
         if uvg.group eq group then begin
            uvg.state = 0
            if is_gdl() then begin
-              if ~uvg.select then $
+              if ~uvg.is_selector then $
                  widget_control, idlist[j], set_value = $
                                  uvg.label+' [ ]'
               widget_control, idlist[j], set_uvalue = uvg
@@ -253,18 +254,15 @@ pro cw_pdmenu_plus_set, id, state, index = index
      endif
      cw_pdmenu_plus_set, idlist[index], state
      widget_control, idlist[index], get_uvalue = uvalue
-     locs = where(tag_names(uvalue) eq 'LABEL')
-     if locs[0] ge 0 && uvalue.select then $
-        widget_control, idb, $
-                        set_value = uvalue.label
 
   endif else begin
      widget_control, id, get_uvalue = uvalue
      if uvalue.state eq state then return
+
      uvalue.state = state
 
      if is_gdl() then begin
-        if ~uvalue.select then begin
+        if ~uvalue.is_selector then begin
            if state then bvs = uvalue.label+' [*]' $
            else bvs = uvalue.label+' [ ]'
            widget_control, id, set_value = bvs
@@ -272,7 +270,10 @@ pro cw_pdmenu_plus_set, id, state, index = index
         widget_control, id, set_uvalue = uvalue
      endif else $
         widget_control, id, set_uvalue = uvalue, set_button = state
-     
+
+     if  uvalue.is_selector then $
+        widget_control, widget_info(id, /parent), set_value = uvalue.label
+
      if state && uvalue.group ne 0 then $
         cw_pdmenu_plus_set_exclusive, id
   endelse
@@ -302,25 +303,28 @@ function cw_pdmenu_plus_event, event
                  enter: event.enter, $
                  value: long(uvalue.val)}
   endif else begin
-     
+
      if uvalue.check then begin
-        uvalue.state = ~uvalue.state
+        if uvalue.is_selector then uvalue.state = 1b $
+        else uvalue.state = ~uvalue.state
+        
         if is_gdl() then begin
-           if ~uvalue.select then begin
+           if ~uvalue.is_selector then begin
               if uvalue.state then bvs = uvalue.label+' [*]' $
               else bvs = uvalue.label+' [ ]'
               widget_control, event.id, set_value = bvs
            endif
-              widget_control, event.id, set_uvalue = uvalue
+           widget_control, event.id, set_uvalue = uvalue
         endif else $
            widget_control, event.id, set_button = uvalue.state, $
                            set_uvalue = uvalue
         if uvalue.state && uvalue.group ne 0 then $
            cw_pdmenu_plus_set_exclusive, event.id, event.handler
      endif
-     if uvalue.select then $
+     if uvalue.is_selector then begin
         widget_control, widget_info(event.id, /parent), $
                         set_value = uvalue.label
+     endif
      if size(uvalue.val, /type) eq 7 then $
         return, {cw_pdmenu_plus_event_s, $
                  id: event.handler, $
@@ -360,14 +364,15 @@ pro cw_pdmenu_plus_build, parent, desc, idx, nbuttons, etype, is_mb, $
      
      emenu = (desc[idx].flag and 2b) ne 0
 
-     if idx eq 0 && keyword_set(selector) then begin
-        if isbitmap then bv = bytarr(size(*(desc[1].bitmap), /dim)) $
-        else begin
-           lmax = max(strlen(desc[1:*].label), mpos)
-           bv = desc[mpos].label
-           for j = 0, lmax-1 do strput, bv, ' ', j
-        endelse
-     endif else if desc[idx].ltype eq 1 then begin
+     ;; if idx eq 0 && keyword_set(selector) then begin
+     ;;    if isbitmap then bv = bytarr(size(*(desc[1].bitmap), /dim)) $
+     ;;    else begin
+     ;;       lmax = max(strlen(desc[1:*].label), mpos)
+     ;;       bv = desc[mpos].label
+     ;;       for j = 0, lmax-1 do strput, bv, ' ', j
+     ;;    endelse
+     ;; endif else
+     if desc[idx].ltype eq 1 then begin
         bv = *(desc[idx].bitmap)
         if desc[idx].label then $
            message, "Bitmap and text label specified for " + $
@@ -386,7 +391,7 @@ pro cw_pdmenu_plus_build, parent, desc, idx, nbuttons, etype, is_mb, $
               else bvs = bv+' [ ]'
            endif else bvs = bv
         endif else bvs = bv
-        
+
         but = widget_button(parent, $
                             value = bvs, $
                             menu = menu, $
@@ -423,7 +428,7 @@ pro cw_pdmenu_plus_build, parent, desc, idx, nbuttons, etype, is_mb, $
 
      uv = {val: vv, $
            check: check, $
-           select: keyword_set(selector), $
+           is_selector: keyword_set(selector), $
            state: desc[idx].state, $
            group: desc[idx].group, $
            label: bv $
@@ -431,7 +436,7 @@ pro cw_pdmenu_plus_build, parent, desc, idx, nbuttons, etype, is_mb, $
 
      if check && ~is_gdl() then $
         widget_control, but, set_button = desc[idx].state
-     
+
      widget_control, but, set_uvalue = uv 
      if desc[idx].handler ne '' then widget_control, $
         but, event_pro = desc[idx].handler
@@ -526,10 +531,24 @@ function cw_pdmenu_plus, parent, udesc, column = column, row = row, $
         endif else descr[j].label = udesc[j-ioff].label
      endfor
   endif else begin
+     if have_fields[0] then $
+        message, "To mix bitmap & text labels, the bitmap field " + $
+                 "must be a pointer.", /continue
      for j = ioff, nbuttons-1 do descr[j].bitmap = $
         ptr_new(udesc[j-ioff].bitmap)
      descr.ltype = 1
   endelse
+  if keyword_set(selector) then begin
+     if isbitmap then begin
+        if keyword_set(initial_selection) then $
+           ibm = initial_selection+1 $
+        else ibm = 1
+        descr[0].bitmap = ptr_new(*descr[ibm].bitmap)
+     endif else begin
+        nchar = max(strlen(descr.label))
+        descr[0].label = string(replicate(byte('m')), nchar)
+     endelse
+  endif
   ;; endif else begin
   ;;    descr = replicate({cw_pdmenu_plus_descr, $
   ;;                       label: '', $
@@ -543,13 +562,17 @@ function cw_pdmenu_plus, parent, udesc, column = column, row = row, $
   ;;    descr[ioff:*].label = udesc.label
   ;; endelse
   
-  if keyword_set(selector) then descr[0].flag = 1b
-  if have_fields[2] then descr[ioff:*].flag = udesc.flag $
-  else begin
+  if have_fields[2] then descr[ioff:*].flag = udesc.flag 
+
+                                ; Ensure that the first and last flags
+                                ; are a start and an end
+                                ; respectively. 
+  descr[0].flag or= 1b
+  descr[nbuttons-1].flag or= 2b
+  if keyword_set(selector) then begin
      descr[0].flag = 1b
-     descr[nbuttons-1].flag = 2b
-  endelse
-  if keyword_set(selector) then descr[1:*].flag or= 4b
+     descr[1:*].flag or= 4b
+  endif
 
   if have_fields[3] then descr[ioff:*].accelerator = udesc.accelerator
   if have_fields[4] then descr[ioff:*].handler = udesc.handler
@@ -612,13 +635,14 @@ function cw_pdmenu_plus, parent, udesc, column = column, row = row, $
                         _extra = _extra
 
   if keyword_set(selector) then begin
-     if n_elements(initial_selection) ne 0 then $
-        cw_pdmenu_plus_set, base, index = initial_selection $
-     else cw_pdmenu_plus_set, base, index = 0
      ids = ids[1:*]
      widget_control, base, $
                      pro_set_value = 'cw_pdmenu_plus_set_selector', $
                      func_get_value = 'cw_pdmenu_plus_get_selector'
+     if n_elements(initial_selection) ne 0 then $
+        iset = initial_selection $
+     else iset = 0
+     widget_control, base, set_value = iset
   endif
 
   return, base
