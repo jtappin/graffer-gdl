@@ -367,8 +367,12 @@ pro cw_pdmenu_plus_build, parent, desc, idx, nbuttons, etype, is_mb, $
            bv = desc[mpos].label
            for j = 0, lmax-1 do strput, bv, ' ', j
         endelse
-     endif else if isbitmap then bv = *(desc[idx].bitmap) $
-     else bv = desc[idx].label
+     endif else if desc[idx].ltype eq 1 then begin
+        bv = *(desc[idx].bitmap)
+        if desc[idx].label then $
+           message, "Bitmap and text label specified for " + $
+                    "button, ignoring text", /continue
+     endif else bv = desc[idx].label
 
      if is_gdl() then begin
         if check then begin
@@ -486,8 +490,9 @@ function cw_pdmenu_plus, parent, udesc, column = column, row = row, $
      message, "Either the LABEL field or the BITMAP field is required " + $
               "in the descriptor."
 
-  if have_fields[1] && is_gdl() then $
-     message, /continue, "BITMAP buttons are not well-tested in GDL."
+  ;; They seem reasonably ok now, remove the warning pro-tem
+  ;; if have_fields[1] && is_gdl() then $
+  ;;    message, /continue, "BITMAP buttons are not well-tested in GDL."
   
   if have_fields[0] && have_fields[1] && keyword_set(selector) then $
      message, "Only one of the LABEL and BITMAP fields may be " + $
@@ -514,7 +519,9 @@ function cw_pdmenu_plus, parent, udesc, column = column, row = row, $
      if keyword_set(selector) then  descr[0].ltype = 1b
      for j = ioff, nbuttons-1 do begin
         if ptr_valid(udesc[j-ioff].bitmap) then begin
-           *(descr[j].bitmap) = *(udesc[j-ioff].bitmap)
+           if ptr_valid(descr[j].bitmap) then $
+              ptr_free, descr[j].bitmap
+           descr[j].bitmap = ptr_new(*(udesc[j-ioff].bitmap))
            descr[j].ltype = 1b
         endif else descr[j].label = udesc[j-ioff].label
      endfor
@@ -568,7 +575,9 @@ function cw_pdmenu_plus, parent, udesc, column = column, row = row, $
      'uname': etype = 4
      else: message, "Invalid return event type "+return_type
   endcase
-
+  if (etype eq 2 || etype eq 3) && isbitmap then $
+     message, "Cannot return names or full names with bitmap buttons."
+  
   is_mb = keyword_set(mbar)
   dhelp = is_mb && keyword_set(help) 
 
