@@ -547,7 +547,7 @@ function cw_pdmenu_plus, parent, udesc, column = column, row = row, $
         descr[0].bitmap = ptr_new(*descr[ibm].bitmap)
      endif else begin
         nchar = max(strlen(descr.label))
-        descr[0].label = string(replicate(byte('m')), nchar)
+        descr[0].label = string(replicate(byte('m'), nchar))
      endelse
   endif
   ;; endif else begin
