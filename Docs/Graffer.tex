@@ -412,7 +412,7 @@ $ export GDL_PATH=+/contrib/idl/graffer-idl/:+/usr/local/share/gnudatalanguage
 
 \subsection{Invoking it}
 
-Once you are in IDL with the GRAFFER routines available it is very
+Once you are in IDL or GDL with the GRAFFER routines available it is very
 simple to start GRAFFER, just type \texttt{graffer} at the IDL> prompt.
 This will produce a chooser widget which will allow you to select an
 existing GRAFFER file, or type in the name of a new file. When you have
@@ -434,7 +434,6 @@ GRAFFER can accept a number of keywords to control its operation:
 \item [\texttt{XSIZE}~\&~\texttt{YSIZE}:]These specify the dimensions
   of the drawing window. By default it is 800 pixels square. If you
   specify a larger size then a scrolled draw widget will be used.
-
 \item [\texttt{GROUP}:]This is only really useful if you are writing an
   application which calls GRAFFER. If a widget ID is specified as the
   value of the \texttt{GROUP} key, then when that widget is destroyed,
@@ -450,6 +449,13 @@ GRAFFER can accept a number of keywords to control its operation:
   and you want to be able to get variables from that procedure
   (although \texttt{GRAFF\_ADD} is usually preferred in such cases).
 \item[\texttt{RECOVER}:] Recover an autosave file.
+\item[\texttt{TTYPE}:] If set, then make a new file use TrueType
+  fonts. (Opening an existing file will still keep what that one used).
+\item[\texttt{TRACKING\_EVENTS}:] Set explicitly to zero to prevent
+  widget tracking events when running in IDL. (Always disabled in GDL
+  as they don't yet work properly).
+\item[\texttt{BITMAPS}:] If set, then the plot symbol and colour
+  selection menus use bitmaps rather than descriptions.
 \end{description}
 
 \subsection{A quick tour of the main window}

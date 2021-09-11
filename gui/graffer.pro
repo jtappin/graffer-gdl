@@ -23,7 +23,7 @@
 ;	/noscroll	input	If set do not make the draw window
 ;				scrolling even if it is bigger than
 ;				600 pixels.
-;	debug		input	If set, then run in debugging mode.
+;	/debug		input	If set, then run in debugging mode.
 ;	/block			If set, then run the widgets in
 ;				blocking mode
 ;	/recover	input	If set, then attempt to recover from
@@ -36,8 +36,9 @@
 ;				widget tracking events when running in
 ;				IDL. (Always disabled in GDL as
 ;				they don't work properly).
-;	/bitmaps	input	If set, then the plot symbol menu uses
-;				bitmaps rather than descriptions.
+;	/bitmaps	input	If set, then the plot symbol and
+;				colour selection menus use bitmaps
+;				rather than descriptions. 
 ;
 ; History:
 ;	Original: 27/7/95; SJT
