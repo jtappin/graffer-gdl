@@ -449,12 +449,8 @@ pro Graffer, file, group = group, xsize = xsize, ysize = ysize, $
   
   gr_rc_get, optblock
 
-  if n_elements(tracking_events) ne 0 then begin
-     if is_gdl() then message, /continue, $
-                               "TRACKING_EVENTS are not supported by " + $
-                               "GDL." $
-     else optblock.track = keyword_set(tracking_events)
-  endif
+  if n_elements(tracking_events) ne 0 then $
+     optblock.track = keyword_set(tracking_events)
 
   if n_elements(bitmaps) ne 0 then $
      optblock.bitmaps = keyword_set(bitmaps)
