@@ -94,7 +94,7 @@ pro Cont_event, event
      else begin
         widget_control, event.id, get_value = col
         gr_cont_col_get, col, icol, rcol, $
-                         max_index = pdefs.transient.ncmax, $
+                         max_index = graff_colours(/max_index), $
                          status = is_valid
         if is_valid then begin
            if ptr_valid(zopts.colours) then ptr_free, zopts.colours

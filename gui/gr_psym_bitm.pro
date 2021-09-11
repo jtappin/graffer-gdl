@@ -31,7 +31,7 @@ pro Gr_psym_bitm                ;, ncols
 ;	Add bars: 25/5/17; SJT
 ;-
 
-  common Gr_psym_maps, psym_bm  ;, col_bm
+  common Gr_psym_maps, psym_bm, col_bm
 
   cstack = scope_traceback(/struct)
   bmpath = file_dirname(cstack[-1].filename, /mark) + $
@@ -62,23 +62,10 @@ pro Gr_psym_bitm                ;, ncols
              [[ps12]], [[ps13]], [[ps14]], [[ps15]], [[ps16]], $
              [[ps17]], [[ps18]]]
 
-;; openr, ilu, /get, bmpath+'omit.dat'
-;; nx = 0
-;; ny = 0
-;; readf, ilu, nx, ny
-;; nbm = bytarr(nx, ny)
-;; readf, ilu, nbm
-;; free_lun, ilu
+  read_x11_bitmap, bmpath+'omit.xbm', omit
+  read_x11_bitmap, bmpath+'custom.xbm', custom
 
-;; col_bm = bytarr(nx, ny, 3, ncols+1)
-;; col_bm[*, *, *, 0] = nbm[*, *, intarr(3)]
-
-;; tvlct, /get, r, g, b
-;; for j = 1, ncols do begin
-;;     col_bm[*, *, 0, j] = r[j-1]
-;;     col_bm[*, *, 1, j] = g[j-1]
-;;     col_bm[*, *, 2, j] = b[j-1]
-;; endfor
-
+  col_bm = [[[omit]], [[custom]]]
+  
 end
 

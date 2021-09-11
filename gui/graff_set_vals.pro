@@ -35,7 +35,7 @@ pro Graff_set_vals, pdefs, set_only = set_only
 ; 	Add font setting: 12/2/20; SJT
 ;-
 
-  common Gr_psym_maps, psym_bm  ;, col_bm
+  common Gr_psym_maps, psym_bm, col_bm
   common graffer_options, optblock
 
   if (not keyword_set(set_only)) then begin
@@ -139,10 +139,11 @@ pro Graff_set_vals, pdefs, set_only = set_only
                   data.symsize
   widget_control, pdefs.ids.line, set_droplist_select = data.line, $
                   sensitive = data.pline ne 0
+  
   if data.colour eq -2 then begin
-     ci = pdefs.transient.ncmax-1
+     ci = graff_colours(/max_index)+2
   endif else ci = data.colour+1
-  widget_control, pdefs.ids.colour, set_droplist_select = ci
+  widget_control, pdefs.ids.colour, set_value = ci
   gr_show_colour, pdefs
 
   widget_control, pdefs.ids.thick, set_value = data.thick

@@ -52,7 +52,7 @@ pro gr_cont_col_get, cstr, cindex, rawc, status = status, $
         1: begin
            cindex[j] = fix(tmp[0])
            if keyword_set(max_index) then status = status && $
-              (cindex[j] lt max_index)
+              (cindex[j] le max_index)
         end
         3: begin
            rawc[*, j] = fix(tmp)

@@ -425,7 +425,7 @@ pro Graffer, file, group = group, xsize = xsize, ysize = ysize, $
              recover = recover, block = block, ttype = ttype, $
              tracking_events = tracking_events, bitmaps = bitmaps
 
-  common Gr_psym_maps, psym_bm  ;, col_bm
+  common Gr_psym_maps, psym_bm, col_bm
   common graffer_options, optblock
   
   gwid = gr_present()

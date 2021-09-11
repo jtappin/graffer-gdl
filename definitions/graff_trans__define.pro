@@ -37,8 +37,7 @@ Transient = { graff_trans, $
               hairs:    0b, $
               Opflag:   0b, $
               backup:   0b, $
-              current_only: 0b, $
-              ncmax:    0l $
+              current_only: 0b $
             }
 
 end

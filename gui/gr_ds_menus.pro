@@ -83,7 +83,7 @@ pro Gr_dsp_event, event
      'COLOUR': if (track_flag) then $
         graff_msg, pdefs.ids.hlptxt, 'Select colour for current data set' $
      else begin
-        if event.index eq pdefs.transient.ncmax-1 then begin ; Custom colour
+        if event.value eq graff_colours(/max_index)+2 then begin ; Custom colour
            ci = (*pdefs.data)[pdefs.cset].colour
            if ci eq -2 then $
               cc = gr_custom_colour((*pdefs.data)[pdefs.cset].c_vals, $
@@ -91,12 +91,12 @@ pro Gr_dsp_event, event
            else cc = gr_custom_colour(ci > 0, pdefs.ids.windex)
            if n_elements(cc) eq 1 then begin
               if ci ne -2 then $
-                 widget_control, event.id, set_droplist_select = ci+1
+                 widget_control, event.id, set_value = ci+1
            endif else begin
               (*pdefs.data)[pdefs.cset].colour = -2
               (*pdefs.data)[pdefs.cset].c_vals = cc
            endelse
-        endif else (*pdefs.data)[pdefs.cset].colour = event.index-1
+        endif else (*pdefs.data)[pdefs.cset].colour = event.value-1
         gr_show_colour, pdefs
      endelse
 
@@ -176,7 +176,7 @@ end
 
 pro Gr_ds_menus, optbb, pdefs
 
-  common Gr_psym_maps, psym_bm  ;, col_bm
+  common Gr_psym_maps, psym_bm, col_bm
   common graffer_options, optblock
 
   if  optblock.bitmaps && n_elements(psym_bm) eq 0 then gr_psym_bitm
@@ -189,44 +189,58 @@ pro Gr_ds_menus, optbb, pdefs
                     /row, $
                     /base_align_center)
 
-  col_list = ['Omit', $
-              'White (bg)', $
-              'Black', $
-              'Red', $
-              'Green', $
-              'Blue', $
-              'Cyan', $
-              'Magenta', $
-              'Yellow', $
-              'Orange', $
-              '#7f ff 00', $
-              '#00 ff 7f', $
-              '#00 7f ff', $
-              '#7f 00 ff', $
-              'Mauve', $
-              'Dark Grey', $
-              'Light Grey', $
-              'Dark Red', $
-              'Light Red', $
-              'Dark Green', $
-              'Light Green', $
-              'Dark Blue', $
-              'Light Blue', $
-              'Dark Cyan', $
-              'Light Cyan', $
-              'Dark Magenta', $
-              'Light Magenta', $
-              'Dark Yellow', $
-              'Light Yellow', $
-              'Custom']
-  pdefs.ids.colour = widget_droplist(jjb, $
-                                     value = col_list, $
-                                     uvalue = 'COLOUR', $
-                                     title = 'Colour:', $
-                                     track = optblock.track)
-  widget_control, pdefs.ids.colour, set_droplist_select = 2
-  pdefs.transient.ncmax = n_elements(col_list)
+  if optblock.bitmaps then begin
+     maxi = graff_colours(/max)
+     col_str = replicate({bitmap: ptr_new()}, maxi+3)
+     col_str[0].bitmap = ptr_new(col_bm[*, *, 0])
+     col_str[-1].bitmap = ptr_new(col_bm[*, *, 1])
+     for j = 0, maxi do col_str[j+1].bitmap = $
+        ptr_new(gr_mk_colour_bm(j, size = [80, 16]))
+     
+  endif else begin
+     col_list = ['Omit', $
+                 'White (bg)', $
+                 'Black', $
+                 'Red', $
+                 'Green', $
+                 'Blue', $
+                 'Cyan', $
+                 'Magenta', $
+                 'Yellow', $
+                 'Orange', $
+                 '#7f ff 00', $
+                 '#00 ff 7f', $
+                 '#00 7f ff', $
+                 '#7f 00 ff', $
+                 'Mauve', $
+                 'Dark Grey', $
+                 'Light Grey', $
+                 'Dark Red', $
+                 'Light Red', $
+                 'Dark Green', $
+                 'Light Green', $
+                 'Dark Blue', $
+                 'Light Blue', $
+                 'Dark Cyan', $
+                 'Light Cyan', $
+                 'Dark Magenta', $
+                 'Light Magenta', $
+                 'Dark Yellow', $
+                 'Light Yellow', $
+                 'Custom']
+     col_str = replicate({label: ''}, n_elements(col_list))
+     col_str.label = col_list
+  endelse
+
+  junk = widget_label(jjb, $
+                      value = 'Colour:')
   
+  pdefs.ids.colour = cw_pdmenu_plus(jjb, $
+                                    col_str, $
+                                    uvalue = 'COLOUR', $
+                                    /selector, $
+                                    track = optblock.track)
+
   pdefs.ids.dscolour_base = widget_base(jjb, $
                                         /frame)
   pdefs.ids.dscolour_show = widget_draw(pdefs.ids.dscolour_base, $

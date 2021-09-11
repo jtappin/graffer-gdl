@@ -547,28 +547,15 @@ function cw_pdmenu_plus, parent, udesc, column = column, row = row, $
         descr[0].bitmap = ptr_new(*descr[ibm].bitmap)
      endif else begin
         nchar = max(strlen(descr.label))
-        descr[0].label = string(replicate(byte('m'), nchar))
+        descr[0].label = string(replicate(byte('M'), nchar))
      endelse
   endif
-  ;; endif else begin
-  ;;    descr = replicate({cw_pdmenu_plus_descr, $
-  ;;                       label: '', $
-  ;;                       flag: 0b, $
-  ;;                       accelerator: '', $
-  ;;                       handler: '', $
-  ;;                       uname: '', $
-  ;;                       state: 0b, $
-  ;;                       group: 0, $
-  ;;                       sensitive: 0b},  nbuttons)
-  ;;    descr[ioff:*].label = udesc.label
-  ;; endelse
   
   if have_fields[2] then descr[ioff:*].flag = udesc.flag 
 
                                 ; Ensure that the first and last flags
                                 ; are a start and an end
                                 ; respectively. 
-  descr[0].flag or= 1b
   descr[nbuttons-1].flag or= 2b
   if keyword_set(selector) then begin
      descr[0].flag = 1b
