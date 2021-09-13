@@ -86,8 +86,6 @@ print, 'lib/gr_byt_val.pro'
 .r lib/gr_byt_val
 print, 'lib/gr_cf_pieces.pro'
 .r lib/gr_cf_pieces
-print, 'lib/gr_check_box.pro'
-.r lib/gr_check_box
 print, 'lib/gr_cont_col_get.pro'
 .r lib/gr_cont_col_get
 print, 'lib/gr_dbl_rd.pro'
@@ -258,6 +256,8 @@ print, 'gui/gr_axis_adv_menu.pro'
 .r gui/gr_axis_adv_menu
 print, 'gui/gr_axis_menu.pro'
 .r gui/gr_axis_menu
+print, 'gui/gr_check_box.pro'
+.r gui/gr_check_box
 print, 'gui/gr_comment.pro'
 .r gui/gr_comment
 print, 'gui/gr_cont_col_set.pro'
@@ -304,6 +304,8 @@ print, 'gui/gr_img_menus.pro'
 .r gui/gr_img_menus
 print, 'gui/gr_key_def.pro'
 .r gui/gr_key_def
+print, 'gui/gr_mk_colour_bm.pro'
+.r gui/gr_mk_colour_bm
 print, 'gui/gr_mk_plmenus.pro'
 .r gui/gr_mk_plmenus
 print, 'gui/gr_name_wid.pro'
