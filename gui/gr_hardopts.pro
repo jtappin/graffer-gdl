@@ -665,12 +665,12 @@ function Gr_hardopts, pdefs
                                 ; Quit button
   jb = widget_base(base, /row)
   junk = widget_button(jb, $
-                       value = '   Cancel   ', $
-                       uvalue = 'CANCEL', $
+                       value = '    Apply    ', $
+                       uvalue = 'DO', $
                        track = optblock.track)
   junk = widget_button(jb, $
-                       value = '    Do it    ', $
-                       uvalue = 'DO', $
+                       value = '   Cancel   ', $
+                       uvalue = 'CANCEL', $
                        track = optblock.track)
 
   widget_control, base, set_uvalue = uvs, /no_copy

@@ -157,17 +157,17 @@ pro Gr_opt_set, pdefs
                    ypad = 0, $
                    space = 0)
   junk = widget_button(jb, $
-                       value = 'Cancel', $
-                       uvalue = 'DONT')
-  junk = widget_button(jb, $
-                       value = 'Do it', $
+                       value = 'Apply', $
                        uvalue = 'DO')
   junk = widget_button(jb, $
                        value = 'Save', $
                        uvalue = 'SAVE')
   junk = widget_button(jb, $
-                       value = 'Save && Do', $
+                       value = 'Save && Apply', $
                        uvalue = 'SDO')
+  junk = widget_button(jb, $
+                       value = 'Cancel', $
+                       uvalue = 'DONT')
 
   widget_control, base, /real, event_fun = 'gr_opt_event', set_uvalue = $
                   optblock

@@ -153,7 +153,7 @@ jb = widget_base(base, $
                  /row)
 
 dobut = widget_button(jb, $
-                      value = 'Do it', $
+                      value = 'Apply', $
                       uvalue = 'DO', $
                       sensitive = 0)
 

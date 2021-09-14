@@ -107,9 +107,11 @@ function Gr_position, pdefs
 
   widget_control, pdefs.ids.graffer, sensitive = 0
 
-  tlb = widget_base(title = 'Graffer Plot Position', group_leader = $
-                    pdefs.ids.graffer, resource = 'Graffer')
-  base = widget_base(tlb, /column)
+  tlb = widget_base(title = 'Graffer Plot Position', $
+                    group_leader = pdefs.ids.graffer, $
+                    resource = 'Graffer')
+  base = widget_base(tlb, $
+                     /column)
 
   junk = widget_droplist(base, $
                          value = ['Corners', 'Aspect Ratio'], $
@@ -117,46 +119,94 @@ function Gr_position, pdefs
                          uvalue = 'MODE')
   widget_control, junk, set_droplist_select = state
 
-  pbase = widget_base(base, /column, /frame)
+  pbase = widget_base(base, $
+                      /column, $
+                      /frame)
 
-  junk = widget_label(pbase, value = 'Set corner position')
+  junk = widget_label(pbase, $
+                      value = 'Set corner position')
 
   pids = lonarr(4)
-  jb = widget_base(pbase, /row, xpad = 0, ypad = 0, space = 0)
-  pids(0) = cw_enter(jb, /all_events, /double, value = $
-                     pdefs.position(0), $
-                     format = "(f6.4)", uvalue = 'PXMIN', label = $
-                     'Lower left, X:', xsize = 6, /capture)
-  pids(1) = cw_enter(jb, /all_events, /double, value = $
-                     pdefs.position(1), $
-                     format = "(f6.4)", uvalue = 'PYMIN', label = ' ' + $
-                     'Y:', $
-                     xsize = 6, /capture)
+  jb = widget_base(pbase, $
+                   /row, $
+                   xpad = 0, $
+                   ypad = 0, $
+                   space = 0)
+  pids[0] = cw_enter(jb, $
+                     /all_events, $
+                     /double, $
+                     value = pdefs.position[0], $
+                     format = "(f6.4)", $
+                     uvalue = 'PXMIN', $
+                     label = 'Lower left, X:', $
+                     xsize = 6, $
+                     /capture)
+  pids[1] = cw_enter(jb, $
+                     /all_events, $
+                     /double, $
+                     value = pdefs.position[1], $
+                     format = "(f6.4)", $
+                     uvalue = 'PYMIN', $
+                     label = ' Y:', $
+                     xsize = 6, $
+                     /capture)
 
-  jb = widget_base(pbase, /row, xpad = 0, ypad = 0, space = 0)
-  pids(2) = cw_enter(jb, /all_events, /double, value = $
-                     pdefs.position(2), $
-                     format = "(f6.4)", uvalue = 'PXMAX', label = $
-                     'Upper right, X:', xsize = 6, /capture)
-  pids(3) = cw_enter(jb, /all_events, /double, value = $
-                     pdefs.position(3), $
-                     format = "(f6.4)", uvalue = 'PYMAX', label = ' ' + $
-                     'Y:', $
-                     xsize = 6, /capture)
+  jb = widget_base(pbase,  $
+                   /row, $
+                   xpad = 0, $
+                   ypad = 0, $
+                   space = 0)
+  pids[2] = cw_enter(jb, $
+                     /all_events, $
+                     /double, $
+                     value = pdefs.position[2], $
+                     format = "(f6.4)", $
+                     uvalue = 'PXMAX', $
+                     label = 'Upper right, X:', $
+                     xsize = 6, $
+                     /capture)
+  pids[3] = cw_enter(jb, $
+                     /all_events, $
+                     /double, $
+                     value = pdefs.position[3], $
+                     format = "(f6.4)", $
+                     uvalue = 'PYMAX', $
+                     label = ' Y:', $
+                     xsize = 6, $
+                     /capture)
 
-  rbase = widget_base(base, /column, /frame)
+  rbase = widget_base(base, $
+                      /column, $
+                      /frame)
 
-  junk = widget_label(rbase, value = 'Set aspect & margin')
+  junk = widget_label(rbase, $
+                      value = 'Set aspect & margin')
 
   rids = lonarr(2)
-  jb = widget_base(rbase, /row, xpad = 0, ypad = 0, space = 0)
+  jb = widget_base(rbase, $
+                   /row, $
+                   xpad = 0, $
+                   ypad = 0, $
+                   space = 0)
 
-  rids(0) = cw_enter(jb, /all_events, /double, value = pdefs.aspect(0), $
-                     format = "(f8.4)", uvalue = 'ASPECT', label = $
-                     'Aspect ratio:', xsize = 8, /capture)
-  rids(1) = cw_enter(jb, /all_events, /double, value = pdefs.aspect(1), $
-                     format = "(f6.4)", uvalue = 'MARGIN', label = $
-                     'Margin:', xsize = 6, /capture)
+  rids[0] = cw_enter(jb, $
+                     /all_events, $
+                     /double, $
+                     value = pdefs.aspect[0], $
+                     format = "(f8.4)", $
+                     uvalue = 'ASPECT', $
+                     label = 'Aspect ratio:', $
+                     xsize = 8, $
+                     /capture)
+  rids[1] = cw_enter(jb, $
+                     /all_events, $
+                     /double, $
+                     value = pdefs.aspect[1], $
+                     format = "(f6.4)", $
+                     uvalue = 'MARGIN', $
+                     label = 'Margin:', $
+                     xsize = 6, $
+                     /capture)
 
 
   jb = widget_base(base, $
@@ -175,9 +225,15 @@ function Gr_position, pdefs
   endif
 
   jb = widget_base(base, /row, xpad = 0, ypad = 0, space = 0)
-  junk = widget_button(jb, value = '   Cancel   ', uvalue = 'CANCEL')
-  junk = widget_button(jb, value = '  Default  ', uvalue = 'DEF')
-  dobut = widget_button(jb, value = '    Do it    ', uvalue = 'DO')
+  dobut = widget_button(jb, $
+                        value = '    Apply    ', $
+                        uvalue = 'DO')
+  junk = widget_button(jb, $
+                       value = '  Default  ', $
+                       uvalue = 'DEF')
+  junk = widget_button(jb, $
+                       value = '   Cancel   ', $
+                       uvalue = 'CANCEL')
 
   widget_control, rbase, sensitive = state ne 0 && ~iso 
   widget_control, pbase, sensitive = state eq 0 && ~iso

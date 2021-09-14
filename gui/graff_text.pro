@@ -503,16 +503,16 @@ function Graff_text, pdefs, edit = edit, position = position
                    /row, $
                    /grid)
   junk = widget_button(jb, $
-                       value = '  Done  ', $
+                       value = ' Apply  ', $
                        uvalue = 'DONE', $
-                       track = optblock.track)
-  junk = widget_button(jb, $
-                       value = ' Cancel ', $
-                       uvalue = 'CANCEL', $
                        track = optblock.track)
   junk = widget_button(jb, $
                        value = ' Update ', $
                        uvalue = 'UPDATE', $
+                       track = optblock.track)
+  junk = widget_button(jb, $
+                       value = ' Cancel ', $
+                       uvalue = 'CANCEL', $
                        track = optblock.track)
 
   txtemp = (*pdefs.text)[itxt]

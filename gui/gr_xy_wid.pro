@@ -261,7 +261,7 @@ function Gr_xy_wid, pdefs, line = line
                                 ; Control
 
   junk = cw_bgroup(base, $
-                   ['Do it', 'Do and Sort', 'Cancel'], $
+                   ['Apply', 'Apply and Sort', 'Cancel'], $
                    button_uvalue = [1, 2, -1], $
                    uvalue = 'ACTION', $
                    /row)

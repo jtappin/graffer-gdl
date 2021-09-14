@@ -57,13 +57,17 @@ function Gr_tm_opts, tmopt, zero, group = group
 
   widget_control, group, sensitive = 0
 
-  tlb = widget_base(title = 'GRAFFER time opts', group = group, resource $
-                    = 'Graffer')
-  base = widget_base(tlb, /column)
+  tlb = widget_base(title = 'GRAFFER time opts', $
+                    group = group, $
+                    resource = 'Graffer')
+  base = widget_base(tlb, $
+                     /column)
 
-  junk = widget_label(base, value = 'Time label options')
+  junk = widget_label(base, $
+                      value = 'Time label options')
 
-  jb = widget_base(base, /row)
+  jb = widget_base(base, $
+                   /row)
   junk = widget_droplist(jb, $
                          value = ulist, $
                          title = 'Units', $
@@ -76,13 +80,24 @@ function Gr_tm_opts, tmopt, zero, group = group
                            uvalue = 'MUNIT')
   widget_control, dispid, sensitive = unit le 3, set_droplist_select = munit
 
-  zid = cw_enter(base, /int, value = zero, uvalue = 'ZERO', label = $
-                 'Label 0 as:', xsize = 5, /all, /capture)
+  zid = cw_enter(base, $
+                 /int, $
+                 value = zero, $
+                 uvalue = 'ZERO', $
+                 label = 'Label 0 as:', $
+                 xsize = 5, $
+                 /all, $
+                 /capture)
   widget_control, zid, sensitive = unit le 3
 
-  jb = widget_base(base, /row)
-  junk = widget_button(jb, value = '   Do it   ', uvalue = 'DO')
-  junk = widget_button(jb, value = '  Cancel  ', uvalue = 'CANCEL')
+  jb = widget_base(base, $
+                   /row)
+  junk = widget_button(jb, $
+                       value = '   Apply   ', $
+                       uvalue = 'DO')
+  junk = widget_button(jb, $
+                       value = '  Cancel  ', $
+                       uvalue = 'CANCEL')
 
 ;	RYO widget management to allow us to get the values back from
 ;	the event handler without using a common block, even after the

@@ -184,14 +184,14 @@ function gr_axis_adv_menu, pdefs, xaxis = xaxis, yaxis = yaxis
   jb = widget_base(base, $
                    /row)
 
+  dobut = widget_button(jb, $
+                        value = 'Apply', $
+                        uvalue = 'DO', $
+                        sensitive = 0)
   junk = widget_button(jb, $
                        value = 'Cancel', $
                        uvalue = 'DONT')
 
-  dobut = widget_button(jb, $
-                        value = 'Do it', $
-                        uvalue = 'DO', $
-                        sensitive = 0)
 
   state = {sty: sty, $
            dobut: dobut, $

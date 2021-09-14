@@ -50,97 +50,97 @@ end
 
 function gr_zcopy_menu, pdefs
 
-data = *pdefs.data
+  data = *pdefs.data
 
-funlocs = where(data.type eq 9 and data.ndata gt 0 and $
-                data.ndata2 gt 0, nf)
+  funlocs = where(data.type eq 9 and data.ndata gt 0 and $
+                  data.ndata2 gt 0, nf)
 
-if nf eq 0 || nf eq 1 && funlocs[0] eq pdefs.cset then begin
-    junk = dialog_message(['There are no Z datasets', $
-                           'available to copy'], $
-                          /info, $
+  if nf eq 0 || nf eq 1 && funlocs[0] eq pdefs.cset then begin
+     junk = dialog_message(['There are no Z datasets', $
+                            'available to copy'], $
+                           /info, $
+                           dialog_parent = pdefs.ids.graffer, $
+                           resource = 'Graffer')
+     return, 0
+  endif
+
+  if (data[pdefs.cset].type ne 9) then begin
+     ans = dialog_message(['Current dataset is not an Z dataset.', $
+                           'Do you want to overwrite it?'], $
+                          /question, $
                           dialog_parent = pdefs.ids.graffer, $
                           resource = 'Graffer')
-    return, 0
-endif
+     if ans eq 'No' then return, 0
+  endif
 
-if (data[pdefs.cset].type ne 9) then begin
-    ans = dialog_message(['Current dataset is not an Z dataset.', $
-                          'Do you want to overwrite it?'], $
-                         /question, $
-                         dialog_parent = pdefs.ids.graffer, $
-                         resource = 'Graffer')
-    if ans eq 'No' then return, 0
-endif
-
-if data[pdefs.cset].type eq 9 then begin
-    ll = where(funlocs ne pdefs.cset, nnc)
-    if nnc eq 0 then begin
+  if data[pdefs.cset].type eq 9 then begin
+     ll = where(funlocs ne pdefs.cset, nnc)
+     if nnc eq 0 then begin
         ans = dialog_message(['There are no other 2-D datasets', $
                               'aborting.'], $
                              /info, $
                              dialog_parent = pdefs.ids.graffer, $
                              resource = 'Graffer')
         return, 0
-    endif
-    locs = funlocs[ll]
-endif else begin
-    locs = funlocs
-    nmf = nf
-endelse
+     endif
+     locs = funlocs[ll]
+  endif else begin
+     locs = funlocs
+     nmf = nf
+  endelse
 
 
-idx = string(locs+1, format = "(I3,'] ')")
-ndata = string(data[locs].ndata, data[locs].ndata2, format = $
-               "('(',I5,',',I5,')')")
+  idx = string(locs+1, format = "(I3,'] ')")
+  ndata = string(data[locs].ndata, data[locs].ndata2, format = $
+                 "('(',I5,',',I5,')')")
 
-desc = idx+ndata+' '+data[locs].descript
+  desc = idx+ndata+' '+data[locs].descript
 
-base = widget_base(title = 'Select dataset to copy', $
-                   resource = 'Graffer', $
-                   /column, $
-                   event_func = 'zcopy_event')
+  base = widget_base(title = 'Select dataset to copy', $
+                     resource = 'Graffer', $
+                     /column, $
+                     event_func = 'zcopy_event')
 
-lab = widget_label(base, $
-                   value = 'Select dataset to copy')
+  lab = widget_label(base, $
+                     value = 'Select dataset to copy')
 
-list = widget_list(base, $
-                   ysize = 4 > n_elements(desc) < 12, $
-                   value = desc, $
-                   uvalue = 'PICK')
+  list = widget_list(base, $
+                     ysize = 4 > n_elements(desc) < 12, $
+                     value = desc, $
+                     uvalue = 'PICK')
 
-jb = widget_base(base, $
-                 /row)
+  jb = widget_base(base, $
+                   /row)
 
-dobut = widget_button(jb, $
-                      value = 'Do it', $
-                      uvalue = 'DO', $
-                      sensitive = 0)
+  dobut = widget_button(jb, $
+                        value = 'Apply', $
+                        uvalue = 'DO', $
+                        sensitive = 0)
 
-junk = widget_button(jb, $
-                     value = 'Cancel', $
-                     uvalue = 'DONT')
+  junk = widget_button(jb, $
+                       value = 'Cancel', $
+                       uvalue = 'DONT')
 
-uvs = {dobut: dobut, $
-       index: -1l}
+  uvs = {dobut: dobut, $
+         index: -1l}
 
-widget_control, lab, set_uvalue = uvs
+  widget_control, lab, set_uvalue = uvs
 
-widget_control, pdefs.ids.graffer, sensitive = 0
-widget_control, base, /real
+  widget_control, pdefs.ids.graffer, sensitive = 0
+  widget_control, base, /real
 
-repeat begin
-    ev = widget_event(base)
-endrep until (ev.exited ne 0)
-widget_control, lab, get_uvalue = uvs
+  repeat begin
+     ev = widget_event(base)
+  endrep until (ev.exited ne 0)
+  widget_control, lab, get_uvalue = uvs
 
-widget_control, base, /destroy
-widget_control, pdefs.ids.graffer, sensitive = 1
+  widget_control, base, /destroy
+  widget_control, pdefs.ids.graffer, sensitive = 1
 
-if ev.exited eq -1 then return, 0
+  if ev.exited eq -1 then return, 0
 
-idx = locs[uvs.index]
+  idx = locs[uvs.index]
 
-return, gr_z_copy(pdefs, idx, /force)
+  return, gr_z_copy(pdefs, idx, /force)
 
 end

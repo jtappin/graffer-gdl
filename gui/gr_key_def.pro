@@ -278,7 +278,7 @@ function Gr_key_def, pdefs
   jb = widget_base(base, $
                    /row)
   junk = widget_button(jb, $
-                       value = '    Do it    ', $
+                       value = '    Apply    ', $
                        uvalue = 'DO')
   junk = widget_button(jb, $
                        value = '   Cancel   ', $

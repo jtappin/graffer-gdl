@@ -223,9 +223,10 @@ function Gr_tlv_z, pdefs
   widget_control, pdefs.ids.graffer, sensitive = 0
 
   tlb = widget_base(title = 'Graffer 2-D data from Variables',  $
-                    group_leader = pdefs.ids.graffer, resource = $
-                    'Graffer')
-  base = widget_base(tlb, /column)
+                    group_leader = pdefs.ids.graffer, $
+                    resource = 'Graffer')
+  base = widget_base(tlb, $
+                     /column)
 
                                 ; The entry boxes for Z, X & Y
 
@@ -278,7 +279,7 @@ function Gr_tlv_z, pdefs
                      label = 'Messages')
 
   junk = cw_bgroup(base, $
-                   ['Do it', 'Cancel'], $
+                   ['Apply', 'Cancel'], $
                    button_uvalue = [1, -1], $
                    uvalue = 'ACTION', $
                    /row)

@@ -242,15 +242,15 @@ function Graff_rescale, pdefs
   jb = widget_base(base, /row)
 
   junk = widget_button(jb, $
-                       value = '     Cancel    ', $
-                       uvalue = 'CANCEL', $
-                       track = optblock.track)
-  junk = widget_button(jb, $
-                       value = '     Do  it    ', $
+                       value = '     Apply     ', $
                        uvalue = 'DO', $
                        track = optblock.track)
 
-
+ junk = widget_button(jb, $
+                       value = '     Cancel    ', $
+                       uvalue = 'CANCEL', $
+                       track = optblock.track)
+ 
 ;	Realise the widgets and use a DIY widget handling procedure
 ;	(as with all the graffer popups) to facilitate getting values
 ;	back into the right place.

@@ -283,7 +283,7 @@ function gr_custom_colour, index, w0, group = group
                       ysize = 20)
 
   junk = cw_bgroup(base, $
-                   ['Do it', 'Cancel'], $
+                   ['Apply', 'Cancel'], $
                    /row, $
                    uvalue = 'ACTION', $
                    button_uvalue = [1, -1])

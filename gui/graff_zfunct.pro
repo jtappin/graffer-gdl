@@ -75,129 +75,155 @@ end
 
 function Graff_zfunct, pdefs
 
-uvs = { $
-        Fid:    0l, $
-        Nid:    lonarr(2), $
-        rgid:   lonarr(2, 2) $
-      }
+  uvs = { Fid:    0l, $
+          Nid:    lonarr(2), $
+          rgid:   lonarr(2, 2) $
+        }
 
 ;	Find if the dataset is already defined as a 2-D function
 
-if ptr_valid((*pdefs.data)[pdefs.cset].xydata) && $
-  n_elements(*((*pdefs.data)[pdefs.cset].xydata)) gt 0 then $
-  xydata = *(*pdefs.data)[pdefs.cset].xydata $
-else xydata = dblarr(2)
+  if ptr_valid((*pdefs.data)[pdefs.cset].xydata) && $
+     n_elements(*((*pdefs.data)[pdefs.cset].xydata)) gt 0 then $
+        xydata = *(*pdefs.data)[pdefs.cset].xydata $
+  else xydata = dblarr(2)
 
-if ((*pdefs.data)[pdefs.cset].type eq -4) then begin
-    funct = xydata.funct
-    range = xydata.range
-    numpts = [(*pdefs.data)[pdefs.cset].ndata, $
-              (*pdefs.data)[pdefs.cset].ndata2]  
-    dflag = 0b
-endif else begin
-    funct = ''
-    range = dblarr(2, 2)
-    numpts = [25, 25]
-    dflag = ((*pdefs.data)[pdefs.cset].ndata(0) gt 0)
-    if dflag then $
-      if dialog_message(['CURRENT DATA SET IS NOT A 2-D', $
-                         'FUNCTION, ENTERING A 2-D FUNCTION', $
-                         'WILL OVERWRITE IT', $
-                         'DO YOU REALLY WANT TO DO THIS?'], $ $
-                        /question, dialog_parent = pdefs.ids.graffer, $
-                        resource = 'Graffer') eq $
+  if ((*pdefs.data)[pdefs.cset].type eq -4) then begin
+     funct = xydata.funct
+     range = xydata.range
+     numpts = [(*pdefs.data)[pdefs.cset].ndata, $
+               (*pdefs.data)[pdefs.cset].ndata2]  
+     dflag = 0b
+  endif else begin
+     funct = ''
+     range = dblarr(2, 2)
+     numpts = [25, 25]
+     dflag = ((*pdefs.data)[pdefs.cset].ndata(0) gt 0)
+     if dflag then $
+        if dialog_message(['CURRENT DATA SET IS NOT A 2-D', $
+                           'FUNCTION, ENTERING A 2-D FUNCTION', $
+                           'WILL OVERWRITE IT', $
+                           'DO YOU REALLY WANT TO DO THIS?'], $ $
+                          /question, dialog_parent = pdefs.ids.graffer, $
+                          resource = 'Graffer') eq $
         'No' then return, 0
-endelse
+  endelse
 
-widget_control, pdefs.ids.graffer, sensitive = 0
+  widget_control, pdefs.ids.graffer, sensitive = 0
 
-tlb = widget_base(title = 'Graffer 2-D Function Plot', $
-                  group_leader = pdefs.ids.graffer, $
-                  resource = 'Graffer')
-base = widget_base(tlb, /column)
+  tlb = widget_base(title = 'Graffer 2-D Function Plot', $
+                    group_leader = pdefs.ids.graffer, $
+                    resource = 'Graffer')
+  base = widget_base(tlb, /column)
 
                                 ; The actual function definition
 
-uvs.fid = cw_enter(base, $
-                   xsize = 40, $
-                   value = funct, $
-                   label = 'Function:', $
-                   uvalue = 'FUNC', $
-                   /capture)
+  uvs.fid = cw_enter(base, $
+                     xsize = 40, $
+                     value = funct, $
+                     label = 'Function:', $
+                     uvalue = 'FUNC', $
+                     /capture)
 
                                 ; X axis range
 
-rgb = widget_base(base, /row)
-uvs.rgid(0, 0) = cw_enter(rgb, /double, xsize = 10, $
-                             uvalue = 'XMIN', value = range(0, 0), $
-                             format = "(g10.3)", label = $
-                             'X axis range: Min:', /capture)
-uvs.rgid(1, 0) = cw_enter(rgb, /double, xsize = 10, $
-                             uvalue = 'XMAX', value = range(1, 0), $
-                             format = "(g10.3)", label = ' Max:', $
-                             /capture)
+  rgb = widget_base(base, /row)
+  uvs.rgid(0, 0) = cw_enter(rgb, $
+                            /double, $
+                            xsize = 10, $
+                            uvalue = 'XMIN', $
+                            value = range[0, 0], $
+                            format = "(g10.3)", $
+                            label = 'X axis range: Min:', $
+                            /capture)
+  uvs.rgid(1, 0) = cw_enter(rgb, $
+                            /double, $
+                            xsize = 10, $
+                            uvalue = 'XMAX', $
+                            value = range[1, 0], $
+                            format = "(g10.3)", $
+                            label = ' Max:', $
+                            /capture)
 
                                 ; Y axis range
 
-rgb = widget_base(base, /row)
-uvs.rgid(0, 1) = cw_enter(rgb, /double, xsize = 10, $
-                             uvalue = 'YMIN', value = range(0, 1), $
-                             format = "(g10.3)", label =  $
-                             'Y axis range: Min:', /capture)
-uvs.rgid(1, 1) = cw_enter(rgb, /double, xsize = 10, $
-                             uvalue = 'YMAX', value = range(1, 1), $
-                             format = "(g10.3)", label = ' Max:', $
-                             /capture)
+  rgb = widget_base(base, /row)
+  uvs.rgid(0, 1) = cw_enter(rgb, $
+                            /double, $
+                            xsize = 10, $
+                            uvalue = 'YMIN', $
+                            value = range[0, 1], $
+                            format = "(g10.3)", $
+                            label = 'Y axis range: Min:', $
+                            /capture)
+  uvs.rgid(1, 1) = cw_enter(rgb, $
+                            /double, $
+                            xsize = 10, $
+                            uvalue = 'YMAX', $
+                            value = range[1, 1], $
+                            format = "(g10.3)", $
+                            label = ' Max:', $
+                            /capture)
 
                                 ; Number of points
 
-njb = widget_base(base, /row)
-uvs.nid(0) = cw_enter(njb, /int, xsize = 5, uvalue = $
-                         'NUM1', value = numpts, format = "(I0)", $
-                         label = 'Number of function evaluations X:', $
-                         /capture)
-uvs.nid(1) = cw_enter(njb, /int, xsize = 5, uvalue = $
-                         'NUM2', value = numpts, format = "(I0)", $
-                         label = 'Y:', /capture)
+  njb = widget_base(base, /row)
+  uvs.nid(0) = cw_enter(njb, $
+                        /int, $
+                        xsize = 5, $
+                        uvalue = 'NUM1', $
+                        value = numpts[0], $
+                        format = "(I0)", $
+                        label = 'Number of function evaluations X:', $
+                        /capture)
+  uvs.nid(1) = cw_enter(njb, $
+                        /int, $
+                        xsize = 5, $
+                        uvalue = 'NUM2', $
+                        value = numpts[1], $
+                        format = "(I0)", $
+                        label = 'Y:', /capture)
 
                                 ; Control
 
-junk = cw_bgroup(base, ['Do it', 'Cancel'], /row, uvalue = 'ACTION', $
-                 button_uvalue = [1, -1])
+  junk = cw_bgroup(base, $
+                   ['Apply', 'Cancel'], $
+                   /row, $
+                   uvalue = 'ACTION', $
+                   button_uvalue = [1, -1])
 
                                 ; Realise and do RYO event handling
 
-widget_control, tlb, /real
-widget_control, base, set_uvalue = uvs, event_func = 'zfunct_event', $
-  /no_copy
+  widget_control, tlb, /real
+  widget_control, base, set_uvalue = uvs, event_func = 'zfunct_event', $
+                  /no_copy
 
-repeat begin
-    ev = widget_event(base)
-endrep until (ev.exited ne 0)
+  repeat begin
+     ev = widget_event(base)
+  endrep until (ev.exited ne 0)
 
-widget_control, tlb, /destroy
+  widget_control, tlb, /destroy
 
-widget_control, pdefs.ids.graffer, sensitive = 1
+  widget_control, pdefs.ids.graffer, sensitive = 1
 
-if (ev.exited eq -1) then return, 0
+  if (ev.exited eq -1) then return, 0
 
-xydata = {graff_zfunct}
-xydata.Range = ev.range
-xydata.Funct = ev.funct
+  xydata = {graff_zfunct}
+  xydata.Range = ev.range
+  xydata.Funct = ev.funct
 
-(*pdefs.data)[pdefs.cset].ndata = ev.numpts(0)
-(*pdefs.data)[pdefs.cset].ndata2 = ev.numpts(1)
+  (*pdefs.data)[pdefs.cset].ndata = ev.numpts[0]
+  (*pdefs.data)[pdefs.cset].ndata2 = ev.numpts[1]
 
-if (*pdefs.data)[pdefs.cset].type eq 9 then $
-  ptr_free, (*(*pdefs.data)[pdefs.cset].xydata).x, $
-            (*(*pdefs.data)[pdefs.cset].xydata).y, $
-            (*(*pdefs.data)[pdefs.cset].xydata).z
+  if (*pdefs.data)[pdefs.cset].type eq 9 then $
+     ptr_free, (*(*pdefs.data)[pdefs.cset].xydata).x, $
+               (*(*pdefs.data)[pdefs.cset].xydata).y, $
+               (*(*pdefs.data)[pdefs.cset].xydata).z
 
-ptr_free, (*pdefs.data)[pdefs.cset].xydata
-(*pdefs.data)[pdefs.cset].xydata = ptr_new(xydata)
-(*pdefs.data)[pdefs.cset].type = -4
+  ptr_free, (*pdefs.data)[pdefs.cset].xydata
+  (*pdefs.data)[pdefs.cset].xydata = ptr_new(xydata)
+  (*pdefs.data)[pdefs.cset].type = -4
 
-graff_set_vals, pdefs, /set_only
-return, 1
+  graff_set_vals, pdefs, /set_only
+  return, 1
 
 end

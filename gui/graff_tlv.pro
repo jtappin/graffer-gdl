@@ -559,7 +559,7 @@ function Graff_tlv, pdefs
                      label = 'Messages')
 
   junk = cw_bgroup(base, $
-                   ['Do it', 'Cancel'], $
+                   ['Apply', 'Cancel'], $
                    button_uvalue = [1, -1], $
                    uvalue = 'ACTION', $
                    /row)

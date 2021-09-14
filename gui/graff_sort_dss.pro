@@ -71,81 +71,85 @@ end
 
 pro Graff_sort_dss, pdefs
 
-tc = ['F(XY)', 'PF', 'F(Y)', 'F(X)', 'XY', 'XYE', 'XYEE', 'XYF', 'XYFF', $
-      'XYFE', 'XYFEE', 'XYFFE', 'XYFFEE', 'Z']
+  tc = ['F(XY)', 'PF', 'F(Y)', 'F(X)', 'XY', 'XYE', 'XYEE', 'XYF', $
+        'XYFF', $
+        'XYFE', 'XYFEE', 'XYFFE', 'XYFFEE', 'Z']
 
-dlist = (*pdefs.data).descript
+  dlist = (*pdefs.data).descript
 
-indlist = indgen(n_elements(dlist))
-nlist = string(indlist+1, format = "(I3,')')")
+  indlist = indgen(n_elements(dlist))
+  nlist = string(indlist+1, format = "(I3,')')")
 
-llist = string([(*pdefs.data).ndata, 0], format = "(' <',I0,'> ')")
-lll = max(strlen(llist))
-fmt = "(A"+string(lll, format = "(I0)")+")"
-llist = string(llist, format = fmt)
-nlist = nlist+llist
-nlist = nlist+string(tc((*pdefs.data).type+4), format = "(A6, ' - ')")
+  llist = string([(*pdefs.data).ndata, 0], format = "(' <',I0,'> ')")
+  lll = max(strlen(llist))
+  fmt = "(A"+string(lll, format = "(I0)")+")"
+  llist = string(llist, format = fmt)
+  nlist = nlist+llist
+  nlist = nlist+string(tc((*pdefs.data).type+4), format = "(A6, ' - ')")
 
-dlist = nlist+dlist
+  dlist = nlist+dlist
 
-widget_control, pdefs.ids.graffer, sensitive = 0
+  widget_control, pdefs.ids.graffer, sensitive = 0
 
-tlb = widget_base(title = 'Graffer data set sort', group = $
-                  pdefs.ids.graffer, resource = 'Graffer')
-base = widget_base(tlb, /column)
+  tlb = widget_base(title = 'Graffer data set sort', group = $
+                    pdefs.ids.graffer, resource = 'Graffer')
+  base = widget_base(tlb, /column)
 
-curr = widget_label(base, $
-                    value = 'Data set to move')
-junk = widget_list(base, $
-                   value = dlist, $
-                   uvalue = 'CHOOSE',  $
-                   ysize = (12 < n_elements(dlist)))
-widget_control, junk, set_list_select = -1 ;pdefs.cset
+  curr = widget_label(base, $
+                      value = 'Data set to move')
+  junk = widget_list(base, $
+                     value = dlist, $
+                     uvalue = 'CHOOSE',  $
+                     ysize = (12 < n_elements(dlist)))
+  widget_control, junk, set_list_select = -1 ;pdefs.cset
 
-jb = widget_base(base, /row)
-junk = widget_button(jb, value = 'Cancel', uvalue = 'DONT')
-dobut = widget_button(jb, $
-                      value = 'Do it', $
-                      uvalue = 'DO', $
-                      sensitive = 0)
+  jb = widget_base(base, /row)
 
-uv = {dlist:dlist, $
-      Label: curr, $
-      List:ptr_new(indlist), $
-      dobut: dobut, $
-      Moving: -1, $ 
-      iflag: is_gdl()}          ; GDL sends a spurious select event
+  dobut = widget_button(jb, $
+                        value = 'Apply', $
+                        uvalue = 'DO', $
+                        sensitive = 0)
+  junk = widget_button(jb, $
+                       value = 'Cancel', $
+                       uvalue = 'DONT')
+
+  uv = {dlist:dlist, $
+        Label: curr, $
+        List:ptr_new(indlist), $
+        dobut: dobut, $
+        Moving: -1, $ 
+        iflag: is_gdl()}        ; GDL sends a spurious select event
                                 ; that needs to be swallowed.
 
-widget_control, tlb, /real
+  widget_control, tlb, /real
 
-widget_control, base, set_uvalue = uv, $
-  event_func = 'grf_sort_event'
+  widget_control, base, set_uvalue = uv, $
+                  event_func = 'grf_sort_event'
 
 
 ;			DIY widget management here
 
-repeat ev = widget_event(base) until ev.exit ne 0
+  repeat ev = widget_event(base) until ev.exit ne 0
 
-widget_control, base, get_uvalue = uv, /no_copy
-widget_control, tlb, /destroy
-widget_control, pdefs.ids.graffer, sensitive = 1
+  widget_control, base, get_uvalue = uv, /no_copy
+  widget_control, tlb, /destroy
+  widget_control, pdefs.ids.graffer, sensitive = 1
 
-if (ev.exit eq -1) then return
+  if (ev.exit eq -1) then return
 
-(*pdefs.data) = (*pdefs.data)((*uv.list))
-if ptr_valid(pdefs.key.list) then begin
-    ikey = bytarr(n_elements((*pdefs.data)))
-    ikey(*pdefs.key.list) = 1b
-    ikey = ikey((*uv.list))
-    *pdefs.key.list = where(ikey)
-endif
+  (*pdefs.data) = (*pdefs.data)((*uv.list))
+  if ptr_valid(pdefs.key.list) then begin
+     ikey = bytarr(n_elements((*pdefs.data)))
+     ikey(*pdefs.key.list) = 1b
+     ikey = ikey((*uv.list))
+     *pdefs.key.list = where(ikey)
+  endif
 
-loc = where((*uv.list) eq pdefs.cset)
-pdefs.cset = loc(0)
-    
-graff_set_vals, pdefs, /set_only
-ptr_free, uv.list
+  loc = where((*uv.list) eq pdefs.cset)
+  pdefs.cset = loc(0)
+  
+  graff_set_vals, pdefs, /set_only
+  ptr_free, uv.list
 
 end
 

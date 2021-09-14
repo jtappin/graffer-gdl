@@ -415,14 +415,12 @@ pro graff_to_tlv, pdefs
                    /row)
 
   junk = widget_button(jb, $
-                       value = 'Done', $
+                       value = 'Apply', $
                        uvalue = 'DO')
 
   junk = widget_button(jb, $
                        value = 'Cancel', $
                        uvalue = 'DONT')
-
-;  xydata = *data.xydata
 
   state = {xydata: *data.xydata, $
            type: data.type, $

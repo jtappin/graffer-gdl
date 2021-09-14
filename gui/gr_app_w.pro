@@ -161,12 +161,12 @@ pro Gr_app_w, pdefs
 
   jb = widget_base(base, $
                    /row)
+  dobut = widget_button(jb, $
+                        value = '       Apply       ', $
+                        uvalue = 'DONE')
   junk = widget_button(jb, $
                        value = '      Cancel      ', $
                        uvalue = 'CANCEL')
-  dobut = widget_button(jb, $
-                        value = '       Do it       ', $
-                        uvalue = 'DONE')
   widget_control, dobut, sensitive = 0
 
   widget_control, base, set_uvalue = {exid:exid,  $

@@ -164,7 +164,7 @@ function Graff_pfunct, pdefs
                                 ; Control
 
   junk = cw_bgroup(base, $
-                   ['Do it', 'Cancel'], $
+                   ['Apply', 'Cancel'], $
                    /row, $
                    uvalue = 'ACTION', $
                    button_uvalue = [1, -1])

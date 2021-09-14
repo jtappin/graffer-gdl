@@ -230,9 +230,9 @@ function Gr_fit_dset, pdefs
                    xsize = 14, label = 'Prob chance:')
 
   jb = widget_base(base, /row, /align_center)
-  junk = widget_button(jb, value = '   Cancel   ', uvalue = 'DONT')
+  dobid = widget_button(jb, value = '    Apply    ', uvalue = 'DO')
   upid = widget_button(jb, value = '   Update   ', uvalue = 'UPDATE')
-  dobid = widget_button(jb, value = '    Do it    ', uvalue = 'DO')
+  junk = widget_button(jb, value = '   Cancel   ', uvalue = 'DONT')
   widget_control, dobid, sensitive = 0
   widget_control, upid, sensitive = 0
 

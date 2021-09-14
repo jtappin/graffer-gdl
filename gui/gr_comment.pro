@@ -64,11 +64,11 @@ function Gr_comment, pdefs
 
   jb = widget_base(base, /row)
   junk = widget_button(jb, $
+                       value = '    Apply    ', $
+                       uvalue = 'DO')
+  junk = widget_button(jb, $
                        value = '   Cancel   ', $
                        uvalue = 'DONT')
-  junk = widget_button(jb, $
-                       value = '    Do it    ', $
-                       uvalue = 'DO')
 
   widget_control, base, /real, event_func = 'gr_comm_event', set_uvalue $
                   = txtid

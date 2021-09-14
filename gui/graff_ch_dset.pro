@@ -32,9 +32,10 @@ function Grf_ch_event, event
   case (but) of
      'CHOOSE': begin
         uv.select = event.index
-        iexit = 1
+        iexit = 0
      end
-     
+
+     'DO': iexit = 1
      'DONT': iexit = -1
   end
 
@@ -45,11 +46,6 @@ function Grf_ch_event, event
            handler:event.handler, $
            Exit:iexit}
 end
-
-
-
-
-
 
 pro Graff_ch_dset, pdefs
 
@@ -82,17 +78,29 @@ pro Graff_ch_dset, pdefs
 
   tlb = widget_base(title = 'Graffer data set select', $
                     group = pdefs.ids.graffer, $
-                    resource = 'Graffer')
-  base = widget_base(tlb, /column)
+                    resource = 'Graffer', $
+                    /column)
+  
+  base = widget_base(tlb, $
+                     /column)
 
-  curr = widget_label(base, value = 'Data Sets')
+  curr = widget_label(base, $
+                      value = 'Data Sets')
   junk = widget_list(base, $
                      value = dlist, $
                      uvalue = 'CHOOSE',  $
                      ysize = (12 < n_elements(dlist)))
   widget_control, junk, set_list_select = pdefs.cset
+
+  jb = widget_base(base, $
+                   /row)
   
-  junk = widget_button(base, value = 'Cancel', uvalue = 'DONT')
+  junk = widget_button(jb, $
+                       value = 'Apply', $
+                       uvalue = 'DO')
+  junk = widget_button(jb, $
+                       value = 'Cancel', $
+                       uvalue = 'DONT')
 
   widget_control, base, set_uvalue = {dlist:dlist,  $
                                       Select:pdefs.cset}, $
