@@ -131,21 +131,21 @@ end
 function Gr_key_def, pdefs
 
 
-ku = bytarr(pdefs.nsets)
-if ptr_valid(pdefs.key.list) then ku(*pdefs.key.list) = 1
-ds1 = where((*pdefs.data).type ge -3 and (*pdefs.data).type lt 8, n1d)
+  ku = bytarr(pdefs.nsets)
+  if ptr_valid(pdefs.key.list) then ku(*pdefs.key.list) = 1
+  ds1 = where((*pdefs.data).type ge -3 and (*pdefs.data).type lt 8, n1d)
 
-if n1d eq 0 then begin
-    junk = dialog_message(["The current GRAFFER environment", $
-                           "doesn't contain any datasets that", $
-                           "can be included in a key"], $
-                          dialog_parent = pdefs.ids.graffer)
-    return, 0
-endif
+  if n1d eq 0 then begin
+     junk = dialog_message(["The current GRAFFER environment", $
+                            "doesn't contain any datasets that", $
+                            "can be included in a key"], $
+                           dialog_parent = pdefs.ids.graffer)
+     return, 0
+  endif
 
-widget_control, pdefs.ids.graffer, sensitive = 0
+  widget_control, pdefs.ids.graffer, sensitive = 0
 
-bub = { $
+  bub = { $
         Key: pdefs.key, $
         Allid:  0l, $
         Xid0:   0l,  $
@@ -158,137 +158,152 @@ bub = { $
         Listid: 0l,  $
         Ds1:    ptr_new()}
 
-bub.ds1 = ptr_new(ds1)
-        
-tlb = widget_base(title = 'Graffer Key Define', group_leader = $
-                  pdefs.ids.graffer, resource = 'Graffer')
+  bub.ds1 = ptr_new(ds1)
+  
+  tlb = widget_base(title = 'Graffer Key Define', group_leader = $
+                    pdefs.ids.graffer, resource = 'Graffer')
 
-base = widget_base(tlb, /column)
+  base = widget_base(tlb, /column)
 
-jb = widget_base(base, $
-                 /row, $
-                 /nonexclusive)
-junk = widget_button(jb, $
-                     value = 'Draw a key on the plot?', $
-                     uvalue = 'USE')
-widget_control, junk, set_button = pdefs.key.use
+  jb = widget_base(base, $
+                   /row, $
+                   /nonexclusive)
+  junk = widget_button(jb, $
+                       value = 'Draw a key on the plot?', $
+                       uvalue = 'USE')
+  widget_control, junk, set_button = pdefs.key.use
 
-bub.allid = widget_base(base, /row)
-jb = widget_base(bub.allid, /column)
+  bub.allid = widget_base(base, /row)
+  jb = widget_base(bub.allid, /column)
 
-junk = widget_droplist(jb, $
-                       value = ['Data', 'Normal', '"Frame"'], $
-                       title = 'Coordinate system:', $
-                       uvalue = 'CSYS')
-widget_control, junk, set_droplist_select = pdefs.key.norm
+  junk = widget_droplist(jb, $
+                         value = ['Data', 'Normal', '"Frame"'], $
+                         title = 'Coordinate system:', $
+                         uvalue = 'CSYS')
+  widget_control, junk, set_droplist_select = pdefs.key.norm
 
-jjb = widget_base(jb, /row)
-bub.xid0 = cw_enter(jjb, /double, xsize = 11, /all_event, label = $
-                       'Lower left: X:', value = pdefs.key.x(0), $
-                       uvalue = 'X0', /capture)
-bub.yid0 = cw_enter(jjb, /double, xsize = 11, /all_event, label = $
-                       'Y:', value = pdefs.key.y(0), uvalue = 'Y0', $
-                       /capture)
+  jjb = widget_base(jb, /row)
+  bub.xid0 = cw_enter(jjb, /double, xsize = 11, /all_event, label = $
+                      'Lower left: X:', value = pdefs.key.x(0), $
+                      uvalue = 'X0', /capture)
+  bub.yid0 = cw_enter(jjb, /double, xsize = 11, /all_event, label = $
+                      'Y:', value = pdefs.key.y(0), uvalue = 'Y0', $
+                      /capture)
 
-jjb = widget_base(jb, /row)
-bub.xid1 = cw_enter(jjb, /double, xsize = 11, /all_event, label = $
-                       'Upper right: X:', value = pdefs.key.x(1), $
-                       uvalue = 'X1', /capture)
-bub.yid1 = cw_enter(jjb, /double, xsize = 11, /all_event, label = $
-                       'Y:', value = pdefs.key.y(1), uvalue = 'Y1', $
-                       /capture)
-jjb = widget_base(jb, /row)
-bub.csid = cw_spin_box(jjb, $
-                       /double, $
-                       xsize = 8, $
-                       /all, $
-                       label = 'Character Size:', $
-                       value = pdefs.key.csize, $
-                       uvalue = 'CSIZE', $
-                       /capture, $
-                       format = '(f0.2)', $
-                       min = 0., $
-                       step = 0.1, $
-                       /trans)
+  jjb = widget_base(jb, /row)
+  bub.xid1 = cw_enter(jjb, /double, xsize = 11, /all_event, label = $
+                      'Upper right: X:', value = pdefs.key.x(1), $
+                      uvalue = 'X1', /capture)
+  bub.yid1 = cw_enter(jjb, /double, xsize = 11, /all_event, label = $
+                      'Y:', value = pdefs.key.y(1), uvalue = 'Y1', $
+                      /capture)
+  jjb = widget_base(jb, /row)
+  bub.csid = cw_spin_box(jjb, $
+                         /double, $
+                         xsize = 8, $
+                         /all, $
+                         label = 'Character Size:', $
+                         value = pdefs.key.csize, $
+                         uvalue = 'CSIZE', $
+                         /capture, $
+                         format = '(f0.2)', $
+                         min = 0., $
+                         step = 0.1, $
+                         /trans)
 
-if (pdefs.y_right) then begin
-    jjjb = widget_base(jjb, $
-                       /nonexclusive)
-    junk = widget_button(jjjb, $
-                         value = 'Show Y side?', $
-                         uvalue = 'SIDE')
-    widget_control, junk, set_button = pdefs.key.side
-endif
+  if (pdefs.y_right) then begin
+     jjjb = widget_base(jjb, $
+                        /nonexclusive)
+     junk = widget_button(jjjb, $
+                          value = 'Show Y side?', $
+                          uvalue = 'SIDE')
+     widget_control, junk, set_button = pdefs.key.side
+  endif
 
-jjb = widget_base(jb, /row)
-bub.cid = cw_spin_box(jjb, $
-                      /int, $
-                      xsize = 3, $
-                      /all_event, $
-                      label = 'How many columns?: ', $
-                      value = pdefs.key.cols, $
-                      uvalue = 'COL', $
-                      /capture, $
-                      min = 1, $
-                      max = pdefs.nsets, $
-                      /trans)
+  jjb = widget_base(jb, /row)
+  bub.cid = cw_spin_box(jjb, $
+                        /int, $
+                        xsize = 3, $
+                        /all_event, $
+                        label = 'How many columns?: ', $
+                        value = pdefs.key.cols, $
+                        uvalue = 'COL', $
+                        /capture, $
+                        min = 1, $
+                        max = pdefs.nsets, $
+                        /trans)
 
-junk = widget_droplist(jjb, $
-                       value = ['2', '1'], $
-                       title = 'Plot 1 or 2 points', $
-                       uvalue = 'POINT')
-widget_control, junk, set_droplist_select = pdefs.key.one_point
+  junk = widget_droplist(jjb, $
+                         value = ['2', '1'], $
+                         title = 'Plot 1 or 2 points', $
+                         uvalue = 'POINT')
+  widget_control, junk, set_droplist_select = pdefs.key.one_point
 
-jjb = widget_base(jb, /row)
-junk = widget_droplist(jb, $
-                     value = ['No', 'Yes'], $
-                     title = 'Draw a frame round the key?:', $
-                     uvalue = 'FRAME')
-widget_control, junk, set_droplist_select = pdefs.key.frame
-junk = widget_droplist(jb, $
-                     value = ['Forward', 'Reverse'], $
-                     title = 'Order for key items?:', $
-                     uvalue = 'REVERSE')
-widget_control, junk, set_droplist_select = pdefs.key.reverse
+  jjb = widget_base(jb, /row)
+  junk = widget_droplist(jb, $
+                         value = ['No', 'Yes'], $
+                         title = 'Draw a frame round the key?:', $
+                         uvalue = 'FRAME')
+  widget_control, junk, set_droplist_select = pdefs.key.frame
+  junk = widget_droplist(jb, $
+                         value = ['Forward', 'Reverse'], $
+                         title = 'Order for key items?:', $
+                         uvalue = 'REVERSE')
+  widget_control, junk, set_droplist_select = pdefs.key.reverse
 
-bub.tid = cw_enter(jb, value = pdefs.key.title, /text, /all_event, $
-                      label = 'Key title:', xsize = 20, uvalue = $
-                      'TITLE', /capture)
+  bub.tid = cw_enter(jb, $
+                     value = pdefs.key.title, $
+                     /text, $
+                     /all_event, $
+                     label = 'Key title:', $
+                     xsize = 20, $
+                     uvalue = 'TITLE', $
+                     /capture)
 
-jb = widget_base(bub.allid, /column)
+  jb = widget_base(bub.allid, /column)
 
-junk = widget_label(jb, value = 'Datasets to include')
+  junk = widget_label(jb, value = 'Datasets to include')
 
-bub.listid = cw_bgroup(jb, (*pdefs.data)[ds1].descript, column = $
-                       ceil(n1d/10.), $ 
-                       /nonexclusive, uvalue = 'PICK', set_value = $
-                       ku(ds1), ids = buts)
-junk = widget_button(jb, value = 'All', uvalue = 'ALL')
+  bub.listid = cw_bgroup(jb, $
+                         (*pdefs.data)[ds1].descript, $
+                         column = ceil(n1d/10.), $ 
+                         /nonexclusive, $
+                         uvalue = 'PICK', $
+                         set_value = ku(ds1), $
+                         ids = buts)
+  junk = widget_button(jb, $
+                       value = 'All', $
+                       uvalue = 'ALL')
 
-jb = widget_base(base, /row)
-junk = widget_button(jb, value = '   Cancel   ', uvalue = 'CANCEL')
-junk = widget_button(jb, value = '    Do it    ', uvalue = 'DO')
+  jb = widget_base(base, $
+                   /row)
+  junk = widget_button(jb, $
+                       value = '    Do it    ', $
+                       uvalue = 'DO')
+  junk = widget_button(jb, $
+                       value = '   Cancel   ', $
+                       uvalue = 'CANCEL')
 
-widget_control, bub.allid, sensitive = pdefs.key.use
+  widget_control, bub.allid, sensitive = pdefs.key.use
 
-widget_control, tlb, /real
-widget_control, base, set_uvalue = bub, event_func = 'gr_key_event', $
-  /no_copy
+  widget_control, tlb, /real
+  widget_control, base, set_uvalue = bub, event_func = 'gr_key_event', $
+                  /no_copy
 
-repeat begin
-    ev = widget_event(base)
-endrep until (ev.exited ne 0)
+  repeat begin
+     ev = widget_event(base)
+  endrep until (ev.exited ne 0)
 
-widget_control, base, get_uvalue = uv, /no_copy
-widget_control, tlb, /destroy
+  widget_control, base, get_uvalue = uv, /no_copy
+  widget_control, tlb, /destroy
 
-widget_control, pdefs.ids.graffer, sensitive = 1
+  widget_control, pdefs.ids.graffer, sensitive = 1
 
-if (ev.exited eq 1) then begin
-    ptr_free, pdefs.key.list
-    pdefs.key = uv.key
-endif
+  if (ev.exited eq 1) then begin
+     ptr_free, pdefs.key.list
+     pdefs.key = uv.key
+  endif
 
-return, ev.exited eq 1
+  return, ev.exited eq 1
 
 end
