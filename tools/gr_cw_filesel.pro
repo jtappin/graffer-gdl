@@ -6,12 +6,12 @@
 ; (at your option) any later version.                                   
 
 ;+
-; CW_FILESEL
+; GR_CW_FILESEL
 ;	File selector widget, unlike DIALOG_PICKFILE, it is embedded
 ;	in a parent widget.
 ;
 ; Usage:
-;	id = cw_filesel([parent])
+;	id = gr_cw_filesel([parent])
 ;
 ; Returns:
 ;	The widget ID of the created widget.
@@ -23,10 +23,19 @@
 ; Keywords:
 ;	filter	string	A string array (or scalar) specifying the file
 ;			types to be displayed (e.g. "*.pdf") the
-;			special value "All files" does what it says.
-;	/fix_filter	If set, then the filter combo is not editable.
+;			special value "All files" does what it
+;			says. Strings starting with a dot, or without
+;			a dot at all are treated as suffixes.
+;	label	string	A string array of the same length as FILTER
+;			specifying the labels to be used on the
+;			combobox (e.g. you might want to use the label
+;			'JPEG' for the filter ".jpg, .JPG, .jpeg,
+;			.JPEG"). 
+;	/fix_filter	If set, then the filter combo is not
+;			editable. N.B. Unlike IDL's version,
+;			multiple filters are still allowed.
 ;	/frame		If set, then draw a frame around the widger
-;	/multiple	If set, then multiple files may be selectedt.
+;	/multiple	If set, then multiple files may be selected.
 ;	path	string	Specify the path in which to look (default
 ;			current directory).
 ;	/save		If set then label the "Open" button as "Save"
@@ -34,6 +43,7 @@
 ;	uvalue	any	A user value for the widget.
 ;	/warn_exist	If set then issue a warning if the selected
 ;			file exists.
+;	default	string	Specify a default filename stem.		
 ;
 ; Notes:
 ;	Pro tem. I've not implemented the /image_files and
@@ -42,10 +52,36 @@
 ;
 ; History:
 ;	Boiler plate: 14/9/21; SJT
+;	Allow to diverge from IDL: 15/9/21; SJT
 ;-
 
+; Expand a filter spec.
+function gr_cw_fs_expand_filter, filter, count = count, $
+                                 simple = simple
+  
+  if strpos(strupcase(filter), 'ALL') eq 0 then begin
+     count = 1
+     if keyword_set(simple) then return, '' $
+     else return, '*'
+  endif
+
+  fts = strsplit(filter, ', ', /extr, count = count)
+
+  if keyword_set(simple) then begin
+     for j = 0, count-1 do $
+        if strpos(fts[j], '.') eq -1 then fts[j] = '.'+fts[j]
+  endif else begin
+     for j = 0, count-1 do begin
+        if strpos(fts[j], '.') eq 0 then fts[j] = '*'+fts[j] $
+        else if strpos(fts[j], '.') eq -1 then fts[j] = '*.'+fts[j]
+     endfor
+  endelse
+  
+  return, fts
+end
+
 ; Find directories in a path
-pro cw_fs_match_dir, path, dirs, count = count
+pro gr_cw_fs_match_dir, path, dirs, count = count
 
   dirs = file_search(path+path_sep()+'*', count = count, /test_directory)
   if count eq 0 then dirs = '' $
@@ -54,20 +90,12 @@ pro cw_fs_match_dir, path, dirs, count = count
 end
 
 ; Find regular files matching a filter in a path
-pro cw_fs_match, path, filter, files, count = count
+pro gr_cw_fs_match, path, filter, files, count = count
 
-  if strpos(strupcase(filter), 'ALL') eq 0 then begin
-     fts = '*'
-     nff = 1
-  endif else fts = strsplit(filter, ', ', /extr, count = nff)
-  
+  fts = gr_cw_fs_expand_filter(filter, count = nff)
   nf = 0l
   for j = 0, nff-1 do begin
-     if strpos(strupcase(fts[j]), 'ALL') eq 0 then ft = '*' $
-     else if strpos(fts[j], '.') eq 0 then ft = '*'+fts[j] $
-     else ft = fts[j]
-
-     ff = file_search(path+path_sep()+ft, count = nf1, /test_regular)
+     ff = file_search(path+path_sep()+fts[j], count = nf1, /test_regular)
 
      if nf1 ne 0 then begin
         if nf eq 0 then files = ff $
@@ -89,7 +117,7 @@ pro cw_fs_match, path, filter, files, count = count
 end
 
 ; Get value (full list of files)
-function cw_fs_get, id
+function gr_cw_fs_get, id
   
   base = widget_info(id, /child)
   widget_control, base, get_uvalue = uvs
@@ -111,7 +139,7 @@ function cw_fs_get, id
 end
 
 ; Set value (a single name)
-pro cw_fs_set, id, name
+pro gr_cw_fs_set, id, name
 
   base = widget_info(id, /child)
   widget_control, base, get_uvalue = uvs
@@ -128,8 +156,8 @@ pro cw_fs_set, id, name
      widget_control, uvs.dirid, set_value = dname
      uvs.path = dname
 
-     cw_fs_match, uvs.path, uvs.cfilt, files, count = nfile
-     cw_fs_match_dir, uvs.path, dirs, count = ndir
+     gr_cw_fs_match, uvs.path, uvs.cfilt, files, count = nfile
+     gr_cw_fs_match_dir, uvs.path, dirs, count = ndir
 
      if ptr_valid(uvs.flist) then ptr_free, uvs.flist
      uvs.flist = ptr_new(files)
@@ -163,14 +191,12 @@ pro cw_fs_set, id, name
 
 end
 ; Event handler
-function cw_fs_event, event
+function gr_cw_fs_event, event
 
   widget_control, event.id, get_uvalue = but
   base = widget_info(event.handler, /child)
   widget_control, base, get_uvalue = uvs
 
-  help, /str, event
-  
   done = 0
 
   imods = 0b
@@ -223,19 +249,29 @@ function cw_fs_event, event
         uvs.sflag = nm ne 0
      end
 
-     'FILTER': if event.str ne uvs.cfilt then begin
-        uvs.cfilt = event.str
-        widget_control, uvs.fileid, set_value = ''
-        imods = 1b
-        uvs.sflag = 0b
+     'FILTER': begin
+        if event.index eq -1 then begin
+           uvs.cfilt = event.str
+           imods = 1b
+           uvs.sflag = 0b
+        endif else if uvs.cfilt ne uvs.filter[event.index] then begin
+           uvs.cfilt = uvs.filter[event.index]
+           imods = 1b
+           uvs.sflag = 0b
+        endif
+        uvs.clabel = event.str
+        if imods then begin
+           if uvs.default ne '' then begin
+              ff = gr_cw_fs_expand_filter(uvs.cfilt, /simple)
+              widget_control, uvs.fileid, set_value = uvs.default+ff[0]
+           endif else widget_control, uvs.fileid, set_value = ''
+        endif
      end
-
-     else: print, 'WTF'
   endcase
 
   if imods then begin
-     cw_fs_match, uvs.path, uvs.cfilt, files, count = nfile
-     cw_fs_match_dir, uvs.path, dirs, count = ndir
+     gr_cw_fs_match, uvs.path, uvs.cfilt, files, count = nfile
+     gr_cw_fs_match_dir, uvs.path, dirs, count = ndir
 
      if ptr_valid(uvs.flist) then ptr_free, uvs.flist
      uvs.flist = ptr_new(files)
@@ -257,8 +293,6 @@ function cw_fs_event, event
   if cfile ne '' || done eq 2 then begin
      widget_control, uvs.dobut, /sensitive
      ffn = uvs.path+path_sep()+cfile
-     print, ffn
-     print, done, uvs.warn, file_test(ffn)
      if done eq 1 && uvs.warn && file_test(ffn) then begin
         status = dialog_message(["File: "+ffn, $
                                  "already exists, do you want", $
@@ -268,13 +302,14 @@ function cw_fs_event, event
                                 title = "Overwrite file?")
         if status eq 'No' then return, 0l
      endif
-     return, {FILESEL_EVENT, $
+     return, {GR_FILESEL_EVENT, $
               id: event.handler, $
               top: event.top, $
               handler: 0l, $
               value: ffn, $
               done: done, $
-              filter: uvs.cfilt}
+              filter: uvs.cfilt, $
+              label: uvs.clabel}
   endif else begin
      widget_control, uvs.dobut, sensitive = 0
      return, 0l                 ; No event in these cases
@@ -282,17 +317,12 @@ function cw_fs_event, event
   
 end
 
-function cw_filesel, parent, $
-                     filter = filter, fix_filter = fix_filter, $
-                     frame = frame, multiple = multiple, $
-                     path = path, save = save, uname = uname, $
-                     uvalue = uvalue, warn_exist = warn_exist, $
-                     image_files = image_files, filename = filename
-
-  if n_elements(image_files) ne 0 then $
-     message, /continue, "/IMAGE_FILES keyword not (yet) implemented."
-  if n_elements(filename) ne 0 then $
-     message, /continue, "/FILENAME keyword not (yet) implemented."
+function gr_cw_filesel, parent, $
+                        filter = filter, fix_filter = fix_filter, $
+                        frame = frame, multiple = multiple, $
+                        path = path, save = save, uname = uname, $
+                        uvalue = uvalue, warn_exist = warn_exist, $
+                        default = default, label = label
 
   if keyword_set(multiple) && keyword_set(warn_exist) then $
      message, "/MULTIPLE and /WARN_EXIST are in confict, will ignore " + $
@@ -302,10 +332,26 @@ function cw_filesel, parent, $
               "/SAVE."
   
   if n_elements(filter) eq 0 then filter = "All files"
-
+  nfilt = n_elements(filter)
+  if n_elements(label) eq 0 then flabel = filter $ 
+  else if n_elements(label) eq nfilt then $
+     flabel = label $
+  else if n_elements(label) gt nfilt then begin
+     message, /continue, "Too many elements in LABEL, truncating."
+     flabel = label[0:nfilt-1]
+  endif else if n_elements(label) lt nfilt then begin
+     message, /continue, "Too few elements in LABEL, padding."
+     flabel = [label, filter[n_elements(label):*]]
+  endif
+  locs = where(flabel eq '', nb)
+  if nb ne 0 then flabel[locs] = filter[locs]
+  
   if n_elements(path) eq 0 then cd, current = cpath $
   else cpath = file_expand_path(path)
 
+  if n_elements(default) ne 0 then dfn = default $
+  else dfn = ''
+  
   if n_params() eq 0 || ~widget_info(parent, /valid) then $
      tlb = widget_base(/column, $
                        uvalue = uvalue, $
@@ -379,7 +425,11 @@ function cw_filesel, parent, $
                        /edit, $
                        xsize = 40, $
                        uvalue = 'FILE')
-
+  if dfn ne '' then begin
+     ff = gr_cw_fs_expand_filter(filter[0], /simple)
+     widget_control, fileid, set_value = dfn+ff[0]
+  endif
+  
   cb = widget_base(jbb, $
                    /row)
 
@@ -387,7 +437,7 @@ function cw_filesel, parent, $
                       value = 'Filter:')
 
   filtid = widget_combobox(cb, $
-                           value = filter, $
+                           value = flabel, $
                            editable = ~keyword_set(fix_filter), $
                            uvalue = 'FILTER')
 
@@ -399,14 +449,14 @@ function cw_filesel, parent, $
                                  ~keyword_set(multiple)) ? 'Save' : $
                         'Open', $
                         uvalue = 'DO', $
-                        sensitive = 0)
+                        sensitive = keyword_set(default))
 
   junk = widget_button(jbb, $
                        value = 'Cancel', $
                        uvalue = 'DONT')
 
-  cw_fs_match, cpath, filter[0], files, count = nfile
-  cw_fs_match_dir, cpath, dirs, count = ndir
+  gr_cw_fs_match, cpath, filter[0], files, count = nfile
+  gr_cw_fs_match_dir, cpath, dirs, count = ndir
 
   if nfile ne 0 then $
      widget_control, flistid, set_value = files $
@@ -418,7 +468,9 @@ function cw_filesel, parent, $
 
   uvs = {path: cpath, $
          filter: filter, $
+         default: dfn, $
          cfilt: filter[0], $
+         clabel: flabel[0], $
          dirlist: ptr_new(dirs), $
          flist: ptr_new(files), $
          dirid: dirid, $
@@ -429,13 +481,12 @@ function cw_filesel, parent, $
          warn: keyword_set(warn_exist) && ~keyword_set(multiple), $
          sflag: 0b}
 
-  widget_control, tlb, func_get_value = 'cw_fs_get', $
-                  pro_set_value = 'cw_fs_set', $
-                  event_func = 'cw_fs_event'
+  widget_control, tlb, func_get_value = 'gr_cw_fs_get', $
+                  pro_set_value = 'gr_cw_fs_set', $
+                  event_func = 'gr_cw_fs_event'
   
   widget_control, base, set_uvalue = uvs
 
   return, tlb
 
 end
-  

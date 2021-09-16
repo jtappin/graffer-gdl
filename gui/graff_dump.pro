@@ -52,7 +52,8 @@ pro graff_dump, pdefs, png = png, tiff = tiff, nrif = nrif, $
 
   if !d.n_colors gt 256  then begin ; True colour is possible
      image = tvrd(true = 1, $
-                  order = keyword_set(tiff)) ; Read the image from the screen
+                  order = ~keyword_set(variable)) ; Read the image
+                                ; from the screen 
 
      if (keyword_set(png)) then begin
         write_png, tname+'.png', image
@@ -73,24 +74,25 @@ pro graff_dump, pdefs, png = png, tiff = tiff, nrif = nrif, $
         (scope_varfetch(variable, level = 1, /enter)) =  image
 
      endif else if keyword_set(dialogue) then begin
-        if is_gdl() then graff_msg, pdefs.ids.message, $
-                                    "Image dialogue not " + $
-                                    "implemented in GDL." $
-        else begin
-           if widget_info(pdefs.ids.graffer,  /valid) then $
-              parent = pdefs.ids.graffer
-           
-           junk = dialog_write_image(image, $
-                                     dialog_parent = parent, $
-                                     file = tname+'.png', $
-                                     type = 'PNG', $
-                                     /warn_exist, $
-                                     title = 'Dump Graffer screen')
-        endelse
+        ;; if is_gdl() then graff_msg, pdefs.ids.message, $
+        ;;                             "Image dialogue not " + $
+        ;;                             "implemented in GDL." $
+        ;; else begin
+        ;;    if widget_info(pdefs.ids.graffer,  /valid) then $
+        ;;       parent = pdefs.ids.graffer
+        
+        ;;    junk = dialog_write_image(image, $
+        ;;                              dialog_parent = parent, $
+        ;;                              file = tname+'.png', $
+        ;;                              type = 'PNG', $
+        ;;                              /warn_exist, $
+        ;;                              title = 'Dump Graffer screen')
+        gr_image_write, image, name = tname, group = pdefs.ids.graffer
      endif
   endif else begin              ; 8-bit display--False colour only
      tvlct, /get, r, g, b
-     image = tvrd(order = keyword_set(tiff)) ; Read the image from the screen
+     image = tvrd(order = ~keyword_set(variable)) ; Read the image
+                                ; from the screen 
 
      if (keyword_set(png)) then begin
         write_png, tname+'.png', image, r, g, b 
@@ -109,20 +111,21 @@ pro graff_dump, pdefs, png = png, tiff = tiff, nrif = nrif, $
         (scope_varfetch(variable, level = 1, /enter)) =  image
 
      endif else if (keyword_set(dialogue)) then begin
-        if is_gdl() then graff_msg, pdefs.ids.message, $
-                                    "Image dialogue not " + $
-                                    "implemented in GDL." $
-        else begin
-           if widget_info(pdefs.ids.graffer,  /valid) then $
-              parent = pdefs.ids.graffer
+        gr_image_write, image, r, g, b, $
+                        name = tname, group = pdefs.ids.graffer
+        ;; if is_gdl() then graff_msg, pdefs.ids.message, $
+        ;;                             "Image dialogue not " + $
+        ;;                             "implemented in GDL." $
+        ;; else begin
+        ;;    if widget_info(pdefs.ids.graffer,  /valid) then $
+        ;;       parent = pdefs.ids.graffer
 
-           junk = dialog_write_image(image, r, g, b, $
-                                     dialog_parent = parent, $
-                                     file = tname+'.png', $
-                                     type = 'PNG', $
-                                     /warn_exist, $
-                                     title = 'Dump Graffer screen')
-        endelse
+        ;;    junk = dialog_write_image(image, r, g, b, $
+        ;;                              dialog_parent = parent, $
+        ;;                              file = tname+'.png', $
+        ;;                              type = 'PNG', $
+        ;;                              /warn_exist, $
+        ;;                              title = 'Dump Graffer screen')
      endif
   endelse
 end
