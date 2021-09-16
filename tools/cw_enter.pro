@@ -87,6 +87,12 @@
 ;				inputs or not.
 ;	font	string	input	The font to use for the label.
 ;	fieldfont string input	The font to use for the entry box.
+;	x_scroll_size long in	Specify a scroll window size for the
+;				X-dimension of the text window (in
+;				nominal characters) 
+;	y_scroll_size long in	Specify a scroll window size for the
+;				Y-dimension of the text window (in
+;				lines)
 ;
 ;	Other keywords are passed directly to the base that is
 ;	returned.
@@ -187,6 +193,7 @@
 ;	Merge graff_enter and cw_ffield, and store value in the state
 ;	structure: 13/10/16; SJT
 ;	Modify sensitive handling for GDL: 6/10/20; SJT
+;	Add x & y scroll sizes: 16/9/21; SJT
 ;-
 
 
@@ -255,7 +262,7 @@ pro cw_enter_set, id, value
         vs = call_function(state.set_list, vv)
         if size(vs, /type) ne 7 then begin
            message, continue = vs eq 0, $
-                    "Unable to convert input to a list"
+                    "Unable to convert input to a string"
            return
         endif
      end
@@ -506,8 +513,10 @@ function cw_enter, parent, label = label, value = value, $
                    ignore_empty = ignore_empty, $
                    list_object = list_object, set_list = set_list, $
                    get_list = get_list, sensitive = sensitive, $
-                   uname = uname, font=font, $
+                   uname = uname, font = font, $
                    fieldfont = fieldfont, $
+                   x_scroll_size = x_scroll_size, $
+                   y_scroll_size = y_scroll_size, $
                    _extra = _extra
 
 
@@ -650,7 +659,9 @@ function cw_enter, parent, label = label, value = value, $
                      tracking_events = (keyword_set(tracking_events) || $
                                         keyword_set(capture_focus)), $
                      scroll = keyword_set(scroll), $
-                     font = fieldfont)
+                     font = fieldfont, $
+                     x_scroll_size = x_scroll_size, $
+                     y_scroll_size = y_scroll_size)
 
   state = { $
           text:   tbox, $

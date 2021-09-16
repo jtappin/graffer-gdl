@@ -172,12 +172,18 @@ print, 'tools/aspect.pro'
 .r tools/aspect
 print, 'tools/cw_enter.pro'
 .r tools/cw_enter
+print, 'tools/cw_filesel.pro'
+.r tools/cw_filesel
 print, 'tools/cw_pdmenu_plus.pro'
 .r tools/cw_pdmenu_plus
 print, 'tools/cw_spin_box.pro'
 .r tools/cw_spin_box
+print, 'tools/cw_write_image.pro'
+.r tools/cw_write_image
 print, 'tools/fractile.pro'
 .r tools/fractile
+print, 'tools/gr_cw_filesel.pro'
+.r tools/gr_cw_filesel
 print, 'tools/is_gdl.pro'
 .r tools/is_gdl
 print, 'tools/match_in.pro'
@@ -300,6 +306,8 @@ print, 'gui/gr_fun_read.pro'
 .r gui/gr_fun_read
 print, 'gui/gr_hardopts.pro'
 .r gui/gr_hardopts
+print, 'gui/gr_image_write.pro'
+.r gui/gr_image_write
 print, 'gui/gr_img_menus.pro'
 .r gui/gr_img_menus
 print, 'gui/gr_key_def.pro'
