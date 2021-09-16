@@ -153,19 +153,11 @@ pro Gr_ctl_event, event
         ichange = 0b
         idraw_flag = 0
      end
-     'File.Dump screen.Tiff': if track_flag then $
+     'File.Dump screen.TIFF': if track_flag then $
         graff_msg, pdefs.ids.hlptxt, 'Dump to TIFF (Tagged Image File ' + $
                    'Format) file' $
      else begin
         graff_dump, pdefs, /tiff
-        ichange = 0b
-        idraw_flag = 0
-     end
-     'File.Dump screen.Nrif': if track_flag then $
-        graff_msg, pdefs.ids.hlptxt, 'Dump to NRIF (NCAR Raster Image ' + $
-                   'File) ' $
-     else begin
-        graff_dump, pdefs, /nrif
         ichange = 0b
         idraw_flag = 0
      end
@@ -302,28 +294,6 @@ pro Gr_control_menu, base
 
   common graffer_options, optblock
 
-  ;; if is_gdl() then $
-  ;;    ctlmenu = [{control_opts, flag:1, label:'File', accelerator:''}, $
-  ;;               {control_opts, 0, 'Save', 'Ctrl+S'}, $
-  ;;               {control_opts, 1, 'Save as', ''}, $
-  ;;               {control_opts, 0, 'Save binary as ...', 'Ctrl+Shift+S'}, $
-  ;;               {control_opts, 2, 'Save ascii as ...', 'Ctrl+Alt+S'}, $
-  ;;               {control_opts, 1, 'Dump screen', ''}, $
-  ;;               {control_opts, 0, 'PNG', 'Ctrl+Alt+P'}, $
-  ;;               {control_opts, 0, 'Tiff', 'Ctrl+Alt+T'}, $
-  ;;               {control_opts, 0, 'Nrif', 'Ctrl+Alt+N'}, $
-  ;;               {control_opts, 2, 'Variable', 'Ctrl+Alt+V'}, $
-  ;;               {control_opts, 0, 'Open ...', 'Ctrl+O'}, $
-  ;;               {control_opts, 2, 'Exit', 'Ctrl+Q'}, $
-  ;;               {control_opts, 1, 'Hard Copy', ''}, $
-  ;;               {control_opts, 0, 'Quick', 'Ctrl+P'}, $
-  ;;               {control_opts, 2, 'Set up ...', 'Ctrl+Shift+P'}, $
-  ;;               {control_opts, 0, 'Options...', ''}, $
-  ;;               {control_opts, 3, 'Help', ''}, $
-  ;;               {control_opts, 0, 'User Guide...', 'Ctrl+H'}, $
-  ;;               {control_opts, 0, 'File Format...', ''}, $
-  ;;               {control_opts, 2, 'About...', ''}] $
-  ;; else $
   ctlmenu = [{control_opts, flag:1, label:'File', accelerator:''}, $
              {control_opts, 0, 'Save', 'Ctrl+S'}, $
              {control_opts, 1, 'Save as', ''}, $ $
@@ -331,8 +301,7 @@ pro Gr_control_menu, base
              {control_opts, 2, 'Save ascii as ...', 'Ctrl+Alt+S'}, $
              {control_opts, 1, 'Dump screen', ''}, $
              {control_opts, 0, 'PNG', 'Ctrl+Alt+P'}, $
-             {control_opts, 0, 'Tiff', 'Ctrl+Alt+T'}, $
-             {control_opts, 0, 'Nrif', 'Ctrl+Alt+N'}, $
+             {control_opts, 0, 'TIFF', 'Ctrl+Alt+T'}, $
              {control_opts, 0, 'Variable', 'Ctrl+Alt+V'}, $
              {control_opts, 2, 'Choose ...', ''}, $
              {control_opts, 0, 'Open ...', 'Ctrl+O'}, $

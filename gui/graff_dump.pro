@@ -62,13 +62,6 @@ pro graff_dump, pdefs, png = png, tiff = tiff, nrif = nrif, $
         write_tiff, tname+'.tif', image, compress = 2
         graff_msg, pdefs.ids.message, 'Wrote TIFF to: '+tname+'.tif'
         
-     endif else if(keyword_set(nrif)) then begin
-        if is_gdl() then graff_msg, pdefs.ids.message, $
-                                    "NRIF format not supported in " + $
-                                    "GDL." 
-        write_nrif, tname+'.nrf', image
-        graff_msg, pdefs.ids.message, 'Wrote NRIF to: '+tname+'.nrf'
-
      endif else if keyword_set(variable) then begin
         if size(variable, /type) ne 7 then variable = 'grf_image'
         (scope_varfetch(variable, level = 1, /enter)) =  image
@@ -103,9 +96,6 @@ pro graff_dump, pdefs, png = png, tiff = tiff, nrif = nrif, $
                     = g, $
                     blue = b
         
-     endif else if(keyword_set(nrif)) then begin
-        write_nrif, tname+'.nrf', image, r, g, b 
-
      endif else if keyword_set(variable) then begin
         if size(variable, /type) ne 7 then variable = 'grf_image'
         (scope_varfetch(variable, level = 1, /enter)) =  image
