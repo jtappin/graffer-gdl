@@ -164,8 +164,6 @@ function gr_axis_adv_menu, pdefs, xaxis = xaxis, yaxis = yaxis
      ny = 10
   endelse
 
-; It would be nice if this could be scrollable, but scrollable widgets
-; may not be embedded in modal bases.
   locid = cw_enter(jb, $
                    /column, $
                    label = "Tick locations", $
@@ -176,7 +174,8 @@ function gr_axis_adv_menu, pdefs, xaxis = xaxis, yaxis = yaxis
                    /array, $
                    uvalue = 'VALS', $
                    /all, $
-                   /capture)
+                   /capture, $
+                   /scroll)
 
   junk = widget_button(jb, $
                        value = 'Clear', $
