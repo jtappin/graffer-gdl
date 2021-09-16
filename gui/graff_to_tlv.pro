@@ -187,9 +187,10 @@ pro graff_to_tlv, pdefs
 
   sfx = string(pdefs.cset+1, format = "('_',i0)")
 
+  widget_control, pdefs.ids.graffer, sensitive = 0
+  
   base = widget_base(title = "Export dataset", $
                      /column, $
-                     /modal, $
                      group = pdefs.ids.graffer)
   names = {gr_export_names, $
            x: "GR_X"+sfx, $
@@ -429,5 +430,7 @@ pro graff_to_tlv, pdefs
   widget_control, base, /real, set_uvalue = state
 
   xmanager, "gr_tlv", base
+
+  widget_control, pdefs.ids.graffer, /sensitive
 
 end

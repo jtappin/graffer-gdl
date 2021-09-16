@@ -33,7 +33,6 @@ pro grname_event, event
            'DO': begin
               (*state).action = 1
               widget_control, (*state).namid, get_value = name
-              print,  name
               (*state).name = name
            end
            'DONT': begin
@@ -50,9 +49,10 @@ end
 function gr_name_wid, event
 
   defname = 'grf_image'
+
+  widget_control, event.top, sensitive = 0
   
   base = widget_base(group = event.top, $
-                     /modal, $
                      /column, $
                      title = "Variable name")
 
@@ -78,7 +78,9 @@ function gr_name_wid, event
   widget_control, base, /real, set_uvalue = state
 
   xmanager, 'grname', base
-
+  
+  widget_control, event.top, /sensitive
+  
   if (*state).action gt 0 then rname = (*state).name $
   else rname = ''
 

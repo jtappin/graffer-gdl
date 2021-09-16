@@ -137,6 +137,7 @@ function gr_custom_colour, index, w0, group = group
 ;	index	int/byt	Either a scalar current colour index or a
 ;			3-element byte array for a current custom
 ;			colour.
+;	w0	long	Window ID of the main plotting window.
 ;
 ; History:
 ;	Original: 17/5/16; SJT
@@ -152,10 +153,11 @@ function gr_custom_colour, index, w0, group = group
      bcolour[2] = lcolour / 256l^2
   endif else bcolour = index
 
+  if keyword_set(group) then widget_control, group, sensitive = 0
+  
   tlb = widget_base(title = "Graffer: Custom colour", $
                     group = group, $
                     resource = 'Graffer', $
-                    modal = keyword_set(group), $
                     /column)
 
   base = widget_base(tlb, $
@@ -315,6 +317,8 @@ function gr_custom_colour, index, w0, group = group
   repeat begin
      ev = widget_event(base)
   endrep until (ev.exit ne 0)
+
+  if keyword_set(group) then widget_control, group, /sensitive
 
   wset, w0
 

@@ -115,10 +115,11 @@ function gr_axis_adv_menu, pdefs, xaxis = xaxis, yaxis = yaxis
      return, 0
   endelse
 
+  widget_control, pdefs.ids.graffer, sensitive = 0
+  
   base = widget_base(group = pdefs.ids.graffer, $
                      title = 'Advanced '+axname+' axis settings', $
-                     /column, $
-                     /modal)
+                     /column)
 
   
   junk = widget_label(base, $
@@ -208,6 +209,8 @@ function gr_axis_adv_menu, pdefs, xaxis = xaxis, yaxis = yaxis
   widget_control, base, get_uvalue = state, /no_copy
   widget_control, base, /destroy
 
+  widget_control, pdefs.ids.graffer, /sensitive
+  
   if (ev.exited eq 1) then begin
      case axname of
         'X': pdefs.xsty = state.sty
