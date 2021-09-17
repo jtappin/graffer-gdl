@@ -709,11 +709,13 @@ pro Graffer, file, group = group, xsize = xsize, ysize = ysize, $
                                  space = 0, $
                                  /align_center, $
                                  map = 0)
-  cbm = gr_check_box(nx, ny)
+  cbm = gr_check_box(nx, ny, xbm = xbm)
   junk = widget_button(pdefs.ids.chtick, $
                        value = cbm, $
                        uvalue = 'QSAVE', $
-                       track = optblock.track)
+                       track = optblock.track, $
+                       x_bitmap_extra = xbm)
+  
   widget_control, pdefs.ids.graffer, /real
   if (keyword_set(group)) then $
      widget_control, pdefs.ids.graffer, group = group

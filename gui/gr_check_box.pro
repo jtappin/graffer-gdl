@@ -5,7 +5,7 @@
 ; the Free Software Foundation; either version 2 of the License, or     
 ; (at your option) any later version.                                   
 
-function Gr_check_box, nx, ny
+function Gr_check_box, nx, ny, xbm = xbm
 
 ;+
 ; GR_CHECK_BOX
@@ -20,6 +20,8 @@ function Gr_check_box, nx, ny
 ; Arguments:
 ;	nx, ny	int	output	The size of the bitmap
 ;
+; Keyword:
+; 	xbm	int	output	The number of extra bits to ignore.
 ; History:
 ;	Original: 29/1/97; SJT
 ;	Just return the bitmap: 20/2/97; SJT
@@ -32,6 +34,11 @@ function Gr_check_box, nx, ny
 
   read_x11_bitmap, bmpath+'3floppy_unmount.xbm', fd3, nx, ny
 
+  if arg_present(xbm) then begin
+     xbm = nx mod 8
+     if xbm ne 0 then xbm = 8-xbm
+  endif
+  
   return, fd3
 end
 
