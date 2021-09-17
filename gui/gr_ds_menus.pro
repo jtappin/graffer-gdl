@@ -239,7 +239,8 @@ pro Gr_ds_menus, optbb, pdefs
                                     col_str, $
                                     uvalue = 'COLOUR', $
                                     /selector, $
-                                    track = optblock.track)
+                                    track = optblock.track, $
+                                    /pad_labels)
 
   pdefs.ids.dscolour_base = widget_base(jjb, $
                                         /frame)

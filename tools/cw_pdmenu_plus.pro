@@ -58,6 +58,9 @@
 ;	/selector	If set, then the widget behaves like a
 ;			droplist. If this option is set, then there
 ;			may not be any submenus.
+;	/pad_labels	If set and this is a selector, text labels are
+;			padded with spaces to make sure the
+;			long ones don't get truncated.
 ;	initial_selection
 ;		int	For a selector menu, specify the initially
 ;			selected item.
@@ -467,7 +470,10 @@ function cw_pdmenu_plus, parent, udesc, column = column, row = row, $
                          align_right = align_right, $
                          align_center = align_center, $
                          delimiter = delimiter, $
-                         selector = selector, $
+                         selector = selector, pad_labels = pad_labels, $
+                         $
+                         $
+                         $
                          initial_selection = initial_selection, $
                          _extra = _extra
 
@@ -539,15 +545,21 @@ function cw_pdmenu_plus, parent, udesc, column = column, row = row, $
      descr.ltype = 1
   endelse
   if keyword_set(selector) then begin
+     if keyword_set(initial_selection) then $
+        ibm = initial_selection+1 $
+     else ibm = 1
      if isbitmap then begin
-        if keyword_set(initial_selection) then $
-           ibm = initial_selection+1 $
-        else ibm = 1
         bm = *descr[ibm].bitmap
         descr[0].bitmap = ptr_new(*descr[ibm].bitmap)
      endif else begin
-        nchar = max(strlen(descr.label))
-        descr[0].label = string(replicate(byte('M'), nchar))
+        descr[0].label = descr[ibm].label
+        if keyword_set(pad_labels) then begin
+           nchar = max(strlen(descr.label))
+           for j = 0, n_elements(descr)-1 do begin
+              nlong = 2*nchar - strlen(descr[j].label)
+              descr[j].label = strpad(descr[j].label, nlong, /centre)
+           endfor
+        endif
      endelse
   endif
   
@@ -624,7 +636,7 @@ function cw_pdmenu_plus, parent, udesc, column = column, row = row, $
 
   if keyword_set(selector) then begin
      ids = ids[1:*]
-     widget_control, base, $
+     widget_control, base, $ $
                      pro_set_value = 'cw_pdmenu_plus_set_selector', $
                      func_get_value = 'cw_pdmenu_plus_get_selector'
      if n_elements(initial_selection) ne 0 then $
