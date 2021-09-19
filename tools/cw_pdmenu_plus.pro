@@ -60,7 +60,11 @@
 ;			may not be any submenus.
 ;	/pad_labels	If set and this is a selector, text labels are
 ;			padded with spaces to make sure the
-;			long ones don't get truncated.
+;			long ones don't get truncated. If the
+;			longest label has N charaters then a label
+;			with n characters is padded with 2(N-n) blanks
+;			(since blanks are usually smaller than typical
+;			characters). 
 ;	initial_selection
 ;		int	For a selector menu, specify the initially
 ;			selected item.
