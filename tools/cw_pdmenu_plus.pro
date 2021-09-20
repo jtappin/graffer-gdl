@@ -64,10 +64,14 @@
 ;			longest label has N charaters then a label
 ;			with n characters is padded with 2(N-n) blanks
 ;			(since blanks are usually smaller than typical
-;			characters). 
+;			characters).
 ;	initial_selection
 ;		int	For a selector menu, specify the initially
 ;			selected item.
+;	/simulate_check	If set, then simulate checkable buttons rather
+;			than using a checked_menu button. This is not
+;			possible if the buttons have bitmap labels.
+;
 ;	Other keys are passed directly to the generated buttons.
 ;
 ; Notes:
@@ -169,34 +173,38 @@
 ;-
 
 
-function cw_pdmenu_plus_get, wid, group, id = id
+function cw_pdmenu_plus_get, wid, group, index = index, id = id
 
   idb = wid
   if widget_info(idb, /type) eq 0 then $
      idb = widget_info(idb, /child)
 
   id = 0l
-  ;; nc = widget_info(idb, /n_children)
-  ;; if nc eq 0 then return, -1
 
   if n_params() eq 1 then group = 1
   ids = widget_info(idb, /all_children)
   if ~widget_info(ids[0], /valid) then return, -1
   nc = n_elements(ids)
   
-  idx = -1l
+  if ~arg_present(index) then index = -1l
   for j = 0, nc-1 do begin
      widget_control, ids[j], get_uvalue = uv
-     if uv.group ne group then continue
-     idx++
-     if uv.state then begin
-        id = ids[j]
-        return, idx
-     endif
+     if cw_pdmenu_has_kids(ids[j]) then begin
+        idx1 = cw_pdmenu_plus_get(ids[j], group, index = index, id = id)
+        if idx1 ge 0 then return, idx1
+     endif else begin
+        if uv.group ne group then continue
+        index++
+        if uv.state then begin
+           id = ids[j]
+           return, index
+        endif
+     endelse
   endfor
 
   return, -1l
 end
+
 function cw_pdmenu_plus_get_selector, wid
   return, cw_pdmenu_plus_get(wid, 1)
 end
@@ -223,7 +231,7 @@ pro cw_pdmenu_plus_set_exclusive, id, parent
   endif
 
   idlist = widget_info(parent, /all_children)
-  
+
   for j = 0, n_elements(idlist)-1 do begin
      if idlist[j] eq id then continue
      if cw_pdmenu_has_kids(idlist[j]) then $
@@ -232,14 +240,14 @@ pro cw_pdmenu_plus_set_exclusive, id, parent
         widget_control, idlist[j], get_uvalue = uvg
         if uvg.group eq group then begin
            uvg.state = 0
-           if is_gdl() then begin
-              if ~uvg.is_selector then $
+           if ~uvg.is_selector then begin
+              if uvg.check eq 1 then begin
                  widget_control, idlist[j], set_value = $
                                  uvg.label+' [ ]'
-              widget_control, idlist[j], set_uvalue = uvg
-           endif else $
-              widget_control, idlist[j], set_button = 0, $
-                              set_uvalue = uvg
+              endif else $
+                 widget_control, idlist[j], set_button = 0
+           endif
+           widget_control, idlist[j], set_uvalue = uvg
         endif
      endelse
   endfor
@@ -268,18 +276,17 @@ pro cw_pdmenu_plus_set, id, state, index = index
 
      uvalue.state = state
 
-     if is_gdl() then begin
-        if ~uvalue.is_selector then begin
+     if ~uvalue.is_selector then begin
+        if uvalue.check eq 1 then begin
            if state then bvs = uvalue.label+' [*]' $
            else bvs = uvalue.label+' [ ]'
            widget_control, id, set_value = bvs
-        endif
-        widget_control, id, set_uvalue = uvalue
+        endif else $
+           widget_control, id, set_button = state
      endif else $
-        widget_control, id, set_uvalue = uvalue, set_button = state
-
-     if  uvalue.is_selector then $
         widget_control, widget_info(id, /parent), set_value = uvalue.label
+
+     widget_control, id, set_uvalue = uvalue
 
      if state && uvalue.group ne 0 then $
         cw_pdmenu_plus_set_exclusive, id
@@ -311,27 +318,29 @@ function cw_pdmenu_plus_event, event
                  value: long(uvalue.val)}
   endif else begin
 
-     if uvalue.check then begin
-        if uvalue.is_selector then uvalue.state = 1b $
-        else uvalue.state = ~uvalue.state
-        
-        if is_gdl() then begin
-           if ~uvalue.is_selector then begin
+     if uvalue.check ne 0 then begin
+        if uvalue.is_selector then begin
+           uvalue.state = 1b
+           widget_control, widget_info(event.id, /parent), $
+                           set_value = uvalue.label
+        endif else begin
+           uvalue.state = ~uvalue.state
+           
+           if uvalue.check eq 1 then begin
               if uvalue.state then bvs = uvalue.label+' [*]' $
               else bvs = uvalue.label+' [ ]'
               widget_control, event.id, set_value = bvs
-           endif
-           widget_control, event.id, set_uvalue = uvalue
-        endif else $
-           widget_control, event.id, set_button = uvalue.state, $
-                           set_uvalue = uvalue
+           endif else $
+              widget_control, event.id, set_button = uvalue.state
+
+        endelse
+
+        widget_control, event.id, set_uvalue = uvalue
+
         if uvalue.state && uvalue.group ne 0 then $
            cw_pdmenu_plus_set_exclusive, event.id, event.handler
      endif
-     if uvalue.is_selector then begin
-        widget_control, widget_info(event.id, /parent), $
-                        set_value = uvalue.label
-     endif
+
      if size(uvalue.val, /type) eq 7 then $
         return, {cw_pdmenu_plus_event_s, $
                  id: event.handler, $
@@ -350,7 +359,7 @@ function cw_pdmenu_plus_event, event
 end
 
 pro cw_pdmenu_plus_build, parent, desc, idx, nbuttons, etype, is_mb, $
-                          dhelp, delimiter, ids, isbitmap, $
+                          dhelp, delimiter, ids, isbitmap, chmenu, $
                           tracking_events = tracking_events, $
                           prefix = prefix, selector = selector, $
                           _extra = _extra
@@ -363,22 +372,15 @@ pro cw_pdmenu_plus_build, parent, desc, idx, nbuttons, etype, is_mb, $
         message, "A selector menu cannot have submenus" 
      if ~is_gdl() && menu && ~is_mb then menu = 2
 
-     check = (desc[idx].flag and 4b) ne 0
-
-     if check && (base_parent || menu ne 0) then $
+     check = (desc[idx].flag and 4b) ne 0 
+     if check ne 0 then check += chmenu
+     
+     if check ne 0 && (base_parent || menu ne 0) then $
         message, "Cannot create a checked menu at the top level " + $
                  "or with children"
      
      emenu = (desc[idx].flag and 2b) ne 0
 
-     ;; if idx eq 0 && keyword_set(selector) then begin
-     ;;    if isbitmap then bv = bytarr(size(*(desc[1].bitmap), /dim)) $
-     ;;    else begin
-     ;;       lmax = max(strlen(desc[1:*].label), mpos)
-     ;;       bv = desc[mpos].label
-     ;;       for j = 0, lmax-1 do strput, bv, ' ', j
-     ;;    endelse
-     ;; endif else
      if desc[idx].ltype eq 1 then begin
         bv = *(desc[idx].bitmap)
         if desc[idx].label then $
@@ -386,39 +388,43 @@ pro cw_pdmenu_plus_build, parent, desc, idx, nbuttons, etype, is_mb, $
                     "button, ignoring text", /continue
      endif else bv = desc[idx].label
 
-     if is_gdl() then begin
-        if check then begin
-                                ; Bit maps and check buttons don't work in GDL.
-           if ~keyword_set(selector) then begin
-              if isbitmap then begin
-                 print, "GDL doesn't (yet) support checkable bitmaps"
-                 return
-              endif
-              if desc[idx].state then bvs = bv +' [*]' $
-              else bvs = bv+' [ ]'
-           endif else bvs = bv
-        endif else bvs = bv
-
-        but = widget_button(parent, $
-                            value = bvs, $
-                            menu = menu, $
-                            tracking_events = tracking_events, $
-                            sensitive = desc[idx].sensitive, $
-                            uname = desc[idx].uname, $
+     case check of
+        1: begin
+           if keyword_set(selector) then bvs = bv $
+           else if desc[idx].state then bvs = bv +' [*]' $
+           else bvs = bv+' [ ]'
+           but = widget_button(parent, $
+                               value = bvs, $
+                               menu = menu, $
+                               tracking_events = tracking_events, $
+                               sensitive = desc[idx].sensitive, $
+                               uname = desc[idx].uname, $
 ;                            accel = desc[idx].accelerator, $
-                            _extra = _extra)
-
-     endif else $
-        but = widget_button(parent, $
-                            value = bv, $
-                            menu = menu, $
-                            checked_menu = check, $
-                            tracking_events = tracking_events, $
-                            sensitive = desc[idx].sensitive, $
-                            uname = desc[idx].uname, $
+                               _extra = _extra)
+        end
+        0: begin
+           but = widget_button(parent, $
+                               value = bv, $
+                               menu = menu, $
+                               tracking_events = tracking_events, $
+                               sensitive = desc[idx].sensitive, $
+                               uname = desc[idx].uname, $
 ;                            accel = desc[idx].accelerator, $
-                            _extra = _extra)
-
+                               _extra = _extra)
+        end
+        2: begin
+           but = widget_button(parent, $
+                               value = bv, $
+                               menu = menu, $
+                               /checked_menu, $
+                               tracking_events = tracking_events, $
+                               sensitive = desc[idx].sensitive, $
+                               uname = desc[idx].uname, $
+;                            accel = desc[idx].accelerator, $
+                               _extra = _extra)
+        end
+     endcase
+     
      if keyword_set(selector) then vv = idx-1 $
      else case etype of
         0: vv = but
@@ -441,7 +447,7 @@ pro cw_pdmenu_plus_build, parent, desc, idx, nbuttons, etype, is_mb, $
            label: bv $
           } 
 
-     if check && ~is_gdl() then $
+     if check ne 0 && ~is_gdl() then $
         widget_control, but, set_button = desc[idx].state
 
      widget_control, but, set_uvalue = uv 
@@ -452,7 +458,8 @@ pro cw_pdmenu_plus_build, parent, desc, idx, nbuttons, etype, is_mb, $
      idx++
      if menu ne 0 then $
         cw_pdmenu_plus_build, but, desc, idx, nbuttons, etype, is_mb, $
-                              dhelp, delimiter, ids, isbitmap, $
+                              dhelp, delimiter, ids, isbitmap, chmenu, $
+                              $
                               tracking_events = tracking_events, $
                               prefix = pfx, selector = selector, $
                               _extra = _extra
@@ -474,11 +481,10 @@ function cw_pdmenu_plus, parent, udesc, column = column, row = row, $
                          align_right = align_right, $
                          align_center = align_center, $
                          delimiter = delimiter, $
-                         selector = selector, pad_labels = pad_labels, $
-                         $
-                         $
-                         $
+                         selector = selector, $
+                         pad_labels = pad_labels, $
                          initial_selection = initial_selection, $
+                         simulate_check = simulate_check, $
                          _extra = _extra
 
   if n_params() ne 2 then message, "Must give a parent and a menu " + $
@@ -505,17 +511,13 @@ function cw_pdmenu_plus, parent, udesc, column = column, row = row, $
      message, "Either the LABEL field or the BITMAP field is required " + $
               "in the descriptor."
 
-  ;; They seem reasonably ok now, remove the warning pro-tem
-  ;; if have_fields[1] && is_gdl() then $
-  ;;    message, /continue, "BITMAP buttons are not well-tested in GDL."
-  
   if have_fields[0] && have_fields[1] && keyword_set(selector) then $
      message, "Only one of the LABEL and BITMAP fields may be " + $
               "given for selector menus."
 
   isbitmap = have_fields[1]
   ioff = keyword_set(selector)
-
+  
   nbuttons = n_elements(udesc) + ioff
 
   descr = replicate({cw_pdmenu_plus_descr, $
@@ -578,6 +580,17 @@ function cw_pdmenu_plus, parent, udesc, column = column, row = row, $
      descr[1:*].flag or= 4b
   endif
 
+  junk = where((descr.flag and 4b) ne 0, nsb)
+  if nsb eq 0 then chmenu = 0b $
+  else begin
+     if isbitmap && is_gdl() && ~keyword_set(selector) then begin
+        message, "GDL does not yet support checkable bitmaps.", $
+                 /continue
+        return, 0l
+     endif
+     chmenu = ~keyword_set(selector) && ~keyword_set(simulate_check)
+  endelse
+  
   if have_fields[3] then descr[ioff:*].accelerator = udesc.accelerator
   if have_fields[4] then descr[ioff:*].handler = udesc.handler
   if have_fields[5] then descr[ioff:*].uname = udesc.uname
@@ -634,8 +647,9 @@ function cw_pdmenu_plus, parent, udesc, column = column, row = row, $
 
   cw_pdmenu_plus_build, base, descr, 0l, nbuttons, etype, is_mb, $
                         dhelp, delimiter, ids, isbitmap, $
-                        selector = selector, $
+                        chmenu, selector = selector, $
                         tracking_events = tracking_events, $
+                        use_checked_menus = use_checked_menus, $
                         _extra = _extra
 
   if keyword_set(selector) then begin
