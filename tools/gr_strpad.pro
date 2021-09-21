@@ -6,11 +6,11 @@
 ; (at your option) any later version.                                   
 
 ;+
-; STRPAD
+; GR_STRPAD
 ;	Pad a string to a given length.
 ;
 ; Usage:
-;	lstr = strpad(str, len)
+;	lstr = gr_strpad(str, len)
 ;
 ; Returns:
 ;	The string padded with spaces.
@@ -28,9 +28,10 @@
 ;
 ; History:
 ;	Original: 17/9/21; SJT
+;	Renamed (clash with solarsoft): 21/9/21; SJT
 ;-
 
-function strpad, str, len, at_left = at_left, centred = centred
+function gr_strpad, str, len, at_left = at_left, centred = centred
 
   if size(str, /type) ne 7 then begin
      message, /continue, "Cannot extend a non-string."

@@ -156,7 +156,7 @@
 ;			the CW, then children of the first button will
 ;			be scanned, otherwise direct children of the
 ;			button are scanned).
-;	group	int	Which button group to scan. If not given the 1
+;	group	int	Which button group to scan. If not given then 1
 ;			is used
 ;
 ; Keywords:
@@ -563,7 +563,7 @@ function cw_pdmenu_plus, parent, udesc, column = column, row = row, $
            nchar = max(strlen(descr.label))
            for j = 0, n_elements(descr)-1 do begin
               nlong = 2*nchar - strlen(descr[j].label)
-              descr[j].label = strpad(descr[j].label, nlong, /centre)
+              descr[j].label = gr_strpad(descr[j].label, nlong, /centre)
            endfor
         endif
      endelse

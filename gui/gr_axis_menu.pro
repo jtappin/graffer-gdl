@@ -117,8 +117,8 @@ pro Gr_axis_event, event
                  graff_msg, pdefs.ids.hlptxt, 'Switch axis annotation ' + $
                  'on or off' $
               else if event.select then $
-                 pdefs.xsty.extra = pdefs.xsty.extra or 4 $
-              else pdefs.xsty.extra = pdefs.xsty.extra and (not 4)
+                 pdefs.xsty.extra = pdefs.xsty.extra and (not 4) $
+              else pdefs.xsty.extra = pdefs.xsty.extra or 4
            end
            'Time Labelling': begin
               if track_flag then $
@@ -278,8 +278,8 @@ pro Gr_axis_event, event
                  graff_msg, pdefs.ids.hlptxt, 'Switch axis annotation ' + $
                  'on or off' $
               else if event.select then $
-                 pdefs.ysty.extra = pdefs.ysty.extra or 4 $
-              else pdefs.ysty.extra = pdefs.ysty.extra and (not 4)
+                 pdefs.ysty.extra = pdefs.ysty.extra and (not 4) $
+              else pdefs.ysty.extra = pdefs.ysty.extra or 4
            end
            'Time Labelling': begin
               if track_flag then $
