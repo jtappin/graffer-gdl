@@ -82,6 +82,7 @@
 ;			      4 = Stateful button
 ;			Values may be or'ed. Buttons parented
 ;			to the base or with children may not be stateful.
+;			'flags' will also be recognized for compatibility.
 ;		label - String with the button's label.
 ;		bitmap - byte array or a pointer to one for a bitmap
 ;                        label for a button
@@ -111,10 +112,10 @@
 ;	The event returned may either be a standard tracking event or
 ;	has the structure:
 ;	event = {cw_pdmenu_plus_event_l, id: 0, top:0l, handler: 0l, $
-;		value: 0L, state: 0b}
+;		value: 0L, select: 0b}
 ;	for return types of index or id	or:
 ;	event = {cw_pdmenu_plus_event_s, id: 0, top:0l, handler: 0l, $
-;		value: '', state: 0b}
+;		value: '', select: 0b}
 ;	for return types of name, full_name or uname.	
 ;
 ;	For non-stateful buttons, state is always 0.
@@ -395,7 +396,6 @@ pro cw_pdmenu_plus_build, parent, desc, idx, nbuttons, etype, is_mb, $
            else bvs = bv+' [ ]'
            but = widget_button(parent, $
                                value = bvs, $
-                               menu = menu, $
                                tracking_events = tracking_events, $
                                sensitive = desc[idx].sensitive, $
                                uname = desc[idx].uname, $
@@ -415,13 +415,13 @@ pro cw_pdmenu_plus_build, parent, desc, idx, nbuttons, etype, is_mb, $
         2: begin
            but = widget_button(parent, $
                                value = bv, $
-                               menu = menu, $
                                /checked_menu, $
                                tracking_events = tracking_events, $
                                sensitive = desc[idx].sensitive, $
                                uname = desc[idx].uname, $
 ;                            accel = desc[idx].accelerator, $
                                _extra = _extra)
+           widget_control, but, set_button = desc[idx].state
         end
      endcase
      
@@ -458,9 +458,9 @@ pro cw_pdmenu_plus_build, parent, desc, idx, nbuttons, etype, is_mb, $
      idx++
      if menu ne 0 then $
         cw_pdmenu_plus_build, but, desc, idx, nbuttons, etype, is_mb, $
-                              dhelp, delimiter, ids, isbitmap, chmenu, $
-                              $
-                              tracking_events = tracking_events, $
+                              dhelp, delimiter, ids, isbitmap, $
+                              chmenu, tracking_events = $
+                              tracking_events, $
                               prefix = pfx, selector = selector, $
                               _extra = _extra
      
@@ -500,7 +500,7 @@ function cw_pdmenu_plus, parent, udesc, column = column, row = row, $
   dtags = tag_names(udesc)
   have_fields = [where(dtags eq 'LABEL'), $
                  where(dtags eq 'BITMAP'), $
-                 where(dtags eq 'FLAG'), $
+                 where(dtags eq 'FLAG' or dtags eq 'FLAGS'), $
                  where(dtags eq 'ACCELERATOR'), $
                  where(dtags eq 'HANDLER'), $
                  where(dtags eq 'UNAME'), $
@@ -569,8 +569,14 @@ function cw_pdmenu_plus, parent, udesc, column = column, row = row, $
      endelse
   endif
   
-  if have_fields[2] then descr[ioff:*].flag = udesc.flag 
-
+  if have_fields[2] then begin
+     junk = where(dtags eq 'FLAG', nf)
+     if nf ne 0 then $
+        descr[ioff:*].flag = udesc.flag $
+     else $
+        descr[ioff:*].flag = udesc.flags
+  endif
+  
                                 ; Ensure that the first and last flags
                                 ; are a start and an end
                                 ; respectively. 
@@ -583,11 +589,16 @@ function cw_pdmenu_plus, parent, udesc, column = column, row = row, $
   junk = where((descr.flag and 4b) ne 0, nsb)
   if nsb eq 0 then chmenu = 0b $
   else begin
-     if isbitmap && is_gdl() && ~keyword_set(selector) then begin
-        message, "GDL does not yet support checkable bitmaps.", $
-                 /continue
+     if isbitmap && keyword_set(simulate_check) then begin
+        message, "Simulated check menus and bitmap labels are " + $
+                 "incompatible.", /cont
         return, 0l
      endif
+        
+     if isbitmap && is_gdl() && ~keyword_set(selector) then $
+        message, "GDL does not yet fully support checkable bitmaps.", $
+                 /continue
+                 
      chmenu = ~keyword_set(selector) && ~keyword_set(simulate_check)
   endelse
   
