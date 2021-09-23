@@ -60,10 +60,10 @@
 ;			the box.
 ;	/capture_focus	If set, then the entry box captures the input
 ;			focus when the pointer is moved over it.
-;	/flat		If set, then generate spin buttons without a
-;			"bevel"
 ;	/transparent	If set, then the white surround of the buttons
 ;			is made transparent.
+;	/simple		If set, then use simple text buttons for the
+;			adjustments. (/transparent is ignored).
 ;	/roll		If set, then clicking past the limits rolls
 ;			the value around to the other limit. Requires
 ;			both limits to be set. Does not apply to typed
@@ -126,6 +126,7 @@
 ;	Add transparent and roll keys: 10/10/16; SJT
 ;	Better handling of out-of-range values: 8/11/16; SJT
 ;	Don't return event on focus exit if no changes: 9/11/16; SJT
+;	Add /simple option: 23/9/21; SJT
 ;-
 
 pro cw_spin_box_mk_bitmap, bup, bdown, xextra, $
