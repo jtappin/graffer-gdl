@@ -484,7 +484,7 @@ function Gr_hardopts, pdefs
                          /capture, $
                          min = 0., $
                          step = 0.5, $
-                         /transp)
+                         /simple)
   uvs.xoffid = cw_spin_box(cl, $
                            /double, $
                            /all, $
@@ -497,7 +497,7 @@ function Gr_hardopts, pdefs
                            /capture, $
                            min = 0., $
                            step = 0.5, $
-                           /transp)
+                           /simple)
   uvs.xleftid = cw_enter(cl, $
                          /double, $
                          /display, $
@@ -519,7 +519,7 @@ function Gr_hardopts, pdefs
                          /capture, $
                          min = 0., $
                          step = 0.5, $
-                         /transp)
+                         /simple)
   uvs.yoffid = cw_spin_box(cl, $
                            /double, $
                            /all, $
@@ -532,7 +532,7 @@ function Gr_hardopts, pdefs
                            /capture, $
                            min = 0., $
                            step = 0.5, $
-                           /transp)
+                           /simple)
   uvs.yleftid = cw_enter(cl, $
                          /double, $
                          /display, $

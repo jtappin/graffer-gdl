@@ -192,7 +192,7 @@ function Gr_fit_dset, pdefs
                       xsize = 3, $
                       label = 'Degree:', $
                       /capture, $
-                      /transp, $
+                      /simple, $
                       min = 1, $
                       uvalue = 'DEGREE') 
 
@@ -204,7 +204,7 @@ function Gr_fit_dset, pdefs
                      /capture, $
                      min = 2, $
                      step = 5, $
-                     /transp, $
+                     /simple, $
                      uvalue = 'NPTS')
 
   part = cw_enter(jb, $

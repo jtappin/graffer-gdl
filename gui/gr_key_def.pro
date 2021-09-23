@@ -209,7 +209,7 @@ function Gr_key_def, pdefs
                          format = '(f0.2)', $
                          min = 0., $
                          step = 0.1, $
-                         /trans)
+                         /simple)
 
   if (pdefs.y_right) then begin
      jjjb = widget_base(jjb, $
@@ -231,7 +231,7 @@ function Gr_key_def, pdefs
                         /capture, $
                         min = 1, $
                         max = pdefs.nsets, $
-                        /trans)
+                        /simple)
 
   junk = widget_droplist(jjb, $
                          value = ['2', '1'], $

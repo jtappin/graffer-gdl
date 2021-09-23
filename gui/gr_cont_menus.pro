@@ -254,7 +254,7 @@ pro Gr_cont_menus, sb, pdefs
                                           /capture, $
                                           /all_events, $
                                           min = 0, $
-                                          /trans)
+                                          /simple)
 
   maps = [{label: 'Linear'}, $
           {label: 'Logarithmic'}, $
@@ -377,7 +377,7 @@ pro Gr_cont_menus, sb, pdefs
                                         /column, $
                                         /all_events, $
                                         min = 0, $
-                                        /trans)
+                                        /simple)
 
 
   pdefs.ids.zopts.c_label_off = cw_spin_box(jby, $
@@ -395,7 +395,7 @@ pro Gr_cont_menus, sb, pdefs
                                             max = (zopts.label-1) > 1, $
                                             sensitive = zopts.label gt $
                                             1, $
-                                            /trans)
+                                            /simple)
                                             
 
   pdefs.ids.zopts.c_charsize = cw_spin_box(jby, $
@@ -413,7 +413,7 @@ pro Gr_cont_menus, sb, pdefs
                                            min = 0., $
                                            sensitive = zopts.label ne $
                                            0, $
-                                           /trans)
+                                           /simple)
 
 end
 

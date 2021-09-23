@@ -183,7 +183,7 @@ pro Gr_mk_plmenus, base, pdefs
                                    track = optblock.track, $
                                    /capture, $
                                    minval = 0., $
-                                   /trans)
+                                   /simple)
 
   pdefs.ids.axthick = cw_spin_box(jb, $
                                   /double, $
@@ -197,7 +197,7 @@ pro Gr_mk_plmenus, base, pdefs
                                   /capture, $
                                   step = 1., $
                                   minval = 0.0, $
-                                  /trans)
+                                  /simple)
 
 
   jb = widget_base(tjb, $
