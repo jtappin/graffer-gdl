@@ -159,8 +159,8 @@ pro cw_spin_box_mk_bitmap, bup, bdown, xextra, $
      endelse
      xextra = 0
   endif else begin
-     bdown = cvttobm(down)
-     bup = cvttobm(up)
+     bdown = gr_cvttobm(down)
+     bup = gr_cvttobm(up)
      xextra = 7
   endelse
 end
@@ -532,8 +532,13 @@ function cw_spin_box, parent, row = row, column = column, $
                       tracking_events = tracking_events, $
                       all_events = all_events, xsize = xsize, $
                       capture_focus = capture_focus, flat = flat, $
-                      transparent = transparent, roll = roll
+                      transparent = transparent, $
+                      simple = simple, roll = roll
 
+  if keyword_set(flat) then $
+     message, /continue, $
+              "The FLAT keyword has been removed."
+  
   if ~widget_info(parent, /valid) then return, 0l
 
 ; tt is a place holder to put the correct types into a structure.
@@ -634,7 +639,14 @@ function cw_spin_box, parent, row = row, column = column, $
 ; Now the gui stuff
 
   if ~keyword_set(xsize) then xsize = 8
-  cw_spin_box_mk_bitmap, bup, bdown, xextra, transparent = transparent
+  
+  if ~keyword_set(simple) then $
+     cw_spin_box_mk_bitmap, bup, bdown, xextra, transparent = $
+                            transparent $
+  else begin 
+     bup = '+'
+     bdown = '-'
+  endelse
 
   if keyword_set(column) then base = widget_base(parent, $
                                                  /column) $
@@ -658,24 +670,40 @@ function cw_spin_box, parent, row = row, column = column, $
                               kbrd_focus_events = all_events, $
                               tracking_events = capture_focus)
 
-  sbase = widget_base(ibase, $
-                      /column, $
-                      xpad = 0, $
-                      ypad = 1, $
-                      space = 1)
+  if keyword_set(simple) then begin
+     sbase = widget_base(ibase, $
+                         /row, $
+                         xpad = 0, $
+                         ypad = 1, $
+                         space = 1)
 
+     
+     cstruct.dnid = widget_button(sbase, $
+                                  value = bdown, $
+                                  x_bitmap_extra = xextra, $
+                                  uvalue = 'DOWN')
+     cstruct.upid = widget_button(sbase, $
+                                  value = bup, $
+                                  x_bitmap_extra = xextra, $
+                                  uvalue = 'UP')
+  endif else begin
+     sbase = widget_base(ibase, $
+                         /column, $
+                         xpad = 0, $
+                         ypad = 1, $
+                         space = 1)
+
+     
+     cstruct.upid = widget_button(sbase, $
+                                  value = bup, $
+                                  x_bitmap_extra = xextra, $
+                                  uvalue = 'UP')
+     cstruct.dnid = widget_button(sbase, $
+                                  value = bdown, $
+                                  x_bitmap_extra = xextra, $
+                                  uvalue = 'DOWN')
+  endelse
   
-  cstruct.upid = widget_button(sbase, $
-                               value = bup, $
-                               x_bitmap_extra = xextra, $
-                               uvalue = 'UP') ;, $
-;                               flat = flat)
-  cstruct.dnid = widget_button(sbase, $
-                               value = bdown, $
-                               x_bitmap_extra = xextra, $
-                               uvalue = 'DOWN') ;, $
-;                               flat = flat)
-
   widget_control, cstruct.dnid, sensitive = $
                   cstruct.rolls || ~cstruct.ismin || $
                   cstruct.value gt cstruct.minval
