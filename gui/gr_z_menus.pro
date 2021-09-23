@@ -59,8 +59,9 @@ pro Gr_z_menus, optbb, pdefs
 
   common graffer_options, optblock
 
-  pdefs.ids.plopts[1] = widget_base(optbb, /row, xpad = 0, ypad = 0, $
-                                    space = 0, event_pro = 'gr_z_event')
+  pdefs.ids.plopts[1] = widget_base(optbb, $
+                                    /row, $
+                                    event_pro = 'gr_z_event')
 
 
   jb = widget_base(pdefs.ids.plopts[1], $
@@ -81,4 +82,9 @@ pro Gr_z_menus, optbb, pdefs
   gr_cont_menus, sb, pdefs
   gr_img_menus, sb, pdefs
 
+; This is needed to ensure that the X-Y ds menu doesn't get truncated!
+  
+  for j = 0, 4 do junk = widget_label(jb, $
+                                      value = ' ')
+  
 end

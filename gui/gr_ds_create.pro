@@ -253,9 +253,6 @@ pro Gr_ds_create, base, pdefs
 
   jb = widget_base(base, $
                    /row, $
-                   space = 0, $
-                   xpad = 0, $
-                   ypad = 0, $
                    event_pro = 'gr_dsc_event')
 
 

@@ -262,6 +262,8 @@ pro Gr_ds_menus, optbb, pdefs
                                     title = 'Join:', $
                                     track = optblock.track)
 
+  jjb = widget_base(pdefs.ids.plopts[0], /row)
+
   pdefs.ids.line = widget_droplist(jjb, $
                                    value = ['____',  $
                                             '....', $
@@ -272,6 +274,21 @@ pro Gr_ds_menus, optbb, pdefs
                                    uvalue = 'STYLE', $
                                    title = 'Style:', $
                                    track = optblock.track)
+
+  jjb = widget_base(pdefs.ids.plopts[0], /row)
+  pdefs.ids.thick = cw_spin_box(jjb, $
+                                /double, $
+                                /all_events, $
+                                format = "(f0.1)", $
+                                xsize = 6, $
+                                value = 1., $
+                                uvalue = 'THICK', $
+                                label = 'Thickness:', $
+                                track = optblock.track, $
+                                /capture, $
+                                min = 0., $
+                                step = 1., $
+                                /simple)
 
   jjb = widget_base(pdefs.ids.plopts[0], /row)
 
@@ -304,6 +321,7 @@ pro Gr_ds_menus, optbb, pdefs
   endelse
                                 ; Change symbol size
 
+  jjb = widget_base(pdefs.ids.plopts[0], /row)
   pdefs.ids.symsize = cw_spin_box(jjb, $
                                   /double, $
                                   /all_events, $
@@ -316,22 +334,7 @@ pro Gr_ds_menus, optbb, pdefs
                                   /capture, $
                                   min = 0., $
                                   step = 0.1, $
-                                  /trans)
-
-  jjb = widget_base(pdefs.ids.plopts[0], /row)
-  pdefs.ids.thick = cw_spin_box(jjb, $
-                                /double, $
-                                /all_events, $
-                                format = "(f0.1)", $
-                                xsize = 6, $
-                                value = 1., $
-                                uvalue = 'THICK', $
-                                label = 'Thickness:', $
-                                track = optblock.track, $
-                                /capture, $
-                                min = 0., $
-                                step = 1., $
-                                /trans)
+                                  /simple)
 
 
   jjb = widget_base(pdefs.ids.plopts[0], $
@@ -344,20 +347,7 @@ pro Gr_ds_menus, optbb, pdefs
                                    track = optblock.track, $
                                    title = 'Coords:')
 
-  xtras = [{CW_PDSMENU_S, flag:3, label:'Extras', state:0b}, $
-           {cw_pdsmenu_s, 4, 'Sort X axis', 0b}, $
-           {cw_pdsmenu_s, 4, 'Clip to box', 0b}, $
-           {cw_pdsmenu_s, 6, 'Mouse editing', 0b}]
-
-
-  junk = cw_pdmenu_plus(jjb, $
-                        xtras, $
-                        return_type = 'full_name', $
-                        uvalue = 'XTRA', $
-                        track = optblock.track, $
-                        ids = buts)
-
-  pdefs.ids.dsxtra = buts[1:*]
+  
 
   pdefs.ids.minmaxbase = widget_base(pdefs.ids.plopts[0], $
                                      /column)
@@ -382,4 +372,21 @@ pro Gr_ds_menus, optbb, pdefs
                               /capture, $
                               /empty_nan)
 
+  jjb = widget_base(pdefs.ids.plopts[0], $
+                    /row)
+  xtras = [{CW_PDSMENU_S, flag:3, label:'Extras', state:0b}, $
+           {cw_pdsmenu_s, 4, 'Sort X axis', 0b}, $
+           {cw_pdsmenu_s, 4, 'Clip to box', 0b}, $
+           {cw_pdsmenu_s, 6, 'Mouse editing', 0b}]
+
+
+  junk = cw_pdmenu_plus(jjb, $
+                        xtras, $
+                        return_type = 'full_name', $
+                        uvalue = 'XTRA', $
+                        track = optblock.track, $
+                        ids = buts)
+
+  pdefs.ids.dsxtra = buts[1:*]
+  
 end

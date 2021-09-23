@@ -34,24 +34,18 @@
 pro gr_curr_menu, base, pdefs
 
 jb = widget_base(base, $
-                 /column, $
-                 xpad = 0, $
-                 ypad = 0, $
-                 space = 0)
-
-optbb = widget_base(jb, $
-                    /frame, $
-                    xpad = 0, $
-                    ypad = 0, $
-                    space = 0)
-
-                                ; Plotting symbols etc.
-
-gr_ds_menus, optbb, pdefs
-gr_z_menus, optbb, pdefs
+                 /column)
 
                                 ; Plot a function or read data
 
 gr_ds_create, jb, pdefs
+                                ; Plotting symbols etc.
+
+optbb = widget_base(jb, $
+                    /frame)
+
+gr_ds_menus, optbb, pdefs
+gr_z_menus, optbb, pdefs
+
 
 end
