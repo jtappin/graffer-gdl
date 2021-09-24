@@ -93,9 +93,6 @@ function Graff_pfunct, pdefs
      numpts = (*pdefs.data)[pdefs.cset].ndata
      dflag = 0b
   endif else begin
-     funct = strarr(2)
-     range = dindgen(2)
-     numpts = 25
      dflag = (*pdefs.data)[pdefs.cset].ndata gt 0
      if dflag then $
         if dialog_message(['CURRENT DATA SET IS NOT A PARAMETRIC', $
@@ -104,6 +101,10 @@ function Graff_pfunct, pdefs
                            'DO YOU REALLY WANT TO DO THIS?'], $ $
                           /question, dialog_parent = pdefs.ids.graffer, $
                           resource = 'Graffer') eq 'No' then return, 0
+
+     funct = strarr(2)
+     range = dindgen(2)
+     numpts = 25
   endelse
 
   widget_control, pdefs.ids.graffer, sensitive = 0

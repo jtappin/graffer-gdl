@@ -657,7 +657,8 @@ function cw_spin_box, parent, row = row, column = column, $
                                                  value = label)
 
   ibase = widget_base(base, $
-                      /row)
+                      /row, $
+                      /base_align_center)
 
   cstruct.boxid = widget_text(ibase, $
                               xsize = xsize, $

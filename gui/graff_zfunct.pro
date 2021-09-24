@@ -94,10 +94,7 @@ function Graff_zfunct, pdefs
                (*pdefs.data)[pdefs.cset].ndata2]  
      dflag = 0b
   endif else begin
-     funct = ''
-     range = dblarr(2, 2)
-     numpts = [25, 25]
-     dflag = ((*pdefs.data)[pdefs.cset].ndata(0) gt 0)
+     dflag = (*pdefs.data)[pdefs.cset].ndata gt 0
      if dflag then $
         if dialog_message(['CURRENT DATA SET IS NOT A 2-D', $
                            'FUNCTION, ENTERING A 2-D FUNCTION', $
@@ -106,6 +103,10 @@ function Graff_zfunct, pdefs
                           /question, dialog_parent = pdefs.ids.graffer, $
                           resource = 'Graffer') eq $
         'No' then return, 0
+
+     funct = ''
+     range = dblarr(2, 2)
+     numpts = [25, 25]
   endelse
 
   widget_control, pdefs.ids.graffer, sensitive = 0

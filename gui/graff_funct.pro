@@ -94,10 +94,7 @@ function Graff_funct, pdefs, y_funct = y_funct
      numpts = (*pdefs.data)[pdefs.cset].ndata
      dflag = 0b
   endif else begin
-     funct = ''
-     range = dblarr(2)
-     numpts = 25
-     dflag = ((*pdefs.data)[pdefs.cset].ndata gt 0)
+     dflag = (*pdefs.data)[pdefs.cset].ndata gt 0
      if (dflag) then $
         if dialog_message(['CURRENT DATA SET IS NOT A SIMPLE', $
                            'FUNCTION, ENTERING A SIMPLE FUNCTION', $
@@ -105,7 +102,11 @@ function Graff_funct, pdefs, y_funct = y_funct
                            'DO YOU REALLY WANT TO DO THIS?'], $ $
                           /question, dialog_parent = pdefs.ids.graffer, $
                           resource = 'Graffer') eq 'No' then return, 0
-  endelse
+     
+     funct = ''
+     range = dblarr(2)
+     numpts = 25
+ endelse
 
   widget_control, pdefs.ids.graffer, sensitive = 0
 
