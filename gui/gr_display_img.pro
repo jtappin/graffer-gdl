@@ -163,10 +163,10 @@ pro Gr_display_img, zin, xin, yin, range = range, $
                   [mnx, mny, mxx, mxy],  missing = missing)
 
   endif else begin
-     x = xin(locsx)
-     y = yin(locsy)
-     z = ztmp(locsx, *)
-     z = z(*, locsy)
+     x = xin[locsx]
+     y = yin[locsy]
+     z = ztmp[locsx, *]
+     z = z[*, locsy]
      gr_coord_convert, (dindgen(dvxsize)+xcorn[0]) / scfac[0], $
                        dblarr(dvxsize), xd, junk, /device, /to_data
 
@@ -175,12 +175,12 @@ pro Gr_display_img, zin, xin, yin, range = range, $
                        junk, yd, /device, /to_data
 
      sz = size(z)
-     xx = interpol(dindgen(sz(1)), x, xd)
-     yy = interpol(dindgen(sz(2)), y, yd)
+     xx = interpol(dindgen(sz[1]), x, xd)
+     yy = interpol(dindgen(sz[2]), y, yd)
      zz = bilinear(z, xx, yy)
   endelse
 
-  if n_elements(range) eq 0 || (range(0) eq range(1)) then begin
+  if n_elements(range) eq 0 || (range[0] eq range[1]) then begin
      zrange = [min(zz, max = mxz, /nan), mxz] 
   endif else begin
      case mode of
@@ -194,12 +194,8 @@ pro Gr_display_img, zin, xin, yin, range = range, $
      endcase
   endelse
 
-  locs = where(finite(zz) eq 0, nnan)
-
-  img = bytscl(zz, min = zrange(0), max = zrange(1))
+  img = bytscl(zz, min = zrange[0], max = zrange[1])
   if keyword_set(inverted) then img =  255b-img
-
-;if (nnan gt 0) then img[locs] = 0b
 
   if keyword_set(ps_grey) then $
      tv, img, cmxll, cmyll, xsize = cmxsize, ysize = cmysize, /centi $
