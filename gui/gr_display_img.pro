@@ -175,8 +175,8 @@ pro Gr_display_img, zin, xin, yin, range = range, $
                        junk, yd, /device, /to_data
 
      sz = size(z)
-     xx = interpol(dindgen(sz[1]), x, xd)
-     yy = interpol(dindgen(sz[2]), y, yd)
+     xx = gr_interpol_ss(dindgen(sz[1]), x, xd)
+     yy = gr_interpol_ss(dindgen(sz[2]), y, yd)
      zz = bilinear(z, xx, yy)
   endelse
 
