@@ -61,7 +61,7 @@ pro Gr_1dd_plot, pdefs, i, csiz
 
   if (data.psym ne 0) then begin
      if (data.psym ge 8) then gr_symdef, data.psym, thick = data.thick
-     oplot, xydata(0, 0:data.ndata-1), xydata(1, *)*pcf, color = $
+     oplot, xydata[0, 0:data.ndata-1], xydata[1, *]*pcf, color = $
             lcolour, psym = data.psym < 8, thick = $
             data.thick, $
             symsize = abs(data.symsize)*csiz, $
@@ -76,8 +76,8 @@ pro Gr_1dd_plot, pdefs, i, csiz
         0:                      ;No error bars = no action
         
         1: begin                ; Y
-           gr_err_y, xydata(0, 0:data.ndata-1), $
-                     xydata(1, *), xydata(2, *), $
+           gr_err_y, xydata[0, 0:data.ndata-1], $
+                     xydata[1, *], xydata[2, *], $
                      width = data.symsize*csiz*0.01 > 0, color = $
                      lcolour, thick = $
                      data.thick, noclip = data.noclip, $
@@ -85,17 +85,17 @@ pro Gr_1dd_plot, pdefs, i, csiz
         end
         
         2: begin                ; YY
-           gr_err_y, xydata(0, 0:data.ndata-1), $
-                     xydata(1, *), xydata(2, *), $
-                     xydata(3, *), width = data.symsize*0.01 > $
+           gr_err_y, xydata[0, 0:data.ndata-1], $
+                     xydata[1, *], xydata[2, *], $
+                     xydata[3, *], width = data.symsize*0.01 > $
                      0, color = lcolour, thick = $
                      data.thick, noclip = data.noclip, $
                      min_value = minv, max_value = maxv 
         end                    
         
         3: begin                ; X
-           gr_err_x, xydata(0, 0:data.ndata-1), $
-                     xydata(1, *), xydata(2, *), $
+           gr_err_x, xydata[0, 0:data.ndata-1], $
+                     xydata[1, *], xydata[2, *], $
                      width = data.symsize*0.01 > 0, color = $
                      lcolour, thick = $
                      data.thick, noclip = data.noclip, $
@@ -103,23 +103,23 @@ pro Gr_1dd_plot, pdefs, i, csiz
         end
         
         4: begin                ; XX
-           gr_err_x, xydata(0, 0:data.ndata-1), $
-                     xydata(1, *), xydata(2, *), $
-                     xydata(3, *), width = data.symsize*0.01 > $
+           gr_err_x, xydata[0, 0:data.ndata-1], $
+                     xydata[1, *], xydata[2, *], $
+                     xydata[3, *], width = data.symsize*0.01 > $
                      0, color = lcolour, thick = $
                      data.thick, noclip = data.noclip, $
                      min_value = minv, max_value = maxv
         end                    
         
         5: begin                ; XY
-           gr_err_x, xydata(0, 0:data.ndata-1), $
-                     xydata(1, *), xydata(2, *), $
+           gr_err_x, xydata[0, 0:data.ndata-1], $
+                     xydata[1, *], xydata[2, *], $
                      width = data.symsize*0.01 > 0, color = $
                      lcolour, thick = $
                      data.thick, noclip = data.noclip, $
                      min_value = minv, max_value = maxvp 
-           gr_err_y, xydata(0, 0:data.ndata-1), $
-                     xydata(1, *), xydata(3, *), $
+           gr_err_y, xydata[0, 0:data.ndata-1], $
+                     xydata[1, *], xydata[3, *], $
                      width = data.symsize*0.01 > 0, color = $
                      lcolour, thick = $
                      data.thick, noclip = data.noclip, $
@@ -127,14 +127,14 @@ pro Gr_1dd_plot, pdefs, i, csiz
         end
         
         6: begin                ; XYY
-           gr_err_y, xydata(0, 0:data.ndata-1), $
-                     xydata(1, *), xydata(3, *), xydata(4, *), $
+           gr_err_y, xydata[0, 0:data.ndata-1], $
+                     xydata[1, *], xydata[3, *], xydata[4, *], $
                      width = data.symsize*0.01 > 0, color = $
                      lcolour, thick = $
                      data.thick, noclip = data.noclip, $
                      min_value = minv, max_value = maxv 
-           gr_err_x, xydata(0, 0:data.ndata-1), $
-                     xydata(1, *), xydata(2, *), $
+           gr_err_x, xydata[0, 0:data.ndata-1], $
+                     xydata[1, *], xydata[2, *], $
                      width = data.symsize*0.01 > 0, color = $
                      lcolour, thick = $
                      data.thick, noclip = data.noclip, $
@@ -142,27 +142,27 @@ pro Gr_1dd_plot, pdefs, i, csiz
         end
         
         7: begin                ; XXY
-           gr_err_y, xydata(0, 0:data.ndata-1), $
-                     xydata(1, *), xydata(4, *), $
+           gr_err_y, xydata[0, 0:data.ndata-1], $
+                     xydata[1, *], xydata[4, *], $
                      width = data.symsize*0.01 > 0, color = $
                      lcolour, thick = $
                      data.thick, noclip = data.noclip 
-           gr_err_x, xydata(0, 0:data.ndata-1), $
-                     xydata(1, *), xydata(2, *), xydata(3, *), $
+           gr_err_x, xydata[0, 0:data.ndata-1], $
+                     xydata[1, *], xydata[2, *], xydata[3, *], $
                      width = data.symsize*0.01 > 0, color = $
                      lcolour, thick = $
                      data.thick, noclip = data.noclip 
         end
         
         8: begin                ; XXYY
-           gr_err_x, xydata(0, 0:data.ndata-1), $
-                     xydata(1, *), xydata(2, *), xydata(3, *), $
+           gr_err_x, xydata[0, 0:data.ndata-1], $
+                     xydata[1, *], xydata[2, *], xydata[3, *], $
                      width = data.symsize*0.01 > 0, color = $
                      lcolour, thick = $
                      data.thick, noclip = data.noclip, $
                      min_value = minv, max_value = maxv 
-           gr_err_y, xydata(0, 0:data.ndata-1), $
-                     xydata(1, *), xydata(4, *), xydata(5, *), $
+           gr_err_y, xydata[0, 0:data.ndata-1], $
+                     xydata[1, *], xydata[4, *], xydata[5, *], $
                      width = data.symsize*0.01 > 0, color = $
                      lcolour, thick = $
                      data.thick, noclip = data.noclip, $
@@ -174,84 +174,84 @@ pro Gr_1dd_plot, pdefs, i, csiz
         0:                      ;No error bars = no action
         
         1: begin                ; Y
-           gr_err_th, xydata(0, 0:data.ndata-1), $
-                      xydata(1, *), xydata(2, *), $
+           gr_err_th, xydata[0, 0:data.ndata-1], $
+                      xydata[1, *], xydata[2, *], $
                       width = data.symsize*0.01 > 0, color = $
                       lcolour, thick = $
                       data.thick, mode = data.mode, noclip = data.noclip
         end
         
         2: begin                ; YY
-           gr_err_th, xydata(0, 0:data.ndata-1), $
-                      xydata(1, *), xydata(2, *), $
-                      xydata(3, *), width = data.symsize*0.01 > $
+           gr_err_th, xydata[0, 0:data.ndata-1], $
+                      xydata[1, *], xydata[2, *], $
+                      xydata[3, *], width = data.symsize*0.01 > $
                       0, color = lcolour, thick = $
                       data.thick, mode = data.mode, noclip = data.noclip 
         end                    
         
         3: begin                ; X
-           gr_err_r, xydata(0, 0:data.ndata-1), $
-                     xydata(1, *), xydata(2, *), $
+           gr_err_r, xydata[0, 0:data.ndata-1], $
+                     xydata[1, *], xydata[2, *], $
                      width = data.symsize*2.0 > 0, color = $
                      lcolour, thick = $
                      data.thick, mode = data.mode, noclip = data.noclip
         end
         
         4: begin                ; XX
-           gr_err_r, xydata(0, 0:data.ndata-1), $
-                     xydata(1, *), xydata(2, *), $
-                     xydata(3, *), width = data.symsize*2.0 > $
+           gr_err_r, xydata[0, 0:data.ndata-1], $
+                     xydata[1, *], xydata[2, *], $
+                     xydata[3, *], width = data.symsize*2.0 > $
                      0, color = lcolour, thick = $
                      data.thick, mode = data.mode, noclip = data.noclip
         end                    
         
         5: begin                ; XY
-           gr_err_r, xydata(0, 0:data.ndata-1), $
-                     xydata(1, *), xydata(2, *), $
+           gr_err_r, xydata[0, 0:data.ndata-1], $
+                     xydata[1, *], xydata[2, *], $
                      width = data.symsize*2.0 > 0, color = $
                      lcolour, thick = $
                      data.thick, mode = data.mode, noclip = data.noclip
-           gr_err_th, xydata(0, 0:data.ndata-1), $
-                      xydata(1, *), xydata(3, *), $
+           gr_err_th, xydata[0, 0:data.ndata-1], $
+                      xydata[1, *], xydata[3, *], $
                       width = data.symsize*0.01 > 0, color = $
                       lcolour, thick = $
                       data.thick, mode = data.mode, noclip = data.noclip
         end
         
         6: begin                ; XYY
-           gr_err_th, xydata(0, 0:data.ndata-1), $
-                      xydata(1, *), xydata(3, *), xydata(4, *), $
+           gr_err_th, xydata[0, 0:data.ndata-1], $
+                      xydata[1, *], xydata[3, *], xydata[4, *], $
                       width = data.symsize*0.01 > 0, color = $
                       lcolour, thick = $
                       data.thick, mode = data.mode, noclip = data.noclip
-           gr_err_r, xydata(0, 0:data.ndata-1), $
-                     xydata(1, *), xydata(2, *), $
+           gr_err_r, xydata[0, 0:data.ndata-1], $
+                     xydata[1, *], xydata[2, *], $
                      width = data.symsize*2.0 > 0, color = $
                      lcolour, thick = $
                      data.thick, mode = data.mode, noclip = data.noclip
         end
         
         7: begin                ; XXY
-           gr_err_th, xydata(0, 0:data.ndata-1), $
-                      xydata(1, *), xydata(4, *), $
+           gr_err_th, xydata[0, 0:data.ndata-1], $
+                      xydata[1, *], xydata[4, *], $
                       width = data.symsize*0.01 > 0, color = $
                       lcolour, thick = $
                       data.thick, mode = data.mode, noclip = data.noclip
-           gr_err_r, xydata(0, 0:data.ndata-1), $
-                     xydata(1, *), xydata(2, *), xydata(3, *), $
+           gr_err_r, xydata[0, 0:data.ndata-1], $
+                     xydata[1, *], xydata[2, *], xydata[3, *], $
                      width = data.symsize*2.0 > 0, color = $
                      lcolour, thick = $
                      data.thick, mode = data.mode, noclip = data.noclip
         end
         
         8: begin                ; XXYY
-           gr_err_r, xydata(0, 0:data.ndata-1), $
-                     xydata(1, *), xydata(2, *), xydata(3, *), $
+           gr_err_r, xydata[0, 0:data.ndata-1], $
+                     xydata[1, *], xydata[2, *], xydata[3, *], $
                      width = data.symsize*2.0 > 0, color = $
                      lcolour, thick = $
                      data.thick, mode = data.mode, noclip = data.noclip
-           gr_err_th, xydata(0, 0:data.ndata-1), $
-                      xydata(1, *), xydata(4, *), xydata(5, *), $
+           gr_err_th, xydata[0, 0:data.ndata-1], $
+                      xydata[1, *], xydata[4, *], xydata[5, *], $
                       width = data.symsize*0.01 > 0, color = $
                       lcolour, thick = $
                       data.thick, mode = data.mode, noclip = data.noclip

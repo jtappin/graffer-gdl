@@ -84,17 +84,17 @@ pro Gr_1df_plot, pdefs, i, csiz
      end
   endcase
 
-  if (xydata.range(0) ne xydata.range(1)) then begin
+  if (xydata.range[0] ne xydata.range[1]) then begin
      if (exceed) then begin 
-        amin = xydata.range(0)
-        amax = xydata.range(1)
+        amin = xydata.range[0]
+        amax = xydata.range[1]
      endif else begin
-        amin = arange(0) > xydata.range(0)
-        amax = arange(1) < xydata.range(1)
+        amin = arange[0] > xydata.range[0]
+        amax = arange[1] < xydata.range[1]
      endelse
   endif else begin
-     amin = arange(0)
-     amax = arange(1)
+     amin = arange[0]
+     amax = arange[1]
   endelse
 
   if (atype) then begin
@@ -127,8 +127,8 @@ pro Gr_1df_plot, pdefs, i, csiz
         y = 0.                  ; Must make y defined before using it
                                 ; in an execute
 
-        iexe = execute('x = '+xydata.funct(0))
-        iexe = execute('y = '+xydata.funct(1))
+        iexe = execute('x = '+xydata.funct[0])
+        iexe = execute('y = '+xydata.funct[1])
         s = size(y, /n_dimensions) < size(x, /n_dimensions)
      end
   endcase

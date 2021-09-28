@@ -149,15 +149,8 @@ pro cw_spin_box_mk_bitmap, bup, bdown, xextra, $
         bdown[*, *, j] = not down
         bup[*, *, j] = not up
      endfor
-     if is_gdl() then begin     ; For some reason bitmaps with
-                                ; transparency aren't handled
-                                ; quite right yet.
-        bdown[*, *, 3] = up
-        bup[*, *, 3] = down
-     endif else begin
-        bdown[*, *, 3] = down
-        bup[*, *, 3] = up
-     endelse
+     bdown[*, *, 3] = down
+     bup[*, *, 3] = up
      xextra = 0
   endif else begin
      bdown = gr_cvttobm(down)

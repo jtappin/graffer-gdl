@@ -55,18 +55,18 @@ pro Gr_2df_plot, pdefs, i, csiz, grey_ps = grey_ps, shaded = shaded
 
   xydata = *data.xydata
 
-  xmin = xrange(0)
-  xmax = xrange(1)
-  ymin = yrange(0)
-  ymax = yrange(1)
-  if (xydata.range(0, 0) ne xydata.range(1, 0)) then begin
-     xmin = xmin > xydata.range(0, 0)
-     xmax = xmax < xydata.range(1, 0)
+  xmin = xrange[0]
+  xmax = xrange[1]
+  ymin = yrange[0]
+  ymax = yrange[1]
+  if (xydata.range[0, 0] ne xydata.range[1, 0]) then begin
+     xmin = xmin > xydata.range[0, 0]
+     xmax = xmax < xydata.range[1, 0]
   endif
 
-  if (xydata.range(0, 1) ne xydata.range(1, 1)) then begin
-     ymin = ymin > xydata.range(0, 1)
-     ymax = ymax < xydata.range(1, 1)
+  if (xydata.range[0, 1] ne xydata.range[1, 1]) then begin
+     ymin = ymin > xydata.range[0, 1]
+     ymax = ymax < xydata.range[1, 1]
   endif
 
   if (pdefs.xtype) then begin
@@ -98,7 +98,7 @@ pro Gr_2df_plot, pdefs, i, csiz, grey_ps = grey_ps, shaded = shaded
   iexe = execute('z = '+xydata.funct)
   s = size(z)
 
-  if (s(0) ne 2) then graff_msg, pdefs.ids.message, $
+  if (s[0] ne 2) then graff_msg, pdefs.ids.message, $
                                  "Function:"+xydata.funct+ $
                                  " does not return a 2-D array" $
   else if (data.zopts.format eq 0) then begin
