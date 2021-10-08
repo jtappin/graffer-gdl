@@ -46,6 +46,8 @@ pro graff_get_rec, ilu, tag, value, tcode, ndims = ndims, dims = $
      readu, ilu, dims
   endif else dims = 1
 
+  if min(dims) eq 0 then return ; No actual values.
+  
   if tcode ne 11 then begin
      value = make_array(dims, type = tcode)
      if arg_present(nvals) then nvals = n_elements(value)
