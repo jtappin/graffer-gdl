@@ -63,9 +63,9 @@ if ~keyword_set(dimension) or sx[0] le 1 then begin
     if n eq 0 then return, replicate(x[i[0]], n_elements(frac))
     if n eq -1 then return, replicate(!values.f_nan, n_elements(frac))
 
-    f0 = floor(frac*n)
+    f0 = floor(frac*n) < (n-1)
     w1 = frac*n - f0
-    f1 = floor(frac*n+1)
+    f1 = floor(frac*n+1) < n
     w0 = f1 - frac*n
     rv = x[i[f0]]*w0 + x[i[f1]]*w1
     locs = where(w1 eq 0, nh)
