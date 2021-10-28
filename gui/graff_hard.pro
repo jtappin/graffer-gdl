@@ -91,8 +91,8 @@ function Graff_hard, pdefs, no_set = no_set, redraw = redraw, $
         0: file = file+'.ps'
         else: file = file+'.pdf'
      endcase
-     pdefs.hardset.name = pdefs.dir+file
-  endif
+     hardname = pdefs.dir+file
+  endif else hardname = pdefs.hardset.name
 
   h = pdefs.hardset
 
@@ -114,11 +114,11 @@ function Graff_hard, pdefs, no_set = no_set, redraw = redraw, $
 
   case h.eps of
      0: begin
-        psname = h.name
+        psname = hardname
         ieps = 0
      end
      1: begin
-        psname = h.name
+        psname = hardname
         ieps = 1
      end
      2: begin
@@ -134,7 +134,7 @@ function Graff_hard, pdefs, no_set = no_set, redraw = redraw, $
   endcase
   device, file = psname,  encapsu = ieps, bits = bits, color = $
           h.colour
-  if (h.colour) then begin
+  if h.colour && ~is_gdl() then begin
      device, cmyk = h.cmyk
   endif
   device, /decomp
@@ -155,7 +155,7 @@ function Graff_hard, pdefs, no_set = no_set, redraw = redraw, $
   bold = h.font.wg_sl and 1
   ital = (h.font.wg_sl and 2)/2
 
-  case h.font.family of
+  if ~is_gdl() then case h.font.family of
      0: device, /courier, bold = bold, oblique = ital
      1: device, /helvetica, bold = bold, oblique = ital
      2: device, /helvetica, /narrow, bold = bold, oblique = ital
@@ -190,24 +190,24 @@ function Graff_hard, pdefs, no_set = no_set, redraw = redraw, $
   case h.eps of
      1: begin
         if h.viewer[0] ne '' && ~keyword_set(no_spawn) then $
-           spawn, h.viewer[0]+' '+h.name+' '+h.viewer[1]
-        graff_msg, pdefs.ids.message, 'Output file is: '+h.name
+           spawn, h.viewer[0]+' '+hardname+' '+h.viewer[1]
+        graff_msg, pdefs.ids.message, 'Output file is: '+hardname
      end
      0: begin
         if h.action[0] ne '' && ~keyword_set(no_spawn) then begin
-           spawn, h.action[0]+' '+h.name+' '+h.action[1], cmdout
+           spawn, h.action[0]+' '+hardname+' '+h.action[1], cmdout
            graff_msg, pdefs.ids.message, cmdout
         endif else $
-           graff_msg, pdefs.ids.message, 'Output file is: '+h.name
+           graff_msg, pdefs.ids.message, 'Output file is: '+hardname
      end
      2: begin
         if h.psize then pssz = ' -sPAPERSIZE=a4 ' $
         else pssz = ' -sPAPERSIZE=letter '
         spawn, 'gs -q -dBATCH -dNOPAUSE -sDEVICE=pdfwrite '+ $
-               '-sOutputFile='+h.name+pssz+psname
+               '-sOutputFile='+hardname+pssz+psname
         if h.pdfviewer[0] ne '' && ~keyword_set(no_spawn) then $
-           spawn, h.pdfviewer[0]+' '+h.name+' '+h.pdfviewer[1]
-        graff_msg, pdefs.ids.message, 'Output file is: '+h.name
+           spawn, h.pdfviewer[0]+' '+hardname+' '+h.pdfviewer[1]
+        graff_msg, pdefs.ids.message, 'Output file is: '+hardname
         file_delete, psname
      end
      3: begin
@@ -217,10 +217,10 @@ function Graff_hard, pdefs, no_set = no_set, redraw = redraw, $
                        "(' -dDEVICEWIDTHPOINTS=',i0,"+ $
                        "' -dDEVICEHEIGHTPOINTS=',i0,' ')")
         spawn, 'gs -q -dBATCH -dNOPAUSE -sDEVICE=pdfwrite '+ $
-               '-sOutputFile='+h.name+pssz+psname
+               '-sOutputFile='+hardname+pssz+psname
         if h.pdfviewer[0] ne '' && ~keyword_set(no_spawn) then $
-           spawn, h.pdfviewer[0]+' '+h.name+' '+h.pdfviewer[1]
-        graff_msg, pdefs.ids.message, 'Output file is: '+h.name
+           spawn, h.pdfviewer[0]+' '+hardname+' '+h.pdfviewer[1]
+        graff_msg, pdefs.ids.message, 'Output file is: '+hardname
         file_delete, psname
      end
   endcase
