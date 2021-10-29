@@ -292,6 +292,10 @@ function Hopts_event, event
                                dialog_parent = event.top, $
                                filter = filt)
         if file ne '' then begin
+           dname = file_dirname(file)
+           cd, current = cdir
+           if cd eq dname then file = file_basename(file)
+           
            widget_control, settings.fileid, set_value = file
            widget_control, settings.cmid[1], set_value = $
                            'LABEL:'+file_basename(file)
