@@ -91,9 +91,21 @@ function Graff_hard, pdefs, no_set = no_set, redraw = redraw, $
         0: file = file+'.ps'
         else: file = file+'.pdf'
      endcase
+          
      hardname = pdefs.dir+file
-  endif else hardname = pdefs.hardset.name
-
+  endif else begin
+     file = pdefs.hardset.name
+     if strpos(file, path_sep()) ge 0 then begin
+        dd = file_dirname(file)
+        if file_test(dd, /direct) then hardname = file $
+        else begin
+           file = file_basename(file)
+           hardname = pdefs.dir+file
+           pdefs.hardset.name = file
+        endelse
+     endif else hardname =  pdefs.dir+file
+  endelse
+  
   h = pdefs.hardset
 
   cpl = double(!D.x_size)/double(!D.x_ch_size)
