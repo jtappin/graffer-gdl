@@ -199,15 +199,19 @@ function Graff_hard, pdefs, no_set = no_set, redraw = redraw, $
 
   set_plot, dev
 
+  if strpos(hardname, ' ') ne -1 then $
+     chardname = "'"+hardname+"'" $
+  else chardname = hardname
+
   case h.eps of
      1: begin
         if h.viewer[0] ne '' && ~keyword_set(no_spawn) then $
-           spawn, h.viewer[0]+' '+hardname+' '+h.viewer[1]
+           spawn, h.viewer[0]+' '+chardname+' '+h.viewer[1]
         graff_msg, pdefs.ids.message, 'Output file is: '+hardname
      end
      0: begin
         if h.action[0] ne '' && ~keyword_set(no_spawn) then begin
-           spawn, h.action[0]+' '+hardname+' '+h.action[1], cmdout
+           spawn, h.action[0]+' '+chardname+' '+h.action[1], cmdout
            graff_msg, pdefs.ids.message, cmdout
         endif else $
            graff_msg, pdefs.ids.message, 'Output file is: '+hardname
@@ -216,9 +220,10 @@ function Graff_hard, pdefs, no_set = no_set, redraw = redraw, $
         if h.psize then pssz = ' -sPAPERSIZE=a4 ' $
         else pssz = ' -sPAPERSIZE=letter '
         spawn, 'gs -q -dBATCH -dNOPAUSE -sDEVICE=pdfwrite '+ $
-               '-sOutputFile='+hardname+pssz+psname
+               '-sOutputFile='+chardname+ $
+               pssz+psname
         if h.pdfviewer[0] ne '' && ~keyword_set(no_spawn) then $
-           spawn, h.pdfviewer[0]+' '+hardname+' '+h.pdfviewer[1]
+           spawn, h.pdfviewer[0]+' '+chardname+' '+h.pdfviewer[1]
         graff_msg, pdefs.ids.message, 'Output file is: '+hardname
         file_delete, psname
      end
@@ -229,9 +234,10 @@ function Graff_hard, pdefs, no_set = no_set, redraw = redraw, $
                        "(' -dDEVICEWIDTHPOINTS=',i0,"+ $
                        "' -dDEVICEHEIGHTPOINTS=',i0,' ')")
         spawn, 'gs -q -dBATCH -dNOPAUSE -sDEVICE=pdfwrite '+ $
-               '-sOutputFile='+hardname+pssz+psname
+               '-sOutputFile='+chardname+ $
+               pssz+psname
         if h.pdfviewer[0] ne '' && ~keyword_set(no_spawn) then $
-           spawn, h.pdfviewer[0]+' '+hardname+' '+h.pdfviewer[1]
+           spawn, h.pdfviewer[0]+' '+chardname+' '+h.pdfviewer[1]
         graff_msg, pdefs.ids.message, 'Output file is: '+hardname
         file_delete, psname
      end
