@@ -81,8 +81,9 @@ pro gr_pl_axes, pdefs, csiz, overlay = overlay, secondary = secondary
      ytickst = 0
   endelse
 
-  isotropic = pdefs.isotropic and ~pdefs.y_right
-  mflag = pdefs.match and !d.name ne 'PS'
+  isotropic = pdefs.isotropic && ~pdefs.y_right
+  mflag = pdefs.match && !d.name ne 'PS' && $
+     widget_info(pdefs.ids.draw, /valid)
 
   if mflag then begin
      hs = pdefs.hardset.size
