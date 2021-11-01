@@ -47,7 +47,7 @@ function Graff_get, pdefs, f, no_set = no_set, recover = recover, $
 ;	Handle TT font option: 12/2/20; SJT
 ;-
 
-if (n_params() eq 1) then begin
+if n_params() eq 1 then begin
     if file_test(pdefs.dir, /directory) then path = pdefs.dir $
     else cd, current = path
     if (widget_info(pdefs.ids.graffer, /valid)) then widget_control, $
@@ -63,7 +63,7 @@ if (n_params() eq 1) then begin
     
     if (widget_info(pdefs.ids.graffer, /valid)) then widget_control, $
       pdefs.ids.graffer, sensitive = 1
-    if (f eq '') then return, 0
+    if f eq '' then return, 0
 endif
 
 
@@ -78,7 +78,7 @@ recname = dir+'#'+f+'#'
 fname = dir+f
 irecf = file_test(recname)
 
-if (irecf and ~keyword_set(recover)) then begin
+if irecf && ~keyword_set(recover) then begin
     finfo = file_info(fname)
     rinfo = file_info(recname)
     if rinfo.mtime gt finfo.mtime then begin
@@ -97,7 +97,7 @@ if (irecf and ~keyword_set(recover)) then begin
             'No': icont = 0
         endcase
     endif else icont = 0
-endif else if (~irecf and keyword_set(recover)) then begin
+endif else if ~irecf && keyword_set(recover) then begin
     msg = ['No autosave file found', $
            'Cannot do /RECOVER', $
            'Open the original file?']
@@ -114,24 +114,24 @@ endif else icont = keyword_set(recover)
 case icont of
     0: ilu = graff_open(fname, fvers, ascii)
     1: begin
-        if (not keyword_set(no_warn)) then  $
+        if ~keyword_set(no_warn) then  $
           graff_msg, pdefs.ids.message, 'Opening autosave file'
         ilu = graff_open(recname, fvers, ascii)
     end
     -1: begin
-        if (not keyword_set(no_warn)) then  $
+        if ~keyword_set(no_warn) then  $
           graff_msg, pdefs.ids.message, ['Failed to open file: '+dir+f, $
                                          'User specified cancel']
         return, 0
     end
 endcase
 
-if (ilu eq 0) then begin
+if ilu eq 0 then begin
     graff_msg, pdefs.ids.message, 'Failed to open file: '+dir+f
     return, 0
 endif
 
-if (not pdefs.chflag) then gr_auto_delete, pdefs
+if ~pdefs.chflag then gr_auto_delete, pdefs
 graff_init, pdefs
 pdefs.name = f
 pdefs.dir = gr_get_full_dir(dir)
@@ -149,7 +149,7 @@ endelse
 if pdefs.fontopt eq 1 then !p.font = 1 $
 else !p.font = -1
 
-if icont eq -1 or fvers[0] eq 1 then graff_save, pdefs
+if icont eq -1 || fvers[0] eq 1 then graff_save, pdefs
 
 return, 1
 

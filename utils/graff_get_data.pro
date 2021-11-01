@@ -39,8 +39,6 @@ pro graff_get_data, file, idx, name = name, $
      return
   endif
 
-  gr_state, /save
-
 ;	Open the file
 
 @graff_version
@@ -122,6 +120,5 @@ pro graff_get_data, file, idx, name = name, $
   endelse
 
   graff_clear, pdefs
-  gr_state
 
 end

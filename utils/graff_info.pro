@@ -179,8 +179,6 @@ pro Graff_info, file, nsets = nsets,  title = title, $
 
   if (n_params() ne 1) then message, "Must specify a GRAFFER file"
 
-;  gr_state, /save
-
 ;	Open the file
 
 @graff_version

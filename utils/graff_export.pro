@@ -37,7 +37,6 @@ pro graff_export, file, index, name = name, outfile = outfile
 on_error, 2                     ; Return to caller on error
 
 if ~file_test(file) then message, "File does not exist"
-gr_state, /save
 
 ;	Open the file
 
@@ -78,6 +77,5 @@ if ~keyword_set(outfile) then $
 gr_write_ds, pdefs, outfile, index = idx
 
 graff_clear, pdefs
-gr_state
 
 end

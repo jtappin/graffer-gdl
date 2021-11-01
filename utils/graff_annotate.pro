@@ -72,7 +72,6 @@ pro graff_annotate, file, value, id = id, index = index, $
 
   status = 0
   if ~file_test(file) then message, "File does not exist"
-  gr_state, /save
 
   is_update = (n_params() eq 2) + keyword_set(id) + keyword_set(index)
 
@@ -158,7 +157,6 @@ pro graff_annotate, file, value, id = id, index = index, $
   if (keyword_set(ascii)) then gr_asc_save, pdefs $
   else gr_bin_save, pdefs
   graff_clear, pdefs
-  gr_state
 
   status = 1
 

@@ -179,8 +179,6 @@ pro Graff_add, file, a1, a2, a3, errors = errors, $
 
   common graffer_options, optblock
   
-  gr_state, /save
-
   if keyword_set(funcx) then begin 
      if keyword_set(x_func) then $
         message, /continue, $
@@ -285,7 +283,9 @@ pro Graff_add, file, a1, a2, a3, errors = errors, $
 @graff_version
 
   f0 = file
+  
   graff_init, pdefs, f0, version = version
+  
   igot = graff_get(pdefs, f0, /no_set, /no_warn)
   if igot eq 0 then begin       ; Note that here it is meaningful to
                                 ; continue if the file doesn't exist.
@@ -627,20 +627,22 @@ pro Graff_add, file, a1, a2, a3, errors = errors, $
   endif
 
   if (keyword_set(graffer)) then begin
+     gr_state, /save            ;?
      if (keyword_set(ascii)) then gr_asc_save, pdefs $
      else gr_bin_save, pdefs
 
      graffer, file
      return
   endif else if (keyword_set(display)) then begin
+     gr_state, /save            ;?
      gr_plot_object, pdefs
+     gr_state
   endif
 
   if (keyword_set(ascii)) then gr_asc_save, pdefs $
   else gr_bin_save, pdefs
 
   graff_clear, pdefs
-  gr_state
 
 end
 
