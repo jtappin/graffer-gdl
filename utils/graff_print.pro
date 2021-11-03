@@ -27,6 +27,9 @@ pro graff_print, file, predraw = predraw, nosave = nosave, $
 ; 			GRAFFER structure.
 ; 	/no_spawn	If set, then only generate the file do not
 ; 			spawn any spooler or viewer.
+; 	/encapsulated	If set, then generate an EPS or embeddable PDF file.
+; 	/pdf		If set, then generate a PDF file.
+;
 ;	Any keyword used by GRAFF_PROPS may be supplied.
 ;
 ; History:
@@ -35,6 +38,8 @@ pro graff_print, file, predraw = predraw, nosave = nosave, $
 ;	Fix pixmap size to get consistent charsizes: 3/11/15; SJT
 ;	Add NOSAVE key: 8/1/18; SJT
 ;	Add NO_SPAWN key: 8/5/18; SJT
+;	Add /encapsulated and /pdf keywords, change graff_hard to
+;	procedure: 3/11/21; SJT
 ;-
 
 @graff_version
@@ -42,6 +47,7 @@ pro graff_print, file, predraw = predraw, nosave = nosave, $
 on_error, 2                     ; Return to caller on error
 
 if n_params() eq 0 then message, "Must specify a GRAFFER file"
+
 gr_state, /save
 
 iflag = 1b
@@ -71,7 +77,8 @@ if keyword_set(predraw) then begin
     wdelete
 endif
 
-istat = graff_hard(pdefs, /no_set, no_spawn = no_spawn)
+graff_hard, pdefs, /no_set, no_spawn = no_spawn, encapsulated = $
+            encapsulated, pdf = pdf
 
 graff_clear, pdefs
 gr_state

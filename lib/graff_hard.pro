@@ -5,31 +5,31 @@
 ; the Free Software Foundation; either version 2 of the License, or     
 ; (at your option) any later version.                                   
 
-function Graff_hard, pdefs, no_set = no_set, redraw = redraw, $
-                     no_spawn = no_spawn
+pro graff_hard, pdefs, encapsulated = encapsulated, pdf = pdf, $
+                redraw = redraw, no_spawn = no_spawn
 
 ;+
 ; GRAFF_HARD
 ;	Make a hardcopy
 ;
 ; Usage:
-;	ichange = graff_hard(pdefs)
-;
-; Return value
-;	ichange	int	1 if changed, 0 if not
+;	graff_hard, pdefs
 ;
 ; Argument:
 ;	pdefs	struct	in/out	The plot definition structure.
 ;
 ; Keyword:
-;	/no_set	input	If set and non-zero, then don't call
-;			gr_hardopts to set up the options.
 ;	/redraw	input	If set, then redraw the plot on the
 ;			screen device to ensure that the coordinate
 ;			system is reset properly.
 ;	/no_spawn	If set, then do not spawn any viewer or
 ;			spooling command for the generated file. This
 ;			does not affect the PS->PDF converter calls.
+;	/encapsulated	If set, then generate an EPS file, or an
+;			embeddable PDF file
+;	/pdf		If set then generate a PDF file (since IDL/GDL
+;			do not have a PDF device, a PS file is
+;			generated and converted.)
 ;				
 ; History:
 ;	Carved from graffer: 17/8/95; SJT
@@ -45,6 +45,7 @@ function Graff_hard, pdefs, no_set = no_set, redraw = redraw, $
 ;	Make coordinates double: 24/5/17; SJT
 ;	Add NO_SPAWN: 8/5/18; SJT
 ;	Handle TT fonts: 12/2/20; SJT
+;	Select device by keyword, convert to procedure: 3/11/21; SJT
 ;-
 
 ; For hard copy we don't normally want to show current DS only.
@@ -60,33 +61,30 @@ function Graff_hard, pdefs, no_set = no_set, redraw = redraw, $
 
      case yn of
         "No": pdefs.transient.current_only = 0b
-        "Cancel": return, 0
+        "Cancel": return
         "Yes":
      endcase
   endif
 
   ido = 0
-  if ~keyword_set(no_set) then begin
-     ido = gr_hardopts(pdefs)
-     if (ido eq -1) then return, 0
-  endif else if (pdefs.hardset.eps and 2b) eq 2b && $
-     ~gr_find_program('gs') then begin
-     yn = dialog_message(['A PDF output format is set', $
+  
+  if keyword_set(pdf) && ~gr_find_program('gs') then begin
+     yn = dialog_message(['A PDF output format is requested', $
                           'but no "gs" executable could', $
                           'be found.', $
                           'Reset output to corresponding', $
                           'PostScript format?'], $
                          /cancel, $
                          dialog_parent = pdefs.ids.graffer)
-     if yn eq 'Cancel' then return, 0 $
-     else pdefs.hardset.eps and= 1b
-  endif
+     if yn eq 'Cancel' then return $
+     else idev = keyword_set(encapsulated)
+  endif else idev = keyword_set(encapsulated) + keyword_set(pdf)*2
 
   if pdefs.hardset.name eq '' then begin
      file = pdefs.name
      if (((dp = strpos(file, '.', /reverse_search))) ne -1) then  $
         file = strmid(file, 0, dp)
-     case pdefs.hardset.eps of 
+     case idev of 
         1: file = file+'.eps'
         0: file = file+'.ps'
         else: file = file+'.pdf'
@@ -124,7 +122,7 @@ function Graff_hard, pdefs, no_set = no_set, redraw = redraw, $
   if (nim ne 0) then bits = 8 $
   else bits = 8*h.colour > 1
 
-  case h.eps of
+  case idev of
      0: begin
         psname = hardname
         ieps = 0
@@ -144,7 +142,7 @@ function Graff_hard, pdefs, no_set = no_set, redraw = redraw, $
         ieps = 1
      end
   endcase
-  device, file = psname,  encapsu = ieps, bits = bits, color = $
+  device, file = psname,  encapsulated = ieps, bits = bits, color = $
           h.colour
   if h.colour && ~is_gdl() then begin
      device, cmyk = h.cmyk
@@ -203,7 +201,7 @@ function Graff_hard, pdefs, no_set = no_set, redraw = redraw, $
      chardname = "'"+hardname+"'" $
   else chardname = hardname
 
-  case h.eps of
+  case idev of
      1: begin
         if h.viewer[0] ne '' && ~keyword_set(no_spawn) then $
            spawn, h.viewer[0]+' '+chardname+' '+h.viewer[1]
@@ -251,7 +249,5 @@ function Graff_hard, pdefs, no_set = no_set, redraw = redraw, $
   if keyword_set(redraw) then $
      gr_plot_object, pdefs      ; Redraw to ensure coordinates are
                                 ; correct. 
-
-  return, ido
 
 end
