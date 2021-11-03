@@ -23,6 +23,8 @@ pro graff_convert, file, ofile
 ;	Original: 27/2/13; SJT
 ;-
 
+  on_error, 2
+  
 @graff_version
 
   f0 = file

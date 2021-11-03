@@ -94,15 +94,15 @@ free_lun, ilu
 
 locs = where(strpos(dv, '#') ne -1, ncl)
 if (ncl ne 0) then begin
-    code = dv(locs(ncl-1))      ; Use the last control line
-    dv(locs) = ''               ; Make them null strings so they
+    code = dv[locs[ncl-1]]      ; Use the last control line
+    dv[locs] = ''               ; Make them null strings so they
                                 ; aren't processed by decode
     code = strmid(strcompress(strupcase(code), /remove), 1, 10)
 endif else code = ''
 
 locs = where(strlen(dv) gt 0, nact)
 
-if (nact ne 0) then xydata = graff_decode_xy(dv(locs), nt)
+if (nact ne 0) then xydata = graff_decode_xy(dv[locs], nt)
 
 if (nt eq 1) then begin         ; Special case of single-column data
     xydata = [dindgen(1, n_elements(xydata)), xydata]

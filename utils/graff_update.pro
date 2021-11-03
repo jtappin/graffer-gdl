@@ -179,7 +179,6 @@ pro graff_update, file, idx, name = name, polar = polar, $
 
   status = 0
   if ~file_test(file) then message, "File does not exist"
-  gr_state, /save
 
   if keyword_set(funcx) then begin 
      if keyword_set(x_func) then $
@@ -240,7 +239,8 @@ pro graff_update, file, idx, name = name, polar = polar, $
      endif
 
      if nname gt 1 then message, /continue, $
-                                 "Multiple matches for name "+name+" found in "+file
+                                 "Multiple matches for name "+name+ $
+                                 " found in "+file
      index = locs[0]
      if keyword_set(make_current) then pdefs.cset = index
   endif else index = pdefs.cset
@@ -636,7 +636,6 @@ pro graff_update, file, idx, name = name, polar = polar, $
   if (keyword_set(ascii)) then gr_asc_save, pdefs $
   else gr_bin_save, pdefs
   graff_clear, pdefs
-  gr_state
 
   status = 1
 

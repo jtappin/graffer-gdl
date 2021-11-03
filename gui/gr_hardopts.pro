@@ -292,6 +292,10 @@ function Hopts_event, event
                                dialog_parent = event.top, $
                                filter = filt)
         if file ne '' then begin
+           dname = file_dirname(file)
+           cd, current = cdir
+           if cd eq dname then file = file_basename(file)
+           
            widget_control, settings.fileid, set_value = file
            widget_control, settings.cmid[1], set_value = $
                            'LABEL:'+file_basename(file)
@@ -437,14 +441,16 @@ function Gr_hardopts, pdefs
                          track = optblock.track)
   widget_control, junk, set_droplist_select = h.orient
 
-  uvs.modid = widget_droplist(jb, $
-                              value = ['RGB', 'CMYK'], $
-                              uvalue = 'CMYK', $
-                              track = optblock.track)
-  widget_control, uvs.modid, set_droplist_select = h.cmyk
+  if ~is_gdl() then begin
+     uvs.modid = widget_droplist(jb, $
+                                 value = ['RGB', 'CMYK'], $
+                                 uvalue = 'CMYK', $
+                                 track = optblock.track)
+     widget_control, uvs.modid, set_droplist_select = h.cmyk
 
-  widget_control, uvs.modid, sensitive = h.colour
-
+     widget_control, uvs.modid, sensitive = h.colour
+  endif else uvs.modid = 0l
+  
                                 ; Page size
   cl = widget_base(base, $
                    column = 3, $
@@ -541,46 +547,51 @@ function Gr_hardopts, pdefs
                          format = "(F5.2)", $
                          xsize = 5)
 
-  jb = widget_base(base, /row)
-  junk = widget_droplist(jb, $
-                         value = ['Courier',  $
-                                  'Helvetica',  $
-                                  'Helvetica Narrow',  $
-                                  'NC Schoolbook',  $
-                                  'Palatino',  $
-                                  'Times', $
-                                  'Avant Garde Book',  $
-                                  'Avant Garde Demi',  $
-                                  'Bookman Demi',  $
-                                  'Bookman Light',  $
-                                  'Zapf Chancery',  $
-                                  'Zapf Dingbats', $
-                                  'Symbol'], $
-                         title = 'Font: Family:', $
-                         uvalue = 'FFAMILY', $
-                         track = optblock.track)
-  widget_control, junk, set_droplist_select = h.font.family
-
-  junk = widget_label(jb, $
-                      value = 'Weight/slope:')
-
-  swopt = [{label: 'Normal'},  $
-           {label: 'Bold'}, $
-           {label: 'Italic'}, $
-           {label: 'Bold Italic'}]
-
-  uvs.wsid = cw_pdmenu_plus(jb, $
-                            swopt,  $
-                            /selector, $
-                            initial = h.font.wg_sl, $
-                            uvalue = 'FWS', $
-                            ids = bids, $
+  if ~is_gdl() then begin
+     jb = widget_base(base, /row)
+     junk = widget_droplist(jb, $
+                            value = ['Courier',  $
+                                     'Helvetica',  $
+                                     'Helvetica Narrow',  $
+                                     'NC Schoolbook',  $
+                                     'Palatino',  $
+                                     'Times', $
+                                     'Avant Garde Book',  $
+                                     'Avant Garde Demi',  $
+                                     'Bookman Demi',  $
+                                     'Bookman Light',  $
+                                     'Zapf Chancery',  $
+                                     'Zapf Dingbats', $
+                                     'Symbol'], $
+                            title = 'Font: Family:', $
+                            uvalue = 'FFAMILY', $
                             track = optblock.track)
-  uvs.wsids = bids
-  widget_control, uvs.wsid, sensitive = h.font.family le 9
-  for j = 1, 3, 2 do widget_control, uvs.wsids(j), sensitive = $
-                                     h.font.family le 5
-
+     widget_control, junk, set_droplist_select = h.font.family
+     
+     junk = widget_label(jb, $
+                         value = 'Weight/slope:')
+     
+     swopt = [{label: 'Normal'},  $
+              {label: 'Bold'}, $
+              {label: 'Italic'}, $
+              {label: 'Bold Italic'}]
+     
+     uvs.wsid = cw_pdmenu_plus(jb, $
+                               swopt,  $
+                               /selector, $
+                               initial = h.font.wg_sl, $
+                               uvalue = 'FWS', $
+                               ids = bids, $
+                               track = optblock.track)
+     uvs.wsids = bids
+     widget_control, uvs.wsid, sensitive = h.font.family le 9
+     for j = 1, 3, 2 do widget_control, uvs.wsids[j], sensitive = $
+                                        h.font.family le 5
+  endif else begin
+     uvs.wsid = 0l
+     uvs.wsids[*] = 0l
+  endelse
+  
                                 ; Filename
   jb = widget_base(base, $
                    /row)

@@ -226,8 +226,6 @@ pro Graff_props, file, pdefs, title = title, subtitle = subtitle, $
   if n_params() eq 0 || size(file, /type) ne 7 then $
      message, "Must specify a GRAFFER file"
 
-  gr_state, /save
-
 ;	Open the file
 
 @graff_version
@@ -556,18 +554,20 @@ pro Graff_props, file, pdefs, title = title, subtitle = subtitle, $
 ;	Display or enter Graffer?
 
   if (keyword_set(graffer)) then begin
+     gr_state, /save
      gr_bin_save, pdefs
      graffer, file
      return
   endif else if (keyword_set(display)) then begin
+     gr_state, /save
      gr_plot_object, pdefs
+     gr_state
   endif
 
   if (keyword_set(ascii)) then gr_asc_save, pdefs $
   else gr_bin_save, pdefs
 
   graff_clear, pdefs
-  gr_state
 
 end
 

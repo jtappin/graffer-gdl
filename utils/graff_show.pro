@@ -10,7 +10,8 @@ pro graff_show, file, window = window, xsize = xsize, ysize = ysize, $
 
 ;+
 ; GRAFF_SHOW
-;	User-callable interface to display a graffer file.
+;	User-callable interface to display a graffer file in a regular
+;	graphics window.
 ;
 ; Usage:
 ;	graff_show, file
