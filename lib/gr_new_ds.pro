@@ -40,18 +40,18 @@ function gr_new_ds, pdefs, nds
   ds[*].symsize =  1.
   ds[*].colour =   1
   ds[*].thick =    1.
+
   ds[*].zopts.n_levels = 6
   ds[*].zopts.lmap = 0
   ds[*].zopts.n_cols =  1
   ds[*].zopts.colours = ptr_new(1)
-  ds[*].zopts.raw_colours = ptr_new(intarr(3))
+  ;; ds[*].zopts.raw_colours = ptr_new(intarr(3))
   ds[*].zopts.n_sty = 1
   ds[*].zopts.style = ptr_new(0)
   ds[*].zopts.n_thick =  1
   ds[*].zopts.thick = ptr_new(1.)
   ds[*].zopts.pxsize =  0.5
-
-  ds[*].charsize = 1.0d0
+  ds[*].zopts.charsize = 1.0d0
   
   ds[*].medit = optblock.mouse
 
