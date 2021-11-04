@@ -48,7 +48,7 @@ then
     rm test_compile.pro
 fi
 
-for dir in definitions lib tools utils gui ;
+for dir in definitions lib plotlib tools utils gui ;
 do
     for file in ${dir}/*.pro ;
     do

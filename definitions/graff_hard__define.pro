@@ -31,7 +31,6 @@ pro graff_hard__define
 
 Hardset = { graff_hard, $
             Colour: 0b, $
-            Eps:    0b, $
             Orient: 0b, $
             Psize:  0b, $
             Timestamp: 0b, $

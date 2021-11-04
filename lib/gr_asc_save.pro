@@ -358,10 +358,11 @@ pro Gr_asc_save, pdefs
 
                                 ; The hardcopy options
 
-  printf, ilu, 'HC:', pdefs.hardset.colour, ':HE:', pdefs.hardset.eps, $ $
-          ':HO:', pdefs.hardset.orient, ':HP:', pdefs.hardset.psize, ':HT:', $
+  printf, ilu, 'HC:', pdefs.hardset.colour,  $
+          ':HO:', pdefs.hardset.orient, ':HP:', $
+          pdefs.hardset.psize, ':HT:', $
           pdefs.hardset.timestamp, ':HY:', pdefs.hardset.cmyk, format = $
-          "(6(a,i2))" 
+          "(5(a,i2))" 
   printf, ilu, 'HS:', pdefs.hardset.size, ':HD:', pdefs.hardset.off, $
           format = "(2(a,2f8.3))"
 

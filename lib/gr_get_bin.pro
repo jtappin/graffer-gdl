@@ -232,7 +232,7 @@ pro gr_get_bin, pdefs, ilu, no_set = no_set
                                 ; for genration PostScript hardcopy
                                 ; files.
                                 ; HC - Colour or monchrome
-                                ; HE - Eps or normal
+                                ; HE - Eps or normal (ignored)
                                 ; HO - landscape or portrait
                                 ;      (Orientation)
                                 ; HY - Use CMYK colour model or not.
@@ -263,7 +263,7 @@ pro gr_get_bin, pdefs, ilu, no_set = no_set
                                 ; HFN - Plot file name      
         
         'HC ': pdefs.hardset.colour = value
-        'HE ': pdefs.hardset.eps = value
+        'HE ':                  ; Ignore
         'HO ': pdefs.hardset.orient = value
         'HY ': pdefs.hardset.cmyk = value
         'HP ': pdefs.hardset.psize = value

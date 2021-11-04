@@ -204,7 +204,7 @@ hf = bytarr(4)
 hs = fltarr(2)
 readf, ilu, hf, hs              ; The hardcopy options
 pdefs.hardset.colour = hf(0)
-pdefs.hardset.eps = hf(1)
+
 pdefs.hardset.orient = hf(2)
 pdefs.hardset.timestamp = hf(3)
 pdefs.hardset.size = hs

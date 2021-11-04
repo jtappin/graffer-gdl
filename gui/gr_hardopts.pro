@@ -57,12 +57,12 @@ function Hopts_event, event
         iexit = 1
         if settings.chflag then begin
            for j = 0, 1 do begin
-              widget_control, settings.cmid(j), get_value = cmd
-              case settings.opts.eps of
-                 0: settings.opts.action[j] = cmd[0]
-                 1: settings.opts.viewer[j] = cmd[0]
-                 else:  settings.opts.pdfviewer[j] = cmd[0]
-              endcase
+              widget_control, settings.cmid[j, 0], get_value = cmd
+              settings.opts.action[j] = cmd[0]
+              widget_control, settings.cmid[j, 1], get_value = cmd
+              settings.opts.viewer[j] = cmd[0]
+              widget_control, settings.cmid[j, 2], get_value = cmd
+              settings.opts.pdfviewer[j] = cmd[0]
            endfor
            widget_control, settings.fileid, get_value = file
            settings.opts.name = file
@@ -89,55 +89,55 @@ function Hopts_event, event
         settings.opts.cmyk = event.index
      endelse
 
-     'EPS': if (track_flag) then $
-        graff_msg, settings.action, 'Toggle use of Encapsulated '+ $
-                   'PostScript and PDF generation' $
-     else begin
-        settings.chflag or= (settings.opts.eps ne event.index)
-        settings.opts.eps = event.index
-        widget_control, settings.fileid, get_value = name
-        dir = file_dirname(name, /mark)
-        if dir eq './' then dir = ''
-        fname = file_basename(name)
-        dp = strpos(fname, '.', /reverse_search)
-        if dp ne -1 then begin
-           ;; if settings.opts.eps and 1b then extn = '.eps' $
-           ;; else extn = '.ps'
-           case settings.opts.eps of
-              0: extn = '.ps'
-              1: extn = '.eps'
-              else: extn = '.pdf'
-           endcase
-           name = dir+strmid(fname, 0, dp)
-           widget_control, settings.fileid, set_value = name+extn
-           widget_control, settings.cmid[1], set_value = $
-                           'LABEL:'+file_basename(name+extn) 
-        endif
-        case settings.opts.eps of
-           1: begin
-              for j = 0, 1 do widget_control, settings.cmid[j], $
-                                              set_value = $
-                                              settings.opts.viewer[j]
-              widget_control, settings.cmid[0], set_value = "LABEL:View " + $
-                              "Command:"
-           end
-           0: begin
-              for j = 0, 1 do widget_control, settings.cmid[j], $
-                                              set_value = $
-                                              settings.opts.action[j]
-              widget_control, settings.cmid[0], set_value = "LABEL:Spool " + $
-                              "Command:"
-           end
-           else: begin
-              for j = 0, 1 do widget_control, settings.cmid[j], $
-                                              set_value = $
-                                              settings.opts.pdfviewer[j]
-              widget_control, settings.cmid[0], set_value = $
-                              "LABEL:PDF View " + $
-                              "Command:"
-           end
-        endcase
-     endelse
+     ;; 'EPS': if (track_flag) then $
+     ;;    graff_msg, settings.action, 'Toggle use of Encapsulated '+ $
+     ;;               'PostScript and PDF generation' $
+     ;; else begin
+     ;;    settings.chflag or= (settings.opts.eps ne event.index)
+     ;;    settings.opts.eps = event.index
+     ;;    widget_control, settings.fileid, get_value = name
+     ;;    dir = file_dirname(name, /mark)
+     ;;    if dir eq './' then dir = ''
+     ;;    fname = file_basename(name)
+     ;;    dp = strpos(fname, '.', /reverse_search)
+     ;;    if dp ne -1 then begin
+     ;;       ;; if settings.opts.eps and 1b then extn = '.eps' $
+     ;;       ;; else extn = '.ps'
+     ;;       case settings.opts.eps of
+     ;;          0: extn = '.ps'
+     ;;          1: extn = '.eps'
+     ;;          else: extn = '.pdf'
+     ;;       endcase
+     ;;       name = dir+strmid(fname, 0, dp)
+     ;;       widget_control, settings.fileid, set_value = name+extn
+     ;;       widget_control, settings.cmid[1], set_value = $
+     ;;                       'LABEL:'+file_basename(name+extn) 
+     ;;    endif
+     ;;    case settings.opts.eps of
+     ;;       1: begin
+     ;;          for j = 0, 1 do widget_control, settings.cmid[j], $
+     ;;                                          set_value = $
+     ;;                                          settings.opts.viewer[j]
+     ;;          widget_control, settings.cmid[0], set_value = "LABEL:View " + $
+     ;;                          "Command:"
+     ;;       end
+     ;;       0: begin
+     ;;          for j = 0, 1 do widget_control, settings.cmid[j], $
+     ;;                                          set_value = $
+     ;;                                          settings.opts.action[j]
+     ;;          widget_control, settings.cmid[0], set_value = "LABEL:Spool " + $
+     ;;                          "Command:"
+     ;;       end
+     ;;       else: begin
+     ;;          for j = 0, 1 do widget_control, settings.cmid[j], $
+     ;;                                          set_value = $
+     ;;                                          settings.opts.pdfviewer[j]
+     ;;          widget_control, settings.cmid[0], set_value = $
+     ;;                          "LABEL:PDF View " + $
+     ;;                          "Command:"
+     ;;       end
+     ;;    endcase
+     ;; endelse
      
      'ORI': if (track_flag) then $
         graff_msg, settings.action, 'Toggle landscape/portrait orientation' $
@@ -272,19 +272,14 @@ function Hopts_event, event
      'FILE': if track_flag then $
         graff_msg, settings.action, 'Set the output file name' $
      else begin
-        widget_control, settings.cmid[1], set_value = $
-                        'LABEL:'+file_basename(event.value)
         settings.chflag = 1
      endelse
 
      'PFILE': if track_flag then $
         graff_msg, settings.action, 'Pick the output file name' $
      else begin
-        case settings.opts.eps of
-           1: filt = '*.eps' 
-           0: filt = '*.ps'
-           else: filt = '*.pdf'
-        endcase
+ 
+        filt = '*.ps;*.eps;*.pdf'
 
         file = dialog_pickfile(title = "Plot output file", $
                                /write, $
@@ -297,8 +292,6 @@ function Hopts_event, event
            if cd eq dname then file = file_basename(file)
            
            widget_control, settings.fileid, set_value = file
-           widget_control, settings.cmid[1], set_value = $
-                           'LABEL:'+file_basename(file)
            settings.chflag = 1
         endif
      endelse
@@ -307,58 +300,97 @@ function Hopts_event, event
         graff_msg, settings.action, 'Reset the output file name to the ' + $
                    'default' $ 
      else begin
-        case settings.opts.eps of
-           1: extn = '.eps'
-           2: extn = '.ps'
-           else: extn = '.pdf'
-        endcase
-        widget_control, settings.fileid, set_value = settings.tname+extn
-        widget_control, settings.cmid[1], set_value = $
-                        'LABEL:'+file_basename(settings.tname+extn)
+        widget_control, settings.fileid, set_value = settings.tname
         settings.chflag = 1
      endelse
      
-     'CMD':if (track_flag) then $
-        graff_msg, settings.action, 'Enter the command for spooling or ' + $
-                   'viewing the plot file' $
+     'PSCMD':if (track_flag) then $
+        graff_msg, settings.action, 'Enter the command for spooling a ' + $
+                   'PS plot file' $ 
+     else settings.chflag = 1
+     'EPCMD':if (track_flag) then $
+        graff_msg, settings.action, 'Enter the command for viewing an ' + $
+                   'EPS plot file' $ 
+     else settings.chflag = 1
+     'PDCMD':if (track_flag) then $
+        graff_msg, settings.action, 'Enter the command for viewing a ' + $
+                   'PDF plot file' $ 
      else settings.chflag = 1
 
-     'SFX':if (track_flag) then $
-        graff_msg, settings.action, 'Enter part the command for spooling ' + $
-                   'or viewing the plot after the filename' $
+     'PSSFX':if (track_flag) then $
+        graff_msg, settings.action, 'Enter the part of the ' + $
+                   'command for spooling a PS plot thst comes after ' + $
+                   'the filename' $ 
      else settings.chflag = 1
-     
-     'FVIEW': if (track_flag) then $
-        graff_msg, settings.action, 'Set viewer to the default PS/PDF ' + $
+     'EPSFX':if (track_flag) then $
+        graff_msg, settings.action, 'Enter the part of the ' + $
+                   'command for viewing a EPS plot that comes after ' + $
+                   'the filename' $ 
+     else settings.chflag = 1
+     'PDSFX':if (track_flag) then $
+        graff_msg, settings.action, 'Enter the part of the ' + $
+                   'command for viewing a PDF plot that comes after ' + $
+                   'the filename' $ 
+     else settings.chflag = 1
+    
+     'PSFVIEW': if (track_flag) then $
+        graff_msg, settings.action, 'Set viewer to the default PS ' + $
                    'viewer' $
      else begin
-        case settings.opts.eps of
-           1: widget_control, settings.cmid[0], set_value = $
-                              gr_find_viewer(/ps)
-           0:  widget_control, settings.cmid[0], set_value = 'lp'
-           else:  widget_control, settings.cmid[0], set_value = $
-                                  gr_find_viewer(/pdf)
-        endcase
+        widget_control, settings.cmid[0, 0], set_value = 'lp'
+        widget_control, settings.cmid[1, 0], set_value = ''
+        settings.chflag = 1
+     endelse
+     'EPFVIEW': if (track_flag) then $
+        graff_msg, settings.action, 'Set viewer to the default EPS ' + $
+                   'viewer' $
+     else begin
+        widget_control, settings.cmid[0, 1], set_value = $
+                        gr_find_viewer(/ps)
+        widget_control, settings.cmid[1, 1], set_value = ''
+        settings.chflag = 1
+     endelse
+     'PDFVIEW': if (track_flag) then $
+        graff_msg, settings.action, 'Set viewer to the default PDF ' + $
+                   'viewer' $
+     else begin
+        widget_control, settings.cmid[0, 2], set_value = $
+                        gr_find_viewer(/pdf)
+        widget_control, settings.cmid[1, 2], set_value = ''
         settings.chflag = 1
      endelse
 
-     'NOVIEW': if (track_flag) then $
+     'PSNOVIEW': if (track_flag) then $
         graff_msg, settings.action, 'Set viewer to "no viewer"' $
      else begin
-        widget_control, settings.cmid[0], set_value = ''
-        widget_control, settings.cmid[1], set_value = ''
+        widget_control, settings.cmid[0, 0], set_value = ''
+        widget_control, settings.cmid[1, 0], set_value = ''
+        settings.chflag = 1
+     endelse
+     'EPNOVIEW': if (track_flag) then $
+        graff_msg, settings.action, 'Set viewer to "no viewer"' $
+     else begin
+        widget_control, settings.cmid[0, 1], set_value = ''
+        widget_control, settings.cmid[1, 1], set_value = ''
+        settings.chflag = 1
+     endelse
+     'PDNOVIEW': if (track_flag) then $
+        graff_msg, settings.action, 'Set viewer to "no viewer"' $
+     else begin
+        widget_control, settings.cmid[0, 2], set_value = ''
+        widget_control, settings.cmid[1, 2], set_value = ''
         settings.chflag = 1
      endelse
      
      Else:     graff_msg, settings.action, "Whaat??????"       
   endcase
 
-  widget_control, settings.xoffid, sensitive = ~(settings.opts.eps and 1)
-  widget_control, settings.yoffid, sensitive = ~(settings.opts.eps and 1)
-  widget_control, settings.xleftid, sensitive = ~(settings.opts.eps and 1)
-  widget_control, settings.yleftid, sensitive = ~(settings.opts.eps and 1)
-  widget_control, settings.ctrid, sensitive = ~(settings.opts.eps and 1)
-  widget_control, settings.paperid, sensitive = ~(settings.opts.eps and 1)
+  ;; widget_control, settings.xoffid, sensitive = ~(settings.opts.eps and 1)
+  ;; widget_control, settings.yoffid, sensitive = ~(settings.opts.eps and 1)
+  ;; widget_control, settings.xleftid, sensitive = ~(settings.opts.eps and 1)
+  ;; widget_control, settings.yleftid, sensitive = ~(settings.opts.eps and 1)
+  ;; widget_control, settings.ctrid, sensitive = ~(settings.opts.eps and 1)
+  ;; widget_control, settings.paperid, sensitive = ~(settings.opts.eps and 1)
 
 Miss_case:
 
@@ -377,12 +409,12 @@ function Gr_hardopts, pdefs
 
   h = pdefs.hardset
 
-  output_types = ['Normal', 'Encapsulated', $
-                  'PDF (Print)', 'PDF (LaTeX)']
-  if ~gr_find_program("gs") then begin
-     h.eps and= 1b
-     output_types = output_types[0:1]
-  endif
+  ;; output_types = ['Normal', 'Encapsulated', $
+  ;;                 'PDF (Print)', 'PDF (LaTeX)']
+  ;; if ~gr_find_program("gs") then begin
+  ;;    h.eps and= 1b
+  ;;    output_types = output_types[0:1]
+  ;; endif
 
   tname = pdefs.name
   dp = strpos(tname, '.', /reverse_search)
@@ -391,10 +423,9 @@ function Gr_hardopts, pdefs
 
   uvs = { $
         Opts:h, $
-        Cmid:lonarr(2), $
+        Cmid:lonarr(2, 3), $
         Wsid:0l, $
         Wsids:lonarr(4), $
-        Spbase:0l, $
         ctrid: 0l, $
         Xsid:0l, $
         Xoffid:0l, $
@@ -429,11 +460,11 @@ function Gr_hardopts, pdefs
                          track = optblock.track)
   widget_control, junk, set_droplist_select = h.colour
 
-  junk = widget_droplist(jb, $
-                         value = output_types, $
-                         uvalue = 'EPS', $
-                         track = optblock.track)
-  widget_control, junk, set_droplist_select = h.eps
+  ;; junk = widget_droplist(jb, $
+  ;;                        value = output_types, $
+  ;;                        uvalue = 'EPS', $
+  ;;                        track = optblock.track)
+  ;; widget_control, junk, set_droplist_select = h.eps
 
   junk = widget_droplist(jb, $
                          value = ['Landscape', 'Portrait'], $
@@ -468,8 +499,7 @@ function Gr_hardopts, pdefs
   uvs.ctrid = widget_button(cl, $
                             value = 'Centre on page', $
                             uvalue = 'CENTRE', $
-                            track = optblock.track, $
-                            sensitive = ~(h.eps and 1))
+                            track = optblock.track)
   junk = widget_droplist(cl, $
                          value = ['Off', 'On'], $
                          title = "Plot timestamp", $
@@ -614,57 +644,90 @@ function Gr_hardopts, pdefs
 
                                 ; Spool command
 
-  uvs.spbase = widget_base(base, /row)
+  spbase = widget_base(base, $
+                       /column)
 
-;jb = widget_base(uvs.spbase, /row)
-  case h.eps of
-     1: begin
-        clab = 'View Command:'
-        ccmd = h.viewer[0]
-        scmd = h.viewer[1]
-     end
-     0: begin
-        clab = 'Spool Command:'
-        ccmd = h.action[0]
-        scmd = h.action[1]
-     end
-     else: begin
-        clab = 'PDF View Command:'
-        ccmd = h.pdfviewer[0]
-        scmd = h.pdfviewer[1]
-     end
-  endcase
-
-  uvs.cmid[0] = cw_enter(uvs.spbase, $
-                         label = clab, $
-                         value = ccmd, $
-                         uvalue = 'CMD', $
+  jb = widget_base(spbase, /row)
+  uvs.cmid[0, 0] = cw_enter(jb, $
+                         label = 'Spool Command:', $
+                         value = h.action[0], $
+                         uvalue = 'PSCMD', $
                          xsize = 12, $
                          track = optblock.track, $
                          /capture)
 
-  uvs.cmid(1) = cw_enter(uvs.spbase, $
-                         value = scmd, $
-                         uvalue = 'SFX', $
+  uvs.cmid[1, 0]= cw_enter(jb, $
+                         value = h.action[1], $
+                         uvalue = 'PSSFX', $
                          xsize = 8, $
-                         label = file_basename(h.name), $
+                         label = '<file>', $
                          track = optblock.track, $
                          /capture)
 
-  junk = widget_button(uvs.spbase, $
+  junk = widget_button(jb, $
                        value = 'Default', $
-                       uvalue = 'FVIEW')
+                       uvalue = 'PSFVIEW')
 
-  junk = widget_button(uvs.spbase, $
+  junk = widget_button(jb, $
                        value = 'None', $
-                       uvalue = 'NOVIEW')
+                       uvalue = 'PSNOVIEW')
 
-  widget_control, uvs.xoffid, sensitive = ~(h.eps and 1)
-  widget_control, uvs.yoffid, sensitive = ~(h.eps and 1)
-  widget_control, uvs.xleftid, sensitive = ~(h.eps and 1)
-  widget_control, uvs.yleftid, sensitive = ~(h.eps and 1)
-  widget_control, uvs.paperid, sensitive = ~(h.eps and 1)
-  widget_control, uvs.ctrid, sensitive = ~(h.eps and 1)
+  jb = widget_base(spbase, /row)
+  uvs.cmid[0, 1] = cw_enter(jb, $
+                         label = 'EPS View Command:', $
+                         value = h.viewer[0], $
+                         uvalue = 'EPCMD', $
+                         xsize = 12, $
+                         track = optblock.track, $
+                         /capture)
+
+  uvs.cmid[1, 1]= cw_enter(jb, $
+                         value = h.viewer[1], $
+                         uvalue = 'EPSFX', $
+                         xsize = 8, $
+                         label = '<file>', $
+                         track = optblock.track, $
+                         /capture)
+
+  junk = widget_button(jb, $
+                       value = 'Default', $
+                       uvalue = 'EPFVIEW')
+
+  junk = widget_button(jb, $
+                       value = 'None', $
+                       uvalue = 'EPNOVIEW')
+
+  jb = widget_base(spbase, /row)
+  uvs.cmid[0, 2] = cw_enter(jb, $
+                         label = 'PDF View Command:', $
+                         value = h.viewer[0], $
+                         uvalue = 'PDCMD', $
+                         xsize = 12, $
+                         track = optblock.track, $
+                         /capture)
+
+  uvs.cmid[1, 2]= cw_enter(jb, $
+                         value = h.viewer[1], $
+                         uvalue = 'PDSFX', $
+                         xsize = 8, $
+                         label = '<file>', $
+                         track = optblock.track, $
+                         /capture)
+
+  junk = widget_button(jb, $
+                       value = 'Default', $
+                       uvalue = 'PDFVIEW')
+
+  junk = widget_button(jb, $
+                       value = 'None', $
+                       uvalue = 'PDNOVIEW')
+
+  ;; widget_control, uvs.xoffid, sensitive = ~(h.eps and 1)
+  ;; widget_control, uvs.yoffid, sensitive = ~(h.eps and 1)
+  ;; widget_control, uvs.xleftid, sensitive = ~(h.eps and 1)
+  ;; widget_control, uvs.yleftid, sensitive = ~(h.eps and 1)
+  ;; widget_control, uvs.paperid, sensitive = ~(h.eps and 1)
+  ;; widget_control, uvs.ctrid, sensitive = ~(h.eps and 1)
 
   uvs.action = cw_enter(base, $
                         /text, $

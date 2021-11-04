@@ -72,7 +72,7 @@ pro Graff_props, file, pdefs, title = title, subtitle = subtitle, $
 ;                 yrgrid = yrgrid, yrauto = yrauto, yrannotate = $
 ;                 yrannotate, display = display, $ $
 ;                 graffer = graffer, ascii = ascii, h_orient = h_orient, $ $
-;                 h_colour = h_colour, h_eps = h_eps, h_xsize = h_xsize, $
+;                 h_colour = h_colour, h_xsize = h_xsize, $
 ;                 h_ysize = h_ysize, h_xmargin = h_xmargin, $ $
 ;                 h_ymargin = h_ymargin, isotropic = isotropic, h_cmyk = $
 ;                 h_cmyk, ctable = ctable, h_print = h_print, h_viewer $
@@ -172,14 +172,6 @@ pro Graff_props, file, pdefs, title = title, subtitle = subtitle, $
 ;	h_cmyk		input	Set or unset the use of the CMYK model
 ;				for (E)PS files. Specifying this
 ;				keyword will force colour (E)PS.
-;	h_eps		input	Set or unset the generation of EPS
-;				file or PDF rather than PS (N.B. if h_eps is
-;				set and h_orient is not specified,
-;				then h_orient=1 is implied).
-;				0: Normal PS file
-;				1: EPS file
-;				2: PDF file for printing
-;				3: PDF file for LaTeX inclusion
 ;	h_[xy]size	input	Set the X(Y) dimension of the page in cm
 ;	h_[xy]margin	input	Set the X(Y) offset of the page from
 ;				the lower-left corner of the page.
@@ -515,9 +507,7 @@ pro Graff_props, file, pdefs, title = title, subtitle = subtitle, $
   if (n_elements(h_colour) ne 0) then pdefs.hardset.colour = $
      keyword_set(h_colour)
   if (n_elements(h_eps) ne 0) then begin
-     pdefs.hardset.eps = h_eps
-     if (h_eps and 1b) && n_elements(h_orient) eq 0 then $
-        pdefs.hardset.orient = 1b
+     print, "Output type is no longer stored."
   endif
 
   if (n_elements(h_xsize) ne 0) then pdefs.hardset.size(0) = h_xsize

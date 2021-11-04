@@ -306,7 +306,6 @@ pro Gr_bin_save, pdefs, auto = auto
                                 ; The hardcopy options
 
   graff_put_rec, ilu, 'HC ', pdefs.hardset.colour
-  graff_put_rec, ilu, 'HE ', pdefs.hardset.eps
   graff_put_rec, ilu, 'HO ', pdefs.hardset.orient
   graff_put_rec, ilu, 'HY ', pdefs.hardset.cmyk
   graff_put_rec, ilu, 'HP ',  pdefs.hardset.psize
