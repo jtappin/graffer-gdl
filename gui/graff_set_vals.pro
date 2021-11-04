@@ -40,8 +40,8 @@ pro Graff_set_vals, pdefs, set_only = set_only
 
   if (not keyword_set(set_only)) then begin
      widget_control, pdefs.ids.graffer, tlb_set_title =  $
-                     string(pdefs.version, pdefs.dir, pdefs.name,  $
-                            format = "('Graffer V',I0,'.',I2.2,': ',2A)")
+                     string(pdefs.version, pdefs.name,  $
+                            format = "('Graffer V',I0,'.',I2.2,': ',A)")
      
      if strpos(pdefs.dir, path_sep(), /reverse_search) ne $
         strlen(pdefs.dir)-1 then fullname = pdefs.dir+path_sep()+pdefs.name $

@@ -114,7 +114,6 @@ endif
 if ~pdefs.chflag then gr_auto_delete, pdefs
 graff_init, pdefs
 pdefs.name = f
-;pdefs.dir = gr_get_full_dir(dir)
 pdefs.dir = dir
 
 if ascii then begin
