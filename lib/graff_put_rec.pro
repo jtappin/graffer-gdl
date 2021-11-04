@@ -24,6 +24,7 @@ pro graff_put_rec, ilu, tag, value
 ;	Add list types: 6/10/16; SJT
 ;-
 
+  on_error, 2
   if n_params() lt 2 then message, "GRAFF_PUT_REC requires at least " + $
                                    '2 parameters' 
 

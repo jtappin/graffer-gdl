@@ -31,6 +31,8 @@ pro graff_get_rec, ilu, tag, value, tcode, ndims = ndims, dims = $
 ;	Support LIST values: 6/10/16; SJT
 ;-
 
+  on_error, 2
+
 ; Initialize the tag header information
   tag = '   '
   tcode = 0l

@@ -35,6 +35,7 @@ pro Gr_bin_save, pdefs, auto = auto
 ;	New V4 format: 6/1/12; SJT
 ;	New font handling and contour setting: 11/1/12; SJT
 ;	Advanced axis style settings: 21/8/12; SJT
+;	Add options for plplot drivers: 29/11/13; SJT
 ; 	Add min & max values: 4/3/15; SJT
 ; 	PDF view command: 21/9/16; SJT
 ;	Add non-linear contour level maps: 12/10/16; SJT

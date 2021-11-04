@@ -264,7 +264,7 @@ pro Gr_get_ds, data, nset, ilu, msgid
            'ZSM': data[nset].zopts.smooth = $
               gr_byt_val(tag_val(itag+1), 1)
            'ZSN': data[nset].zopts.shade_levels = $ 
-              gr_lob_val(tag_val(itag+1), 1)
+              gr_lon_val(tag_val(itag+1), 1)
 
            'ZM': data[nset].zopts.missing = $
               gr_dbl_val(tag_val[itag+1], 1)

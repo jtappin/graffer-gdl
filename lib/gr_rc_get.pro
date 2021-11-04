@@ -17,6 +17,10 @@ pro Gr_rc_get, optblock
 ; Argument:
 ;	opts	struct	output	The graffer options sub-structure.
 ;
+; Note:
+;	This is a procedure rather than a function as functions tend
+;	to croak if asked to return undefined values.
+;
 ; History:
 ;	Extracted from GRAFF_INIT: 21/8/97; SJT
 ;	Eliminate obsolete findfile call: 16/4/12; SJT
@@ -30,6 +34,8 @@ pro Gr_rc_get, optblock
   if strpos(home, path_sep(), /reverse_search) ne strlen(home)-1 then $
      rcfile = home+path_sep()+'.grafferrc' $
   else  rcfile = home+'.grafferrc'
+
+  if ~file_test(rcfile) then return
 
   optblock = {graff_opts}
   optblock.Auto_delay = 300.

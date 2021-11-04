@@ -24,6 +24,7 @@ function gr_new_ds, pdefs, nds
 ;
 ; History:
 ; 	Original: 10/1/12; SJT
+; 	Remove opts field from pdefs: 21/5/20; SJT
 ; 	Add min & max values: 4/3/15; SJT
 ;	Add non-linear contour level maps: 12/10/16; SJT
 ;	Move top level options out of PDEFS: 21/5/20; SJT
