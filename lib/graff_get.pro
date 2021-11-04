@@ -13,7 +13,7 @@ function Graff_get, pdefs, f, no_set = no_set, recover = recover, $
 ;	Get a graffer dataset from a file
 ;
 ; Usage:
-;	iopen = graff_get(pdefs[, f])
+;	iopen = graff_get(pdefs, f)
 ;
 ; Return Value:
 ;	iopen	int	1 If file was opened; 0 on failure, 2 on file
@@ -45,30 +45,10 @@ function Graff_get, pdefs, f, no_set = no_set, recover = recover, $
 ;	opened: 16/3/12; SJT
 ;	Eliminate obsolete findfile call: 16/4/12; SJT
 ;	Handle TT font option: 12/2/20; SJT
+;	Remove unused single argument case: 4/11/21; SJT
 ;-
 
-if n_params() eq 1 then begin
-    if file_test(pdefs.dir, /directory) then path = pdefs.dir $
-    else cd, current = path
-    if (widget_info(pdefs.ids.graffer, /valid)) then widget_control, $
-      pdefs.ids.graffer, sensitive = 0
-    f = dialog_pickfile(/read, $
-                        filter = '*.grf', $
-                        title = 'Graffer Restore', $
-                        /must, $
-                        path = path, $
-                        file = previous_name, $
-                        resource = 'Graffer', $
-                        dialog_parent = pdefs.ids.graffer)
-    
-    if (widget_info(pdefs.ids.graffer, /valid)) then widget_control, $
-      pdefs.ids.graffer, sensitive = 1
-    if f eq '' then return, 0
-endif
-
-
 if ~file_test(f) then return, 2
-
 
 gr_split_dir, f, dir            ; Split the name and directory after
                                 ; opening
@@ -134,7 +114,8 @@ endif
 if ~pdefs.chflag then gr_auto_delete, pdefs
 graff_init, pdefs
 pdefs.name = f
-pdefs.dir = gr_get_full_dir(dir)
+;pdefs.dir = gr_get_full_dir(dir)
+pdefs.dir = dir
 
 if ascii then begin
     if fvers[0] eq 1 then $
