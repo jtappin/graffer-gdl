@@ -174,6 +174,14 @@
 ;-
 
 
+function cw_pdmenu_has_kids, id
+                                ; Return 1 if the widget has
+                                ; children, 0 if it
+                                ; doesn't. 
+  k1 = widget_info(id, /child)
+  return, k1 ne 0
+end
+
 function cw_pdmenu_plus_get, wid, group, index = index, id = id
 
   idb = wid
@@ -208,14 +216,6 @@ end
 
 function cw_pdmenu_plus_get_selector, wid
   return, cw_pdmenu_plus_get(wid, 1)
-end
-
-function cw_pdmenu_has_kids, id
-                                ; Return 1 if the widget has
-                                ; children, 0 if it
-                                ; doesn't. 
-  k1 = widget_info(id, /child)
-  return, k1 ne 0
 end
 
 pro cw_pdmenu_plus_set_exclusive, id, parent
