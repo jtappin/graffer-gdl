@@ -54,9 +54,15 @@ pro Gr_2dd_plot, pdefs, i, csiz, grey_ps = grey_ps, shaded = shaded
                                 ; with different dimensions for the
                                 ; coordinates fails. gr_display_img
                                 ; already does this.
+
      if is_gdl() then begin
         sx = size(x)
         sy = size(y)
+        if sy[0] eq 2 && sy[1] eq 1 then begin
+           y = reform(y)
+           sy = size(y)
+        endif
+        
         if sx[0] eq 1 && sy[0] eq 2 then $
            x = x[*, intarr(sy[2])] $
         else if sx[0] eq 2 then begin
