@@ -177,7 +177,9 @@
 function cw_pdmenu_has_kids, id
                                 ; Return 1 if the widget has
                                 ; children, 0 if it
-                                ; doesn't. 
+                                ; doesn't.
+  if ~widget_info(id, /valid) then return, 0
+  
   k1 = widget_info(id, /child)
   return, k1 ne 0
 end
