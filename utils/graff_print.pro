@@ -6,7 +6,8 @@
 ; (at your option) any later version.                                   
 
 pro graff_print, file, predraw = predraw, nosave = nosave, $
-                 no_spawn = no_spawn, _extra = _extra
+                 no_spawn = no_spawn, encapsulated = encapsulated, pdf $
+                 = pdf, _extra = _extra
 
 ;+
 ; GRAFF_PRINT
