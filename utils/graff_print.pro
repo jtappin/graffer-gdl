@@ -78,7 +78,7 @@ if keyword_set(predraw) then begin
     wdelete
 endif
 
-graff_hard, pdefs, /no_set, no_spawn = no_spawn, encapsulated = $
+graff_hard, pdefs, no_spawn = no_spawn, encapsulated = $
             encapsulated, pdf = pdf
 
 graff_clear, pdefs

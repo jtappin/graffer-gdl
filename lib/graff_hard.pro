@@ -94,14 +94,22 @@ pro graff_hard, pdefs, encapsulated = encapsulated, pdf = pdf, $
   endif else begin
      file = pdefs.hardset.name
      if strpos(file, path_sep()) ge 0 then begin
-        dd = file_dirname(file)
-        if file_test(dd, /direct) then hardname = file $
-        else begin
-           file = file_basename(file)
-           hardname = pdefs.dir+file
+        dd = file_dirname(file, /mark)
+        file = file_basename(file)
+        if ~file_test(dd, /direct) then begin
+           dd = pdefs.dir
            pdefs.hardset.name = file
-        endelse
-     endif else hardname =  pdefs.dir+file
+        endif
+     endif else dd = pdefs.dir
+     
+     if (((dp = strpos(file, '.', /reverse_search))) ne -1) then  $
+        file = strmid(file, 0, dp)
+     case idev of 
+        1: file = file+'.eps'
+        0: file = file+'.ps'
+        else: file = file+'.pdf'
+     endcase
+     hardname = dd+file
   endelse
   
   h = pdefs.hardset
