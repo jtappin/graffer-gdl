@@ -136,21 +136,20 @@ pro Gr_plot_object, pdefs, no_null = no_null, charsize = charsize, $
 
      if (pdefs.y_right) then $
         !y = pdefs.ytransform[(*pdefs.data)[i].y_axis]
-     ;; if (ndata(i) ge 2 or (not cts(i) and ndata(i) eq 1)) then begin
-        
-        if (type(i) eq -4) then begin
-           if (plot2) then $
-              gr_2df_plot, pdefs, i, csiz, $
-                           grey_ps = grey_ps, shaded = reaxis ; 2 D function
-        endif else if (type(i) lt 0) then begin
-           gr_1df_plot, pdefs, i, csiz          ; Function, data is struct
-        endif else if (type(i) eq 9) then begin ; 2 D data
-           if (plot2) then $
-              gr_2dd_plot, pdefs, i, csiz, grey_ps = grey_ps, $
-                           shaded = reaxis
-        endif else $                   ; Observations, xydata is
-           gr_1dd_plot, pdefs, i, csiz ; floating point
-     ;; endif
+     
+     if (type(i) eq -4) then begin
+        if (plot2) then $
+           gr_2df_plot, pdefs, i, csiz, $
+                        grey_ps = grey_ps, shaded = reaxis ; 2 D function
+     endif else if (type(i) lt 0) then begin
+        gr_1df_plot, pdefs, i, csiz             ; Function, data is struct
+     endif else if (type(i) eq 9) then begin    ; 2 D data
+        if (plot2) then $
+           gr_2dd_plot, pdefs, i, csiz, grey_ps = grey_ps, $
+                        shaded = reaxis
+     endif else $                      ; Observations, xydata is
+        gr_1dd_plot, pdefs, i, csiz    ; floating point
+
   endfor
 
   if reaxis then begin
