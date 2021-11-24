@@ -199,9 +199,12 @@ function Gr_tlv_z, pdefs
      else xydata = {graff_zdata}
   endif else begin       
 
-     if ptr_valid((*pdefs.data)[pdefs.cset].xydata) then $
-        xydata = *(*pdefs.data)[pdefs.cset].xydata $
-     else xydata = {graff_zdata}
+     if ptr_valid((*pdefs.data)[pdefs.cset].xydata) then begin
+        xydata = *(*pdefs.data)[pdefs.cset].xydata
+        if size(xydata, /type) ne 8 || $
+           tag_names(xydata, /str) ne 'GRAFF_ZDATA' then $
+              xydata = {graff_zdata}
+     endif else xydata = {graff_zdata}
   endelse
 
   uvs = { $
