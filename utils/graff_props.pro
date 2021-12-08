@@ -543,7 +543,7 @@ pro Graff_props, file, pdefs, title = title, subtitle = subtitle, $
 
 ;	Display or enter Graffer?
 
-  if (keyword_set(graffer)) then begin
+  if keyword_set(graffer) && graff_have_gui() then begin
      gr_state, /save
      gr_bin_save, pdefs
      graffer, file
