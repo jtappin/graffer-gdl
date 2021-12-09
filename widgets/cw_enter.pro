@@ -378,7 +378,7 @@ function cw_enter_read, id
      locs = where(txt eq '', nv, ncomp = nf)
      if nv ne 0 then begin
         if nf ne 0 then ivv[locs] = 0b $
-        else ivv[1:*] = 0
+        else if n_elements(ivv) gt 1 then ivv[1:*] = 0b
      endif
   endif
 

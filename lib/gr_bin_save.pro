@@ -35,6 +35,7 @@ pro Gr_bin_save, pdefs, auto = auto
 ;	New V4 format: 6/1/12; SJT
 ;	New font handling and contour setting: 11/1/12; SJT
 ;	Advanced axis style settings: 21/8/12; SJT
+;	Add options for plplot drivers: 29/11/13; SJT
 ; 	Add min & max values: 4/3/15; SJT
 ; 	PDF view command: 21/9/16; SJT
 ;	Add non-linear contour level maps: 12/10/16; SJT
@@ -47,7 +48,10 @@ pro Gr_bin_save, pdefs, auto = auto
      file = pdefs.dir+'#'+pdefs.name+'#'
      graff_msg, pdefs.ids.message, 'Autosaving'
   endif else begin
-     file = pdefs.dir+pdefs.name
+     if pdefs.dir ne './' then $
+        file = pdefs.dir+pdefs.name $
+     else file = pdefs.name
+     
      if ~pdefs.transient.backup && file_test(file) then begin
         file_copy, file, file+'~', /overwrite
         pdefs.transient.backup = 1b
@@ -306,7 +310,6 @@ pro Gr_bin_save, pdefs, auto = auto
                                 ; The hardcopy options
 
   graff_put_rec, ilu, 'HC ', pdefs.hardset.colour
-  graff_put_rec, ilu, 'HE ', pdefs.hardset.eps
   graff_put_rec, ilu, 'HO ', pdefs.hardset.orient
   graff_put_rec, ilu, 'HY ', pdefs.hardset.cmyk
   graff_put_rec, ilu, 'HP ',  pdefs.hardset.psize

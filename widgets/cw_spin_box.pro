@@ -194,11 +194,12 @@ function cw_spin_box_event, event
         if tag_names(event, /struct) eq 'WIDGET_KBRD_FOCUS' then begin
            if event.enter eq 1 || ~cstruct.eflag then return, 0l
            cr = 1b
-        endif else if event.type eq 3  then return, 0l $
-        else cr = event.type eq 0b &&  event.ch eq 10b
-
-        if event.type ne 3 then cstruct.eflag = 1b
-
+        endif else begin
+           if event.type eq 3  then return, 0l
+           cr = event.type eq 0b &&  event.ch eq 10b
+           cstruct.eflag = 1b
+        endelse
+        
         catch, an_error
         if an_error ne 0 then begin
            catch, /cancel

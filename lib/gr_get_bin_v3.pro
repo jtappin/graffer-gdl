@@ -213,7 +213,7 @@ while (not eof(ilu)) do begin
                                 ;       oblique/italic) 
         
         'HC ': pdefs.hardset.colour = gr_byt_rd(ilu, 1)
-        'HE ': pdefs.hardset.eps = gr_byt_rd(ilu, 1)
+        'HE ':                  ; Ignore
         'HO ': pdefs.hardset.orient = gr_byt_rd(ilu, 1)
         'HY ': pdefs.hardset.cmyk = gr_byt_rd(ilu, 1)
         'HP ': pdefs.hardset.psize = gr_byt_rd(ilu, 1)

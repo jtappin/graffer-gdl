@@ -34,7 +34,10 @@ pro Graff_info, file, nsets = nsets,  title = title, $
                 h_cmyk =  h_cmyk, ctable = ctable, $
                 h_print = h_print, h_viewer = h_viewer, $
                 h_pdfviewer = h_pdfviewer, $
-                h_file = h_file
+                h_file = h_file, $
+                ds_descriptions = ds_descriptions, $
+                ds_types = ds_types, ds_modes = ds_modes
+
 ;+
 ; GRAFF_INFO
 ;	User-callable interface to retrieve global properties of a graffer
@@ -64,13 +67,15 @@ pro Graff_info, file, nsets = nsets,  title = title, $
 ;                yrorigin = yrorigin, yrgrid = yrgrid, $
 ;                yrannotate = yrannotate, $
 ;                h_orient = h_orient, h_colour = h_colour, $
-;                h_eps = h_eps, h_xsize = h_xsize, $
+;                h_xsize = h_xsize, $
 ;                h_ysize = h_ysize, h_xmargin = h_xmargin, $
 ;                h_ymargin = h_ymargin, isotropic = isotropic, $
 ;                h_cmyk =  h_cmyk, ctable = ctable, $
 ;                h_print = h_print, h_viewer = h_viewer, $
 ;                h_pdfviewer = h_pdfviewer, $
-;                h_file = h_file
+;                h_file = h_file, $
+;                ds_descriptions = ds_descriptions, $
+;                ds_types = ds_types, ds_modes = ds_modes
 ;
 ; Argument:
 ;	file	string	input	The graffer file to query.
@@ -149,10 +154,6 @@ pro Graff_info, file, nsets = nsets,  title = title, $
 ;	h_cmyk		output	Get  the use of the CMYK model
 ;				for (E)PS files. Specifying this
 ;				keyword will force colour (E)PS.
-;	h_eps		output	Get  the generation of EPS
-;				file rather than PS (N.B. if h_eps is
-;				set and h_orient is not specified,
-;				then h_orient=1 is implied).
 ;	h_[xy]size	output	Get the X(Y) dimension of the page in cm
 ;	h_[xy]margin	output	Get the X(Y) offset of the page from
 ;				the lower-left corner of the page.
@@ -164,6 +165,10 @@ pro Graff_info, file, nsets = nsets,  title = title, $
 ;	h_pdfviewer	output	Specify the command to view PDF output
 ;				files (can be a scalar or 2-element aray).
 ;	h_file		output	Specify the output file for hardcopies.
+;	ds_descripions	output	A variable for the dataset descriptions.
+;	ds_types	output	A variable for the dataset types.
+;	ds_modes	output	A variable for the dataset modes
+;				(rect/polar coords)
 ;				
 ; Restrictions:
 ; 	Some settings may not return meaningful values for all files
@@ -171,6 +176,7 @@ pro Graff_info, file, nsets = nsets,  title = title, $
 ;
 ; History:
 ;	Original, using graff_props as a template.: Sep 2016; SJT
+;	Added ds_* keys: 17/11/21; SJT
 ;-
 
 ;	Check that the necessary inputs are present
@@ -191,10 +197,19 @@ pro Graff_info, file, nsets = nsets,  title = title, $
      return
   endif
 
-; Number of datasets
+; Number of datasets, and basic DS properties.
 
   if arg_present(nsets) then nsets = pdefs.nsets
 
+  if pdefs.nsets gt 0 then begin
+     if arg_present(ds_descriptions) then $
+        ds_descriptions = (*pdefs.data).descript
+     if arg_present(ds_types) then $
+        ds_types = (*pdefs.data).type
+     if arg_present(ds_modes) then $
+        ds_modes = (*pdefs.data).mode
+  endif
+  
 ;	Titles & other global options
 
   if arg_present(title) then title = pdefs.title
@@ -361,7 +376,7 @@ pro Graff_info, file, nsets = nsets,  title = title, $
 
   if arg_present(h_orient) then h_orient = pdefs.hardset.orient
   if arg_present(h_colour) then h_colour = pdefs.hardset.colour
-  if arg_present(h_eps) then h_eps = pdefs.hardset.eps
+  if arg_present(h_eps) then h_eps = 0
 
   if arg_present(h_xsize) then h_xsize = pdefs.hardset.size[0]
   if arg_present(h_ysize) then h_ysize = pdefs.hardset.size[1]

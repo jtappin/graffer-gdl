@@ -305,15 +305,18 @@ pro Gr_cont_menus, sb, pdefs
                                            track = optblock.track)
   widget_control, pdefs.ids.zopts.c_type, set_droplist_select = zopts.fill
 
+  if ptr_valid(zopts.raw_colours) then $
+     cont_cols =  gr_cont_col_set(*zopts.colours, $
+                                  *zopts.raw_colours) $
+  else cont_cols =  gr_cont_col_set(*zopts.colours)
+  
   pdefs.ids.zopts.c_colour = cw_enter(jbx, $
                                       /text, $
                                       /array, $
                                       track = optblock.track, $
                                       uvalue = 'COLOUR', $
                                       /capture, $
-                                      value = $
-                                      gr_cont_col_set(*zopts.colours, $
-                                                      *zopts.raw_colours), $
+                                      value = cont_cols, $
                                       xsize = 16, $
                                       ysize = 4, $
                                       /column, $

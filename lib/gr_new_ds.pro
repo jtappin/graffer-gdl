@@ -24,9 +24,11 @@ function gr_new_ds, pdefs, nds
 ;
 ; History:
 ; 	Original: 10/1/12; SJT
+; 	Remove opts field from pdefs: 21/5/20; SJT
 ; 	Add min & max values: 4/3/15; SJT
 ;	Add non-linear contour level maps: 12/10/16; SJT
 ;	Move top level options out of PDEFS: 21/5/20; SJT
+;	Set charsize for contour labels to 1 (not zero): 4/11/21; SJT
 ;-
 
   common graffer_options, optblock
@@ -39,17 +41,19 @@ function gr_new_ds, pdefs, nds
   ds[*].symsize =  1.
   ds[*].colour =   1
   ds[*].thick =    1.
+
   ds[*].zopts.n_levels = 6
   ds[*].zopts.lmap = 0
   ds[*].zopts.n_cols =  1
   ds[*].zopts.colours = ptr_new(1)
-  ds[*].zopts.raw_colours = ptr_new(intarr(3))
+  ;; ds[*].zopts.raw_colours = ptr_new(intarr(3))
   ds[*].zopts.n_sty = 1
   ds[*].zopts.style = ptr_new(0)
   ds[*].zopts.n_thick =  1
   ds[*].zopts.thick = ptr_new(1.)
   ds[*].zopts.pxsize =  0.5
-
+  ds[*].zopts.charsize = 1.0d0
+  
   ds[*].medit = optblock.mouse
 
   ds[*].max_val = !values.d_nan

@@ -23,6 +23,7 @@
 ;	Don't destroy the main structure on restore at this level
 ;	(allows cancel to work): 20/5/10; SJT
 ;	Replace cw_pdtmenu wth cw_pdmenu_plus: 28/9/16; SJT
+;	Select device by menu, not in options: 3/11/21; SJT
 ;-
 
 pro Gr_ctl_event, event
@@ -77,18 +78,43 @@ pro Gr_ctl_event, event
      'Hard Copy': graff_msg, pdefs.ids.hlptxt, 'Make PostScript version ' + $
                              'of plot'
      
-     'Hard Copy.Set up ...': if track_flag then $
+     'Hard Copy.Options ...': if track_flag then $
         graff_msg, pdefs.ids.hlptxt, 'Define hardcopy parameters and ' + $
                    'make copy' $
      else begin
-        ichange = graff_hard(pdefs,  /redraw)
+        ichange = gr_hardopts(pdefs)
         if (ichange) then nch = 10
      endelse
      
-     'Hard Copy.Quick': if track_flag then $
-        graff_msg, pdefs.ids.hlptxt, 'Make hardcopy using current settings' $
-     else ichange = graff_hard(pdefs, /no_set, /redraw)
+     'Hard Copy.PostScript': if track_flag then $
+        graff_msg, pdefs.ids.hlptxt, 'Make PS hardcopy' $
+     else begin
+        graff_hard, pdefs, /redraw
+        ichange = 0b
+     endelse
      
+     'Hard Copy.EPS': if track_flag then $
+        graff_msg, pdefs.ids.hlptxt, 'Make EPS hardcopy' $
+     else begin
+        graff_hard, pdefs, /redraw, /encapsulated
+        ichange = 0b
+     endelse
+
+     'Hard Copy.PDF': if track_flag then $
+        graff_msg, pdefs.ids.hlptxt, 'Make PDF hardcopy' $
+     else begin
+        graff_hard, pdefs, /redraw, /pdf
+        ichange = 0b
+     endelse
+
+     'Hard Copy.PDF (LaTeX)': if track_flag then $
+        graff_msg, pdefs.ids.hlptxt, 'Make embeddable PDF hardcopy' $
+     else begin
+        graff_hard, pdefs, /redraw, /pdf, /encapsulated
+        ichange = 0b
+     endelse
+
+ 
      'File': graff_msg, pdefs.ids.hlptxt, 'Saving and opening files'
      
      'File.Save': if track_flag then $
@@ -307,8 +333,11 @@ pro Gr_control_menu, base
              {control_opts, 0, 'Open ...', 'Ctrl+O'}, $
              {control_opts, 2, 'Exit', 'Ctrl+Q'}, $
              {control_opts, 1, 'Hard Copy', ''}, $
-             {control_opts, 0, 'Quick', 'Ctrl+P'}, $
-             {control_opts, 2, 'Set up ...', 'Ctrl+Shift+P'}, $
+             {control_opts, 0, 'Options ...', ''}, $
+             {control_opts, 0, 'PostScript', 'Ctrl+P'}, $
+             {control_opts, 0, 'EPS', 'Ctrl+E'}, $
+             {control_opts, 0, 'PDF', 'Ctrl+Shift+P'}, $
+             {control_opts, 2, 'PDF (LaTeX)', 'Ctrl+Shift+E'}, $
              {control_opts, 0, 'Options...', ''}, $
              {control_opts, 3, 'Help', ''}, $
              {control_opts, 0, 'User Guide...', 'Ctrl+H'}, $

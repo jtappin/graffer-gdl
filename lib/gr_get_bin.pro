@@ -33,6 +33,7 @@ pro gr_get_bin, pdefs, ilu, no_set = no_set
 ;	Add support for a second Y-scale: 22/12/11; SJT
 ;	V4 version: 6/1/12; SJT
 ;	Advanced axis style settings: 21/8/12; SJT
+;	Add options for plplot drivers: 29/11/13; SJT
 ;	PDF view command: 21/9/16; SJT
 ;	Font option: 11/2/20; SJT
 ;	Accept Fortran-only tags: 31/3/20; SJT
@@ -232,7 +233,7 @@ pro gr_get_bin, pdefs, ilu, no_set = no_set
                                 ; for genration PostScript hardcopy
                                 ; files.
                                 ; HC - Colour or monchrome
-                                ; HE - Eps or normal
+                                ; HE - Eps or normal (ignored)
                                 ; HO - landscape or portrait
                                 ;      (Orientation)
                                 ; HY - Use CMYK colour model or not.
@@ -263,7 +264,7 @@ pro gr_get_bin, pdefs, ilu, no_set = no_set
                                 ; HFN - Plot file name      
         
         'HC ': pdefs.hardset.colour = value
-        'HE ': pdefs.hardset.eps = value
+        'HE ':                  ; Ignore
         'HO ': pdefs.hardset.orient = value
         'HY ': pdefs.hardset.cmyk = value
         'HP ': pdefs.hardset.psize = value

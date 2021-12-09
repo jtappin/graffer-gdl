@@ -45,7 +45,10 @@ pro Gr_asc_save, pdefs
 ;	Add log_bands values: 24/6/21; SJT
 ;-
 
-  file = pdefs.dir+pdefs.name
+  if pdefs.dir ne './' then $
+     file = pdefs.dir+pdefs.name $
+  else file = pdefs.name
+
   if ~pdefs.transient.backup && file_test(file) then begin
      file_copy, file, file+'~', /overwrite
      pdefs.transient.backup = 1b
@@ -358,10 +361,11 @@ pro Gr_asc_save, pdefs
 
                                 ; The hardcopy options
 
-  printf, ilu, 'HC:', pdefs.hardset.colour, ':HE:', pdefs.hardset.eps, $ $
-          ':HO:', pdefs.hardset.orient, ':HP:', pdefs.hardset.psize, ':HT:', $
+  printf, ilu, 'HC:', pdefs.hardset.colour,  $
+          ':HO:', pdefs.hardset.orient, ':HP:', $
+          pdefs.hardset.psize, ':HT:', $
           pdefs.hardset.timestamp, ':HY:', pdefs.hardset.cmyk, format = $
-          "(6(a,i2))" 
+          "(5(a,i2))" 
   printf, ilu, 'HS:', pdefs.hardset.size, ':HD:', pdefs.hardset.off, $
           format = "(2(a,2f8.3))"
 

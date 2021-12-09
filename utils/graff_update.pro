@@ -450,7 +450,7 @@ pro graff_update, file, idx, name = name, polar = polar, $
            else if n_elements(x_values) ne ny then $
               message, "X & Y must have the same number of elements"
 
-           xydata = dblarr(nt, nx)
+           xydata = dblarr(nt, ny)
            xydata[0, *] = x_values
            xydata[1, *] = y_values
            if nt ge 3 then xydata[2, 0] = errs

@@ -310,11 +310,11 @@ pro Graff_add, file, a1, a2, a3, errors = errors, $
 
   if (keyword_set(xy_file)) then begin
      istat = gr_xy_read(pdefs, xy_file)
-     if (istat eq 0) then message, "Failed to add dataset from: ", $
+     if (istat eq 0) then message, "Failed to add dataset from: "+ $
                                    xy_file
   endif else if keyword_set(z_file) then begin
      istat = gr_z_read(pdefs, z_file)
-     if (istat eq 0) then message, "Failed to add dataset from: ", $
+     if (istat eq 0) then message, "Failed to add dataset from: "+ $
                                    z_file
      
   endif else if (n_params() eq 4) || z1flag then begin ; 2-D dataset
@@ -626,7 +626,7 @@ pro Graff_add, file, a1, a2, a3, errors = errors, $
      endif else (*pdefs.data)[pdefs.cset].zopts.ilog = 0
   endif
 
-  if (keyword_set(graffer)) then begin
+  if keyword_set(graffer) && graff_have_gui() then begin
      gr_state, /save            ;?
      if (keyword_set(ascii)) then gr_asc_save, pdefs $
      else gr_bin_save, pdefs

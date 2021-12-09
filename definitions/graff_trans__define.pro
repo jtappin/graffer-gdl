@@ -8,7 +8,7 @@
 pro graff_trans__define
 ;+
 ; NAME:
-;	graff_hard__define
+;	graff_trans__define
 ;
 ;
 ; PURPOSE:

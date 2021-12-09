@@ -472,7 +472,6 @@ pro Graffer, file, group = group, xsize = xsize, ysize = ysize, $
                             title = 'Graffer '+vstring+' Select', $
                             resource = 'Graffer') $
   else if (file_test(file, /dir)) then begin
-     file = gr_get_full_dir(file)
      file = dialog_pickfile(/read, $
                             filter = '*.grf', $
                             title = 'Graffer '+vstring+' Select', $
@@ -481,7 +480,6 @@ pro Graffer, file, group = group, xsize = xsize, ysize = ysize, $
   endif else if ((strpos(file, '*') > strpos(file, '?')) ne -1) then begin
      f = file
      gr_split_dir, f, dir
-     dir = gr_get_full_dir(dir)
      file = dialog_pickfile(/read, $
                             filter = f, $
                             title = 'Graffer '+vstring+' Select', $

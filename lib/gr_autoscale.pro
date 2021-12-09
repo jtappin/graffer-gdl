@@ -102,6 +102,7 @@ pro Gr_autoscale, pdefs, xaxis = xaxis, yaxis = yaxis, $
            widget_control, pdefs.ids.ymax_r, set_value = range(1)
         endif
      endif
+     
   endif else begin
      
      if ~keyword_set(ignore) && ~keyword_set(visible) then $

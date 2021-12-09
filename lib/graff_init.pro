@@ -45,6 +45,7 @@ pro Graff_init, pdefs, file, version = version, ttype = ttype
 ;	Make colour PS the default: 14/2/12; SJT
 ;	Set current font option to the initial state: 12/2/20; SJT
 ;	Move top level options out of PDEFS: 21/5/20; SJT
+;	Initialize key charsize to 1: 4/11/21; SJT
 ;-
 
   common graffer_options, optblock
@@ -67,8 +68,6 @@ pro Graff_init, pdefs, file, version = version, ttype = ttype
   endif else begin
      fc = file
      gr_split_dir, fc, dir
-     dir = gr_get_full_dir(dir)
-     
   endelse
 
   if (n_elements(ds_dir) eq 0) then ds_dir = dir
@@ -94,7 +93,8 @@ pro Graff_init, pdefs, file, version = version, ttype = ttype
 
   pdefs.key.Norm =     2
   pdefs.key.cols =     1
-
+  pdefs.key.csize = 1.d
+  
   pdefs.transient.Imove =   -1l
   pdefs.transient.hairs = 1b
 
