@@ -5,7 +5,9 @@
 ; the Free Software Foundation; either version 2 of the License, or     
 ; (at your option) any later version.                                   
 
-pro gr_pl_axes, pdefs, csiz, overlay = overlay, secondary = secondary
+pro gr_pl_axes, pdefs, csiz, overlay = overlay, $
+                secondary = secondary, $
+                setup = setup
 
 ;+
 ; GR_PL_AXES
@@ -20,9 +22,13 @@ pro gr_pl_axes, pdefs, csiz, overlay = overlay, secondary = secondary
 ;	csiz	float	input	Charsize scaling (hardcopy only).
 ;
 ; Keyword:
-;	overlay	??	input	If set, then don't erase before plotting
+;	/overlay	input	If set, then don't erase before plotting
 ;				(used to replace the ticks afer doing
 ;				a colour plot).
+;	/setup		input	If set, then don't do any
+;				drawing at all, just establish the
+;				coordinates (basically GDL ignores !x,
+;				!y and does what IDL says it does).
 ;
 ; History:
 ;	Cut from GR_PLOT_OBJECT and overlay added: 11/12/96; SJT
@@ -33,54 +39,58 @@ pro gr_pl_axes, pdefs, csiz, overlay = overlay, secondary = secondary
 ;	Y-time labelling: 12/1/12; SJT
 ;	Advanced axis style settings: 21/8/12; SJT
 ;	Don't plot annotations if overlay: 2/10/17; SJT
+;	Add /setup, and tidy up logical vs. bitwiase ops: 13/12/21; SJT
 ;-
 
   lcolor = 0l
 
-  if ((pdefs.xsty.time) and 1) then begin
-     xtf = 'gr_time_fmt'
-     junk = gr_time_fmt(0, range = pdefs.xrange, options = $
-                        pdefs.xsty)
-  endif else xtf = pdefs.xsty.format
+  if ~keyword_set(setup) then begin ; Should be safe to leave
+                                ; undefined if not drawing.
+     if pdefs.xsty.time and 1 then begin
+        xtf = 'gr_time_fmt'
+        junk = gr_time_fmt(0, range = pdefs.xrange, options = $
+                           pdefs.xsty)
+     endif else xtf = pdefs.xsty.format
 
-  if keyword_set(secondary) then begin
-     if ((pdefs.ysty_r.time) and 1) then begin
-        ytf = 'gr_time_fmt'
-        junk = gr_time_fmt(1, range = pdefs.yrange_r, options = $
-                           pdefs.ysty_r)
-     endif else ytf = pdefs.ysty_r.format
-  endif else begin
-     if ((pdefs.ysty.time) and 1) then begin
-        ytf = 'gr_time_fmt'
-        junk = gr_time_fmt(1, range = pdefs.yrange, options = $
+     if keyword_set(secondary) then begin
+        if pdefs.ysty_r.time and 1 then begin
+           ytf = 'gr_time_fmt'
+           junk = gr_time_fmt(1, range = pdefs.yrange_r, options = $
+                              pdefs.ysty_r)
+        endif else ytf = pdefs.ysty_r.format
+     endif else begin
+        if pdefs.ysty.time and 1 then begin
+           ytf = 'gr_time_fmt'
+           junk = gr_time_fmt(1, range = pdefs.yrange, options = $
                            pdefs.ysty)
-     endif else  ytf = pdefs.ysty.format
-  endelse
+        endif else  ytf = pdefs.ysty.format
+     endelse
   
-  if (pdefs.xsty.grid ne 0 and ((pdefs.xsty.idl and 12) eq 0)) then begin
-     xtickl = 0.5
-     xtickst = pdefs.xsty.grid-1
-  endif else begin
-     xtickl = 0.
-     xtickst = 0
-  endelse
+     if pdefs.xsty.grid ne 0  && (pdefs.xsty.idl and 12) eq 0 then begin
+        xtickl = 0.5
+        xtickst = pdefs.xsty.grid-1
+     endif else begin
+        xtickl = 0.
+        xtickst = 0
+     endelse
 
-  if (keyword_set(secondary) and pdefs.y_right and $
-      pdefs.ysty_r.grid ne 0 and $
-      ((pdefs.ysty_r.idl and 12) eq 0)) then begin
-     ytickl = 1.
-     ytickst = pdefs.ysty_r.grid-1
-  endif else if (~keyword_set(secondary) and $
-                 pdefs.ysty.grid ne 0 and $
-                 ((pdefs.ysty.idl and 12) eq 0)) then begin
-     if pdefs.y_right then ytickl = 1.0 $
-     else ytickl = 0.5
-     ytickst = pdefs.ysty.grid-1
-  endif else begin
-     ytickl = 0.
-     ytickst = 0
-  endelse
-
+     if keyword_set(secondary) && pdefs.y_right && $
+        pdefs.ysty_r.grid ne 0 && $
+        (pdefs.ysty_r.idl and 12) eq 0 then begin
+        ytickl = 1.
+        ytickst = pdefs.ysty_r.grid-1
+     endif else if ~keyword_set(secondary) && $
+                    pdefs.ysty.grid ne 0 && $
+                    (pdefs.ysty.idl and 12) eq 0 then begin
+        if pdefs.y_right then ytickl = 1.0 $
+        else ytickl = 0.5
+        ytickst = pdefs.ysty.grid-1
+     endif else begin
+        ytickl = 0.
+        ytickst = 0
+     endelse
+  endif
+  
   isotropic = pdefs.isotropic && ~pdefs.y_right
   mflag = pdefs.match && !d.name ne 'PS' && $
      widget_info(pdefs.ids.draw, /valid)
@@ -124,7 +134,7 @@ pro gr_pl_axes, pdefs, csiz, overlay = overlay, secondary = secondary
   if pdefs.y_right then xmargin = [10, 10] $
   else xmargin = [10, 3]
 
-  if ((pdefs.xsty.idl and 4) ne 0) then $
+  if (pdefs.xsty.idl and 4) ne 0 then $
      xzat = pdefs.xtitle $
   else xzat = ''
 
@@ -176,10 +186,10 @@ pro gr_pl_axes, pdefs, csiz, overlay = overlay, secondary = secondary
      xmajor = n_elements(xtvals)-1
   endif else xmajor = pdefs.xsty.major
 
-  noerase = (pdefs.y_right and keyword_set(secondary)) or $
-            keyword_set(overlay) 
+  noerase = (pdefs.y_right && keyword_set(secondary)) || $
+            keyword_set(overlay) || keyword_set(setup)
 
-  if keyword_set(overlay) then begin
+  if keyword_set(overlay) || keyword_set(setup) then begin
      ynames = replicate(' ', 30)
      xnames = replicate(' ', 30)
      ytitle = ''
@@ -188,6 +198,10 @@ pro gr_pl_axes, pdefs, csiz, overlay = overlay, secondary = secondary
      subtitle = ''
      xzat = ''
      yzat = ''
+     if keyword_set(setup) then begin
+        xsty or= 4
+        ysty or= 4
+     endif
   endif else begin
      xtitle = pdefs.xtitle
      title = pdefs.title
@@ -209,7 +223,9 @@ pro gr_pl_axes, pdefs, csiz, overlay = overlay, secondary = secondary
         xtickv = xtvals, ytickv $
         = ytvals, color = lcolour
 
-  if ~keyword_set(secondary) and mflag then $
+  if keyword_set(setup) then return
+  
+  if ~keyword_set(secondary) && mflag then $
      plots, /norm, !p.region[[0, 0, 2, 2, 0]], $
             !p.region[[1, 3, 3, 1, 1]], color = lcolour
 
@@ -257,7 +273,7 @@ pro gr_pl_axes, pdefs, csiz, overlay = overlay, secondary = secondary
   endif
 
   if keyword_set(secondary) then begin
-     if (pdefs.ysty.extra and 2) ne 0 or (pdefs.ysty_r.extra and 8) eq 0 $
+     if (pdefs.ysty.extra and 2) ne 0 || (pdefs.ysty_r.extra and 8) eq 0 $
      then ynames = replicate(' ', 30)
      if (pdefs.ysty_r.extra and 2) ne 0 then axis, yaxis = 1, 0., $
         pdefs.yrange_r(0), yrange = yrange, $
@@ -267,11 +283,11 @@ pro gr_pl_axes, pdefs, csiz, overlay = overlay, secondary = secondary
         yticks = ymajor, ytickv = ytvals, $
         color = lcolour
   endif else begin
-     if pdefs.y_right and (pdefs.ysty_r.extra and 2) ne 0 or $
+     if pdefs.y_right && (pdefs.ysty_r.extra and 2) ne 0 or $
         (pdefs.ysty.extra and 8) eq 0 then ynames = $
         replicate(' ', 30)
      if (pdefs.xsty.extra and 8) eq 0 then xnames = replicate(' ', 30)
-     if (pdefs.xsty.extra and 2) ne 0 and ~pdefs.y_right then $
+     if (pdefs.xsty.extra and 2) ne 0 && ~pdefs.y_right then $
         axis, xaxis = 0, pdefs.xrange(0), $
               0., xminor = pdefs.xsty.minor, xtickformat = xtf, $
               xrange = $
