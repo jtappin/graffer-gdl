@@ -21,6 +21,9 @@ pro Graff_msg, mwid, message, help=help
 ; History:
 ;	Original: 18/8/95; SJT
 ;	Change to take widget ID as first argument: 12/5/95; SJT
+;	Just print the message (no widgets exist): ??/??/2013; SJT
+;	Add the ID argument back, but ignore it if it's there:
+;	19/6/20; SJT
 ;-
 
 if (widget_info(mwid, /valid)) then $
