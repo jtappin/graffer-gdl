@@ -66,6 +66,7 @@ pro graff_annotate, file, value, id = id, index = index, $
 ;
 ; History:
 ;	Original: 13/6/12; SJT
+;	Realign with main IDL package: 21/5/20; SJT
 ;-
 
   on_error, 2                   ; Return to caller on error
@@ -147,6 +148,7 @@ pro graff_annotate, file, value, id = id, index = index, $
   else if keyword_set(hershey) then (*pdefs.text)[idx].ffamily = -1 $
   else if keyword_set(truetype) then (*pdefs.text)[idx].ffamily = 1
 
+  
   if n_elements(font) ne 0 then (*pdefs.text)[idx].font = font
   if n_elements(thick) ne 0 then (*pdefs.text)[idx].thick = thick
 
@@ -156,6 +158,7 @@ pro graff_annotate, file, value, id = id, index = index, $
 
   if (keyword_set(ascii)) then gr_asc_save, pdefs $
   else gr_bin_save, pdefs
+
   graff_clear, pdefs
 
   status = 1

@@ -195,6 +195,7 @@ case but of
 
                                 ; Update the Y-transform
         !y = pdefs.ytransform[event.index]
+
                                 ;  Convert back to new data coords
         gr_coord_convert, xt, yt, xtt, ytt, /norm, /to_data
 

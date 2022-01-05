@@ -169,6 +169,11 @@ pro Graff_add, file, a1, a2, a3, errors = errors, $
 ;	z_log -> z_mode: 18/11/15: SJT
 ;	Add non-linear contour level maps: 12/10/16; SJT
 ;	Allow long/triple colours: 1/3/19; SJT
+;	Remove reference to pdefs.opts: 21/5/20; SJT
+;	Treat single 2-D array as a Z dataset: 1/9/20; SJT
+;	Remove spurious +1 in ctable handling: 13/1/21; SJT
+;	Force Y_right to be enabled if a DS on the right axis is
+;	added: 29/1/21; SJT
 ;	Move top level options out of PDEFS: 21/5/20; SJT
 ;	Treat single 1×n array as 1-D: 8/5/21; SJT
 ;-
@@ -507,6 +512,7 @@ pro Graff_add, file, a1, a2, a3, errors = errors, $
      (*pdefs.data)[pdefs.cset].descript = description 
   if (n_elements(noclip)  ne 0) then (*pdefs.data)[pdefs.cset].noclip $
      = noclip
+
   if n_elements(min_val) ne 0 then (*pdefs.data)[pdefs.cset].min_val = $
      min_val $
   else (*pdefs.data)[pdefs.cset].min_val = !values.d_nan

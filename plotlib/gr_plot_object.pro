@@ -135,7 +135,9 @@ pro Gr_plot_object, pdefs, no_null = no_null, charsize = charsize, $
      if not ptr_valid((*pdefs.data)[i].xydata) then continue
 
      if (pdefs.y_right) then $
-        !y = pdefs.ytransform[(*pdefs.data)[i].y_axis]
+        gr_pl_axes, pdefs, csiz, secondary = (*pdefs.data)[i].y_axis, $
+                    /setup
+        ;; !y = pdefs.ytransform[(*pdefs.data)[i].y_axis]
      
      if (type(i) eq -4) then begin
         if (plot2) then $
@@ -160,7 +162,8 @@ pro Gr_plot_object, pdefs, no_null = no_null, charsize = charsize, $
 ; Key or text strings (if plotted in data coordinates) always go by
 ; the primary Y-axis
 
-  !y = pdefs.ytransform[0]
+  gr_pl_axes, pdefs, csiz, /setup
+  ;; !y = pdefs.ytransform[0]
   if (pdefs.key.use && ~pdefs.transient.current_only) then $
      gr_pl_key, pdefs, csiz     ; Must follow
                                 ; plotting the traces else grayscale
@@ -186,7 +189,10 @@ pro Gr_plot_object, pdefs, no_null = no_null, charsize = charsize, $
 
 ; Set the Y-transform appropriate to the current dataset.
   if pdefs.y_right then $
-     !y = pdefs.ytransform[(*pdefs.data)[pdefs.cset].y_axis]
+     gr_pl_axes, pdefs, csiz, $
+                 secondary = (*pdefs.data)[pdefs.cset].y_axis, $
+                 /setup
+     ;; !y = pdefs.ytransform[(*pdefs.data)[pdefs.cset].y_axis]
 
   empty                         ; Force an update
 
