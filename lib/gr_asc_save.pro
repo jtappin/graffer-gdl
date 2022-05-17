@@ -208,10 +208,29 @@ pro Gr_asc_save, pdefs
            
            
         endif else begin        ; Ordinary data
-           sxy = size(xydata)
-           fmtd = '('+string(sxy(1), format = "(I0)")+'g19.12)'
-           printf, ilu, 'VS:', sxy(1), format = "(A,I2)"
-           printf, ilu, xydata, format = fmtd
+           x = *xydata.x
+           y = *xydata.y
+           if ptr_valid(xydata.x_err) then begin
+              x_err = *xydata.x_err
+              sxe = size(x_err, /dim)
+              nxe = sxe[0]
+           endif else nxe = 0
+           
+           if ptr_valid(xydata.y_err) then begin
+              y_err = *xydata.y_err
+              sye = size(y_err, /dim)
+              nye = sye[0]
+           endif else nye = 0
+  
+           xyvals = dblarr(2+nxe+nye, n1)
+           xyvals[0, *] = x
+           xyvals[1, *] = y
+           if nxe gt 0 then xyvals[2:2+nxe-1, *] = x_err
+           if nye gt 0 then xyvals[2+nxe:*, *] = y_err
+
+           fmtd = '('+string(2+nxe+nye, format = "(I0)")+'g19.12)'
+           printf, ilu, 'VS:', 2+nxe+nye, format = "(A,I2)"
+           printf, ilu, xyvals, format = fmtd
            printf, ilu, 'VE:', format = "(a)"
         endelse
      endif
@@ -347,7 +366,7 @@ pro Gr_asc_save, pdefs
   printf, ilu, 'KT:', pdefs.key.title, format = "(2a)"
 
   if ptr_valid(pdefs.key.list) then $
-     printf, ilu, 'KLN:', n_elements(*pdefs.key.list), $  $
+     printf, ilu, 'KLN:', n_elements(*pdefs.key.list), $
              ':KL:', *pdefs.key.list, format = "(a,i5,a," + $
              string(n_elements(*pdefs.key.list), $
                     format = "(I0)") + "I5)"
@@ -370,19 +389,20 @@ pro Gr_asc_save, pdefs
           format = "(2(a,2f8.3))"
 
   printf, ilu, 'HAB:', pdefs.hardset.action[0], 'HAA:', $
-          pdefs.hardset.action(1), format = "(2a/2a)"
+          pdefs.hardset.action(1), format = "(2a,/2a)"
   printf, ilu, 'HVB:', pdefs.hardset.viewer[0], 'HVA:', $
-          pdefs.hardset.viewer[1], format = "(2a/2a)"
+          pdefs.hardset.viewer[1], format = "(2a,/2a)"
   printf, ilu, 'HPB:', pdefs.hardset.pdfviewer[0], 'HPA:', $
-          pdefs.hardset.pdfviewer[1], format = "(2a/2a)"
-
+          pdefs.hardset.pdfviewer[1], format = "(2a,/2a)"
+  printf, ilu, 'HPP:', pdefs.hardset.prompt, format = "(a,3i3)"
+  
   printf, ilu, 'HF:', pdefs.hardset.font.family, ':HWS:', $
           pdefs.hardset.font.wg_sl, format = "(a,i3,a,i2)"
   printf, ilu, 'HFN:', pdefs.hardset.name, format = "(2a)"
 
   printf, ilu, 'HPS:', pdefs.hardset.psdev, $
           'HEP:', pdefs.hardset.epsdev, 'HPD:', pdefs.hardset.pdfdev, $
-          'HSV:', pdefs.hardset.svgdev
+          'HSV:', pdefs.hardset.svgdev, format = "(2a)" ; Force 1 per line.
           
   free_lun, ilu
 
