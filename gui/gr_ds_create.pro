@@ -47,7 +47,8 @@ pro Gr_dsc_event, event
 
   case but of
      "YAXIS": begin             ; The y-axis selector
-        if (track_flag) then graff_msg, pdefs.ids.hlptxt, /help, 'Select main or ' + $
+        if (track_flag) then graff_msg, pdefs.ids.hlptxt, /help, $
+                                        'Select main or ' + $
                                         'alternate Y-axis' $
         else begin
            (*pdefs.data)[pdefs.cset].y_axis = event.index
@@ -56,11 +57,13 @@ pro Gr_dsc_event, event
         endelse
      end
      'EDITOR': case event.value of
-        'Function': graff_msg, pdefs.ids.hlptxt, /help, 'Enter data in the form ' + $
+        'Function': graff_msg, pdefs.ids.hlptxt, /help, $
+                               'Enter data in the form ' + $
                                'of a function'
         
-        'Function.y = f(x) ...':if (track_flag) then $
-           graff_msg, pdefs.ids.hlptxt, /help, 'Function with Y as a function of X' $
+        'Function.y = f(x) ...': if (track_flag) then $
+           graff_msg, pdefs.ids.hlptxt, /help, $
+                      'Function with Y as a function of X' $
         else begin
            ichange = graff_funct(pdefs)
            idraw_flag = ichange
@@ -68,7 +71,8 @@ pro Gr_dsc_event, event
         endelse
         
         'Function.x = f(y) ...': if (track_flag) then $
-           graff_msg, pdefs.ids.hlptxt, /help, 'Function with X as a function of Y' $
+           graff_msg, pdefs.ids.hlptxt, /help, $
+                      'Function with X as a function of Y' $
         else begin
            ichange = graff_funct(pdefs, /y_funct)
            idraw_flag = ichange
@@ -76,7 +80,8 @@ pro Gr_dsc_event, event
         endelse 
         
         'Function.x = f(t), y = g(t) ...': if (track_flag) then $
-           graff_msg, pdefs.ids.hlptxt, /help, 'Function with both X and Y ' + $
+           graff_msg, pdefs.ids.hlptxt, /help, $
+                      'Function with both X and Y ' + $
                       'functions of a parameter T' $
         else  begin
            ichange = graff_pfunct(pdefs)
@@ -121,11 +126,13 @@ pro Gr_dsc_event, event
            if (ichange) then nch = 21
         endelse
         
-        'XY data': graff_msg, pdefs.ids.hlptxt, /help, 'Enter data for current ' + $
+        'XY data': graff_msg, pdefs.ids.hlptxt, /help, $
+                              'Enter data for current ' + $
                               'data set'
         
         'XY data.From file ...': if (track_flag) then $
-           graff_msg, pdefs.ids.hlptxt, /help, 'Read X, Y, [error] data from an ' + $
+           graff_msg, pdefs.ids.hlptxt, /help, $
+                      'Read X, Y, [error] data from an ' + $
                       'external file' $
         else begin
            ichange = gr_xy_read(pdefs)
@@ -133,60 +140,9 @@ pro Gr_dsc_event, event
            if (ichange) then nch = 5
         end
         
-        'XY data.Copy ...':if (track_flag) then $
-           graff_msg, pdefs.ids.hlptxt, /help, 'Copy from another XY dataset' $
-        else begin
-           ichange = gr_xycopy_menu(pdefs)
-           idraw_flag = ichange
-           if (ichange) then nch = 21
-        end
-        'XY data.2D Datasets': graff_msg, pdefs.ids.hlptxt, /help,  $
-                                          'Create a 2 dimensional dataset'
-        
-        'XY data.2D Datasets.Top level variables ...': if (track_flag) then $
-           graff_msg, pdefs.ids.hlptxt, /help, 'Read 2D data from IDL top-level ' + $
-                      'variables' $
-        else begin
-           ichange = gr_tlv_z(pdefs)
-           idraw_flag = ichange
-           if (ichange) then nch = 21
-        end
-        
-        'XY data.2D Datasets.From file ...':if (track_flag) then $
-           graff_msg, pdefs.ids.hlptxt, /help, 'Read 2D data from an external file' $
-        else begin
-           ichange = gr_z_read(pdefs)
-           idraw_flag = ichange
-           if (ichange) then nch = 21
-        end
-        
-        'XY data.2D Datasets.Copy ...': if (track_flag) then $ $
-           graff_msg, pdefs.ids.hlptxt, /help, 'Copy from another 2D dataset' $
-        else begin
-           ichange = gr_zcopy_menu(pdefs)
-           idraw_flag = ichange
-           if (ichange) then nch = 21
-        end
-        
-        'XY data.Rescale Current ...': if (track_flag) then $
-           graff_msg, pdefs.ids.hlptxt, /help, 'Rescale the current dataset' $
-        else begin
-           ichange = graff_rescale(pdefs)
-           idraw_flag = ichange
-           if (ichange) then nch = 21
-        end
-        
-        'XY data.Edit values ...': if (track_flag) then $
-           graff_msg, pdefs.ids.hlptxt, /help, 'Enter X, Y, [error] data from a ' + $
-                      'widget entry box' $
-        else begin
-           ichange = gr_xy_wid(pdefs)
-           idraw_flag = ichange
-           if (ichange) then nch = 21
-        end
-        
         'XY data.Top level variables ...': if (track_flag) then $
-           graff_msg, pdefs.ids.hlptxt, /help, 'Get X, Y, [error] values from IDL ' + $
+           graff_msg, pdefs.ids.hlptxt, /help, $
+                      'Get X, Y, [error] values from IDL ' + $
                       'top-level variables' $
         else  begin
            ichange = graff_tlv(pdefs)
@@ -194,6 +150,96 @@ pro Gr_dsc_event, event
            if (ichange) then nch = 21
         end
         
+        'XY Data.Edit values ...': if (track_flag) then $
+           graff_msg, pdefs.ids.hlptxt, /help, $
+                      'Enter X, Y, [error] data from a ' + $
+                      'widget entry box' $
+        else begin
+           ichange = gr_xy_wid(pdefs)
+           idraw_flag = ichange
+           if (ichange) then nch = 21
+        endelse
+
+        'XY data.Copy ...':if (track_flag) then $
+           graff_msg, pdefs.ids.hlptxt, /help, $
+                      'Copy from another XY dataset' $
+        else begin
+           ichange = gr_xycopy_menu(pdefs)
+           idraw_flag = ichange
+           if (ichange) then nch = 21
+        endelse
+        
+        'Z data': graff_msg, pdefs.ids.hlptxt, /help,  $
+                             'Create a 2 dimensional dataset'
+        
+        'Z data.Top level variables ...': if (track_flag) then $
+           graff_msg, pdefs.ids.hlptxt, /help, $
+                      'Read 2D data from IDL top-level ' + $
+                      'variables' $
+        else begin
+           ichange = gr_tlv_z(pdefs)
+           idraw_flag = ichange
+           if (ichange) then nch = 21
+        end
+        
+        'Z data.From file ...':if (track_flag) then $
+           graff_msg, pdefs.ids.hlptxt, /help, $
+                      'Read 2D data from an external file' $
+        else begin
+           ichange = gr_z_read(pdefs)
+           idraw_flag = ichange
+           if (ichange) then nch = 21
+        end
+        
+        'Z data.Copy ...': if (track_flag) then $
+           graff_msg, pdefs.ids.hlptxt, /help, 'Copy from another 2D dataset' $
+        else begin
+           ichange = gr_zcopy_menu(pdefs)
+           idraw_flag = ichange
+           if (ichange) then nch = 21
+        end
+
+        'Operators': if track_flag then $
+           graff_msg, pdefs.ids.hlptxt, /help, 'Common dataset operations'
+        
+        'Operators.Rescale Current ...': if (track_flag) then $
+           graff_msg, pdefs.ids.hlptxt, /help, 'Rescale the current dataset' $
+        else begin
+           ichange = graff_rescale(pdefs)
+           idraw_flag = ichange
+           if (ichange) then nch = 21
+        end
+        
+        'Operators.Transpose': if track_flag then $
+           graff_msg, pdefs.ids.hlptxt, /help, $
+                      "Transpose the current dataset." $
+        else begin
+           ichange = gr_ds_transpose(pdefs)
+           idraw_flag = ichange
+           if (ichange) then nch = 21
+        endelse
+
+        'Operators.Erase': if track_flag then $
+           graff_msg, pdefs.ids.hlptxt, /help, $
+                      'Erase the values in the current ' + $
+                      'data set' $
+        else begin
+           ichange = gr_ds_erase(pdefs)
+
+           draw_flag = ichange
+           if ichange then nch = 21
+        end
+        'Operators.Full Erase': if track_flag then $
+           graff_msg, pdefs.ids.hlptxt, /help, $
+                      'Erase the values and formatting in the current ' + $
+                      'data set' $
+        else begin
+           ichange = gr_ds_erase(pdefs, /full)
+
+           draw_flag = ichange
+           if ichange then nch = 21
+        end
+
      endcase
   endcase
 
@@ -236,20 +282,24 @@ pro Gr_ds_create, base, pdefs
              {ds_create_opts, 0, 'From file ...'}, $
              {ds_create_opts, 0, 'Edit values ...'}, $
              {ds_create_opts, 0, 'Top level variables ...'}, $
-             {ds_create_opts, 0, 'Copy ...'}, $
-             {ds_create_opts, 1, '2D Datasets'}, $
+             {ds_create_opts, 2, 'Copy ...'}, $
+             {ds_create_opts, 1, 'Z data'}, $
              {ds_create_opts, 0, 'From file ...'}, $
              {ds_create_opts, 0, 'Top level variables ...'}, $
              {ds_create_opts, 2, 'Copy ...'}, $
-             {ds_create_opts, 2, 'Rescale Current ...'}, $
-             {ds_create_opts, 3, 'Function'}, $
+             {ds_create_opts, 1, 'Function'}, $
              {ds_create_opts, 0, 'y = f(x) ...'}, $
              {ds_create_opts, 0, 'x = f(y) ...'}, $
              {ds_create_opts, 0, 'x = f(t), y = g(t) ...'}, $
              {ds_create_opts, 0, 'z = f(x,y) ...'}, $
              {ds_create_opts, 0, 'From file ...'}, $
              {ds_create_opts, 0, 'Copy ...'}, $
-             {ds_create_opts, 2, 'Fit Dataset ...'}]
+             {ds_create_opts, 2, 'Fit Dataset ...'}, $
+             {ds_create_opts, 3, 'Operators'}, $
+             {ds_create_opts, 0, 'Rescale Current ...'}, $
+             {ds_create_opts, 0, 'Transpose'}, $
+             {ds_create_opts, 0, 'Erase'}, $
+             {ds_create_opts, 2, 'Full Erase'}]
 
   jb = widget_base(base, $
                    /row, $
