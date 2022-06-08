@@ -428,7 +428,7 @@ pro graff_update, file, idx, name = name, polar = polar, $
 
   if keyword_set(z_pxsize) then $
      (*pdefs.data)[index].zopts.pxsize = z_pxsize $
-  else (*pdefs.data)[index].zopts.Pxsize = 0.5
+  else (*pdefs.data)[index].zopts.Pxsize = 0.1
 
   if (n_elements(z_missing) ne 0) then $
      (*pdefs.data)[index].zopts.missing = z_missing
@@ -478,10 +478,12 @@ pro graff_update, file, idx, name = name, polar = polar, $
         if keyword_set(errors) && $
            ~(keyword_set(x_errors) || keyword_set(y_errors)) then begin
            message, /cont, "X_ERRORS & Y_ERRORS are now preferred to ERRORS."
-           ok = gr_update_xy_old(data, x_values, y_values, errors, $
+           ok = gr_update_xy_old(data, reform(x_values), $
+                                 reform(y_values), errors, $
                                  errtype, keyword_set(retain_unset))
         endif else $
-           ok = gr_update_xy(data, x_values, y_values, x_errors, $
+           ok = gr_update_xy(data, reform(x_values), $
+                             reform(y_values), x_errors, $
                              y_errors, keyword_set(retain_unset))
         
         if ok then (*pdefs.data)[index] = data
