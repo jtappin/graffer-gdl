@@ -1,5 +1,5 @@
 ; LICENCE:
-; Copyright (C) 1995-2021: SJT
+; Copyright (C) 1995-2022: SJT
 ; This program is free software; you can redistribute it and/or modify  
 ; it under the terms of the GNU General Public License as published by  
 ; the Free Software Foundation; either version 2 of the License, or     
@@ -380,7 +380,7 @@ pro Gr_get_asc, pdefs, ilu, no_set = no_set
               goto, new_line
            end
            'HPP': pdefs.hardset.prompt = $
-              gr_get_byt_val(tag_val[itag+1], 3)
+              gr_byt_val(tag_val[itag+1], 3)
 
            'HF': pdefs.hardset.font.family = $
               gr_int_val(tag_val[itag+1], 1)

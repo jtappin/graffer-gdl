@@ -1,5 +1,5 @@
 ; LICENCE:
-; Copyright (C) 1995-2021: SJT
+; Copyright (C) 1995-2022: SJT
 ; This program is free software; you can redistribute it and/or modify  
 ; it under the terms of the GNU General Public License as published by  
 ; the Free Software Foundation; either version 2 of the License, or     
@@ -442,7 +442,6 @@ pro Gr_get_ds, data, nset, ilu, msgid
            else xydata.y_is_2d = gr_byt_val(tag_val[itag+1], 1)
 
            'DE': begin
-              print, "++++++ END OF DS ++++++"
               goto, ds_read
            end
            
