@@ -24,19 +24,19 @@
 \setlength{\oddsidemargin}{5mm}
 \setlength{\evensidemargin}{5mm}
 \pagestyle{myheadings}
-\markboth{GRAFFER}{Version 4.09}
+\markboth{GRAFFER}{Version 5.00}
 
 \begin{document}
 
 \title{\includegraphics[width=0.80\textwidth]{logo} \\
 A Flexible Electronic Graph Paper\\
-Version 4.09\\
+Version 5.00\\
 File Format Description}
 
 \author{\textsf{\textbf{\Large James Tappin}}\\
-\texttt{\textbf{\Large james.tappin@stfc.ac.uk}}}
+\texttt{\textbf{\Large jtappin at gmail dot com}}}
 
-\date{\textsf{\textbf{\large Oct.\ 2016}}}
+\date{\textsf{\textbf{\large May 2022}}}
 
 \maketitle
 
@@ -74,7 +74,8 @@ As is normal in IDL:
 \begin{description}
 \item [Int] is a short (2 byte) integer
 \item [Long] is a long (4 byte) integer
-\item [Byte] is a single byte
+\item [Byte] is a single byte. In Fortran this is usually a logical,
+  but there are a few 1-byte ints.
 \item [Float] is a short (4 byte) floating point number
 \item [Double] is a long (8 byte) floating point number
 \item [String] is a string of characters of variable length.
@@ -103,7 +104,7 @@ keywords and variables.
     2 & 2 & Int & Vmaj & Major version number. \\
     3 & 2 & Int & Vmin & Minor version number. \\
     4 & 4 & Long & Ldir & Length of the directory name. \\
-    5 & Ldir & String & Dirname & +The directory name. \\
+    5 & Ldir & String & Dirname & The directory name. \\
     6 & 4 & Long & Lfile & Length of the file name. \\
     7 & Lfile & String & Fname & The file name.\\
     8 & 4 & Long & Ldate & Length of the date string.\\
@@ -128,6 +129,15 @@ whether the file needs to be byteswapped.
 
 For binary files, tags are always padded with spaces to a length
 of 3. 
+
+\subsubsection{Version 5}
+\label{sec:bin_v5}
+
+The one major structural change justifying a major version increments
+is the change in how the classic XY datasets are stored. Now the
+internal data structure uses a structure with pointers to the X and Y
+values and appropriate errors. This is reflected in the new \texttt{VX},
+\texttt{VY}, \texttt{VXE}, and \texttt{VYE} tags in binary files.
 
 \subsubsection{Version 4}
 \label{sec:bin_v4}
@@ -173,7 +183,7 @@ ordering).
     EDATA & TYPE & ENVALS & The actual values in the element.\\
     \hline
   \end{tabular}
-  \caption{The subfields of a Graffer~V4 record.}
+  \caption{The subfields of a Graffer~V4+ record.}
   \label{tab:graff_record}
 \end{table}
 
@@ -186,12 +196,14 @@ type and number of data required by the particular tag. For string quantities,
 the string is preceded by its length (a long). This became an issue if
 the type of a field was changed (e.g.\ from float to double or int to long).
 
+Version 2 and 3 files cannot be read directly by the Fortran version,
+but the gdl/idl procedure \texttt{graff\_convert} can be used to
+convert to the current format.
+
 \subsubsection{Version 1}
 \label{sec:vers1}
 
-Version 1 files were a fixed format file with no tags, and relatively
-limited capabilities. Version 4.x will still read V1 files. They are
-very rare nowadays.
+There were no binary files in version 1.
 
 \subsection{ASCII files.}
 
@@ -215,6 +227,13 @@ The formats used for the different variable types are not fixed as
 some quantities have ranges which are much more limited than the type
 that they are stored as. The format needs to leave spaces between quantities
 as free-form reads are used after the line has been split at the colons.
+
+\subsection{Version 1}
+\label{sec:vers1}
+
+Version 1 files were a fixed format file with no tags, and relatively
+limited capabilities. Version 4.x will still read V1 files. They are
+very rare nowadays. There were no binary files in version 1.
 
 
 \section{General Tags}
@@ -246,6 +265,7 @@ to the whole file.
   GI & Byte & 1 & Whether the plot has isotropic axes.\\
   GHA & Byte & 1 & Whether the screen plot should use the hard copy
   aspect ratio.\\
+  GF & Int & 1 & Font family for annotations (used in IDL only).\\
   \hline \multicolumn{4}{|c|}{The next group of tags are responsible
     for
     defining the X-axis properties}\\
@@ -258,7 +278,9 @@ to the whole file.
   (only in old files, this is now replaced by the \texttt{XMN} tag);
   2$\Rightarrow$Place an axis at the origin; 4$\Rightarrow$Suppress
   annotations on the
-  axis; 8$\Rightarrow$Annotate an origin axis; Other bits unused at present)\\
+  axis; 8$\Rightarrow$Annotate an origin axis (not implemented in
+  Fortran); 16$\Rightarrow$Write Y-axis labels parallel to the Axis
+  (Fortran only); Other bits unused at present)\\
   XSG& Int& 1& X-axis grid lines setting (0$\Rightarrow$No grid lines;
   other values
   $\Rightarrow$ Grid line in IDL linestyle (value -1)\\
@@ -267,13 +289,18 @@ to the whole file.
   unit, next 2 display unit (0=s, 1=m, 2=h, 3=d)\\
   XSZ& Float& 1&
   X-axis value for stored zero in time label. (Display units).\\
-  XMJ & Int & 1 & The number of major intervals to use in the X-axis.\\
+  XMJ & Int & 1 & The number of major intervals to use in the
+  X-axis. (Not implemented in Fortran)\\
+  XMS & Double & 1 & The spacing of the major intervals on the
+  X-axis. (Not implemented in IDL).\\
   XMN & Int & 1 & The number of minor intervals to use on the X-axis.\\
+  XLL & Long & 3 & Threshold for changing tick format in logarithmic
+  plots (only used by Fortran).\\
   XFM & String & 1 & The format specifier to use (Overridden by time
   labelling options) \\
   XNV & Int & 1 & The number of tick values used (ascii files only).\\
   XVL & Double & <XNV> & A list of explicit major tick locations. If
-  present, this overrides the value of XMJ.\\
+  present, this overrides the value of XMJ. (Not implemented in Fortran)\\
   XT& String& 1&
   X axis label.\\
   \hline \multicolumn{4}{|c|}{All the X tags have corresponding tags
@@ -281,10 +308,12 @@ to the whole file.
     with Y for the Y axis, and R for the secondary Y axis}\\
   \hline
   YIR & Byte & 1 & Whether the secondary Y axis is to be displayed.\\
-  \hline ZT& Int& 1& Colour table number for 2-D datasets displayed as
+  \hline
+  ZT& Int& 1& Colour table number for 2-D datasets displayed as
   colour plots (IDL colour table indices), as of Version 3.08 this is a
   default used to initialize the table for the dataset or if the
-  display is 8-bit.\\
+  display is 8-bit. Not to be confused with the ``ZT'' key in a datset,
+  which is contour thicknesses.\\
   ZG& Float& 1& Gamma setting for the colour table (since version 3.08
   this is a
   default setting).\\
@@ -305,14 +334,15 @@ to the whole file.
   \multicolumn{4}{|c|}{The following tags define how hardcopy will be
     generated.}\\ 
   \hline HC& Byte& 1&
-  Whether to use colour PostScript\\
+  Whether to use colour PostScript. (Fortran always uses colour)\\
   HE& Byte& 1&
   Whether to generate Encapsulated PostScript or PDF. 0=Normal
   PostScript, 1=Encapsulated PS, 2=PDF with page positioning, 3=PDF
-  suitable for inclusion in \LaTeX.\\
+  suitable for inclusion in \LaTeX. (Obsolete)\\
   HO& Byte& 1&
   Whether to plot in landscape (0) or portrait (1) mode\\
-  HY& Byte & 1 & Whether to use RGB (0) or CMYK (1) colour representation.\\
+  HY& Byte & 1 & Whether to use RGB (0) or CMYK (1) colour
+  representation. (Not implemented in Fortran).\\
   HP& Byte& 1&
   Whether to use A4 (0) or US Letter (1) paper\\
   HT& Byte& 1&
@@ -328,19 +358,29 @@ to the whole file.
   The part of the spooling command after the filename.\\
   HVB& String& 1&
   The part of the view command before the filename\\
-  HPA& String& 1&
-  The part of the PDF view command after the filename.\\
-  HPB& String& 1&
-  The part of the PDF view command before the filename\\
   HVA& String& 1&
   The part of the view command after the filename.\\
+  HPB & String & 1 &
+  The part of the PDF view command before the filename.\\
+  HPA & String & 1 &
+  The part of the PDF view command after the filename.\\
+  HPP & Byte & 3 &
+  Whether to prompt before spooling or viewing the output file.\\
   HFN& String & 1 & The filename for the hardcopy output.\\
-  HF& Int& 1& The font family (for hardware fonts) 0=courier,
+  HPS & String & 1 & The device for producing PostScript output. This
+  and the other devices are only used in Fortran.\\
+  HEP & String & 1 & The device for producing encapsulated PostScript output.\\
+  HPD & String & 1 & The device for producing PDF output.\\
+  HSV & String & 1 & The device for producing SVG output.\\
+
+  HF& Int& 1& The font family (for hardware fonts) (IDL): 0=courier,
   1=helvetica, 2=helvetica narrow, 3=schoolbook, 4=palatino, 5=times,
   6=avantgarde book, 7=avantgarde demi, 8=bookman demi, 9=bookman
-  light, 10=zapfchancery, 11=zapfdingbats, 12=symbol. These are the
-  fonts used for titles, axis annotations and keys
-  in hard-copy output, manual annotations have their own font settings.\\
+  light, 10=zapfchancery, 11=zapfdingbats, 12=symbol (Fortran): 1=Sans
+  Serif, 2=Serif, 3=Monospaced, 4=Script, 5=Symbol. These are the fonts
+  used for titles, axis annotations and keys in hard-copy output,
+  manual annotations have their own font
+  settings.\\
   HWS& Int& 1&
   The weight (0 normal, 1 bold) and slant (0 roman, 2 italic).\\
   \hline \multicolumn{4}{|c|}{The next group of tags control the
@@ -476,8 +516,12 @@ These tags define a specific dataset within the plot.
   ZIL & Byte & 1 & Whether the colour scaling is
   logarithmic. 0=linear, 1=log, 2=square root.\\
   ZIN & Byte & 1 & Whether the colour map is inverted.\\
+  ZSM & Byte & 1 & Whether to use a smooth (\texttt{plshades}) or
+  ``blocky'' (\texttt{plimage}) image display. (only in Fortran)\\
+  ZSN & Long & 1 & How many levels to use for smooth image display.\\
   ZM & Double & 1 & A value to use for regions of an image display that
-  do not map from the data.\\
+  do not map from the data. Also used for non-finite values in smoothed
+  display in Fortran.\\
   ZCT & Int & 1 & The colour table for this dataset (set to 1+colour
   table number, 0 is use default).\\
   ZCG & Float & 1 & The gamma value for the colour mapping.\\
@@ -485,7 +529,7 @@ These tags define a specific dataset within the plot.
   values for 2-D
   function datasets).\\
   F& String& 1&
-  Function (for type -1 and type -2 datasets)\\
+  Function (for function datasets other than parametric (-3))\\
   FX& String& 1&
   X-function for type -3 function datasets\\
   FY& String& 1&
@@ -494,18 +538,22 @@ These tags define a specific dataset within the plot.
   the other start data tags are not quite like other valued tags in that
   in an ASCII dataset the values must start on a new line and be in <N>
   rows with the number of columns
-  determined by the type setting.\\
+  determined by the type setting. Now only used in ASCII files.\\
   VE& Null& 0&
   End of data. For binary files this is just a verification. Not
   present in V4\\
+  VX & Double & <N> & The X-values for a 1-D dataset.\\
+  VY & Double & <N> & The Y-values for a 1-D dataset.\\
+  VXE & Double & 1 or 2 $\times$ <N> & The X-errors for a 1-D dataset.\\
+  VY & Double & 1 or 2 $\times$ <N> & The Y-errors for a 1-D dataset.\\
   ZX2 & Byte & 1 & Flag for 2-d X array (must precede the ZXS tag, not
-  present in V4).\\
+  present in V4+ binaries).\\
   ZY2 & Byte & 1 & Flag for 2-d Y array (must precede the ZYS tag, not
-  present in V4).\\
+  present in V4+ binaries).\\
   ZXS& Double& <N>&
   X values for a 2-D dataset (will be <N>$\times$<N2> if ZX2 flag is set) \\
   ZXE& Null& 0&
-  End of X-values. Not present in V4.\\
+  End of X-values. Not present in V4+ binaries.\\
   ZYS& Double& <N2>&
   Y values for a 2-D dataset (will be <N>$\times$<N2> if ZY2 flag is set)\\
   ZYE& Null& 0&
@@ -574,4 +622,21 @@ TTE& Null& 0&
 End the template.\\
 \end{longtable}
 
+\section{Fortran Colour Table}
+\label{sec:colour_table}
+
+The colour table file lists the colours for each colour table. 
+
+The first byte indicate how many tables the file contains.
+
+For each table there is then:
+\begin{itemize}
+\item A 32 byte table name, as a character string.
+\item Red intensities, as 256 1-byte values.
+\item Green intensities, 256 1-byte values.
+\item Blue intensities, 256 1-byte values.
+\end{itemize}
+
+Note that this is not the same as the IDL colour table format where the
+names are at the end.
 \end{document}

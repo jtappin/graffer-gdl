@@ -58,6 +58,7 @@ pro graff_get_rec, ilu, tag, value, tcode, ndims = ndims, dims = $
 
   if tcode ne 11 then begin
      value = make_array(dims, type = tcode)
+     if arg_present(nvals) then nvals = n_elements(value)
 
      if tcode eq 7 then begin
         lstr = lonarr(dims)
