@@ -55,8 +55,8 @@ pro Gr_bin_ds, data, nset, ilu, msgid
 
   while (not eof(ilu)) do begin
      
-     graff_get_rec, ilu, tag, value, tcode, nvals = nvals, ndims = ndims, $
-                    dims = dims
+     graff_get_rec, ilu, tag, value, tcode, nvals = nvals, $
+                    ndims = ndims, dims = dims
      
                                 ; Recognised tags:
                                 ; J - Joining option
