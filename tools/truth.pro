@@ -1,4 +1,4 @@
-function truth, val
+function truth, val, null_true = null_true
 
 ; LICENCE:
 ; Copyright (C) 2015-2021: SJT
@@ -21,6 +21,9 @@ function truth, val
 ; Argument:
 ;	val	string	A string with a "truth" value.
 ;
+; Keyword:
+;	/null_true	If set, then an empty string is treated as TRUE,
+;			otherwise it is FALSE
 ; Notes:
 ;	Structures, pointers and objects return INVALID (2b).
 ;	Numeric types, return as IDL treats them.
@@ -31,6 +34,7 @@ function truth, val
 ;
 ; History:
 ;	Original: 3/8/15; SJT
+;	Add /null_true and make null string valid: 13/3/23; SJT
 ;-
 
   type = size(val, /type)
@@ -42,7 +46,10 @@ function truth, val
                                 ; invalid
 
      7: begin
+        
         switch strupcase(strtrim(val, 2)) of
+           '': return, keyword_set(null_true)
+           
            'TRUE':
            'T':
            '.TRUE.':
