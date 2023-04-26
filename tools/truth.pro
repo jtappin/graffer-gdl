@@ -34,6 +34,7 @@ function truth, val, null_true = null_true
 ;
 ; History:
 ;	Original: 3/8/15; SJT
+;	Strip leading & trailing spaces: 14/11/22; SJT
 ;	Add /null_true and make null string valid: 13/3/23; SJT
 ;-
 
@@ -46,7 +47,6 @@ function truth, val, null_true = null_true
                                 ; invalid
 
      7: begin
-        
         switch strupcase(strtrim(val, 2)) of
            '': return, keyword_set(null_true)
            
