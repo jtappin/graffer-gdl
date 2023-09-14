@@ -82,8 +82,11 @@ function Grf_tlv_event, event
                               ' Undefined or non-numeric'
               iexit = 0
               goto, donefor
-           endif else if ~y_missing then x = double(x) $
-           else begin
+           endif else if ~y_missing then begin
+              x = double(x)
+              sx = size(x)
+              if sx[0] ne 1 then x = reform(x, nx)
+           endif else begin
               sx = size(x)
               if sx[0] eq 2 then begin
                  if sx[1] eq 2 then begin
@@ -125,8 +128,11 @@ function Grf_tlv_event, event
                            ' Undefined or non-numeric'
            iexit = 0
            goto, donefor
-        endif else y = double(y)
-        
+        endif else begin
+           y = double(y)
+           sy = size(y)
+           if sy[0] ne 1 then y = reform(y, ny)
+        endelse
         
         if (nx ne ny) then begin
            if nx eq 1 then x = dindgen(ny)*x[0] $
@@ -244,7 +250,7 @@ function Grf_tlv_event, event
                                  'Errors and data must be same length'
                  iexit = 0
                  goto, donefor
-              endif else yerrs[2, *] = errtmp
+              endif else yerrs[1, *] = errtmp
            endif
         endif
      endif else iexit = -1
