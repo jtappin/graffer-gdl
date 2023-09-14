@@ -114,6 +114,11 @@ case but of
         iuse[*] = 1
         widget_control, uv.listid, set_value = iuse
     end
+    'CLEAR': begin
+        widget_control, uv.listid, get_value = iuse
+        iuse[*] = 0
+        widget_control, uv.listid, set_value = iuse
+    end
     
     'PICK':                     ; Ignore it's easier to use GET_VALUE
 endcase
@@ -132,8 +137,8 @@ function Gr_key_def, pdefs
 
 
   ku = bytarr(pdefs.nsets)
-  if ptr_valid(pdefs.key.list) then ku(*pdefs.key.list) = 1
-  ds1 = where((*pdefs.data).type ge -3 and (*pdefs.data).type lt 8, n1d)
+  if ptr_valid(pdefs.key.list) then ku[*pdefs.key.list] = 1
+  ds1 = where((*pdefs.data).type ge -3 and (*pdefs.data).type le 8, n1d)
 
   if n1d eq 0 then begin
      junk = dialog_message(["The current GRAFFER environment", $
@@ -283,11 +288,14 @@ function Gr_key_def, pdefs
                          column = ceil(n1d/10.), $ 
                          /nonexclusive, $
                          uvalue = 'PICK', $
-                         set_value = ku(ds1), $
+                         set_value = ku[ds1], $
                          ids = buts)
   junk = widget_button(jb, $
                        value = 'All', $
                        uvalue = 'ALL')
+  junk = widget_button(jb, $
+                       value = 'Clear', $
+                       uvalue = 'CLEAR')
 
   jb = widget_base(base, $
                    /row)
