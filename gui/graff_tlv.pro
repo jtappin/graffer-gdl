@@ -359,27 +359,6 @@ function Graff_tlv, pdefs
   dstype = (*pdefs.data)[pdefs.cset].type
   fflag = (dstype lt 0)
   flag2 = (dstype ge 9)
-  if (fflag) then begin
-     if dialog_message(['CURRENT DATA SET IS A FUNCTION', $
-                        'OR A 2-D DATASET ENTERING DATA', $
-                        'WILL OVERWRITE IT', $
-                        'DO YOU REALLY WANT TO DO THIS?'], $
-                       /question, title = 'Overwriting ' + $
-                       'function', dialog_parent = $
-                       pdefs.ids.graffer, resource = 'Graffer') eq 'No' then $
-                          return, 0
-     dstype = 0
-  endif
-  if flag2 then begin
-     if dialog_message(['CURRENT DATA SET IS A 2-D DATASET', $
-                        'ENTERING 1-D DATA WILL OVERWRITE IT', $
-                        'DO YOU REALLY WANT TO DO THIS?'], $
-                       /question, title = 'Overwriting ' + $
-                       'function', dialog_parent = $
-                       pdefs.ids.graffer, resource = 'Graffer') eq 'No' then $
-                          return, 0
-     dstype = 0
-  endif
 
   uvs = { $
         Xid:    0l, $
@@ -404,7 +383,29 @@ function Graff_tlv, pdefs
         Type:   dstype $
         }
 
-  if dstype ge 0 && dstype le 8 && $
+  if (fflag) then begin
+     if dialog_message(['CURRENT DATA SET IS A FUNCTION', $
+                        'ENTERING DATA WILL OVERWRITE IT', $
+                        'DO YOU REALLY WANT TO DO THIS?'], $
+                       /question, title = 'Overwriting ' + $
+                       'function', dialog_parent = $
+                       pdefs.ids.graffer, resource = 'Graffer') eq 'No' then $
+                          return, 0
+
+     xydata = {graff_xydata} 
+     dstype = 0
+  endif else if flag2 then begin
+     if dialog_message(['CURRENT DATA SET IS A 2-D DATASET', $
+                        'ENTERING 1-D DATA WILL OVERWRITE IT', $
+                        'DO YOU REALLY WANT TO DO THIS?'], $
+                       /question, title = 'Overwriting ' + $
+                       'function', dialog_parent = $
+                       pdefs.ids.graffer, resource = 'Graffer') eq 'No' then $
+                          return, 0
+     
+     xydata = {graff_xydata} 
+     dstype = 0
+  endif else  if dstype ge 0 && dstype le 8 && $
      ptr_valid((*pdefs.data)[pdefs.cset].xydata) then begin
      xydata = *(*pdefs.data)[pdefs.cset].xydata
      if ptr_valid(xydata.x) then begin
@@ -417,6 +418,9 @@ function Graff_tlv, pdefs
      endif
   endif else xydata = {graff_xydata} 
 
+
+
+ 
 ;	Check out the type of the current ds
 
   
@@ -445,7 +449,8 @@ function Graff_tlv, pdefs
                      uvalue = 'X', $
                      label = 'X Variable:', $
                      xsize = 12, $
-                     /capture)
+                     /capture, $
+                     /all_events)
   junk = widget_button(uvs.xbid, $
                        value = 'Pick...', $
                        uvalue = 'XP')
@@ -458,7 +463,8 @@ function Graff_tlv, pdefs
                      uvalue = 'Y', $
                      label = 'Y Variable:', $
                      xsize = 12, $
-                     /capture)
+                     /capture, $
+                     /all_events)
   junk = widget_button(uvs.ybid, $
                        value = 'Pick...', $
                        uvalue = 'YP')
@@ -471,7 +477,8 @@ function Graff_tlv, pdefs
                         uvalue = 'ELOX', $
                         label = 'Lower X error:', $
                         xsize = 12, $
-                        /capture)
+                        /capture, $
+                        /all_events)
   junk = widget_button(uvs.eloxbid, $
                        value = 'Pick...', $
                        uvalue = 'ELOXP')
@@ -486,7 +493,8 @@ function Graff_tlv, pdefs
                         uvalue = 'EHIX', $
                         label = 'Upper X error:', $
                         xsize = 12, $
-                        /capture)
+                        /capture, $
+                        /all_events)
   junk = widget_button(uvs.ehixbid, $
                        value = 'Pick...', $
                        uvalue = 'EHIXP')
@@ -501,7 +509,8 @@ function Graff_tlv, pdefs
                         uvalue = 'ELOY', $
                         label = 'Lower Y error:', $
                         xsize = 12, $
-                        /capture)
+                        /capture, $
+                        /all_events)
   junk = widget_button(uvs.eloybid, $
                        value = 'Pick...', $
                        uvalue = 'ELOYP')
@@ -515,7 +524,8 @@ function Graff_tlv, pdefs
                         uvalue = 'EHIY', $
                         label = 'Upper Y error:', $
                         xsize = 12, $
-                        /capture)
+                        /capture, $
+                        /all_events)
   junk = widget_button(uvs.ehiybid, $
                        value = 'Pick...', $
                        uvalue = 'EHIYP')
@@ -562,12 +572,12 @@ function Graff_tlv, pdefs
 
                                 ; Realise and do RYO event handling
 
-  widget_control, tlb, /real
-
   cw_enter_focus, uvs.xid
 
   widget_control, base, event_func = 'grf_tlv_event', set_uvalue = $
                   uvs, /no_copy
+
+  widget_control, tlb, /real
 
   repeat begin
      ev = widget_event(base)
